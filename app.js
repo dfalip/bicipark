@@ -1,5 +1,7 @@
 const CITIES_URL = "./cities.json";
 
+let bikeLanesVisible = false;
+
 let cities = {};
 let currentCityKey = null;
 let currentCity = null;
