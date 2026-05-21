@@ -452,3 +452,19 @@ button {
     width: 100%;
   }
 }
+
+.favoriteIcon {
+  cursor: pointer;
+  margin-left: 6px;
+  font-size: 14px;
+}
+
+.favoriteIcon:hover {
+  transform: scale(1.15);
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
