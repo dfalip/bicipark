@@ -506,7 +506,7 @@ async function loadBikeLanes() {
         weight: 3,
         opacity: 0.75
       }
-    }).addTo(map);
+    });
 
     bikeLaneLayer.bringToBack();
 
