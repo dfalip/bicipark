@@ -176,35 +176,67 @@
     });
 
     function extractItems(data) {
-      if (Array.isArray(data)) return data;
-      if (Array.isArray(data.features)) return data.features;
-      if (Array.isArray(data.items)) return data.items;
-      if (Array.isArray(data.results)) return data.results;
-      return [];
-    }
+
+  // GeoJSON estàndard
+  if (Array.isArray(data.features)) {
+    return data.features;
+  }
+
+  // JSON normal
+  if (Array.isArray(data)) {
+    return data;
+  }
+
+  // OpenData BCN acostuma a posar-ho aquí
+  if (Array.isArray(data.result?.records)) {
+    return data.result.records;
+  }
+
+  // Altres formats possibles
+  if (Array.isArray(data.records)) {
+    return data.records;
+  }
+
+  return [];
+}
 
     function getCoordinates(rawItem) {
-      const item = rawItem.properties || rawItem;
 
-      if (rawItem.geometry && Array.isArray(rawItem.geometry.coordinates)) {
-        const c = rawItem.geometry.coordinates;
-        return { lat: Number(c[1]), lng: Number(c[0]) };
-      }
+  const item = rawItem.properties || rawItem;
 
-      if (item.geo_epgs_4326_lat && item.geo_epgs_4326_lon) {
-        return {
-          lat: Number(item.geo_epgs_4326_lat),
-          lng: Number(item.geo_epgs_4326_lon)
-        };
-      }
+  // GeoJSON
+  if (rawItem.geometry?.coordinates) {
+    return {
+      lat: Number(rawItem.geometry.coordinates[1]),
+      lng: Number(rawItem.geometry.coordinates[0])
+    };
+  }
 
-      if (item.geo_epgs_4326_x && item.geo_epgs_4326_y) {
-        return {
-          lat: Number(item.geo_epgs_4326_y),
-          lng: Number(item.geo_epgs_4326_x)
-        };
-      }
+  // Open Data BCN habitual
+  if (item.geo_epgs_4326_lat && item.geo_epgs_4326_lon) {
+    return {
+      lat: Number(item.geo_epgs_4326_lat),
+      lng: Number(item.geo_epgs_4326_lon)
+    };
+  }
 
+  // Altres possibles
+  if (item.latitude && item.longitude) {
+    return {
+      lat: Number(item.latitude),
+      lng: Number(item.longitude)
+    };
+  }
+
+  if (item.latitud && item.longitud) {
+    return {
+      lat: Number(item.latitud),
+      lng: Number(item.longitud)
+    };
+  }
+
+  return null;
+}
       if (item.latitude && item.longitude) {
         return { lat: Number(item.latitude), lng: Number(item.longitude) };
       }
