@@ -5,7 +5,10 @@
     "lat": 41.9795,
     "lng": 2.8194,
     "capacity": 40,
-    "security": "alta"
+    "security": "alta",
+    "verified": false,
+    "source": "Manual provisional",
+    "type": "Aparcament bici"
   },
   {
     "name": "Aparcament bici Barri Vell",
@@ -13,7 +16,10 @@
     "lat": 41.9862,
     "lng": 2.8258,
     "capacity": 20,
-    "security": "mitjana"
+    "security": "mitjana",
+    "verified": false,
+    "source": "Manual provisional",
+    "type": "Aparcament bici"
   },
   {
     "name": "Aparcament bici Universitat",
@@ -21,7 +27,10 @@
     "lat": 41.9858,
     "lng": 2.8274,
     "capacity": 35,
-    "security": "alta"
+    "security": "alta",
+    "verified": false,
+    "source": "Manual provisional",
+    "type": "Aparcament bici"
   },
   {
     "name": "Aparcament bici Devesa",
@@ -29,7 +38,10 @@
     "lat": 41.9873,
     "lng": 2.8118,
     "capacity": 25,
-    "security": "mitjana"
+    "security": "mitjana",
+    "verified": false,
+    "source": "Manual provisional",
+    "type": "Aparcament bici"
   },
   {
     "name": "Aparcament bici Fontajau",
@@ -37,7 +49,10 @@
     "lat": 41.9932,
     "lng": 2.8078,
     "capacity": 30,
-    "security": "alta"
+    "security": "alta",
+    "verified": false,
+    "source": "Manual provisional",
+    "type": "Aparcament bici"
   },
   {
     "name": "Aparcament bici Parc Migdia",
@@ -45,7 +60,10 @@
     "lat": 41.9724,
     "lng": 2.8215,
     "capacity": 18,
-    "security": "mitjana"
+    "security": "mitjana",
+    "verified": false,
+    "source": "Manual provisional",
+    "type": "Aparcament bici"
   },
   {
     "name": "Aparcament bici Santa Eugènia",
@@ -53,7 +71,10 @@
     "lat": 41.9752,
     "lng": 2.8089,
     "capacity": 22,
-    "security": "mitjana"
+    "security": "mitjana",
+    "verified": false,
+    "source": "Manual provisional",
+    "type": "Aparcament bici"
   },
   {
     "name": "Aparcament bici Pont de Pedra",
@@ -61,7 +82,10 @@
     "lat": 41.9821,
     "lng": 2.8242,
     "capacity": 16,
-    "security": "baixa"
+    "security": "baixa",
+    "verified": false,
+    "source": "Manual provisional",
+    "type": "Aparcament bici"
   },
   {
     "name": "Aparcament bici Catedral",
@@ -69,7 +93,10 @@
     "lat": 41.9870,
     "lng": 2.8266,
     "capacity": 12,
-    "security": "mitjana"
+    "security": "mitjana",
+    "verified": false,
+    "source": "Manual provisional",
+    "type": "Aparcament bici"
   },
   {
     "name": "Aparcament bici Girona Centre",
@@ -77,6 +104,9 @@
     "lat": 41.9812,
     "lng": 2.8230,
     "capacity": 28,
-    "security": "alta"
+    "security": "alta",
+    "verified": false,
+    "source": "Manual provisional",
+    "type": "Aparcament bici"
   }
 ]
