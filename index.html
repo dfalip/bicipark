@@ -48,10 +48,7 @@
     #searchBtn { background: #1D9E75; color: white; }
     #nearBtn { background: white; color: #1a1a2e; }
 
-    #map {
-      height: calc(100vh - 68px);
-      width: 100%;
-    }
+    #map { height: calc(100vh - 68px); width: 100%; }
 
     .pin {
       border: 3px solid white;
@@ -87,10 +84,7 @@
       line-height: 1.6;
     }
 
-    .legend strong {
-      display: block;
-      margin-bottom: 4px;
-    }
+    .legend strong { display: block; margin-bottom: 4px; }
 
     .legend-dot {
       display: inline-block;
@@ -186,66 +180,107 @@
     });
 
     function extractItems(data) {
-      if (Array.isArray(data.features)) return data.features;
       if (Array.isArray(data)) return data;
+      if (Array.isArray(data.features)) return data.features;
       if (Array.isArray(data.result?.records)) return data.result.records;
       if (Array.isArray(data.records)) return data.records;
+      if (Array.isArray(data.data)) return data.data;
+      if (Array.isArray(data.items)) return data.items;
+
+      // Si el JSON és un objecte amb molts registres dins
+      const values = Object.values(data);
+      const arrayValue = values.find(v => Array.isArray(v));
+      if (arrayValue) return arrayValue;
+
       return [];
+    }
+
+    function normalizeNumber(value) {
+      if (value === undefined || value === null) return null;
+
+      const n = Number(String(value).replace(",", "."));
+      return isNaN(n) ? null : n;
+    }
+
+    function isBarcelonaLatLng(lat, lng) {
+      return lat >= 41.2 && lat <= 41.6 && lng >= 1.8 && lng <= 2.4;
+    }
+
+    function findCoordinatesDeep(obj) {
+      const candidates = [];
+
+      function scan(current) {
+        if (!current || typeof current !== "object") return;
+
+        // GeoJSON
+        if (Array.isArray(current.coordinates) && current.coordinates.length >= 2) {
+          const a = normalizeNumber(current.coordinates[0]);
+          const b = normalizeNumber(current.coordinates[1]);
+
+          if (a !== null && b !== null) {
+            candidates.push({ lat: b, lng: a });
+            candidates.push({ lat: a, lng: b });
+          }
+        }
+
+        const keys = Object.keys(current);
+
+        for (const latKey of keys) {
+          const lk = latKey.toLowerCase();
+
+          if (
+            lk.includes("lat") ||
+            lk.includes("latitude") ||
+            lk.includes("geo_epgs_4326_lat") ||
+            lk === "y"
+          ) {
+            for (const lngKey of keys) {
+              const gok = lngKey.toLowerCase();
+
+              if (
+                gok.includes("lon") ||
+                gok.includes("lng") ||
+                gok.includes("long") ||
+                gok.includes("longitude") ||
+                gok.includes("geo_epgs_4326_lon") ||
+                gok === "x"
+              ) {
+                const lat = normalizeNumber(current[latKey]);
+                const lng = normalizeNumber(current[lngKey]);
+
+                if (lat !== null && lng !== null) {
+                  candidates.push({ lat, lng });
+                  candidates.push({ lat: lng, lng: lat });
+                }
+              }
+            }
+          }
+        }
+
+        Object.values(current).forEach(scan);
+      }
+
+      scan(obj);
+
+      return candidates.find(c => isBarcelonaLatLng(c.lat, c.lng)) || null;
     }
 
     function getCoordinates(rawItem) {
       const item = rawItem.properties || rawItem;
 
-      if (rawItem.geometry && Array.isArray(rawItem.geometry.coordinates)) {
-        return {
-          lat: Number(rawItem.geometry.coordinates[1]),
-          lng: Number(rawItem.geometry.coordinates[0])
-        };
-      }
-
-      if (item.geo_epgs_4326_lat && item.geo_epgs_4326_lon) {
-        return {
-          lat: Number(item.geo_epgs_4326_lat),
-          lng: Number(item.geo_epgs_4326_lon)
-        };
-      }
-
-      if (item.geo_epgs_4326_x && item.geo_epgs_4326_y) {
-        return {
-          lat: Number(item.geo_epgs_4326_y),
-          lng: Number(item.geo_epgs_4326_x)
-        };
-      }
-
-      if (item.latitude && item.longitude) {
-        return {
-          lat: Number(item.latitude),
-          lng: Number(item.longitude)
-        };
-      }
-
-      if (item.latitud && item.longitud) {
-        return {
-          lat: Number(item.latitud),
-          lng: Number(item.longitud)
-        };
-      }
-
-      if (item.lat && item.lng) {
-        return {
-          lat: Number(item.lat),
-          lng: Number(item.lng)
-        };
-      }
+      const direct = findCoordinatesDeep(rawItem);
+      if (direct) return direct;
 
       const address = item.addresses && item.addresses[0];
       const coords = address?.location?.coordinates;
 
       if (Array.isArray(coords) && coords.length >= 2) {
-        return {
-          lat: Number(coords[1]),
-          lng: Number(coords[0])
-        };
+        const lat = normalizeNumber(coords[1]);
+        const lng = normalizeNumber(coords[0]);
+
+        if (isBarcelonaLatLng(lat, lng)) {
+          return { lat, lng };
+        }
       }
 
       return null;
@@ -253,7 +288,7 @@
 
     function getName(rawItem) {
       const item = rawItem.properties || rawItem;
-      return item.name || item.nom || item.title || item.equipment_name || "Aparcament de bicicleta";
+      return item.name || item.nom || item.title || item.equipment_name || item.NOM || item.Nom || "Aparcament de bicicleta";
     }
 
     function getAddress(rawItem) {
@@ -267,7 +302,7 @@
         return `${street} ${number} ${district ? "— " + district : ""}`.trim();
       }
 
-      return item.address || item.adreca || "Adreça no disponible";
+      return item.address || item.adreca || item.ADRECA || item.Adreca || "Adreça no disponible";
     }
 
     function getPlaces(rawItem) {
@@ -279,17 +314,14 @@
         item.places,
         item.num_places,
         item.numero_places,
-        item.total_places
+        item.total_places,
+        item.CAPACITAT,
+        item.Places
       ];
 
       for (const value of possibleFields) {
         if (value !== undefined && value !== null && value !== "") return value;
       }
-
-      const text = JSON.stringify(item);
-      const match = text.match(/"value"\s*:\s*"?(\d+)"?/);
-
-      if (match) return match[1];
 
       return "No indicades";
     }
@@ -319,6 +351,8 @@
 
         const data = await response.json();
         const items = extractItems(data);
+
+        console.log("Primer registre del JSON:", items[0]);
 
         let count = 0;
 
@@ -357,7 +391,7 @@
         console.log("Aparcaments carregats:", count);
 
         if (count === 0) {
-          alert("S'ha carregat el fitxer aparcaments.json, però no s'han trobat coordenades.");
+          alert("El fitxer s'ha carregat, però les coordenades tenen un format diferent. Obre F12 > Console i envia'm el 'Primer registre del JSON'.");
         }
 
       } catch (error) {
