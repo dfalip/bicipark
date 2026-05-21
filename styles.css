@@ -260,7 +260,6 @@ button {
 
 .pin-nearest {
   border: 4px solid #00c853;
-  transform: scale(1.15);
   box-shadow: 0 0 14px rgba(0, 200, 83, 0.7);
 }
 
