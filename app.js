@@ -281,52 +281,6 @@ function buildPopup(parking, nearest = false) {
   `;
 }
 
-function renderSidebar() {
-  const container = document.getElementById("parkingList");
-  const title = document.querySelector("#sidebarHeader h2");
-  const filtered = getFilteredParkings();
-
-  if (!activeLocation) {
-    title.textContent = `Parkings a ${currentCity.name}`;
-
-    const alphabetical = [...filtered].sort((a, b) =>
-      a.nom.localeCompare(b.nom, "ca", { sensitivity: "base" })
-    );
-
-    container.innerHTML = "";
-
-    alphabetical.forEach(parking => {
-      const card = createParkingCard(parking, null, false);
-      container.appendChild(card);
-    });
-
-    return;
-  }
-
-  title.textContent = "Parkings propers";
-
-  const withDistance = filtered.map(parking => ({
-    ...parking,
-    distance: getDistanceMeters(activeLocation.lat, activeLocation.lng, parking.lat, parking.lng)
-  }));
-
-  withDistance.sort((a, b) => a.distance - b.distance);
-
-  const top = withDistance.slice(0, 10);
-
-  if (top.length === 0) {
-    container.innerHTML = `<div class="emptySidebar">No hi ha parkings dins del radi seleccionat.</div>`;
-    return;
-  }
-
-  container.innerHTML = "";
-
-  top.forEach((parking, index) => {
-    const card = createParkingCard(parking, parking.distance, index === 0);
-    container.appendChild(card);
-  });
-}
-
 function createParkingCard(parking, distance = null, recommended = false) {
   const card = document.createElement("div");
   card.className = `parkingCard ${recommended ? "recommended" : ""}`;
@@ -357,6 +311,50 @@ function createParkingCard(parking, distance = null, recommended = false) {
   });
 
   return card;
+}
+
+function renderSidebar() {
+  const container = document.getElementById("parkingList");
+  const title = document.querySelector("#sidebarHeader h2");
+  const filtered = getFilteredParkings();
+
+  if (!activeLocation) {
+    title.textContent = `Parkings a ${currentCity.name}`;
+
+    const alphabetical = [...filtered].sort((a, b) =>
+      a.nom.localeCompare(b.nom, "ca", { sensitivity: "base" })
+    );
+
+    container.innerHTML = "";
+
+    alphabetical.forEach(parking => {
+      container.appendChild(createParkingCard(parking, null, false));
+    });
+
+    return;
+  }
+
+  title.textContent = "Parkings propers";
+
+  const withDistance = filtered.map(parking => ({
+    ...parking,
+    distance: getDistanceMeters(activeLocation.lat, activeLocation.lng, parking.lat, parking.lng)
+  }));
+
+  withDistance.sort((a, b) => a.distance - b.distance);
+
+  const top = withDistance.slice(0, 10);
+
+  if (top.length === 0) {
+    container.innerHTML = `<div class="emptySidebar">No hi ha parkings dins del radi seleccionat.</div>`;
+    return;
+  }
+
+  container.innerHTML = "";
+
+  top.forEach((parking, index) => {
+    container.appendChild(createParkingCard(parking, parking.distance, index === 0));
+  });
 }
 
 function renderParkings() {
@@ -453,7 +451,6 @@ async function loadBikeLanes() {
 
   try {
     const response = await fetch(currentCity.bikeLanes);
-
     if (!response.ok) return;
 
     const data = await response.json();
@@ -532,10 +529,12 @@ async function loadCities() {
   const response = await fetch(CITIES_URL);
   cities = await response.json();
 
+  const enabledCities = Object.entries(cities).filter(([key, city]) => city.enabled === true);
+
   const select = document.getElementById("citySelect");
   select.innerHTML = "";
 
-  Object.entries(cities).forEach(([key, city]) => {
+  enabledCities.forEach(([key, city]) => {
     const option = document.createElement("option");
     option.value = key;
     option.textContent = `${city.name}, ${city.country}`;
@@ -546,7 +545,13 @@ async function loadCities() {
     loadCity(select.value);
   });
 
-  const firstCity = Object.keys(cities)[0];
+  const firstCity = enabledCities[0]?.[0];
+
+  if (!firstCity) {
+    alert("No hi ha cap ciutat activa a cities.json.");
+    return;
+  }
+
   select.value = firstCity;
   await loadCity(firstCity);
 }
