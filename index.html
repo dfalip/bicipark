@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bicipark — Aparcaments de bici a Barcelona</title>
 
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🚲</text></svg>">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
@@ -82,8 +83,6 @@
       line-height: 1.6;
     }
 
-    .legend strong { display: block; margin-bottom: 4px; }
-
     .legend-dot {
       display: inline-block;
       width: 11px;
@@ -100,15 +99,14 @@
       display: inline-block;
       padding: 3px 7px;
       border-radius: 999px;
-      color: white;
       font-size: 12px;
       font-weight: 700;
       margin-top: 4px;
     }
 
-    .label-alta { background: #1D9E75; }
+    .label-alta { background: #1D9E75; color: white; }
     .label-mitjana { background: #F2C94C; color: #1a1a2e; }
-    .label-baixa { background: #EB5757; }
+    .label-baixa { background: #EB5757; color: white; }
 
     @media (max-width: 700px) {
       #brand, #searchBox { width: 100%; }
@@ -144,7 +142,7 @@
     }).addTo(map);
 
     const DATA_URL = "./aparcaments.json";
-    
+
     let searchMarker;
     let userMarker;
 
@@ -160,25 +158,8 @@
       return "Mitjana";
     }
 
-    function estimateSecurity(item) {
-      const text = JSON.stringify(item).toLowerCase();
-
-      if (
-        text.includes("bicipark") ||
-        text.includes("parking") ||
-        text.includes("aparcament") ||
-        text.includes("cobert") ||
-        text.includes("vigilat")
-      ) {
-        return "alta";
-      }
-
-      return "mitjana";
-    }
-
     function createBikeIcon(seguretat) {
       const securityClass = getSecurityClass(seguretat);
-
       return L.divIcon({
         html: `<div class="pin pin-${securityClass}">🚲</div>`,
         className: '',
@@ -194,69 +175,134 @@
       iconAnchor: [14, 14]
     });
 
-    function getCoordinates(item) {
-      const address = item.addresses?.[0];
-      const coords = address?.location?.coordinates;
+    function extractItems(data) {
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.features)) return data.features;
+      if (Array.isArray(data.items)) return data.items;
+      if (Array.isArray(data.results)) return data.results;
+      return [];
+    }
 
-      if (Array.isArray(coords) && coords.length >= 2) {
-        return {
-          lat: coords[1],
-          lng: coords[0]
-        };
+    function getCoordinates(rawItem) {
+      const item = rawItem.properties || rawItem;
+
+      if (rawItem.geometry && Array.isArray(rawItem.geometry.coordinates)) {
+        const c = rawItem.geometry.coordinates;
+        return { lat: Number(c[1]), lng: Number(c[0]) };
       }
 
       if (item.geo_epgs_4326_lat && item.geo_epgs_4326_lon) {
         return {
-          lat: parseFloat(item.geo_epgs_4326_lat),
-          lng: parseFloat(item.geo_epgs_4326_lon)
+          lat: Number(item.geo_epgs_4326_lat),
+          lng: Number(item.geo_epgs_4326_lon)
         };
+      }
+
+      if (item.geo_epgs_4326_x && item.geo_epgs_4326_y) {
+        return {
+          lat: Number(item.geo_epgs_4326_y),
+          lng: Number(item.geo_epgs_4326_x)
+        };
+      }
+
+      if (item.latitude && item.longitude) {
+        return { lat: Number(item.latitude), lng: Number(item.longitude) };
+      }
+
+      if (item.lat && item.lng) {
+        return { lat: Number(item.lat), lng: Number(item.lng) };
+      }
+
+      const address = item.addresses && item.addresses[0];
+      const coords = address?.location?.coordinates;
+
+      if (Array.isArray(coords) && coords.length >= 2) {
+        return { lat: Number(coords[1]), lng: Number(coords[0]) };
       }
 
       return null;
     }
 
-    function getName(item) {
-      return item.name || item.nom || item.title || "Aparcament de bicicleta";
+    function getName(rawItem) {
+      const item = rawItem.properties || rawItem;
+      return item.name || item.nom || item.title || item.equipment_name || "Aparcament de bicicleta";
     }
 
-    function getAddress(item) {
-      const address = item.addresses?.[0];
+    function getAddress(rawItem) {
+      const item = rawItem.properties || rawItem;
+      const address = item.addresses && item.addresses[0];
 
-      if (!address) return "Adreça no disponible";
+      if (address) {
+        const street = address.address_name || "";
+        const number = address.address_start || "";
+        const district = address.district_name || "";
+        return `${street} ${number} ${district ? "— " + district : ""}`.trim();
+      }
 
-      const street = address.address_name || "";
-      const number = address.address_start || "";
-      const district = address.district_name || "";
-
-      return `${street} ${number} ${district ? "— " + district : ""}`.trim();
+      return item.address || item.adreca || "Adreça no disponible";
     }
 
-    function getPlaces(item) {
+    function getPlaces(rawItem) {
+      const item = rawItem.properties || rawItem;
+
+      const possibleFields = [
+        item.capacity,
+        item.capacitat,
+        item.places,
+        item.num_places,
+        item.numero_places,
+        item.total_places
+      ];
+
+      for (const value of possibleFields) {
+        if (value !== undefined && value !== null && value !== "") return value;
+      }
+
       const text = JSON.stringify(item);
-      const match = text.match(/"value"\s*:\s*"?(\\d+)"?/);
+      const match = text.match(/"value"\s*:\s*"?(\d+)"?/);
 
       if (match) return match[1];
 
       return "No indicades";
     }
 
+    function estimateSecurity(rawItem) {
+      const text = JSON.stringify(rawItem).toLowerCase();
+
+      if (
+        text.includes("bicipark") ||
+        text.includes("cobert") ||
+        text.includes("vigilat") ||
+        text.includes("parking")
+      ) {
+        return "alta";
+      }
+
+      return "mitjana";
+    }
+
     async function loadRealBikeParkings() {
       try {
         const response = await fetch(DATA_URL);
-        const data = await response.json();
 
-        const items = Array.isArray(data) ? data : data.features || [];
+        if (!response.ok) {
+          throw new Error("No s'ha trobat aparcaments.json");
+        }
+
+        const data = await response.json();
+        const items = extractItems(data);
+
+        let count = 0;
 
         items.forEach(rawItem => {
-          const item = rawItem.properties || rawItem;
-          const coords = getCoordinates(item);
+          const coords = getCoordinates(rawItem);
 
-          if (!coords) return;
+          if (!coords || isNaN(coords.lat) || isNaN(coords.lng)) return;
 
-          const nom = getName(item);
-          const address = getAddress(item);
-          const places = getPlaces(item);
-          const seguretat = estimateSecurity(item);
+          const nom = getName(rawItem);
+          const address = getAddress(rawItem);
+          const places = getPlaces(rawItem);
+          const seguretat = estimateSecurity(rawItem);
           const securityClass = getSecurityClass(seguretat);
 
           L.marker([coords.lat, coords.lng], { icon: createBikeIcon(seguretat) })
@@ -270,17 +316,25 @@
                 ${getSecurityText(seguretat)}
               </span>
               <br><br>
-              <small>Dades oficials: Open Data BCN</small>
+              <small>Dades: Open Data BCN</small>
               <br><br>
               <a href="https://www.google.com/maps/dir/?api=1&destination=${coords.lat},${coords.lng}" target="_blank">
                 Com arribar
               </a>
             `);
+
+          count++;
         });
 
+        console.log("Aparcaments carregats:", count);
+
+        if (count === 0) {
+          alert("S'ha carregat el fitxer, però no s'han trobat coordenades. Revisa el format de aparcaments.json.");
+        }
+
       } catch (error) {
-        alert("No s'han pogut carregar les dades oficials d'Open Data BCN.");
-        console.error(error);
+        console.error("Error carregant aparcaments:", error);
+        alert("No s'han pogut carregar els aparcaments. Comprova que el fitxer aparcaments.json existeix al repositori.");
       }
     }
 
@@ -325,9 +379,7 @@
 
         map.setView([lat, lon], 17);
 
-        if (searchMarker) {
-          map.removeLayer(searchMarker);
-        }
+        if (searchMarker) map.removeLayer(searchMarker);
 
         searchMarker = L.marker([lat, lon], { icon: searchIcon })
           .addTo(map)
@@ -352,9 +404,7 @@
 
           map.setView([lat, lng], 16);
 
-          if (userMarker) {
-            map.removeLayer(userMarker);
-          }
+          if (userMarker) map.removeLayer(userMarker);
 
           userMarker = L.marker([lat, lng])
             .addTo(map)
@@ -368,9 +418,7 @@
     }
 
     document.getElementById("searchInput").addEventListener("keypress", function(e) {
-      if (e.key === "Enter") {
-        searchLocation();
-      }
+      if (e.key === "Enter") searchLocation();
     });
   </script>
 </body>
