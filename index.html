@@ -16,6 +16,7 @@
 </head>
 
 <body>
+
   <header id="header">
     <div id="brand">
       <h1>Bicipark</h1>
@@ -37,11 +38,23 @@
   </section>
 
   <section id="radiusFilters">
-    <span>Àrea:</span>
-    <button class="radius-btn active" data-radius="all">Tot Barcelona</button>
-    <button class="radius-btn" data-radius="500">500 m</button>
-    <button class="radius-btn" data-radius="1000">1 km</button>
-    <button class="radius-btn" data-radius="2000">2 km</button>
+    <span>Distància:</span>
+
+    <button class="radius-btn active" data-radius="all">
+      Tot Barcelona
+    </button>
+
+    <button class="radius-btn" data-radius="500">
+      500 m
+    </button>
+
+    <button class="radius-btn" data-radius="1000">
+      1 km
+    </button>
+
+    <button class="radius-btn" data-radius="2000">
+      2 km
+    </button>
   </section>
 
   <section id="statusBar">
@@ -49,7 +62,27 @@
     <div id="nearestInfo">Busca una ubicació o prem “A prop meu”.</div>
   </section>
 
-  <main id="map"></main>
+  <div id="layout">
+
+    <aside id="sidebar">
+
+      <div id="sidebarHeader">
+        <h2>Parkings propers</h2>
+      </div>
+
+      <div id="parkingList">
+
+        <div class="emptySidebar">
+          Busca una ubicació o prem “A prop meu”.
+        </div>
+
+      </div>
+
+    </aside>
+
+    <main id="map"></main>
+
+  </div>
 
   <div id="loadingOverlay">
     <div class="loader"></div>
@@ -58,6 +91,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
   <script src="app.js"></script>
+
 </body>
 </html>
