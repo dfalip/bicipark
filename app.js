@@ -14,6 +14,8 @@ let nearestMarker;
 let bikeLaneLayer;
 let bikeLanesVisible = false;
 
+let selectedNearestParkingId = null;
+
 let favorites = JSON.parse(localStorage.getItem("biciparkFavorites") || "[]");
 
 const map = L.map("map").setView([41.3874, 2.1686], 13);
@@ -423,9 +425,11 @@ function renderParkings() {
   const filtered = getFilteredParkings();
 
   filtered.forEach(parking => {
+    const isNearest = getParkingId(parking) === selectedNearestParkingId;
+
     const marker = L.marker([parking.lat, parking.lng], {
-      icon: createBikeIcon(parking.seguretat)
-    }).bindPopup(buildPopup(parking));
+      icon: createBikeIcon(parking.seguretat, isNearest)
+    }).bindPopup(buildPopup(parking, isNearest));
 
     markers.addLayer(marker);
   });
@@ -444,8 +448,12 @@ function highlightNearestParking(lat, lng) {
   const filtered = getFilteredParkings();
 
   if (filtered.length === 0) {
+    selectedNearestParkingId = null;
+
     document.getElementById("nearestInfo").textContent =
       "No hi ha aparcaments visibles amb el filtre actual.";
+
+    renderParkings();
     return;
   }
 
@@ -455,20 +463,19 @@ function highlightNearestParking(lat, lng) {
     const distance = getDistanceMeters(lat, lng, parking.lat, parking.lng);
 
     if (!nearest || distance < nearest.distance) {
-      nearest = { ...parking, distance };
+      nearest = {
+        ...parking,
+        distance
+      };
     }
   });
 
-  if (nearestMarker) map.removeLayer(nearestMarker);
-
-  nearestMarker = L.marker([nearest.lat, nearest.lng], {
-    icon: createBikeIcon(nearest.seguretat, true)
-  })
-    .addTo(map)
-    .bindPopup(buildPopup(nearest, true));
+  selectedNearestParkingId = getParkingId(nearest);
 
   document.getElementById("nearestInfo").textContent =
     `Parking més proper: ${nearest.nom} · ${formatDistance(nearest.distance)}`;
+
+  renderParkings();
 }
 
 function setRadius(radius, rerender = true) {
@@ -490,6 +497,7 @@ function setRadius(radius, rerender = true) {
 function resetMapState() {
   allParkings = [];
   activeLocation = null;
+  selectedNearestParkingId = null;
 
   markers.clearLayers();
 
