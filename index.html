@@ -4,21 +4,81 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bicipark — Aparcaments de bici a Barcelona</title>
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: sans-serif; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+    }
+
     #header {
       background: #1a1a2e;
       color: white;
       padding: 14px 20px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    #brand {
+      display: flex;
+      align-items: baseline;
       gap: 12px;
     }
-    #header h1 { font-size: 20px; font-weight: 600; }
-    #header span { font-size: 13px; opacity: 0.6; }
-    #map { height: calc(100vh - 54px); width: 100%; }
+
+    #header h1 {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    #header span {
+      font-size: 13px;
+      opacity: 0.75;
+    }
+
+    #searchBox {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    #searchInput {
+      width: 280px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 9px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    #searchBtn {
+      background: #1D9E75;
+      color: white;
+    }
+
+    #nearBtn {
+      background: white;
+      color: #1a1a2e;
+    }
+
+    #map {
+      height: calc(100vh - 68px);
+      width: 100%;
+    }
+
     .pin {
       background: #1D9E75;
       border: 3px solid white;
@@ -31,16 +91,59 @@
       font-size: 16px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
+
+    .search-pin {
+      background: #ff5a3c;
+      border: 3px solid white;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    }
+
+    @media (max-width: 700px) {
+      #header {
+        align-items: stretch;
+      }
+
+      #brand {
+        width: 100%;
+      }
+
+      #searchBox {
+        width: 100%;
+      }
+
+      #searchInput {
+        flex: 1;
+        width: auto;
+      }
+
+      #map {
+        height: calc(100vh - 112px);
+      }
+    }
   </style>
 </head>
+
 <body>
   <div id="header">
-    <h1>Bicipark</h1>
-    <span>Aparcaments de bicicleta a Barcelona</span>
+    <div id="brand">
+      <h1>Bicipark</h1>
+      <span>Aparcaments de bicicleta a Barcelona</span>
+    </div>
+
+    <div id="searchBox">
+      <input id="searchInput" type="text" placeholder="Busca una adreça o lloc..." />
+      <button id="searchBtn" onclick="searchLocation()">Buscar</button>
+      <button id="nearBtn" onclick="locateUser()">A prop meu</button>
+    </div>
   </div>
+
   <div id="map"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <script>
     const map = L.map('map').setView([41.3874, 2.1686], 13);
 
@@ -48,12 +151,22 @@
       attribution: '© OpenStreetMap © CartoDB'
     }).addTo(map);
 
-    const icon = L.divIcon({
+    const bikeIcon = L.divIcon({
       html: '<div class="pin">🚲</div>',
       className: '',
       iconSize: [32, 32],
       iconAnchor: [16, 16]
     });
+
+    const searchIcon = L.divIcon({
+      html: '<div class="search-pin"></div>',
+      className: '',
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
+    });
+
+    let searchMarker;
+    let userMarker;
 
     const aparcaments = [
       { nom: "Aparcament Passeig de Gràcia", lat: 41.3916, lng: 2.1650, places: 20, tipus: "Obert" },
@@ -65,13 +178,88 @@
     ];
 
     aparcaments.forEach(a => {
-      L.marker([a.lat, a.lng], { icon })
+      L.marker([a.lat, a.lng], { icon: bikeIcon })
         .addTo(map)
         .bindPopup(`
           <strong>${a.nom}</strong><br>
           Tipus: ${a.tipus}<br>
-          Places: ${a.places}
+          Places: ${a.places}<br><br>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=${a.lat},${a.lng}" target="_blank">
+            Com arribar
+          </a>
         `);
+    });
+
+    async function searchLocation() {
+      const query = document.getElementById("searchInput").value.trim();
+
+      if (!query) {
+        alert("Escriu una adreça o lloc.");
+        return;
+      }
+
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ", Barcelona")}&limit=1&countrycodes=es`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.length === 0) {
+          alert("No s'ha trobat cap resultat.");
+          return;
+        }
+
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+
+        map.setView([lat, lon], 17);
+
+        if (searchMarker) {
+          map.removeLayer(searchMarker);
+        }
+
+        searchMarker = L.marker([lat, lon], { icon: searchIcon })
+          .addTo(map)
+          .bindPopup(`<strong>${data[0].display_name}</strong>`)
+          .openPopup();
+
+      } catch (error) {
+        alert("Hi ha hagut un error fent la cerca.");
+      }
+    }
+
+    function locateUser() {
+      if (!navigator.geolocation) {
+        alert("El teu navegador no permet geolocalització.");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+
+          map.setView([lat, lng], 16);
+
+          if (userMarker) {
+            map.removeLayer(userMarker);
+          }
+
+          userMarker = L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup("Estàs aquí")
+            .openPopup();
+        },
+        () => {
+          alert("No s'ha pogut obtenir la teva ubicació.");
+        }
+      );
+    }
+
+    document.getElementById("searchInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        searchLocation();
+      }
     });
   </script>
 </body>
