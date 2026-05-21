@@ -1,551 +1,323 @@
-const DATA_URL = "./aparcaments.json";
-
-const map = L.map("map").setView([41.3874, 2.1686], 13);
-
-L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-  attribution: "© OpenStreetMap © CartoDB | Dades: Open Data BCN"
-}).addTo(map);
-
-let searchMarker;
-let userMarker;
-let nearestMarker;
-let allParkings = [];
-let currentFilter = "tots";
-let activeLocation = null;
-let currentRadius = "all";
-
-const markers = L.markerClusterGroup({
-  iconCreateFunction: function(cluster) {
-    return L.divIcon({
-      html: `
-        <div class="bicipark-cluster-content">
-          <div class="cluster-bike">🚲</div>
-          <div class="cluster-number">${cluster.getChildCount()}</div>
-        </div>
-      `,
-      className: "bicipark-cluster",
-      iconSize: [50, 50]
-    });
-  }
-});
-
-const searchIcon = L.divIcon({
-  html: '<div class="search-pin"></div>',
-  className: "",
-  iconSize: [28, 28],
-  iconAnchor: [14, 14]
-});
-
-function getSecurityClass(seguretat) {
-  if (seguretat === "alta") return "alta";
-  if (seguretat === "baixa") return "baixa";
-  return "mitjana";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-function getSecurityText(seguretat) {
-  if (seguretat === "alta") return "Alta";
-  if (seguretat === "baixa") return "Baixa";
-  return "Mitjana";
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
 }
 
-function createBikeIcon(seguretat, isNearest = false) {
-  const securityClass = getSecurityClass(seguretat);
-  const nearestClass = isNearest ? "pin-nearest" : "";
-
-  return L.divIcon({
-    html: `<div class="pin pin-${securityClass} ${nearestClass}">🚲</div>`,
-    className: "",
-    iconSize: isNearest ? [40, 40] : [32, 32],
-    iconAnchor: isNearest ? [20, 20] : [16, 16]
-  });
+#header {
+  background: #1a1a2e;
+  color: white;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-function extractItems(data) {
-  if (Array.isArray(data)) return data;
-  if (Array.isArray(data.features)) return data.features;
-  if (Array.isArray(data.result?.records)) return data.result.records;
-  if (Array.isArray(data.records)) return data.records;
-  if (Array.isArray(data.data)) return data.data;
-  if (Array.isArray(data.items)) return data.items;
-
-  const values = Object.values(data);
-  const arrayValue = values.find(v => Array.isArray(v));
-
-  return arrayValue || [];
+#brand {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
 }
 
-function normalizeNumber(value) {
-  if (value === undefined || value === null) return null;
-
-  const n = Number(String(value).replace(",", "."));
-  return isNaN(n) ? null : n;
+#brand h1 {
+  font-size: 22px;
+  font-weight: 700;
 }
 
-function isBarcelonaLatLng(lat, lng) {
-  return lat >= 41.2 && lat <= 41.6 && lng >= 1.8 && lng <= 2.4;
+#brand span {
+  font-size: 13px;
+  opacity: 0.75;
 }
 
-function findCoordinatesDeep(obj) {
-  const candidates = [];
-
-  function scan(current) {
-    if (!current || typeof current !== "object") return;
-
-    if (Array.isArray(current.coordinates) && current.coordinates.length >= 2) {
-      const a = normalizeNumber(current.coordinates[0]);
-      const b = normalizeNumber(current.coordinates[1]);
-
-      if (a !== null && b !== null) {
-        candidates.push({ lat: b, lng: a });
-        candidates.push({ lat: a, lng: b });
-      }
-    }
-
-    const keys = Object.keys(current);
-
-    for (const latKey of keys) {
-      const lk = latKey.toLowerCase();
-
-      if (lk.includes("lat") || lk === "y") {
-        for (const lngKey of keys) {
-          const lngk = lngKey.toLowerCase();
-
-          if (
-            lngk.includes("lon") ||
-            lngk.includes("lng") ||
-            lngk.includes("long") ||
-            lngk === "x"
-          ) {
-            const lat = normalizeNumber(current[latKey]);
-            const lng = normalizeNumber(current[lngKey]);
-
-            if (lat !== null && lng !== null) {
-              candidates.push({ lat, lng });
-              candidates.push({ lat: lng, lng: lat });
-            }
-          }
-        }
-      }
-    }
-
-    Object.values(current).forEach(scan);
-  }
-
-  scan(obj);
-
-  return candidates.find(c => isBarcelonaLatLng(c.lat, c.lng)) || null;
+#searchBox {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
-function getCoordinates(rawItem) {
-  return findCoordinatesDeep(rawItem);
+#searchInput {
+  width: 280px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
 }
 
-function getName(rawItem) {
-  const item = rawItem.properties || rawItem;
-
-  return (
-    item.name ||
-    item.nom ||
-    item.title ||
-    item.equipment_name ||
-    item.NOM ||
-    item.Nom ||
-    "Aparcament de bicicleta"
-  );
+button {
+  padding: 9px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-function getAddress(rawItem) {
-  const item = rawItem.properties || rawItem;
-  const address = item.addresses && item.addresses[0];
-
-  if (address) {
-    const street = address.address_name || "";
-    const number = address.address_start || "";
-    const district = address.district_name || "";
-    return `${street} ${number} ${district ? "— " + district : ""}`.trim();
-  }
-
-  return item.address || item.adreca || item.ADRECA || item.Adreca || "Adreça no disponible";
+#searchBtn {
+  background: #1D9E75;
+  color: white;
 }
 
-function getPlaces(rawItem) {
-  const item = rawItem.properties || rawItem;
-
-  const possibleFields = [
-    item.capacity,
-    item.capacitat,
-    item.places,
-    item.num_places,
-    item.numero_places,
-    item.total_places,
-    item.CAPACITAT,
-    item.Places
-  ];
-
-  for (const value of possibleFields) {
-    if (value !== undefined && value !== null && value !== "") return value;
-  }
-
-  return "No indicades";
+#nearBtn {
+  background: white;
+  color: #1a1a2e;
 }
 
-function estimateSecurity(rawItem) {
-  const text = JSON.stringify(rawItem).toLowerCase();
-
-  if (
-    text.includes("bicipark") ||
-    text.includes("cobert") ||
-    text.includes("vigilat") ||
-    text.includes("parking")
-  ) {
-    return "alta";
-  }
-
-  return "mitjana";
+#filters,
+#radiusFilters {
+  background: white;
+  padding: 10px 20px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  border-bottom: 1px solid #e5e5e5;
 }
 
-function buildPopup(parking, isNearest = false) {
-  const securityClass = getSecurityClass(parking.seguretat);
-  const nearestText = isNearest ? `<div class="popup-row">⭐ Parking més proper</div>` : "";
-
-  return `
-    <div class="popup-title">${parking.nom}</div>
-    ${nearestText}
-    <div class="popup-row">📍 ${parking.address}</div>
-    <div class="popup-row">🚲 Places: ${parking.places}</div>
-    <div class="popup-row">
-      Seguretat estimada:
-      <span class="security-label label-${securityClass}">
-        ${getSecurityText(parking.seguretat)}
-      </span>
-    </div>
-    <br>
-    <small>Dades: Open Data BCN</small>
-    <br>
-    <a class="popup-link" href="https://www.google.com/maps/dir/?api=1&destination=${parking.lat},${parking.lng}" target="_blank">
-      Com arribar
-    </a>
-  `;
+#radiusFilters span {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a2e;
 }
 
-function getDistanceMeters(lat1, lng1, lat2, lng2) {
-  const R = 6371000;
-  const toRad = value => value * Math.PI / 180;
-
-  const dLat = toRad(lat2 - lat1);
-  const dLng = toRad(lng2 - lng1);
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) *
-    Math.cos(toRad(lat2)) *
-    Math.sin(dLng / 2) *
-    Math.sin(dLng / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c;
+.filter-btn,
+.radius-btn {
+  background: #f0f2f5;
+  color: #1a1a2e;
 }
 
-function formatDistance(meters) {
-  if (meters < 1000) return `${Math.round(meters)} m`;
-  return `${(meters / 1000).toFixed(1)} km`;
+.filter-btn.active,
+.radius-btn.active {
+  background: #1a1a2e;
+  color: white;
 }
 
-function getFilteredParkings() {
-  return allParkings.filter(parking => {
-    if (currentFilter !== "tots" && parking.seguretat !== currentFilter) {
-      return false;
-    }
-
-    if (currentRadius !== "all" && activeLocation) {
-      const distance = getDistanceMeters(
-        activeLocation.lat,
-        activeLocation.lng,
-        parking.lat,
-        parking.lng
-      );
-
-      return distance <= Number(currentRadius);
-    }
-
-    return true;
-  });
+#statusBar {
+  background: #f9fafb;
+  padding: 9px 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  border-bottom: 1px solid #e5e5e5;
 }
 
-function updateCounter() {
-  const visible = getFilteredParkings().length;
-  const total = allParkings.length;
-
-  let text = `${visible} aparcaments visibles de ${total} totals`;
-
-  if (currentRadius !== "all" && activeLocation) {
-    text += ` · radi ${formatDistance(Number(currentRadius))}`;
-  }
-
-  document.getElementById("parkingCounter").textContent = text;
+#parkingCounter {
+  font-weight: 700;
+  color: #1a1a2e;
 }
 
-function renderParkings() {
-  markers.clearLayers();
-
-  const filtered = getFilteredParkings();
-
-  filtered.forEach(parking => {
-    const marker = L.marker([parking.lat, parking.lng], {
-      icon: createBikeIcon(parking.seguretat)
-    }).bindPopup(buildPopup(parking));
-
-    markers.addLayer(marker);
-  });
-
-  if (!map.hasLayer(markers)) {
-    map.addLayer(markers);
-  }
-
-  updateCounter();
+#nearestInfo {
+  color: #555;
 }
 
-function findNearestParking(lat, lng) {
-  const candidates = getFilteredParkings();
-
-  if (candidates.length === 0) return null;
-
-  let nearest = null;
-
-  candidates.forEach(parking => {
-    const distance = getDistanceMeters(lat, lng, parking.lat, parking.lng);
-
-    if (!nearest || distance < nearest.distance) {
-      nearest = { ...parking, distance };
-    }
-  });
-
-  return nearest;
+#map {
+  height: calc(100vh - 204px);
+  width: 100%;
 }
 
-function highlightNearestParking(lat, lng) {
-  const nearest = findNearestParking(lat, lng);
-
-  if (!nearest) {
-    document.getElementById("nearestInfo").textContent =
-      "No hi ha aparcaments visibles amb el filtre actual.";
-
-    if (nearestMarker) {
-      map.removeLayer(nearestMarker);
-      nearestMarker = null;
-    }
-
-    return;
-  }
-
-  if (nearestMarker) {
-    map.removeLayer(nearestMarker);
-  }
-
-  nearestMarker = L.marker([nearest.lat, nearest.lng], {
-    icon: createBikeIcon(nearest.seguretat, true)
-  })
-    .addTo(map)
-    .bindPopup(buildPopup(nearest, true));
-
-  document.getElementById("nearestInfo").textContent =
-    `Parking més proper: ${nearest.nom} · ${formatDistance(nearest.distance)}`;
-
-  nearestMarker.openPopup();
+.pin {
+  border: 3px solid white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
-function setRadius(radius) {
-  currentRadius = radius;
+.pin-alta {
+  background: #1D9E75;
+}
 
-  document.querySelectorAll(".radius-btn").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.radius === radius);
-  });
+.pin-mitjana {
+  background: #F2C94C;
+}
 
-  renderParkings();
+.pin-baixa {
+  background: #EB5757;
+}
 
-  if (activeLocation) {
-    highlightNearestParking(activeLocation.lat, activeLocation.lng);
+.pin-nearest {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  border: 4px solid #1a1a2e;
+  box-shadow: 0 0 0 4px rgba(29,158,117,0.25), 0 4px 10px rgba(0,0,0,0.35);
+}
+
+.search-pin {
+  background: #2F80ED;
+  border: 3px solid white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+.legend {
+  background: white;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.legend strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.dot-alta {
+  background: #1D9E75;
+}
+
+.dot-mitjana {
+  background: #F2C94C;
+}
+
+.dot-baixa {
+  background: #EB5757;
+}
+
+.security-label {
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.label-alta {
+  background: #1D9E75;
+  color: white;
+}
+
+.label-mitjana {
+  background: #F2C94C;
+  color: #1a1a2e;
+}
+
+.label-baixa {
+  background: #EB5757;
+  color: white;
+}
+
+.popup-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.popup-row {
+  margin: 3px 0;
+}
+
+.popup-link {
+  display: inline-block;
+  margin-top: 8px;
+  color: #1D9E75;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.bicipark-cluster {
+  background: #1D9E75;
+  color: white;
+  border: 4px solid white;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: 800;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+}
+
+.bicipark-cluster-content {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.cluster-bike {
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+.cluster-number {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+#loadingOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.85);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: #1a1a2e;
+  font-weight: 700;
+}
+
+#loadingOverlay.hidden {
+  display: none;
+}
+
+.loader {
+  width: 34px;
+  height: 34px;
+  border: 4px solid #d7d7d7;
+  border-top: 4px solid #1D9E75;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-function autoActivateNearbyMode() {
-  setRadius("1000");
-}
-
-async function loadRealBikeParkings() {
-  try {
-    const response = await fetch(DATA_URL);
-
-    if (!response.ok) {
-      throw new Error("No s'ha trobat aparcaments.json");
-    }
-
-    const data = await response.json();
-    const items = extractItems(data);
-
-    allParkings = items
-      .map(rawItem => {
-        const coords = getCoordinates(rawItem);
-
-        if (!coords || isNaN(coords.lat) || isNaN(coords.lng)) return null;
-
-        return {
-          raw: rawItem,
-          lat: coords.lat,
-          lng: coords.lng,
-          nom: getName(rawItem),
-          address: getAddress(rawItem),
-          places: getPlaces(rawItem),
-          seguretat: estimateSecurity(rawItem)
-        };
-      })
-      .filter(Boolean);
-
-    if (allParkings.length === 0) {
-      alert("El fitxer s'ha carregat, però no s'han trobat coordenades.");
-      return;
-    }
-
-    renderParkings();
-
-  } catch (error) {
-    console.error("Error carregant aparcaments:", error);
-    alert("No s'han pogut carregar els aparcaments. Comprova que aparcaments.json existeix al repositori.");
-  } finally {
-    document.getElementById("loadingOverlay").classList.add("hidden");
-  }
-}
-
-async function searchLocation() {
-  const query = document.getElementById("searchInput").value.trim();
-
-  if (!query) {
-    alert("Escriu una adreça o lloc.");
-    return;
+@media (max-width: 700px) {
+  #brand,
+  #searchBox {
+    width: 100%;
   }
 
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ", Barcelona")}&limit=1&countrycodes=es`;
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (data.length === 0) {
-      alert("No s'ha trobat cap resultat.");
-      return;
-    }
-
-    const lat = parseFloat(data[0].lat);
-    const lon = parseFloat(data[0].lon);
-
-    activeLocation = { lat, lng: lon };
-
-    map.setView([lat, lon], 15);
-
-    if (searchMarker) map.removeLayer(searchMarker);
-
-    searchMarker = L.marker([lat, lon], { icon: searchIcon })
-      .addTo(map)
-      .bindPopup(`<strong>${data[0].display_name}</strong>`)
-      .openPopup();
-
-    autoActivateNearbyMode();
-    highlightNearestParking(lat, lon);
-
-  } catch (error) {
-    alert("Hi ha hagut un error fent la cerca.");
-  }
-}
-
-function locateUser() {
-  if (!navigator.geolocation) {
-    alert("El teu navegador no permet geolocalització.");
-    return;
+  #searchInput {
+    flex: 1;
+    width: auto;
   }
 
-  navigator.geolocation.getCurrentPosition(
-    position => {
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
+  #map {
+    height: calc(100vh - 270px);
+  }
 
-      activeLocation = { lat, lng };
-
-      map.setView([lat, lng], 15);
-
-      if (userMarker) map.removeLayer(userMarker);
-
-      userMarker = L.marker([lat, lng])
-        .addTo(map)
-        .bindPopup("Estàs aquí")
-        .openPopup();
-
-      autoActivateNearbyMode();
-      highlightNearestParking(lat, lng);
-    },
-    () => {
-      alert("No s'ha pogut obtenir la teva ubicació.");
-    }
-  );
+  #statusBar {
+    font-size: 12px;
+  }
 }
-
-function setupFilters() {
-  document.querySelectorAll(".filter-btn").forEach(button => {
-    button.addEventListener("click", () => {
-      document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
-
-      button.classList.add("active");
-      currentFilter = button.dataset.filter;
-
-      renderParkings();
-
-      if (activeLocation) {
-        highlightNearestParking(activeLocation.lat, activeLocation.lng);
-      }
-    });
-  });
-}
-
-function setupRadiusFilters() {
-  document.querySelectorAll(".radius-btn").forEach(button => {
-    button.addEventListener("click", () => {
-      if (button.dataset.radius !== "all" && !activeLocation) {
-        alert("Primer busca una adreça o prem “A prop meu”.");
-        return;
-      }
-
-      setRadius(button.dataset.radius);
-    });
-  });
-}
-
-function setupLegend() {
-  const legend = L.control({ position: "bottomright" });
-
-  legend.onAdd = function () {
-    const div = L.DomUtil.create("div", "legend");
-
-    div.innerHTML = `
-      <strong>Seguretat estimada</strong>
-      <div><span class="legend-dot dot-alta"></span>Alta</div>
-      <div><span class="legend-dot dot-mitjana"></span>Mitjana</div>
-      <div><span class="legend-dot dot-baixa"></span>Baixa</div>
-    `;
-
-    return div;
-  };
-
-  legend.addTo(map);
-}
-
-document.getElementById("searchBtn").addEventListener("click", searchLocation);
-document.getElementById("nearBtn").addEventListener("click", locateUser);
-
-document.getElementById("searchInput").addEventListener("keypress", function(e) {
-  if (e.key === "Enter") searchLocation();
-});
-
-setupFilters();
-setupRadiusFilters();
-setupLegend();
-loadRealBikeParkings();
