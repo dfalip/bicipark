@@ -19,6 +19,18 @@
     #header h1 { font-size: 20px; font-weight: 600; }
     #header span { font-size: 13px; opacity: 0.6; }
     #map { height: calc(100vh - 54px); width: 100%; }
+    .pin {
+      background: #1D9E75;
+      border: 3px solid white;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
   </style>
 </head>
 <body>
@@ -32,15 +44,15 @@
   <script>
     const map = L.map('map').setView([41.3874, 2.1686], 13);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap © CartoDB'
     }).addTo(map);
 
     const icon = L.divIcon({
-      html: '🚲',
+      html: '<div class="pin">🚲</div>',
       className: '',
-      iconSize: [28, 28],
-      iconAnchor: [14, 14]
+      iconSize: [32, 32],
+      iconAnchor: [16, 16]
     });
 
     const aparcaments = [
