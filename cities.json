@@ -2,10 +2,31 @@
   "barcelona": {
     "name": "Barcelona",
     "country": "Spain",
+    "enabled": true,
     "center": [41.3874, 2.1686],
     "zoom": 13,
     "searchSuffix": "Barcelona, Spain",
-    "parkings": "./aparcaments.json",
-    "bikeLanes": "./carrils_bici.geojson"
+    "parkings": "./data/barcelona/parkings.json",
+    "bikeLanes": "./data/barcelona/bike_lanes.geojson"
+  },
+  "hospitalet": {
+    "name": "L’Hospitalet",
+    "country": "Spain",
+    "enabled": false,
+    "center": [41.3596, 2.0997],
+    "zoom": 13,
+    "searchSuffix": "L'Hospitalet de Llobregat, Spain",
+    "parkings": "./data/hospitalet/parkings.json",
+    "bikeLanes": "./data/hospitalet/bike_lanes.geojson"
+  },
+  "badalona": {
+    "name": "Badalona",
+    "country": "Spain",
+    "enabled": false,
+    "center": [41.4500, 2.2474],
+    "zoom": 13,
+    "searchSuffix": "Badalona, Spain",
+    "parkings": "./data/badalona/parkings.json",
+    "bikeLanes": "./data/badalona/bike_lanes.geojson"
   }
 }
