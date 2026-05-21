@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Aparcament bici Estació Girona",
+    "address": "Plaça Espanya, Girona",
+    "lat": 41.9795,
+    "lng": 2.8194,
+    "capacity": 40,
+    "security": "alta"
+  },
+  {
+    "name": "Aparcament bici Barri Vell",
+    "address": "Carrer de la Força, Girona",
+    "lat": 41.9862,
+    "lng": 2.8258,
+    "capacity": 20,
+    "security": "mitjana"
+  },
+  {
+    "name": "Aparcament bici Universitat",
+    "address": "Campus Barri Vell UdG",
+    "lat": 41.9858,
+    "lng": 2.8274,
+    "capacity": 35,
+    "security": "alta"
+  },
+  {
+    "name": "Aparcament bici Devesa",
+    "address": "Parc de la Devesa",
+    "lat": 41.9873,
+    "lng": 2.8118,
+    "capacity": 25,
+    "security": "mitjana"
+  },
+  {
+    "name": "Aparcament bici Fontajau",
+    "address": "Zona Pavelló Fontajau",
+    "lat": 41.9932,
+    "lng": 2.8078,
+    "capacity": 30,
+    "security": "alta"
+  },
+  {
+    "name": "Aparcament bici Parc Migdia",
+    "address": "Parc del Migdia",
+    "lat": 41.9724,
+    "lng": 2.8215,
+    "capacity": 18,
+    "security": "mitjana"
+  },
+  {
+    "name": "Aparcament bici Santa Eugènia",
+    "address": "Carrer Santa Eugènia",
+    "lat": 41.9752,
+    "lng": 2.8089,
+    "capacity": 22,
+    "security": "mitjana"
+  },
+  {
+    "name": "Aparcament bici Pont de Pedra",
+    "address": "Pont de Pedra",
+    "lat": 41.9821,
+    "lng": 2.8242,
+    "capacity": 16,
+    "security": "baixa"
+  },
+  {
+    "name": "Aparcament bici Catedral",
+    "address": "Pujada de la Catedral",
+    "lat": 41.9870,
+    "lng": 2.8266,
+    "capacity": 12,
+    "security": "mitjana"
+  },
+  {
+    "name": "Aparcament bici Girona Centre",
+    "address": "Plaça Catalunya, Girona",
+    "lat": 41.9812,
+    "lng": 2.8230,
+    "capacity": 28,
+    "security": "alta"
+  }
+]
