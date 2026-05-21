@@ -1,4 +1,5 @@
 const DATA_URL = "./aparcaments.json";
+const BIKE_LANES_URL = "./carrils_bici.geojson";
 
 const map = L.map("map").setView([41.3874, 2.1686], 13);
 
