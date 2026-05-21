@@ -19,7 +19,7 @@ let searchMarker;
 let userMarker;
 let nearestMarker;
 let bikeLaneLayer;
-let bikeLanesVisible = true;
+let bikeLanesVisible = false;
 
 const markers = L.markerClusterGroup({
   iconCreateFunction: function(cluster) {
