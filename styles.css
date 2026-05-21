@@ -409,3 +409,7 @@ button {
 .cardDistance {
   font-size: 12px;
 }
+.bike-lane-toggle-off {
+  background: #f0f2f5 !important;
+  color: #1a1a2e !important;
+}
