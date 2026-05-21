@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bicipark — Aparcaments de bici a Barcelona</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-    }
+    body { font-family: Arial, sans-serif; background: #f4f6f8; }
 
     #header {
       background: #1a1a2e;
@@ -26,28 +22,11 @@
       flex-wrap: wrap;
     }
 
-    #brand {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-    }
+    #brand { display: flex; align-items: baseline; gap: 12px; }
+    #header h1 { font-size: 22px; font-weight: 700; }
+    #header span { font-size: 13px; opacity: 0.75; }
 
-    #header h1 {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    #header span {
-      font-size: 13px;
-      opacity: 0.75;
-    }
-
-    #searchBox {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
+    #searchBox { display: flex; gap: 8px; align-items: center; }
     #searchInput {
       width: 280px;
       padding: 9px 12px;
@@ -64,20 +43,10 @@
       font-weight: 600;
     }
 
-    #searchBtn {
-      background: #1D9E75;
-      color: white;
-    }
+    #searchBtn { background: #1D9E75; color: white; }
+    #nearBtn { background: white; color: #1a1a2e; }
 
-    #nearBtn {
-      background: white;
-      color: #1a1a2e;
-    }
-
-    #map {
-      height: calc(100vh - 68px);
-      width: 100%;
-    }
+    #map { height: calc(100vh - 68px); width: 100%; }
 
     .pin {
       border: 3px solid white;
@@ -113,10 +82,7 @@
       line-height: 1.6;
     }
 
-    .legend strong {
-      display: block;
-      margin-bottom: 4px;
-    }
+    .legend strong { display: block; margin-bottom: 4px; }
 
     .legend-dot {
       display: inline-block;
@@ -145,26 +111,9 @@
     .label-baixa { background: #EB5757; }
 
     @media (max-width: 700px) {
-      #header {
-        align-items: stretch;
-      }
-
-      #brand {
-        width: 100%;
-      }
-
-      #searchBox {
-        width: 100%;
-      }
-
-      #searchInput {
-        flex: 1;
-        width: auto;
-      }
-
-      #map {
-        height: calc(100vh - 112px);
-      }
+      #brand, #searchBox { width: 100%; }
+      #searchInput { flex: 1; width: auto; }
+      #map { height: calc(100vh - 112px); }
     }
   </style>
 </head>
@@ -173,7 +122,7 @@
   <div id="header">
     <div id="brand">
       <h1>Bicipark</h1>
-      <span>Aparcaments de bicicleta a Barcelona</span>
+      <span>Aparcaments reals de bicicleta a Barcelona</span>
     </div>
 
     <div id="searchBox">
@@ -191,21 +140,40 @@
     const map = L.map('map').setView([41.3874, 2.1686], 13);
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '© OpenStreetMap © CartoDB'
+      attribution: '© OpenStreetMap © CartoDB | Dades: Open Data BCN'
     }).addTo(map);
+
+    const DATA_URL = "https://opendata-ajuntament.barcelona.cat/data/dataset/a7fd022c-d703-49e3-b628-7b32599a6a54/resource/287bfde4-ae4d-40fb-8f6a-f4471edabdc9/download";
+
+    let searchMarker;
+    let userMarker;
 
     function getSecurityClass(seguretat) {
       if (seguretat === "alta") return "alta";
-      if (seguretat === "mitjana") return "mitjana";
       if (seguretat === "baixa") return "baixa";
       return "mitjana";
     }
 
     function getSecurityText(seguretat) {
       if (seguretat === "alta") return "Alta";
-      if (seguretat === "mitjana") return "Mitjana";
       if (seguretat === "baixa") return "Baixa";
-      return "No indicada";
+      return "Mitjana";
+    }
+
+    function estimateSecurity(item) {
+      const text = JSON.stringify(item).toLowerCase();
+
+      if (
+        text.includes("bicipark") ||
+        text.includes("parking") ||
+        text.includes("aparcament") ||
+        text.includes("cobert") ||
+        text.includes("vigilat")
+      ) {
+        return "alta";
+      }
+
+      return "mitjana";
     }
 
     function createBikeIcon(seguretat) {
@@ -226,86 +194,104 @@
       iconAnchor: [14, 14]
     });
 
-    let searchMarker;
-    let userMarker;
+    function getCoordinates(item) {
+      const address = item.addresses?.[0];
+      const coords = address?.location?.coordinates;
 
-    const aparcaments = [
-      {
-        nom: "Aparcament Passeig de Gràcia",
-        lat: 41.3916,
-        lng: 2.1650,
-        places: 20,
-        tipus: "Obert",
-        seguretat: "alta"
-      },
-      {
-        nom: "Aparcament Sagrada Família",
-        lat: 41.4036,
-        lng: 2.1744,
-        places: 30,
-        tipus: "Obert",
-        seguretat: "mitjana"
-      },
-      {
-        nom: "Aparcament Barceloneta",
-        lat: 41.3796,
-        lng: 2.1896,
-        places: 15,
-        tipus: "Obert",
-        seguretat: "baixa"
-      },
-      {
-        nom: "Aparcament Universitat",
-        lat: 41.3868,
-        lng: 2.1638,
-        places: 25,
-        tipus: "Cobert",
-        seguretat: "alta"
-      },
-      {
-        nom: "Aparcament Gràcia",
-        lat: 41.3983,
-        lng: 2.1567,
-        places: 18,
-        tipus: "Obert",
-        seguretat: "mitjana"
-      },
-      {
-        nom: "Aparcament El Born",
-        lat: 41.3843,
-        lng: 2.1823,
-        places: 22,
-        tipus: "Cobert",
-        seguretat: "alta"
+      if (Array.isArray(coords) && coords.length >= 2) {
+        return {
+          lat: coords[1],
+          lng: coords[0]
+        };
       }
-    ];
 
-    aparcaments.forEach(a => {
-      const securityClass = getSecurityClass(a.seguretat);
+      if (item.geo_epgs_4326_lat && item.geo_epgs_4326_lon) {
+        return {
+          lat: parseFloat(item.geo_epgs_4326_lat),
+          lng: parseFloat(item.geo_epgs_4326_lon)
+        };
+      }
 
-      L.marker([a.lat, a.lng], { icon: createBikeIcon(a.seguretat) })
-        .addTo(map)
-        .bindPopup(`
-          <strong>${a.nom}</strong><br>
-          Tipus: ${a.tipus}<br>
-          Places: ${a.places}<br>
-          Seguretat:
-          <span class="security-label label-${securityClass}">
-            ${getSecurityText(a.seguretat)}
-          </span>
-          <br><br>
-          <a href="https://www.google.com/maps/dir/?api=1&destination=${a.lat},${a.lng}" target="_blank">
-            Com arribar
-          </a>
-        `);
-    });
+      return null;
+    }
+
+    function getName(item) {
+      return item.name || item.nom || item.title || "Aparcament de bicicleta";
+    }
+
+    function getAddress(item) {
+      const address = item.addresses?.[0];
+
+      if (!address) return "Adreça no disponible";
+
+      const street = address.address_name || "";
+      const number = address.address_start || "";
+      const district = address.district_name || "";
+
+      return `${street} ${number} ${district ? "— " + district : ""}`.trim();
+    }
+
+    function getPlaces(item) {
+      const text = JSON.stringify(item);
+      const match = text.match(/"value"\s*:\s*"?(\\d+)"?/);
+
+      if (match) return match[1];
+
+      return "No indicades";
+    }
+
+    async function loadRealBikeParkings() {
+      try {
+        const response = await fetch(DATA_URL);
+        const data = await response.json();
+
+        const items = Array.isArray(data) ? data : data.features || [];
+
+        items.forEach(rawItem => {
+          const item = rawItem.properties || rawItem;
+          const coords = getCoordinates(item);
+
+          if (!coords) return;
+
+          const nom = getName(item);
+          const address = getAddress(item);
+          const places = getPlaces(item);
+          const seguretat = estimateSecurity(item);
+          const securityClass = getSecurityClass(seguretat);
+
+          L.marker([coords.lat, coords.lng], { icon: createBikeIcon(seguretat) })
+            .addTo(map)
+            .bindPopup(`
+              <strong>${nom}</strong><br>
+              ${address}<br>
+              Places: ${places}<br>
+              Seguretat estimada:
+              <span class="security-label label-${securityClass}">
+                ${getSecurityText(seguretat)}
+              </span>
+              <br><br>
+              <small>Dades oficials: Open Data BCN</small>
+              <br><br>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=${coords.lat},${coords.lng}" target="_blank">
+                Com arribar
+              </a>
+            `);
+        });
+
+      } catch (error) {
+        alert("No s'han pogut carregar les dades oficials d'Open Data BCN.");
+        console.error(error);
+      }
+    }
+
+    loadRealBikeParkings();
 
     const legend = L.control({ position: "bottomright" });
 
     legend.onAdd = function () {
       const div = L.DomUtil.create("div", "legend");
       div.innerHTML = `
-        <strong>Seguretat</strong>
+        <strong>Seguretat estimada</strong>
         <div><span class="legend-dot dot-alta"></span>Alta</div>
         <div><span class="legend-dot dot-mitjana"></span>Mitjana</div>
         <div><span class="legend-dot dot-baixa"></span>Baixa</div>
