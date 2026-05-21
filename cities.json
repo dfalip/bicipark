@@ -9,6 +9,18 @@
     "parkings": "./data/barcelona/parkings.json",
     "bikeLanes": "./data/barcelona/bike_lanes.geojson"
   },
+
+  "girona": {
+    "name": "Girona",
+    "country": "Spain",
+    "enabled": true,
+    "center": [41.9794, 2.8214],
+    "zoom": 14,
+    "searchSuffix": "Girona, Spain",
+    "parkings": "./data/girona/parkings.json",
+    "bikeLanes": null
+  },
+
   "hospitalet": {
     "name": "L’Hospitalet",
     "country": "Spain",
@@ -19,6 +31,7 @@
     "parkings": "./data/hospitalet/parkings.json",
     "bikeLanes": "./data/hospitalet/bike_lanes.geojson"
   },
+
   "badalona": {
     "name": "Badalona",
     "country": "Spain",
