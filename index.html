@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Bicipark — Aparcaments de bici a Barcelona</title>
+  <title>Bicipark — Bike parking maps</title>
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🚲</text></svg>">
 
@@ -16,17 +16,20 @@
 </head>
 
 <body>
-
   <header id="header">
     <div id="brand">
       <h1>Bicipark</h1>
-      <span>Aparca la teva bicicleta a Barcelona</span>
+      <span id="citySubtitle">Bike parking maps by city</span>
     </div>
 
-    <div id="searchBox">
-      <input id="searchInput" type="text" placeholder="Busca una adreça o lloc..." />
-      <button id="searchBtn">Buscar</button>
-      <button id="nearBtn">A prop meu</button>
+    <div id="topControls">
+      <select id="citySelect"></select>
+
+      <div id="searchBox">
+        <input id="searchInput" type="text" placeholder="Busca una adreça o lloc..." />
+        <button id="searchBtn">Buscar</button>
+        <button id="nearBtn">A prop meu</button>
+      </div>
     </div>
   </header>
 
@@ -40,7 +43,7 @@
 
   <section id="radiusFilters">
     <span>Àrea:</span>
-    <button class="radius-btn active" data-radius="all">Tot Barcelona</button>
+    <button class="radius-btn active" data-radius="all">Tota la ciutat</button>
     <button class="radius-btn" data-radius="500">500 m</button>
     <button class="radius-btn" data-radius="1000">1 km</button>
     <button class="radius-btn" data-radius="2000">2 km</button>
@@ -67,12 +70,11 @@
 
   <div id="loadingOverlay">
     <div class="loader"></div>
-    <p>Carregant aparcaments...</p>
+    <p>Carregant dades...</p>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
   <script src="app.js"></script>
-
 </body>
 </html>
