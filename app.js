@@ -8,10 +8,19 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
 
 let searchMarker;
 let userMarker;
+let nearestMarker;
 let allParkings = [];
 let currentFilter = "tots";
 
-const markers = L.markerClusterGroup();
+const markers = L.markerClusterGroup({
+  iconCreateFunction: function(cluster) {
+    return L.divIcon({
+      html: `<div>${cluster.getChildCount()}</div>`,
+      className: "bicipark-cluster",
+      iconSize: [50, 50]
+    });
+  }
+});
 
 const searchIcon = L.divIcon({
   html: '<div class="search-pin"></div>',
@@ -32,14 +41,15 @@ function getSecurityText(seguretat) {
   return "Mitjana";
 }
 
-function createBikeIcon(seguretat) {
+function createBikeIcon(seguretat, isNearest = false) {
   const securityClass = getSecurityClass(seguretat);
+  const nearestClass = isNearest ? "pin-nearest" : "";
 
   return L.divIcon({
-    html: `<div class="pin pin-${securityClass}">🚲</div>`,
+    html: `<div class="pin pin-${securityClass} ${nearestClass}">🚲</div>`,
     className: "",
-    iconSize: [32, 32],
-    iconAnchor: [16, 16]
+    iconSize: isNearest ? [40, 40] : [32, 32],
+    iconAnchor: isNearest ? [20, 20] : [16, 16]
   });
 }
 
@@ -120,8 +130,7 @@ function findCoordinatesDeep(obj) {
 }
 
 function getCoordinates(rawItem) {
-  const direct = findCoordinatesDeep(rawItem);
-  return direct || null;
+  return findCoordinatesDeep(rawItem);
 }
 
 function getName(rawItem) {
@@ -188,18 +197,22 @@ function estimateSecurity(rawItem) {
   return "mitjana";
 }
 
-function buildPopup(parking) {
+function buildPopup(parking, isNearest = false) {
   const securityClass = getSecurityClass(parking.seguretat);
+  const nearestText = isNearest ? `<div class="popup-row">⭐ Parking més proper</div>` : "";
 
   return `
     <div class="popup-title">${parking.nom}</div>
-    ${parking.address}<br>
-    Places: ${parking.places}<br>
-    Seguretat estimada:
-    <span class="security-label label-${securityClass}">
-      ${getSecurityText(parking.seguretat)}
-    </span>
-    <br><br>
+    ${nearestText}
+    <div class="popup-row">📍 ${parking.address}</div>
+    <div class="popup-row">🚲 Places: ${parking.places}</div>
+    <div class="popup-row">
+      Seguretat estimada:
+      <span class="security-label label-${securityClass}">
+        ${getSecurityText(parking.seguretat)}
+      </span>
+    </div>
+    <br>
     <small>Dades: Open Data BCN</small>
     <br>
     <a class="popup-link" href="https://www.google.com/maps/dir/?api=1&destination=${parking.lat},${parking.lng}" target="_blank">
@@ -208,13 +221,25 @@ function buildPopup(parking) {
   `;
 }
 
-function renderParkings() {
-  markers.clearLayers();
-
-  const filtered = allParkings.filter(parking => {
+function getFilteredParkings() {
+  return allParkings.filter(parking => {
     if (currentFilter === "tots") return true;
     return parking.seguretat === currentFilter;
   });
+}
+
+function updateCounter() {
+  const visible = getFilteredParkings().length;
+  const total = allParkings.length;
+
+  document.getElementById("parkingCounter").textContent =
+    `${visible} aparcaments visibles de ${total} totals`;
+}
+
+function renderParkings() {
+  markers.clearLayers();
+
+  const filtered = getFilteredParkings();
 
   filtered.forEach(parking => {
     const marker = L.marker([parking.lat, parking.lng], {
@@ -228,7 +253,80 @@ function renderParkings() {
     map.addLayer(markers);
   }
 
-  console.log("Aparcaments mostrats:", filtered.length);
+  updateCounter();
+}
+
+function getDistanceMeters(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const toRad = value => value * Math.PI / 180;
+
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+    Math.cos(toRad(lat2)) *
+    Math.sin(dLng / 2) *
+    Math.sin(dLng / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+}
+
+function formatDistance(meters) {
+  if (meters < 1000) {
+    return `${Math.round(meters)} m`;
+  }
+
+  return `${(meters / 1000).toFixed(1)} km`;
+}
+
+function findNearestParking(lat, lng) {
+  const candidates = getFilteredParkings();
+
+  if (candidates.length === 0) return null;
+
+  let nearest = null;
+
+  candidates.forEach(parking => {
+    const distance = getDistanceMeters(lat, lng, parking.lat, parking.lng);
+
+    if (!nearest || distance < nearest.distance) {
+      nearest = {
+        ...parking,
+        distance
+      };
+    }
+  });
+
+  return nearest;
+}
+
+function highlightNearestParking(lat, lng) {
+  const nearest = findNearestParking(lat, lng);
+
+  if (!nearest) {
+    document.getElementById("nearestInfo").textContent =
+      "No hi ha aparcaments visibles amb el filtre actual.";
+    return;
+  }
+
+  if (nearestMarker) {
+    map.removeLayer(nearestMarker);
+  }
+
+  nearestMarker = L.marker([nearest.lat, nearest.lng], {
+    icon: createBikeIcon(nearest.seguretat, true)
+  })
+    .addTo(map)
+    .bindPopup(buildPopup(nearest, true));
+
+  document.getElementById("nearestInfo").textContent =
+    `Parking més proper: ${nearest.nom} · ${formatDistance(nearest.distance)}`;
+
+  nearestMarker.openPopup();
 }
 
 async function loadRealBikeParkings() {
@@ -260,8 +358,6 @@ async function loadRealBikeParkings() {
       })
       .filter(Boolean);
 
-    console.log("Aparcaments carregats:", allParkings.length);
-
     if (allParkings.length === 0) {
       alert("El fitxer s'ha carregat, però no s'han trobat coordenades.");
       return;
@@ -272,6 +368,8 @@ async function loadRealBikeParkings() {
   } catch (error) {
     console.error("Error carregant aparcaments:", error);
     alert("No s'han pogut carregar els aparcaments. Comprova que aparcaments.json existeix al repositori.");
+  } finally {
+    document.getElementById("loadingOverlay").classList.add("hidden");
   }
 }
 
@@ -306,6 +404,8 @@ async function searchLocation() {
       .bindPopup(`<strong>${data[0].display_name}</strong>`)
       .openPopup();
 
+    highlightNearestParking(lat, lon);
+
   } catch (error) {
     alert("Hi ha hagut un error fent la cerca.");
   }
@@ -330,6 +430,8 @@ function locateUser() {
         .addTo(map)
         .bindPopup("Estàs aquí")
         .openPopup();
+
+      highlightNearestParking(lat, lng);
     },
     () => {
       alert("No s'ha pogut obtenir la teva ubicació.");
@@ -346,6 +448,14 @@ function setupFilters() {
       currentFilter = button.dataset.filter;
 
       renderParkings();
+
+      if (searchMarker) {
+        const pos = searchMarker.getLatLng();
+        highlightNearestParking(pos.lat, pos.lng);
+      } else if (userMarker) {
+        const pos = userMarker.getLatLng();
+        highlightNearestParking(pos.lat, pos.lng);
+      }
     });
   });
 }
