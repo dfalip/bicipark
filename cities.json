@@ -1,0 +1,11 @@
+{
+  "barcelona": {
+    "name": "Barcelona",
+    "country": "Spain",
+    "center": [41.3874, 2.1686],
+    "zoom": 13,
+    "searchSuffix": "Barcelona, Spain",
+    "parkings": "./aparcaments.json",
+    "bikeLanes": "./carrils_bici.geojson"
+  }
+}
