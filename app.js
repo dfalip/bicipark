@@ -87,6 +87,22 @@ function getSecurityBadge(seguretat) {
   return `<span class="badge badge-yellow">🟡 Mitjana</span>`;
 }
 
+function getDataStatusBadge(parking) {
+  if (parking.verified === true) {
+    return `<span class="badge badge-green">✓ Verificat</span>`;
+  }
+
+  if (parking.dataStatus === "official") {
+    return `<span class="badge badge-green">Dades oficials</span>`;
+  }
+
+  if (parking.dataStatus === "provisional") {
+    return `<span class="badge badge-yellow">Dades provisionals</span>`;
+  }
+
+  return `<span class="badge badge-dark">Font no indicada</span>`;
+}
+
 function createBikeIcon(seguretat, nearest = false) {
   const securityClass = getSecurityClass(seguretat);
 
@@ -220,7 +236,37 @@ function getPlaces(rawItem) {
   return "N/D";
 }
 
+function getType(rawItem) {
+  const item = rawItem.properties || rawItem;
+
+  return (
+    item.type ||
+    item.tipus ||
+    item.TIPUS ||
+    item.category ||
+    "Aparcament bici"
+  );
+}
+
+function getSource(rawItem) {
+  const item = rawItem.properties || rawItem;
+  return item.source || currentCity?.dataLabel || "Font no indicada";
+}
+
+function getVerified(rawItem) {
+  const item = rawItem.properties || rawItem;
+
+  if (typeof item.verified === "boolean") return item.verified;
+
+  return currentCity?.dataStatus === "official";
+}
+
 function estimateSecurity(rawItem) {
+  const item = rawItem.properties || rawItem;
+
+  if (item.security) return item.security;
+  if (item.seguretat) return item.seguretat;
+
   const text = JSON.stringify(rawItem).toLowerCase();
 
   if (
@@ -274,7 +320,9 @@ function buildPopup(parking, nearest = false) {
     <strong>${parking.nom}</strong><br>
     ${nearest ? "⭐ Parking recomanat<br>" : ""}
     📍 ${parking.address}<br>
-    🚲 Places: ${parking.places}<br><br>
+    🚲 Places: ${parking.places}<br>
+    🏷️ Tipus: ${parking.type}<br>
+    📄 ${parking.source}<br><br>
     <a href="https://www.google.com/maps/dir/?api=1&destination=${parking.lat},${parking.lng}" target="_blank">
       Com arribar
     </a>
@@ -298,6 +346,7 @@ function createParkingCard(parking, distance = null, recommended = false) {
     <div class="cardFooter">
       ${getSecurityBadge(parking.seguretat)}
       <span class="badge badge-dark">🚲 ${parking.places}</span>
+      ${getDataStatusBadge(parking)}
     </div>
   `;
 
@@ -375,7 +424,7 @@ function renderParkings() {
   }
 
   document.getElementById("parkingCounter").textContent =
-    `${filtered.length} aparcaments visibles de ${allParkings.length} totals`;
+    `${filtered.length} aparcaments visibles de ${allParkings.length} totals · ${currentCity.dataLabel}`;
 
   renderSidebar();
 }
@@ -494,7 +543,11 @@ async function loadParkings() {
         nom: getName(rawItem),
         address: getAddress(rawItem),
         places: getPlaces(rawItem),
-        seguretat: estimateSecurity(rawItem)
+        seguretat: estimateSecurity(rawItem),
+        verified: getVerified(rawItem),
+        source: getSource(rawItem),
+        type: getType(rawItem),
+        dataStatus: currentCity.dataStatus
       };
     })
     .filter(Boolean);
@@ -509,7 +562,7 @@ async function loadCity(cityKey) {
   resetMapState();
 
   document.getElementById("citySubtitle").textContent =
-    `Aparcaments de bicicleta a ${currentCity.name}`;
+    `Aparcaments de bicicleta a ${currentCity.name} · ${currentCity.dataLabel}`;
 
   map.setView(currentCity.center, currentCity.zoom || 13);
 
