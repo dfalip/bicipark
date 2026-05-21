@@ -278,6 +278,7 @@ button {
   border-radius: 50%;
   text-align: center;
   font-weight: 800;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.35);
 }
 
 .bicipark-cluster-content {
@@ -295,6 +296,41 @@ button {
 
 .cluster-number {
   font-size: 14px;
+}
+
+.legend {
+  background: white;
+  padding: 14px 16px;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.legend strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.dot-alta {
+  background: #1D9E75;
+}
+
+.dot-mitjana {
+  background: #F2C94C;
+}
+
+.dot-baixa {
+  background: #EB5757;
 }
 
 #loadingOverlay {
@@ -329,7 +365,6 @@ button {
 }
 
 @media (max-width: 900px) {
-
   body {
     overflow: auto;
   }
@@ -349,5 +384,4 @@ button {
   #map {
     height: 50vh;
   }
-
 }
