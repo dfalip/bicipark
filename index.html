@@ -80,7 +80,6 @@
     }
 
     .pin {
-      background: #1D9E75;
       border: 3px solid white;
       border-radius: 50%;
       width: 32px;
@@ -92,14 +91,58 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
+    .pin-alta { background: #1D9E75; }
+    .pin-mitjana { background: #F2C94C; }
+    .pin-baixa { background: #EB5757; }
+
     .search-pin {
-      background: #ff5a3c;
+      background: #2F80ED;
       border: 3px solid white;
       border-radius: 50%;
       width: 28px;
       height: 28px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.35);
     }
+
+    .legend {
+      background: white;
+      padding: 10px 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .legend strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .legend-dot {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .dot-alta { background: #1D9E75; }
+    .dot-mitjana { background: #F2C94C; }
+    .dot-baixa { background: #EB5757; }
+
+    .security-label {
+      display: inline-block;
+      padding: 3px 7px;
+      border-radius: 999px;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .label-alta { background: #1D9E75; }
+    .label-mitjana { background: #F2C94C; color: #1a1a2e; }
+    .label-baixa { background: #EB5757; }
 
     @media (max-width: 700px) {
       #header {
@@ -151,12 +194,30 @@
       attribution: '© OpenStreetMap © CartoDB'
     }).addTo(map);
 
-    const bikeIcon = L.divIcon({
-      html: '<div class="pin">🚲</div>',
-      className: '',
-      iconSize: [32, 32],
-      iconAnchor: [16, 16]
-    });
+    function getSecurityClass(seguretat) {
+      if (seguretat === "alta") return "alta";
+      if (seguretat === "mitjana") return "mitjana";
+      if (seguretat === "baixa") return "baixa";
+      return "mitjana";
+    }
+
+    function getSecurityText(seguretat) {
+      if (seguretat === "alta") return "Alta";
+      if (seguretat === "mitjana") return "Mitjana";
+      if (seguretat === "baixa") return "Baixa";
+      return "No indicada";
+    }
+
+    function createBikeIcon(seguretat) {
+      const securityClass = getSecurityClass(seguretat);
+
+      return L.divIcon({
+        html: `<div class="pin pin-${securityClass}">🚲</div>`,
+        className: '',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+    }
 
     const searchIcon = L.divIcon({
       html: '<div class="search-pin"></div>',
@@ -169,26 +230,90 @@
     let userMarker;
 
     const aparcaments = [
-      { nom: "Aparcament Passeig de Gràcia", lat: 41.3916, lng: 2.1650, places: 20, tipus: "Obert" },
-      { nom: "Aparcament Sagrada Família", lat: 41.4036, lng: 2.1744, places: 30, tipus: "Obert" },
-      { nom: "Aparcament Barceloneta", lat: 41.3796, lng: 2.1896, places: 15, tipus: "Obert" },
-      { nom: "Aparcament Universitat", lat: 41.3868, lng: 2.1638, places: 25, tipus: "Cobert" },
-      { nom: "Aparcament Gràcia", lat: 41.3983, lng: 2.1567, places: 18, tipus: "Obert" },
-      { nom: "Aparcament El Born", lat: 41.3843, lng: 2.1823, places: 22, tipus: "Cobert" }
+      {
+        nom: "Aparcament Passeig de Gràcia",
+        lat: 41.3916,
+        lng: 2.1650,
+        places: 20,
+        tipus: "Obert",
+        seguretat: "alta"
+      },
+      {
+        nom: "Aparcament Sagrada Família",
+        lat: 41.4036,
+        lng: 2.1744,
+        places: 30,
+        tipus: "Obert",
+        seguretat: "mitjana"
+      },
+      {
+        nom: "Aparcament Barceloneta",
+        lat: 41.3796,
+        lng: 2.1896,
+        places: 15,
+        tipus: "Obert",
+        seguretat: "baixa"
+      },
+      {
+        nom: "Aparcament Universitat",
+        lat: 41.3868,
+        lng: 2.1638,
+        places: 25,
+        tipus: "Cobert",
+        seguretat: "alta"
+      },
+      {
+        nom: "Aparcament Gràcia",
+        lat: 41.3983,
+        lng: 2.1567,
+        places: 18,
+        tipus: "Obert",
+        seguretat: "mitjana"
+      },
+      {
+        nom: "Aparcament El Born",
+        lat: 41.3843,
+        lng: 2.1823,
+        places: 22,
+        tipus: "Cobert",
+        seguretat: "alta"
+      }
     ];
 
     aparcaments.forEach(a => {
-      L.marker([a.lat, a.lng], { icon: bikeIcon })
+      const securityClass = getSecurityClass(a.seguretat);
+
+      L.marker([a.lat, a.lng], { icon: createBikeIcon(a.seguretat) })
         .addTo(map)
         .bindPopup(`
           <strong>${a.nom}</strong><br>
           Tipus: ${a.tipus}<br>
-          Places: ${a.places}<br><br>
+          Places: ${a.places}<br>
+          Seguretat:
+          <span class="security-label label-${securityClass}">
+            ${getSecurityText(a.seguretat)}
+          </span>
+          <br><br>
           <a href="https://www.google.com/maps/dir/?api=1&destination=${a.lat},${a.lng}" target="_blank">
             Com arribar
           </a>
         `);
     });
+
+    const legend = L.control({ position: "bottomright" });
+
+    legend.onAdd = function () {
+      const div = L.DomUtil.create("div", "legend");
+      div.innerHTML = `
+        <strong>Seguretat</strong>
+        <div><span class="legend-dot dot-alta"></span>Alta</div>
+        <div><span class="legend-dot dot-mitjana"></span>Mitjana</div>
+        <div><span class="legend-dot dot-baixa"></span>Baixa</div>
+      `;
+      return div;
+    };
+
+    legend.addTo(map);
 
     async function searchLocation() {
       const query = document.getElementById("searchInput").value.trim();
