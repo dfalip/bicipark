@@ -36,7 +36,17 @@
     <button class="filter-btn" data-filter="baixa">🔴 Baixa</button>
   </section>
 
+  <section id="statusBar">
+    <div id="parkingCounter">Carregant aparcaments...</div>
+    <div id="nearestInfo">Busca una ubicació o prem “A prop meu”.</div>
+  </section>
+
   <main id="map"></main>
+
+  <div id="loadingOverlay">
+    <div class="loader"></div>
+    <p>Carregant aparcaments...</p>
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
