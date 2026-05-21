@@ -11,6 +11,8 @@ let userMarker;
 let nearestMarker;
 let allParkings = [];
 let currentFilter = "tots";
+let activeLocation = null;
+let currentRadius = "all";
 
 const markers = L.markerClusterGroup({
   iconCreateFunction: function(cluster) {
@@ -226,10 +228,48 @@ function buildPopup(parking, isNearest = false) {
   `;
 }
 
+function getDistanceMeters(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const toRad = value => value * Math.PI / 180;
+
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+    Math.cos(toRad(lat2)) *
+    Math.sin(dLng / 2) *
+    Math.sin(dLng / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+}
+
+function formatDistance(meters) {
+  if (meters < 1000) return `${Math.round(meters)} m`;
+  return `${(meters / 1000).toFixed(1)} km`;
+}
+
 function getFilteredParkings() {
   return allParkings.filter(parking => {
-    if (currentFilter === "tots") return true;
-    return parking.seguretat === currentFilter;
+    if (currentFilter !== "tots" && parking.seguretat !== currentFilter) {
+      return false;
+    }
+
+    if (currentRadius !== "all" && activeLocation) {
+      const distance = getDistanceMeters(
+        activeLocation.lat,
+        activeLocation.lng,
+        parking.lat,
+        parking.lng
+      );
+
+      return distance <= Number(currentRadius);
+    }
+
+    return true;
   });
 }
 
@@ -237,8 +277,13 @@ function updateCounter() {
   const visible = getFilteredParkings().length;
   const total = allParkings.length;
 
-  document.getElementById("parkingCounter").textContent =
-    `${visible} aparcaments visibles de ${total} totals`;
+  let text = `${visible} aparcaments visibles de ${total} totals`;
+
+  if (currentRadius !== "all" && activeLocation) {
+    text += ` · radi ${formatDistance(Number(currentRadius))}`;
+  }
+
+  document.getElementById("parkingCounter").textContent = text;
 }
 
 function renderParkings() {
@@ -261,33 +306,6 @@ function renderParkings() {
   updateCounter();
 }
 
-function getDistanceMeters(lat1, lng1, lat2, lng2) {
-  const R = 6371000;
-  const toRad = value => value * Math.PI / 180;
-
-  const dLat = toRad(lat2 - lat1);
-  const dLng = toRad(lng2 - lng1);
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) *
-    Math.cos(toRad(lat2)) *
-    Math.sin(dLng / 2) *
-    Math.sin(dLng / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c;
-}
-
-function formatDistance(meters) {
-  if (meters < 1000) {
-    return `${Math.round(meters)} m`;
-  }
-
-  return `${(meters / 1000).toFixed(1)} km`;
-}
-
 function findNearestParking(lat, lng) {
   const candidates = getFilteredParkings();
 
@@ -299,10 +317,7 @@ function findNearestParking(lat, lng) {
     const distance = getDistanceMeters(lat, lng, parking.lat, parking.lng);
 
     if (!nearest || distance < nearest.distance) {
-      nearest = {
-        ...parking,
-        distance
-      };
+      nearest = { ...parking, distance };
     }
   });
 
@@ -315,6 +330,12 @@ function highlightNearestParking(lat, lng) {
   if (!nearest) {
     document.getElementById("nearestInfo").textContent =
       "No hi ha aparcaments visibles amb el filtre actual.";
+
+    if (nearestMarker) {
+      map.removeLayer(nearestMarker);
+      nearestMarker = null;
+    }
+
     return;
   }
 
@@ -332,6 +353,24 @@ function highlightNearestParking(lat, lng) {
     `Parking més proper: ${nearest.nom} · ${formatDistance(nearest.distance)}`;
 
   nearestMarker.openPopup();
+}
+
+function setRadius(radius) {
+  currentRadius = radius;
+
+  document.querySelectorAll(".radius-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.radius === radius);
+  });
+
+  renderParkings();
+
+  if (activeLocation) {
+    highlightNearestParking(activeLocation.lat, activeLocation.lng);
+  }
+}
+
+function autoActivateNearbyMode() {
+  setRadius("1000");
 }
 
 async function loadRealBikeParkings() {
@@ -400,7 +439,9 @@ async function searchLocation() {
     const lat = parseFloat(data[0].lat);
     const lon = parseFloat(data[0].lon);
 
-    map.setView([lat, lon], 17);
+    activeLocation = { lat, lng: lon };
+
+    map.setView([lat, lon], 15);
 
     if (searchMarker) map.removeLayer(searchMarker);
 
@@ -409,6 +450,7 @@ async function searchLocation() {
       .bindPopup(`<strong>${data[0].display_name}</strong>`)
       .openPopup();
 
+    autoActivateNearbyMode();
     highlightNearestParking(lat, lon);
 
   } catch (error) {
@@ -427,7 +469,9 @@ function locateUser() {
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
 
-      map.setView([lat, lng], 16);
+      activeLocation = { lat, lng };
+
+      map.setView([lat, lng], 15);
 
       if (userMarker) map.removeLayer(userMarker);
 
@@ -436,6 +480,7 @@ function locateUser() {
         .bindPopup("Estàs aquí")
         .openPopup();
 
+      autoActivateNearbyMode();
       highlightNearestParking(lat, lng);
     },
     () => {
@@ -454,13 +499,22 @@ function setupFilters() {
 
       renderParkings();
 
-      if (searchMarker) {
-        const pos = searchMarker.getLatLng();
-        highlightNearestParking(pos.lat, pos.lng);
-      } else if (userMarker) {
-        const pos = userMarker.getLatLng();
-        highlightNearestParking(pos.lat, pos.lng);
+      if (activeLocation) {
+        highlightNearestParking(activeLocation.lat, activeLocation.lng);
       }
+    });
+  });
+}
+
+function setupRadiusFilters() {
+  document.querySelectorAll(".radius-btn").forEach(button => {
+    button.addEventListener("click", () => {
+      if (button.dataset.radius !== "all" && !activeLocation) {
+        alert("Primer busca una adreça o prem “A prop meu”.");
+        return;
+      }
+
+      setRadius(button.dataset.radius);
     });
   });
 }
@@ -492,5 +546,6 @@ document.getElementById("searchInput").addEventListener("keypress", function(e) 
 });
 
 setupFilters();
+setupRadiusFilters();
 setupLegend();
 loadRealBikeParkings();
