@@ -385,3 +385,27 @@ button {
     height: 50vh;
   }
 }
+#sidebar {
+  font-size: 13px;
+}
+
+#sidebarHeader h2 {
+  font-size: 16px;
+}
+
+.cardTitle {
+  font-size: 14px;
+}
+
+.cardAddress {
+  font-size: 12px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 4px 7px;
+}
+
+.cardDistance {
+  font-size: 12px;
+}
