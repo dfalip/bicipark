@@ -28,6 +28,7 @@
     #header span { font-size: 13px; opacity: 0.75; }
 
     #searchBox { display: flex; gap: 8px; align-items: center; }
+
     #searchInput {
       width: 280px;
       padding: 9px 12px;
@@ -47,7 +48,10 @@
     #searchBtn { background: #1D9E75; color: white; }
     #nearBtn { background: white; color: #1a1a2e; }
 
-    #map { height: calc(100vh - 68px); width: 100%; }
+    #map {
+      height: calc(100vh - 68px);
+      width: 100%;
+    }
 
     .pin {
       border: 3px solid white;
@@ -81,6 +85,11 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.25);
       font-size: 13px;
       line-height: 1.6;
+    }
+
+    .legend strong {
+      display: block;
+      margin-bottom: 4px;
     }
 
     .legend-dot {
@@ -160,6 +169,7 @@
 
     function createBikeIcon(seguretat) {
       const securityClass = getSecurityClass(seguretat);
+
       return L.divIcon({
         html: `<div class="pin pin-${securityClass}">🚲</div>`,
         className: '',
@@ -176,80 +186,66 @@
     });
 
     function extractItems(data) {
-
-  // GeoJSON estàndard
-  if (Array.isArray(data.features)) {
-    return data.features;
-  }
-
-  // JSON normal
-  if (Array.isArray(data)) {
-    return data;
-  }
-
-  // OpenData BCN acostuma a posar-ho aquí
-  if (Array.isArray(data.result?.records)) {
-    return data.result.records;
-  }
-
-  // Altres formats possibles
-  if (Array.isArray(data.records)) {
-    return data.records;
-  }
-
-  return [];
-}
+      if (Array.isArray(data.features)) return data.features;
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.result?.records)) return data.result.records;
+      if (Array.isArray(data.records)) return data.records;
+      return [];
+    }
 
     function getCoordinates(rawItem) {
+      const item = rawItem.properties || rawItem;
 
-  const item = rawItem.properties || rawItem;
+      if (rawItem.geometry && Array.isArray(rawItem.geometry.coordinates)) {
+        return {
+          lat: Number(rawItem.geometry.coordinates[1]),
+          lng: Number(rawItem.geometry.coordinates[0])
+        };
+      }
 
-  // GeoJSON
-  if (rawItem.geometry?.coordinates) {
-    return {
-      lat: Number(rawItem.geometry.coordinates[1]),
-      lng: Number(rawItem.geometry.coordinates[0])
-    };
-  }
+      if (item.geo_epgs_4326_lat && item.geo_epgs_4326_lon) {
+        return {
+          lat: Number(item.geo_epgs_4326_lat),
+          lng: Number(item.geo_epgs_4326_lon)
+        };
+      }
 
-  // Open Data BCN habitual
-  if (item.geo_epgs_4326_lat && item.geo_epgs_4326_lon) {
-    return {
-      lat: Number(item.geo_epgs_4326_lat),
-      lng: Number(item.geo_epgs_4326_lon)
-    };
-  }
+      if (item.geo_epgs_4326_x && item.geo_epgs_4326_y) {
+        return {
+          lat: Number(item.geo_epgs_4326_y),
+          lng: Number(item.geo_epgs_4326_x)
+        };
+      }
 
-  // Altres possibles
-  if (item.latitude && item.longitude) {
-    return {
-      lat: Number(item.latitude),
-      lng: Number(item.longitude)
-    };
-  }
-
-  if (item.latitud && item.longitud) {
-    return {
-      lat: Number(item.latitud),
-      lng: Number(item.longitud)
-    };
-  }
-
-  return null;
-}
       if (item.latitude && item.longitude) {
-        return { lat: Number(item.latitude), lng: Number(item.longitude) };
+        return {
+          lat: Number(item.latitude),
+          lng: Number(item.longitude)
+        };
+      }
+
+      if (item.latitud && item.longitud) {
+        return {
+          lat: Number(item.latitud),
+          lng: Number(item.longitud)
+        };
       }
 
       if (item.lat && item.lng) {
-        return { lat: Number(item.lat), lng: Number(item.lng) };
+        return {
+          lat: Number(item.lat),
+          lng: Number(item.lng)
+        };
       }
 
       const address = item.addresses && item.addresses[0];
       const coords = address?.location?.coordinates;
 
       if (Array.isArray(coords) && coords.length >= 2) {
-        return { lat: Number(coords[1]), lng: Number(coords[0]) };
+        return {
+          lat: Number(coords[1]),
+          lng: Number(coords[0])
+        };
       }
 
       return null;
@@ -361,12 +357,12 @@
         console.log("Aparcaments carregats:", count);
 
         if (count === 0) {
-          alert("S'ha carregat el fitxer, però no s'han trobat coordenades. Revisa el format de aparcaments.json.");
+          alert("S'ha carregat el fitxer aparcaments.json, però no s'han trobat coordenades.");
         }
 
       } catch (error) {
         console.error("Error carregant aparcaments:", error);
-        alert("No s'han pogut carregar els aparcaments. Comprova que el fitxer aparcaments.json existeix al repositori.");
+        alert("No s'han pogut carregar els aparcaments. Comprova que aparcaments.json existeix al repositori.");
       }
     }
 
@@ -376,12 +372,14 @@
 
     legend.onAdd = function () {
       const div = L.DomUtil.create("div", "legend");
+
       div.innerHTML = `
         <strong>Seguretat estimada</strong>
         <div><span class="legend-dot dot-alta"></span>Alta</div>
         <div><span class="legend-dot dot-mitjana"></span>Mitjana</div>
         <div><span class="legend-dot dot-baixa"></span>Baixa</div>
       `;
+
       return div;
     };
 
