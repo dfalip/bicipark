@@ -1,6 +1,7 @@
 const CITIES_URL = "./cities.json";
 
 let bikeLanesVisible = false;
+let favorites = JSON.parse(localStorage.getItem("biciparkFavorites") || "[]");
 
 let cities = {};
 let currentCityKey = null;
@@ -75,6 +76,32 @@ function resetMapState() {
   document.getElementById("parkingList").innerHTML = `<div class="emptySidebar">Carregant aparcaments...</div>`;
 
   setRadius("all", false);
+}
+
+function getParkingId(parking) {
+  return `${currentCityKey}_${parking.nom}_${parking.lat}_${parking.lng}`;
+}
+
+function isFavorite(parking) {
+  return favorites.includes(getParkingId(parking));
+}
+
+function toggleFavorite(parking) {
+  const id = getParkingId(parking);
+
+  if (favorites.includes(id)) {
+    favorites = favorites.filter(f => f !== id);
+  } else {
+    favorites.push(id);
+  }
+
+  localStorage.setItem("biciparkFavorites", JSON.stringify(favorites));
+
+  renderParkings();
+
+  if (activeLocation) {
+    highlightNearestParking(activeLocation.lat, activeLocation.lng);
+  }
 }
 
 function getSecurityClass(seguretat) {
@@ -306,10 +333,26 @@ function formatDistance(meters) {
 
 function getFilteredParkings() {
   return allParkings.filter(parking => {
-    if (currentFilter !== "tots" && parking.seguretat !== currentFilter) return false;
+
+    if (currentFilter === "favorites") {
+      if (!isFavorite(parking)) return false;
+    }
+
+    else if (
+      currentFilter !== "tots" &&
+      parking.seguretat !== currentFilter
+    ) {
+      return false;
+    }
 
     if (currentRadius !== "all" && activeLocation) {
-      const distance = getDistanceMeters(activeLocation.lat, activeLocation.lng, parking.lat, parking.lng);
+      const distance = getDistanceMeters(
+        activeLocation.lat,
+        activeLocation.lng,
+        parking.lat,
+        parking.lng
+      );
+
       return distance <= Number(currentRadius);
     }
 
@@ -338,7 +381,13 @@ function createParkingCard(parking, distance = null, recommended = false) {
   card.innerHTML = `
     <div class="cardTop">
       <div>
-        <div class="cardTitle">${recommended ? "⭐ " : ""}${parking.nom}</div>
+        <div class="cardTitle">
+            ${recommended ? "⭐ " : ""}
+            ${parking.nom}
+            <span class="favoriteIcon">
+            ${isFavorite(parking) ? "❤️" : "🤍"}
+            </span>
+        </div>
         <div class="cardAddress">${parking.address}</div>
       </div>
 
@@ -352,6 +401,13 @@ function createParkingCard(parking, distance = null, recommended = false) {
     </div>
   `;
 
+  const favoriteBtn = card.querySelector(".favoriteIcon");
+
+  favoriteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleFavorite(parking);
+  });
+  
   card.addEventListener("click", () => {
     map.setView([parking.lat, parking.lng], 17);
 
