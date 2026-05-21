@@ -18,6 +18,8 @@ let activeLocation = null;
 let searchMarker;
 let userMarker;
 let nearestMarker;
+let bikeLaneLayer;
+let bikeLanesVisible = true;
 
 const markers = L.markerClusterGroup({
   iconCreateFunction: function(cluster) {
@@ -488,6 +490,53 @@ function setupLegend() {
   legend.addTo(map);
 }
 
+async function loadBikeLanes() {
+  try {
+    const response = await fetch(BIKE_LANES_URL);
+
+    if (!response.ok) {
+      throw new Error("No s'ha trobat carrils_bici.geojson");
+    }
+
+    const data = await response.json();
+
+    bikeLaneLayer = L.geoJSON(data, {
+      style: {
+        color: "#1976D2",
+        weight: 3,
+        opacity: 0.75
+      }
+    }).addTo(map);
+
+    bikeLaneLayer.bringToBack();
+
+  } catch (error) {
+    console.warn("No s'han pogut carregar els carrils bici:", error);
+  }
+}
+
+function setupBikeLaneToggle() {
+  const button = document.getElementById("bikeLaneBtn");
+
+  if (!button) return;
+
+  button.addEventListener("click", () => {
+    if (!bikeLaneLayer) return;
+
+    bikeLanesVisible = !bikeLanesVisible;
+
+    if (bikeLanesVisible) {
+      bikeLaneLayer.addTo(map);
+      bikeLaneLayer.bringToBack();
+      button.classList.add("active");
+      button.classList.remove("bike-lane-toggle-off");
+    } else {
+      map.removeLayer(bikeLaneLayer);
+      button.classList.remove("active");
+      button.classList.add("bike-lane-toggle-off");
+    }
+  });
+}
 async function loadRealBikeParkings() {
   try {
     const response = await fetch(DATA_URL);
@@ -647,4 +696,6 @@ document.querySelectorAll(".radius-btn").forEach(button => {
 });
 
 setupLegend();
+setupBikeLaneToggle();
+loadBikeLanes();
 loadRealBikeParkings();
