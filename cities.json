@@ -7,9 +7,10 @@
     "zoom": 13,
     "searchSuffix": "Barcelona, Spain",
     "parkings": "./data/barcelona/parkings.json",
-    "bikeLanes": "./data/barcelona/bike_lanes.geojson"
+    "bikeLanes": "./data/barcelona/bike_lanes.geojson",
+    "dataStatus": "official",
+    "dataLabel": "Dades oficials"
   },
-
   "girona": {
     "name": "Girona",
     "country": "Spain",
@@ -18,9 +19,10 @@
     "zoom": 14,
     "searchSuffix": "Girona, Spain",
     "parkings": "./data/girona/parkings.json",
-    "bikeLanes": null
+    "bikeLanes": null,
+    "dataStatus": "provisional",
+    "dataLabel": "Dades provisionals"
   },
-
   "hospitalet": {
     "name": "L’Hospitalet",
     "country": "Spain",
@@ -29,9 +31,10 @@
     "zoom": 13,
     "searchSuffix": "L'Hospitalet de Llobregat, Spain",
     "parkings": "./data/hospitalet/parkings.json",
-    "bikeLanes": "./data/hospitalet/bike_lanes.geojson"
+    "bikeLanes": "./data/hospitalet/bike_lanes.geojson",
+    "dataStatus": "pending",
+    "dataLabel": "Pendent de dades"
   },
-
   "badalona": {
     "name": "Badalona",
     "country": "Spain",
@@ -40,6 +43,8 @@
     "zoom": 13,
     "searchSuffix": "Badalona, Spain",
     "parkings": "./data/badalona/parkings.json",
-    "bikeLanes": "./data/badalona/bike_lanes.geojson"
+    "bikeLanes": "./data/badalona/bike_lanes.geojson",
+    "dataStatus": "pending",
+    "dataLabel": "Pendent de dades"
   }
 }
