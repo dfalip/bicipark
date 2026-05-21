@@ -415,3 +415,40 @@ button {
   background: #f0f2f5 !important;
   color: #1a1a2e !important;
 }
+
+#topControls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#citySelect {
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+  background: white;
+}
+
+.bike-lane-btn {
+  background: #f0f2f5;
+  color: #1a1a2e;
+}
+
+.bike-lane-btn.active {
+  background: #1a1a2e;
+  color: white;
+}
+
+@media (max-width: 700px) {
+  #topControls {
+    width: 100%;
+  }
+
+  #citySelect {
+    width: 100%;
+  }
+}
