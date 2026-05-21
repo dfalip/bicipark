@@ -15,7 +15,12 @@ let currentFilter = "tots";
 const markers = L.markerClusterGroup({
   iconCreateFunction: function(cluster) {
     return L.divIcon({
-      html: `<div>${cluster.getChildCount()}</div>`,
+      html: `
+        <div class="bicipark-cluster-content">
+          <div class="cluster-bike">🚲</div>
+          <div class="cluster-number">${cluster.getChildCount()}</div>
+        </div>
+      `,
       className: "bicipark-cluster",
       iconSize: [50, 50]
     });
