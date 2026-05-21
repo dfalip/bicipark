@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bicipark — Aparcaments de bici a Barcelona</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; }
+    #header {
+      background: #1a1a2e;
+      color: white;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #header h1 { font-size: 20px; font-weight: 600; }
+    #header span { font-size: 13px; opacity: 0.6; }
+    #map { height: calc(100vh - 54px); width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <h1>Bicipark</h1>
+    <span>Aparcaments de bicicleta a Barcelona</span>
+  </div>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([41.3874, 2.1686], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const icon = L.divIcon({
+      html: '🚲',
+      className: '',
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
+    });
+
+    const aparcaments = [
+      { nom: "Aparcament Passeig de Gràcia", lat: 41.3916, lng: 2.1650, places: 20, tipus: "Obert" },
+      { nom: "Aparcament Sagrada Família", lat: 41.4036, lng: 2.1744, places: 30, tipus: "Obert" },
+      { nom: "Aparcament Barceloneta", lat: 41.3796, lng: 2.1896, places: 15, tipus: "Obert" },
+      { nom: "Aparcament Universitat", lat: 41.3868, lng: 2.1638, places: 25, tipus: "Cobert" },
+      { nom: "Aparcament Gràcia", lat: 41.3983, lng: 2.1567, places: 18, tipus: "Obert" },
+      { nom: "Aparcament El Born", lat: 41.3843, lng: 2.1823, places: 22, tipus: "Cobert" }
+    ];
+
+    aparcaments.forEach(a => {
+      L.marker([a.lat, a.lng], { icon })
+        .addTo(map)
+        .bindPopup(`
+          <strong>${a.nom}</strong><br>
+          Tipus: ${a.tipus}<br>
+          Places: ${a.places}
+        `);
+    });
+  </script>
+</body>
+</html>
