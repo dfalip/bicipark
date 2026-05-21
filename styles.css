@@ -87,13 +87,15 @@ button {
 }
 
 .filter-btn,
-.radius-btn {
+.radius-btn,
+.bike-lane-btn {
   background: #f0f2f5;
   color: #1a1a2e;
 }
 
 .filter-btn.active,
-.radius-btn.active {
+.radius-btn.active,
+.bike-lane-btn.active {
   background: #1a1a2e;
   color: white;
 }
