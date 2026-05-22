@@ -11,19 +11,63 @@
     "dataStatus": "official",
     "dataLabel": "Dades oficials"
   },
+
   "girona": {
-  "name": "Girona",
-  "country": "Spain",
-  "enabled": true,
-  "center": [41.9794, 2.8214],
-  "zoom": 14,
-  "searchSuffix": "Girona, Spain",
-  "parkings": "./data/girona/parkings.json",
-  "bikeLanes": null,
-  "roadRoutes": "./data/girona/routes/road/routes.json",
-  "dataStatus": "partial_official",
-  "dataLabel": "Dades oficials parcials"
-},
+    "name": "Girona",
+    "country": "Spain",
+    "enabled": true,
+    "center": [41.9794, 2.8214],
+    "zoom": 14,
+    "searchSuffix": "Girona, Spain",
+    "parkings": "./data/girona/parkings.json",
+    "bikeLanes": null,
+    "roadRoutes": "./data/girona/routes/road/routes.json",
+    "dataStatus": "partial_official",
+    "dataLabel": "Dades oficials parcials"
+  },
+
+  "new-york": {
+    "name": "New York",
+    "country": "USA",
+    "enabled": true,
+    "center": [40.7128, -74.0060],
+    "zoom": 12,
+    "searchSuffix": "New York City, USA",
+    "parkings": "./data/new-york/parkings.json",
+    "bikeLanes": null,
+    "roadRoutes": null,
+    "dataStatus": "pending_official_import",
+    "dataLabel": "Pendent d'importació oficial"
+  },
+
+  "amsterdam": {
+    "name": "Amsterdam",
+    "country": "Netherlands",
+    "enabled": true,
+    "center": [52.3676, 4.9041],
+    "zoom": 13,
+    "searchSuffix": "Amsterdam, Netherlands",
+    "parkings": "./data/amsterdam/parkings.json",
+    "bikeLanes": null,
+    "roadRoutes": null,
+    "dataStatus": "pending_official_import",
+    "dataLabel": "Pendent d'importació oficial"
+  },
+
+  "paris": {
+    "name": "Paris",
+    "country": "France",
+    "enabled": true,
+    "center": [48.8566, 2.3522],
+    "zoom": 12,
+    "searchSuffix": "Paris, France",
+    "parkings": "./data/paris/parkings.json",
+    "bikeLanes": null,
+    "roadRoutes": null,
+    "dataStatus": "pending_official_import",
+    "dataLabel": "Pendent d'importació oficial"
+  },
+
   "hospitalet": {
     "name": "L’Hospitalet",
     "country": "Spain",
@@ -36,6 +80,7 @@
     "dataStatus": "pending",
     "dataLabel": "Pendent de dades"
   },
+
   "badalona": {
     "name": "Badalona",
     "country": "Spain",
