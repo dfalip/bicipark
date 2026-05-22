@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Bicipark — Bike parking maps</title>
+  <title>Bicipark — Aparcaments, rutes i serveis bike-friendly</title>
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🚲</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🚲</text></svg>">
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css">
@@ -16,69 +16,289 @@
 </head>
 
 <body>
-  <header id="header">
-    <div id="brand">
-      <h1>Bicipark</h1>
-      <span id="citySubtitle">Bike parking maps by city</span>
-    </div>
+  <!-- HEADER GLOBAL -->
+  <header id="siteHeader">
+    <button id="logoHomeBtn" class="brandButton" type="button">
+      <span class="brandMark">🚲</span>
+      <span class="brandText">
+        <strong>BICI</strong><span>PARK</span>
+      </span>
+    </button>
 
-    <div id="topControls">
-      <select id="citySelect"></select>
+    <nav id="mainNav">
+      <button id="navHomeBtn" class="navLink active" type="button">Home</button>
+      <button class="navLink" type="button" data-open-mode="parking">Aparcaments</button>
+      <button class="navLink" type="button" data-open-mode="road">Rutes carretera</button>
+      <button class="navLink" type="button" data-open-mode="mtb">Rutes BTT</button>
+      <button class="navLink disabled" type="button">Venda (pròximament)</button>
+    </nav>
 
-      <div id="searchBox">
-        <input id="searchInput" type="text" placeholder="Busca una adreça o lloc..." />
-        <button id="searchBtn">Buscar</button>
-        <button id="nearBtn">A prop meu</button>
-      </div>
+    <div id="siteHeaderActions">
+      <button id="openMapBtn" class="primaryHeaderBtn" type="button" data-open-mode="parking">
+        Obrir mapa
+      </button>
     </div>
   </header>
 
-  <section id="modeSwitch">
-    <button class="mode-btn active" data-mode="parking">🚲 Aparcar</button>
-    <button class="mode-btn" data-mode="road">🚴 Carretera</button>
-    <button class="mode-btn" data-mode="mtb">⛰️ BTT</button>
-  </section>
+  <!-- HOME -->
+  <main id="homeView">
+    <section id="heroSection">
+      <div class="heroContent">
+        <div class="heroBadge">Plataforma bike-friendly</div>
+        <h1>Bicipark</h1>
+        <h2>Aparcaments, rutes i serveis bike-friendly a la teva ciutat.</h2>
+        <p>
+          Troba aparcaments segurs, planifica rutes de carretera o BTT
+          i descobreix punts d’interès, allotjaments i serveis per ciclistes.
+        </p>
 
-  <section id="filters">
-    <button class="filter-btn active" data-filter="tots">Tots</button>
-    <button class="filter-btn" data-filter="alta">🟢 Alta seguretat</button>
-    <button class="filter-btn" data-filter="mitjana">🟡 Mitjana</button>
-    <button class="filter-btn" data-filter="baixa">🔴 Baixa</button>
-    <button id="bikeLaneBtn" class="bike-lane-btn">🚴 Carrils bici</button>
-    <button class="filter-btn" data-filter="favorites">❤️ Favorits</button>
-  </section>
+        <div class="heroButtons">
+          <button id="heroParkingBtn" class="heroPrimaryBtn" type="button" data-open-mode="parking">
+            🚲 Buscar aparcament
+          </button>
+          <button class="heroSecondaryBtn" type="button" data-open-mode="road" data-open-city="girona">
+            🚴 Veure rutes
+          </button>
+        </div>
 
-  <section id="radiusFilters">
-    <span>Àrea:</span>
-    <button class="radius-btn active" data-radius="all">Tota la ciutat</button>
-    <button class="radius-btn" data-radius="500">500 m</button>
-    <button class="radius-btn" data-radius="1000">1 km</button>
-    <button class="radius-btn" data-radius="2000">2 km</button>
-  </section>
-
-  <section id="statusBar">
-    <div id="parkingCounter">Carregant aparcaments...</div>
-    <div id="nearestInfo">Busca una ubicació o prem “A prop meu”.</div>
-  </section>
-
-  <div id="layout">
-    <aside id="sidebar">
-      <div id="sidebarHeader">
-        <h2>Parkings</h2>
+        <div class="heroFeatures">
+          <div class="heroFeature">
+            <span>🗺️</span>
+            <div>
+              <strong>Mapa interactiu</strong>
+              <small>Parkings i ciutats</small>
+            </div>
+          </div>
+          <div class="heroFeature">
+            <span>🛡️</span>
+            <div>
+              <strong>Seguretat estimada</strong>
+              <small>Filtra millor</small>
+            </div>
+          </div>
+          <div class="heroFeature">
+            <span>🚴</span>
+            <div>
+              <strong>Rutes i punts d’interès</strong>
+              <small>Carretera i BTT</small>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div id="parkingList">
-        <div class="emptySidebar">Carregant aparcaments...</div>
+      <div class="heroVisual">
+        <div class="heroPhotoCard">
+          <div class="heroPhotoOverlay"></div>
+          <div class="heroCityTag">Girona</div>
+          <div class="heroBikeSilhouette">🚲</div>
+        </div>
       </div>
-    </aside>
+    </section>
 
-    <main id="map"></main>
-  </div>
+    <section class="adSlot largeAd">
+      <div class="adInner">
+        <strong>ESPAI PUBLICITARI</strong>
+        <span>El teu anunci aquí</span>
+      </div>
+    </section>
 
-  <div id="loadingOverlay">
-    <div class="loader"></div>
-    <p>Carregant dades...</p>
-  </div>
+    <section id="homeCategories">
+      <article class="categoryCard categoryParking">
+        <div class="categoryTop">
+          <div class="categoryIcon">🚲</div>
+          <div>
+            <h3>Aparcaments</h3>
+            <p>
+              Troba aparcaments de bicicleta, consulta la seguretat estimada,
+              carrils bici i parkings propers.
+            </p>
+          </div>
+        </div>
+        <div class="categoryArt parkingArt"></div>
+        <button class="categoryBtn parkingBtn" type="button" data-open-mode="parking">
+          Veure aparcaments →
+        </button>
+      </article>
+
+      <article class="categoryCard categoryRoad">
+        <div class="categoryTop">
+          <div class="categoryIcon">🚴</div>
+          <div>
+            <h3>Rutes de carretera</h3>
+            <p>
+              Descobreix rutes de carretera amb pobles, ports, restaurants,
+              allotjaments i punts d’interès.
+            </p>
+          </div>
+        </div>
+        <div class="categoryArt roadArt"></div>
+        <button class="categoryBtn roadBtn" type="button" data-open-mode="road" data-open-city="girona">
+          Veure rutes de carretera →
+        </button>
+      </article>
+
+      <article class="categoryCard categoryMtb">
+        <div class="categoryTop">
+          <div class="categoryIcon">⛰️</div>
+          <div>
+            <h3>Rutes BTT</h3>
+            <p>
+              Explora rutes BTT amb diferents nivells de dificultat, desnivell
+              i punts d’interès naturals.
+            </p>
+          </div>
+        </div>
+        <div class="categoryArt mtbArt"></div>
+        <button class="categoryBtn mtbBtn" type="button" data-open-mode="mtb" data-open-city="girona">
+          Veure rutes BTT →
+        </button>
+      </article>
+    </section>
+
+    <section id="homeLowerGrid">
+      <div class="citiesPanel">
+        <div class="panelTitle">
+          <h3>Ciutats disponibles</h3>
+          <p>Comença amb Barcelona o Girona</p>
+        </div>
+
+        <div class="cityCardsGrid">
+          <button class="cityCardHome" type="button" data-open-mode="parking" data-open-city="barcelona">
+            <div class="cityThumb cityThumbBarcelona"></div>
+            <div class="cityInfo">
+              <strong>Barcelona</strong>
+              <span>Aparcaments i rutes</span>
+              <small>Explorar →</small>
+            </div>
+          </button>
+
+          <button class="cityCardHome" type="button" data-open-mode="parking" data-open-city="girona">
+            <div class="cityThumb cityThumbGirona"></div>
+            <div class="cityInfo">
+              <strong>Girona</strong>
+              <span>Aparcaments i rutes</span>
+              <small>Explorar →</small>
+            </div>
+          </button>
+
+          <div class="cityCardHome cityComingSoon">
+            <div class="cityThumb cityThumbSoon"></div>
+            <div class="cityInfo">
+              <strong>Més ciutats</strong>
+              <span>Hospitalet, Badalona i més</span>
+              <small>Pròximament</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="partnerPanel">
+        <div class="panelTitle">
+          <h3>Partner destacat</h3>
+          <p>Espai reservat per a col·laboradors</p>
+        </div>
+
+        <div class="partnerBox">
+          <div class="partnerLogoPlaceholder">EL TEU LOGO AQUÍ</div>
+          <div class="partnerText">
+            <strong>Vols aparèixer aquí?</strong>
+            <p>
+              Promociona la teva marca, botiga, hotel, restaurant
+              o servei entre ciclistes.
+            </p>
+            <button class="partnerBtn" type="button">Contacta’ns</button>
+          </div>
+        </div>
+
+        <div class="adSlot smallAd">
+          <div class="adInner">
+            <strong>PUBLICITAT</strong>
+            <span>Banner o promoció futura</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="homeFooterStrip">
+      <div>✅ 100% bike-friendly</div>
+      <div>📍 Ciutats en creixement</div>
+      <div>🗂️ Dades i rutes</div>
+      <div>⬇️ Exportació GPX (futur)</div>
+    </section>
+  </main>
+
+  <!-- APP -->
+  <section id="appView" class="hidden-view">
+    <div id="appTopbar">
+      <div class="appTopbarLeft">
+        <button id="backHomeBtn" class="ghostBtn" type="button">← Home</button>
+
+        <div class="appTitleWrap">
+          <h2 id="appModeTitle">Aparcaments</h2>
+          <span id="citySubtitle">Aparcaments de bicicleta a Barcelona</span>
+        </div>
+      </div>
+
+      <div id="topControls">
+        <select id="citySelect"></select>
+
+        <div id="searchBox">
+          <input id="searchInput" type="text" placeholder="Busca una adreça o lloc..." />
+          <button id="searchBtn">Buscar</button>
+          <button id="nearBtn">A prop meu</button>
+        </div>
+      </div>
+    </div>
+
+    <section id="modeSwitch">
+      <button class="mode-btn active" data-mode="parking">🚲 Aparcar</button>
+      <button class="mode-btn" data-mode="road">🚴 Carretera</button>
+      <button class="mode-btn" data-mode="mtb">⛰️ BTT</button>
+    </section>
+
+    <div id="parkingControls">
+      <section id="filters">
+        <button class="filter-btn active" data-filter="tots">Tots</button>
+        <button class="filter-btn" data-filter="alta">🟢 Alta seguretat</button>
+        <button class="filter-btn" data-filter="mitjana">🟡 Mitjana</button>
+        <button class="filter-btn" data-filter="baixa">🔴 Baixa</button>
+        <button id="bikeLaneBtn" class="bike-lane-btn">🚴 Carrils bici</button>
+        <button class="filter-btn" data-filter="favorites">❤️ Favorits</button>
+      </section>
+
+      <section id="radiusFilters">
+        <span>Àrea:</span>
+        <button class="radius-btn active" data-radius="all">Tota la ciutat</button>
+        <button class="radius-btn" data-radius="500">500 m</button>
+        <button class="radius-btn" data-radius="1000">1 km</button>
+        <button class="radius-btn" data-radius="2000">2 km</button>
+      </section>
+    </div>
+
+    <section id="statusBar">
+      <div id="parkingCounter">Carregant dades...</div>
+      <div id="nearestInfo">Busca una ubicació o prem “A prop meu”.</div>
+    </section>
+
+    <div id="layout">
+      <aside id="sidebar">
+        <div id="sidebarHeader">
+          <h2>Parkings</h2>
+        </div>
+
+        <div id="parkingList">
+          <div class="emptySidebar">Carregant dades...</div>
+        </div>
+      </aside>
+
+      <main id="map"></main>
+    </div>
+
+    <div id="loadingOverlay" class="hidden">
+      <div class="loader"></div>
+      <p>Carregant dades...</p>
+    </div>
+  </section>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
