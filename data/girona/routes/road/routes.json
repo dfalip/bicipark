@@ -1,0 +1,98 @@
+[
+  {
+    "name": "Girona — Els Àngels i Santa Pellaia",
+    "type": "road",
+    "distanceKm": 68,
+    "elevationM": 1000,
+    "difficulty": "Mitjana",
+    "duration": "3 h - 4 h",
+    "start": "Girona centre",
+    "lat": 41.9794,
+    "lng": 2.8214,
+    "description": "Ruta clàssica de carretera des de Girona, passant per la pujada d’Els Àngels, Madremanya, Monells i Santa Pellaia.",
+    "source": "Eat Sleep Cycle / dades editorials",
+    "verified": false,
+    "stops": [
+      {
+        "name": "Santuari dels Àngels",
+        "type": "Punt d’interès",
+        "lat": 41.9845,
+        "lng": 2.9081
+      },
+      {
+        "name": "Madremanya",
+        "type": "Poble amb encant",
+        "lat": 41.9876,
+        "lng": 2.9558
+      },
+      {
+        "name": "Monells",
+        "type": "Parada recomanada",
+        "lat": 41.9744,
+        "lng": 2.9875
+      }
+    ]
+  },
+  {
+    "name": "Girona — Banyoles i Rocacorba",
+    "type": "road",
+    "distanceKm": 74,
+    "elevationM": 1300,
+    "difficulty": "Alta",
+    "duration": "4 h - 5 h",
+    "start": "Girona centre",
+    "lat": 41.9794,
+    "lng": 2.8214,
+    "description": "Ruta exigent cap a Banyoles i la pujada de Rocacorba, una de les ascensions més conegudes entre ciclistes a la zona de Girona.",
+    "source": "Referències ciclistes locals / dades editorials",
+    "verified": false,
+    "stops": [
+      {
+        "name": "Estany de Banyoles",
+        "type": "Punt d’interès",
+        "lat": 42.1209,
+        "lng": 2.7546
+      },
+      {
+        "name": "Pujada a Rocacorba",
+        "type": "Port de muntanya",
+        "lat": 42.0752,
+        "lng": 2.7048
+      }
+    ]
+  },
+  {
+    "name": "Girona — Via Verda fins a Sant Feliu / S’Agaró",
+    "type": "road",
+    "distanceKm": 43,
+    "elevationM": 350,
+    "difficulty": "Fàcil - Mitjana",
+    "duration": "2 h - 3 h",
+    "start": "Girona centre",
+    "lat": 41.9794,
+    "lng": 2.8214,
+    "description": "Ruta més relaxada seguint la Via Verda cap a la Costa Brava. Interessant per a bici de carretera tranquil·la, gravel o cicloturisme.",
+    "source": "Eat Sleep Cycle / dades editorials",
+    "verified": false,
+    "stops": [
+      {
+        "name": "Cassà de la Selva",
+        "type": "Parada intermèdia",
+        "lat": 41.8878,
+        "lng": 2.8755
+      },
+      {
+        "name": "Llagostera",
+        "type": "Parada intermèdia",
+        "lat": 41.8267,
+        "lng": 2.8932
+      },
+      {
+        "name": "Sant Feliu de Guíxols",
+        "type": "Final de ruta / costa",
+        "lat": 41.7833,
+        "lng": 3.0306
+      }
+    ]
+  }
+]
