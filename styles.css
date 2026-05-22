@@ -1369,3 +1369,227 @@ button {
     height: 50vh;
   }
 }
+
+/* =========================================================
+   HOME PREMIUM LAYOUT FIX
+   Fa que la home s'assembli més a la proposta visual inicial
+   ========================================================= */
+
+#homeView {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 22px 28px 34px;
+}
+
+/* Header més proporcionat */
+#siteHeader {
+  padding: 14px 40px;
+}
+
+.brandText {
+  font-size: 30px;
+}
+
+#mainNav {
+  gap: 24px;
+}
+
+.primaryHeaderBtn {
+  padding: 12px 22px;
+}
+
+/* Hero centrat i amb mida de landing */
+#heroSection {
+  width: 100%;
+  min-height: 500px;
+  border-radius: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  box-shadow: 0 14px 36px rgba(10, 20, 40, 0.14);
+  background: #071427;
+}
+
+/* Bloc de text del hero */
+.heroContent {
+  padding: 70px 58px;
+  max-width: none;
+  background: linear-gradient(
+    90deg,
+    rgba(7, 20, 39, 1) 0%,
+    rgba(7, 20, 39, 0.96) 70%,
+    rgba(7, 20, 39, 0.82) 100%
+  );
+}
+
+.heroContent h1 {
+  font-size: 76px;
+}
+
+.heroContent h2 {
+  font-size: 28px;
+  max-width: 620px;
+}
+
+.heroContent p {
+  max-width: 610px;
+}
+
+/* Foto real del hero */
+.heroVisual {
+  min-height: 500px;
+}
+
+.heroPhotoCard {
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(7, 20, 39, 0.45) 0%,
+      rgba(7, 20, 39, 0.12) 45%,
+      rgba(7, 20, 39, 0.08) 100%
+    ),
+    url("./assets/hero-girona-bike.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Eliminem l'emoji gran de bici, perquè ara hi haurà foto real */
+.heroBikeSilhouette {
+  display: none;
+}
+
+/* El tag de ciutat queda com a l'esbós */
+.heroCityTag {
+  top: 26px;
+  right: 26px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #071427;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+/* Contingut inferior alineat amb el hero */
+.adSlot,
+#homeCategories,
+#homeLowerGrid {
+  width: 100%;
+  max-width: none;
+}
+
+.largeAd {
+  margin-top: 22px;
+}
+
+/* Targetes més equilibrades */
+#homeCategories {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.categoryCard {
+  min-height: 330px;
+}
+
+/* Zona inferior equilibrada */
+#homeLowerGrid {
+  grid-template-columns: 1.35fr 1fr;
+  gap: 22px;
+}
+
+.cityCardsGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Footer dins del mateix ample visual */
+#homeFooterStrip {
+  width: 100%;
+  max-width: none;
+  border-radius: 18px;
+  padding: 18px 28px;
+}
+
+/* Millora quan la pantalla és mitjana */
+@media (max-width: 1200px) {
+  #homeView {
+    padding: 18px;
+  }
+
+  #heroSection {
+    grid-template-columns: 1fr;
+  }
+
+  .heroVisual {
+    min-height: 360px;
+  }
+
+  .heroContent {
+    padding: 52px 34px;
+  }
+
+  .heroContent h1 {
+    font-size: 58px;
+  }
+
+  #homeCategories {
+    grid-template-columns: 1fr;
+  }
+
+  #homeLowerGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cityCardsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Millora en mòbil */
+@media (max-width: 760px) {
+  #siteHeader {
+    padding: 14px 18px;
+  }
+
+  #homeView {
+    padding: 12px;
+  }
+
+  #heroSection {
+    border-radius: 18px;
+  }
+
+  .heroContent {
+    padding: 36px 24px;
+  }
+
+  .heroContent h1 {
+    font-size: 44px;
+  }
+
+  .heroContent h2 {
+    font-size: 22px;
+  }
+
+  .heroContent p {
+    font-size: 16px;
+  }
+
+  .heroVisual {
+    min-height: 260px;
+  }
+
+  .heroPrimaryBtn,
+  .heroSecondaryBtn {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .cityCardsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  #homeFooterStrip {
+    border-radius: 14px;
+  }
+}
