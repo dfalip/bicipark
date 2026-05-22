@@ -106,8 +106,8 @@
   "parkings": "./data/amsterdam/parkings.json",
   "bikeLanes": null,
   "roadRoutes": null,
-  "dataStatus": "official",
-  "dataLabel": "Dades oficials Gemeente Amsterdam"
+  "dataStatus": "pending_official_import",
+  "dataLabel": "Pendent d'importació oficial"
 },
 
 "paris": {
