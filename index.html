@@ -266,106 +266,80 @@
 
 <!-- APP -->
 <!-- APP -->
-<section id="appView" class="hidden-view appViewClean">
-  <div id="appTopbar" class="appTopbarMinimal">
-    <button id="backHomeBtn" class="hiddenUtilityBtn" type="button">← Home</button>
-    <div class="hiddenUtilityTitle">
-      <h2 id="appModeTitle">Aparcaments</h2>
-      <span id="citySubtitle">Aparcaments de bicicleta a Barcelona</span>
-    </div>
-  </div>
-
-  <div id="layout" class="layoutWithBottomFilters">
-    <aside id="sidebar" class="sidebarInfoCard">
-      <div id="sidebarHeader" class="sidebarHeaderClean">
+<section id="appView" class="hidden-view appViewReference">
+  <div id="layout" class="layoutReference">
+    <aside id="sidebar" class="sidebarReference">
+      <div id="sidebarHeader" class="sidebarReferenceHeader">
         <div>
           <h2 id="sidebarMainTitle">Parkings a Barcelona</h2>
-          <p>Informació i resultats</p>
+          <p id="citySubtitle">Consulta disponibilitat en temps real</p>
         </div>
-        <button class="miniIconBtn" type="button" title="Opcions">⚙️</button>
       </div>
 
-      <div class="sidebarSearchBlock">
-        <select id="citySelect" class="compactTopSelect"></select>
+      <div class="sidebarSearchBlock referenceSearchBlock">
+        <select id="citySelect" class="referenceSelect"></select>
 
-        <div class="sidebarSearchRow">
-          <input id="searchInput" type="text" placeholder="Busca una adreça o lloc..." />
+        <div class="referenceSearchRow">
+          <input id="searchInput" type="text" placeholder="Cerca una adreça o lloc..." />
           <button id="searchBtn" type="button">Buscar</button>
         </div>
 
-        <button id="nearBtn" class="nearSoftBtn" type="button">📍 A prop meu</button>
+        <button id="nearBtn" class="referenceNearBtn" type="button">📍 A prop meu</button>
       </div>
 
-      <section id="modeSwitch" class="modeSwitchClean">
+      <!-- Es manté al DOM per compatibilitat amb el JS, però amagat -->
+      <section id="modeSwitch" class="referenceHiddenModes">
         <button class="mode-btn active" data-mode="parking" type="button">🚲 Aparcar</button>
         <button class="mode-btn" data-mode="road" type="button">🚴 Carretera</button>
         <button class="mode-btn" data-mode="mtb" type="button">⛰️ BTT</button>
       </section>
 
-      <section id="statusBar" class="statusCardSoft">
+      <section id="statusBar" class="referenceStatusCard">
         <div id="parkingCounter">Carregant dades...</div>
         <div id="nearestInfo">Busca una ubicació o prem “A prop meu”.</div>
       </section>
 
-      <div id="parkingList">
+      <div class="referenceListHeader">
+        <span>Aparcaments propers</span>
+      </div>
+
+      <div id="parkingList" class="referenceParkingList">
         <div class="emptySidebar">Carregant dades...</div>
+      </div>
+
+      <div class="referenceListFooter">
+        <button type="button" class="referenceViewAllBtn">Veure tots els aparcaments</button>
       </div>
     </aside>
 
     <main id="map"></main>
-  </div>
 
-  <div id="parkingControls" class="bottomFilterBar">
-    <section id="filters" class="bottomFilterGroup">
-      <div class="bottomFilterTitle">Seguretat</div>
+    <div id="parkingControls" class="referenceBottomBar">
+      <section id="filters" class="referenceFilterGroup">
+        <div class="referenceFilterLabel">Seguretat</div>
+        <div class="referenceSegmented">
+          <button class="filter-btn referenceChip active" data-filter="tots" type="button">Tots</button>
+          <button class="filter-btn referenceChip chipAlta" data-filter="alta" type="button">Alta</button>
+          <button class="filter-btn referenceChip chipMitjana" data-filter="mitjana" type="button">Mitjana</button>
+          <button class="filter-btn referenceChip chipBaixa" data-filter="baixa" type="button">Baixa</button>
+        </div>
+      </section>
 
-      <div class="bottomSegmented securityBottomSegmented">
-        <button class="filter-btn bottomFilterBtn active" data-filter="tots" type="button">
-          Tots
-        </button>
+      <section id="radiusFilters" class="referenceFilterGroup">
+        <div class="referenceFilterLabel">Àrea</div>
+        <div class="referenceSegmented">
+          <button class="radius-btn referenceChip active" data-radius="all" type="button">Tota la ciutat</button>
+          <button class="radius-btn referenceChip" data-radius="500" type="button">500 m</button>
+          <button class="radius-btn referenceChip" data-radius="1000" type="button">1 km</button>
+          <button class="radius-btn referenceChip" data-radius="2000" type="button">2 km</button>
+        </div>
+      </section>
 
-        <button class="filter-btn bottomFilterBtn securityHighText" data-filter="alta" type="button">
-          <span class="bottomDot dotHigh"></span>Alta
-        </button>
-
-        <button class="filter-btn bottomFilterBtn securityMediumText" data-filter="mitjana" type="button">
-          <span class="bottomDot dotMedium"></span>Mitjana
-        </button>
-
-        <button class="filter-btn bottomFilterBtn securityLowText" data-filter="baixa" type="button">
-          <span class="bottomDot dotLow"></span>Baixa
-        </button>
-      </div>
-    </section>
-
-    <section id="radiusFilters" class="bottomFilterGroup">
-      <div class="bottomFilterTitle">Àrea</div>
-
-      <div class="bottomSegmented areaBottomSegmented">
-        <button class="radius-btn bottomFilterBtn active" data-radius="all" type="button">
-          Tota la ciutat
-        </button>
-        <button class="radius-btn bottomFilterBtn" data-radius="500" type="button">
-          500 m
-        </button>
-        <button class="radius-btn bottomFilterBtn" data-radius="1000" type="button">
-          1 km
-        </button>
-        <button class="radius-btn bottomFilterBtn" data-radius="2000" type="button">
-          2 km
-        </button>
-      </div>
-    </section>
-
-    <section class="bottomFilterActions">
-      <button class="filter-btn bottomActionBtn" data-filter="favorites" type="button">
-        ❤️ Favorits
-      </button>
-
-      <button id="bikeLaneBtn" class="bike-lane-btn bottomActionBtn" type="button">
-        🚴 Carrils bici
-      </button>
-    </section>
+      <section class="referenceActionsGroup">
+        <button class="filter-btn referenceToggleBtn" data-filter="favorites" type="button">♡ Favorits</button>
+        <button id="bikeLaneBtn" class="bike-lane-btn referenceToggleBtn" type="button">🚴 Carrils bici</button>
+      </section>
+    </div>
   </div>
 
   <div id="loadingOverlay" class="hidden">
