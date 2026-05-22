@@ -5331,3 +5331,136 @@ body,
 .layoutReference {
   overflow-x: hidden !important;
 }
+
+/* =========================================================
+   FIX FINAL — BARRA INFERIOR + LLEGENDA
+   La barra queda completa dins del mapa i s'amaga la llegenda
+   ========================================================= */
+
+/* Evita scroll horitzontal */
+html,
+body,
+#appView,
+.layoutReference {
+  overflow-x: hidden !important;
+}
+
+/* Barra inferior compacta i ben emmarcada */
+.referenceBottomBar {
+  position: absolute !important;
+
+  /* Ajusta la barra dins l'espai lliure del mapa */
+  left: 575px !important;
+  right: 145px !important;
+  bottom: 34px !important;
+  transform: none !important;
+
+  width: auto !important;
+  max-width: none !important;
+  min-height: 64px !important;
+  max-height: 76px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  flex-wrap: nowrap !important;
+
+  padding: 8px 12px !important;
+  border-radius: 20px !important;
+  border: 1px solid #dbe2ec !important;
+  background: rgba(255,255,255,0.97) !important;
+  box-shadow: 0 14px 30px rgba(10,20,40,0.14) !important;
+  backdrop-filter: blur(10px) !important;
+
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+/* Grups Seguretat / Àrea */
+.referenceFilterGroup {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+  flex-shrink: 0 !important;
+}
+
+.referenceFilterLabel {
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: #667085 !important;
+  padding-left: 3px !important;
+}
+
+/* Botons segmentats més baixos */
+.referenceSegmented {
+  height: 34px !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+}
+
+.referenceChip {
+  height: 34px !important;
+  min-height: 34px !important;
+  line-height: 34px !important;
+  padding: 0 11px !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+/* Accions dreta */
+.referenceActionsGroup {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding-left: 10px !important;
+  border-left: 1px solid #e3e8ef !important;
+  flex-shrink: 0 !important;
+}
+
+.referenceToggleBtn {
+  width: 58px !important;
+  min-width: 58px !important;
+  height: 50px !important;
+  padding: 4px !important;
+  border-radius: 15px !important;
+
+  font-size: 9px !important;
+  line-height: 1.05 !important;
+  text-align: center !important;
+  white-space: normal !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+}
+
+#bikeLaneBtn.referenceToggleBtn {
+  width: 62px !important;
+  min-width: 62px !important;
+}
+
+/* Amaguem la llegenda de seguretat estimada del mapa */
+.leaflet-bottom.leaflet-right .legend {
+  display: none !important;
+}
+
+/* Attribution de Leaflet sempre visible */
+.leaflet-control-attribution {
+  margin-bottom: 0 !important;
+}
+
+/* En pantalles més petites, permet scroll només dins la barra */
+@media (max-width: 1100px) {
+  .referenceBottomBar {
+    left: 16px !important;
+    right: 16px !important;
+    bottom: 22px !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+}
