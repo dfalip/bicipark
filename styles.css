@@ -5255,8 +5255,8 @@ button {
    ========================================================= */
 
 .referenceBottomBar {
-  left: 460px !important;
-  right: 5px !important;
+  left: 455px !important;
+  right: 2px !important;
   bottom: 8px !important;
   transform: none !important;
 }
