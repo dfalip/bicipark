@@ -264,80 +264,82 @@
     </section>
   </main>
 
-  <!-- APP -->
-  <section id="appView" class="hidden-view">
-    <div id="appTopbar">
-      <div class="appTopbarLeft">
-        <button id="backHomeBtn" class="ghostBtn" type="button">← Home</button>
+<!-- APP -->
+<section id="appView" class="hidden-view">
+  <div id="appTopbar">
+    <div class="appTopbarLeft">
+      <button id="backHomeBtn" class="ghostBtn" type="button">← Home</button>
 
-        <div class="appTitleWrap">
-          <h2 id="appModeTitle">Aparcaments</h2>
-          <span id="citySubtitle">Aparcaments de bicicleta a Barcelona</span>
-        </div>
-      </div>
-
-      <div id="topControls">
-        <select id="citySelect"></select>
-
-        <div id="searchBox">
-          <input id="searchInput" type="text" placeholder="Busca una adreça o lloc..." />
-          <button id="searchBtn">Buscar</button>
-          <button id="nearBtn">A prop meu</button>
-        </div>
+      <div class="appTitleWrap">
+        <h2 id="appModeTitle">Aparcaments</h2>
+        <span id="citySubtitle">Aparcaments de bicicleta a Barcelona</span>
       </div>
     </div>
 
-    <section id="modeSwitch">
-      <button class="mode-btn active" data-mode="parking">🚲 Aparcar</button>
-      <button class="mode-btn" data-mode="road">🚴 Carretera</button>
-      <button class="mode-btn" data-mode="mtb">⛰️ BTT</button>
-    </section>
+    <div id="topControls">
+      <select id="citySelect"></select>
 
-    <div id="parkingControls">
-      <section id="filters">
-        <button class="filter-btn active" data-filter="tots">Tots</button>
-        <button class="filter-btn" data-filter="alta">🟢 Alta seguretat</button>
-        <button class="filter-btn" data-filter="mitjana">🟡 Mitjana</button>
-        <button class="filter-btn" data-filter="baixa">🔴 Baixa</button>
-        <button id="bikeLaneBtn" class="bike-lane-btn">🚴 Carrils bici</button>
-        <button class="filter-btn" data-filter="favorites">❤️ Favorits</button>
+      <div id="searchBox">
+        <input id="searchInput" type="text" placeholder="Busca una adreça o lloc..." />
+        <button id="searchBtn">Buscar</button>
+        <button id="nearBtn">A prop meu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="layout">
+    <aside id="sidebar">
+      <div id="sidebarHeader">
+        <div>
+          <h2>Explora</h2>
+          <p>Selecciona ciutat, mode i filtres</p>
+        </div>
+      </div>
+
+      <section id="modeSwitch">
+        <button class="mode-btn active" data-mode="parking">🚲 Aparcar</button>
+        <button class="mode-btn" data-mode="road">🚴 Carretera</button>
+        <button class="mode-btn" data-mode="mtb">⛰️ BTT</button>
       </section>
 
-      <section id="radiusFilters">
-        <span>Àrea:</span>
-        <button class="radius-btn active" data-radius="all">Tota la ciutat</button>
-        <button class="radius-btn" data-radius="500">500 m</button>
-        <button class="radius-btn" data-radius="1000">1 km</button>
-        <button class="radius-btn" data-radius="2000">2 km</button>
+      <div id="parkingControls">
+        <section id="filters">
+          <div class="controlGroupTitle">Seguretat</div>
+          <button class="filter-btn active" data-filter="tots">Tots</button>
+          <button class="filter-btn" data-filter="alta">🟢 Alta</button>
+          <button class="filter-btn" data-filter="mitjana">🟡 Mitjana</button>
+          <button class="filter-btn" data-filter="baixa">🔴 Baixa</button>
+          <button class="filter-btn" data-filter="favorites">❤️ Favorits</button>
+          <button id="bikeLaneBtn" class="bike-lane-btn">🚴 Carrils bici</button>
+        </section>
+
+        <section id="radiusFilters">
+          <div class="controlGroupTitle">Àrea</div>
+          <button class="radius-btn active" data-radius="all">Tota la ciutat</button>
+          <button class="radius-btn" data-radius="500">500 m</button>
+          <button class="radius-btn" data-radius="1000">1 km</button>
+          <button class="radius-btn" data-radius="2000">2 km</button>
+        </section>
+      </div>
+
+      <section id="statusBar">
+        <div id="parkingCounter">Carregant dades...</div>
+        <div id="nearestInfo">Busca una ubicació o prem “A prop meu”.</div>
       </section>
-    </div>
 
-    <section id="statusBar">
-      <div id="parkingCounter">Carregant dades...</div>
-      <div id="nearestInfo">Busca una ubicació o prem “A prop meu”.</div>
-    </section>
+      <div id="parkingList">
+        <div class="emptySidebar">Carregant dades...</div>
+      </div>
+    </aside>
 
-    <div id="layout">
-      <aside id="sidebar">
-        <div id="sidebarHeader">
-          <h2>Parkings</h2>
-        </div>
+    <main id="map"></main>
+  </div>
 
-        <div id="parkingList">
-          <div class="emptySidebar">Carregant dades...</div>
-        </div>
-      </aside>
-
-      <main id="map"></main>
-    </div>
-
-    <div id="loadingOverlay" class="hidden">
-      <div class="loader"></div>
-      <p>Carregant dades...</p>
-    </div>
-  </section>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <div id="loadingOverlay" class="hidden">
+    <div class="loader"></div>
+    <p>Carregant dades...</p>
+  </div>
+</section>
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
   <script src="app.js"></script>
 </body>
