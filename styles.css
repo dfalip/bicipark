@@ -1826,3 +1826,90 @@ button {
     min-height: 190px;
   }
 }
+
+/* =========================================================
+   PROMO BANNER - VERSIÓ ELEGANT I CENTRADA
+   Substitueix l'aspecte de "caixa buida" per una franja promocional
+   ========================================================= */
+
+.promoAd.largeAd {
+  border: none !important;
+  border-radius: 18px !important;
+  padding: 0 !important;
+  margin-top: 16px !important;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(7, 20, 39, 0.92), rgba(22, 57, 84, 0.82)),
+    linear-gradient(135deg, #d8f1df 0%, #eaf3ff 45%, #f3efe4 100%) !important;
+  box-shadow: 0 12px 28px rgba(10, 20, 40, 0.10) !important;
+}
+
+.promoAdLink {
+  min-height: 92px;
+  padding: 22px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  text-decoration: none;
+  color: white;
+}
+
+.promoAdText {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.promoAdLabel {
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(53, 180, 74, 0.18);
+  color: #b8ffc4;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.promoAdText strong {
+  color: white !important;
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+.promoAdText small {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.promoAdButton {
+  background: white;
+  color: #071427;
+  padding: 13px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.promoAdLink:hover .promoAdButton {
+  background: #35b44a;
+  color: white;
+}
+
+@media (max-width: 760px) {
+  .promoAdLink {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .promoAdButton {
+    width: 100%;
+    text-align: center;
+  }
+}
