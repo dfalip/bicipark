@@ -2674,3 +2674,124 @@ button {
     text-align: center;
   }
 }
+
+/* =========================================================
+   FILTERS — PROPOSTA 2: DESPLEGABLES COMPACTES
+   Redueix molt l'espai ocupat pels filtres dins el panell flotant
+   ========================================================= */
+
+#parkingControls {
+  padding: 12px 14px !important;
+  background: rgba(248, 250, 252, 0.92) !important;
+  border-bottom: 1px solid #edf0f5 !important;
+}
+
+.compactFilters {
+  display: flex !important;
+  flex-direction: column;
+  gap: 10px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+.filterRow {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.compactFilterLabel {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.45px;
+  color: #667085;
+}
+
+.compactSelect {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #dbe2ec;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #071427;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 800;
+  outline: none;
+}
+
+.compactSelect:focus {
+  border-color: #35b44a;
+  box-shadow: 0 0 0 3px rgba(53, 180, 74, 0.12);
+}
+
+.filterOptionsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.compactOptionBtn {
+  width: 100%;
+  height: 38px;
+  padding: 0 10px !important;
+  border-radius: 12px !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  border: 1px solid #dbe2ec !important;
+  background: #ffffff !important;
+  color: #071427 !important;
+}
+
+.compactOptionBtn.active,
+.compactOptionBtn[data-filter="favorites"].active {
+  background: #071427 !important;
+  color: #ffffff !important;
+  border-color: #071427 !important;
+}
+
+.compactOptionBtn:hover {
+  background: #eef3f8 !important;
+}
+
+.compactOptionBtn.active:hover {
+  background: #071427 !important;
+}
+
+.hiddenFilterButtons {
+  display: none !important;
+}
+
+/* Amaguem l'estil antic de títols si encara apareix */
+.controlGroupTitle {
+  display: none !important;
+}
+
+/* Compactem una mica el bloc d'estat perquè el panell respiri millor */
+#statusBar {
+  padding: 10px 14px !important;
+}
+
+#parkingCounter {
+  font-size: 12px !important;
+  line-height: 1.35;
+}
+
+#nearestInfo {
+  font-size: 11px !important;
+}
+
+/* Cards una mica més compactes després de reduir filtres */
+.parkingCard {
+  padding: 12px !important;
+}
+
+.cardTitle {
+  font-size: 13px !important;
+}
+
+.cardAddress {
+  font-size: 11px !important;
+}
