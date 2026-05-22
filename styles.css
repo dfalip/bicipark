@@ -3806,3 +3806,452 @@ button {
     left: 10px;
   }
 }
+
+/* =========================================================
+   BICIPARK — ESTIL REFERÈNCIA (com la imatge)
+   Sidebar info + mapa protagonista + bottom filter bar
+   ========================================================= */
+
+.appViewReference {
+  background: #eef3f7;
+  height: calc(100vh - 76px);
+  overflow: hidden;
+}
+
+.layoutReference {
+  position: relative;
+  height: 100%;
+  background: #dfe6ef;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* =========================
+   Sidebar
+   ========================= */
+
+.sidebarReference {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 600;
+  width: 260px;
+  height: calc(100% - 36px);
+  background: rgba(255,255,255,0.96);
+  border: 1px solid #e4e8ef;
+  border-radius: 22px;
+  box-shadow: 0 20px 40px rgba(9, 20, 40, 0.12);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+}
+
+.sidebarReferenceHeader {
+  padding: 16px 16px 8px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.sidebarReferenceHeader h2 {
+  margin: 0 0 4px;
+  font-size: 17px;
+  line-height: 1.15;
+  color: #071427;
+}
+
+.sidebarReferenceHeader p {
+  margin: 0;
+  font-size: 12px;
+  color: #77859a;
+}
+
+.referenceSearchBlock {
+  padding: 12px 16px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.referenceSelect {
+  width: 100%;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid #dbe2ec;
+  background: #f8fbf9;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #071427;
+  margin-bottom: 10px;
+}
+
+.referenceSearchRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.referenceSearchRow input {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  border: 1px solid #dbe2ec;
+  border-radius: 12px;
+  padding: 0 12px;
+  font-size: 13px;
+  background: #fff;
+}
+
+.referenceSearchRow button {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: none;
+  background: #35b44a;
+  color: #fff;
+  font-weight: 900;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.referenceNearBtn {
+  width: 100%;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid #dbe2ec;
+  background: #fff;
+  color: #071427;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Amaguem visualment els modes, però els mantenim per JS */
+.referenceHiddenModes {
+  display: none !important;
+}
+
+/* =========================
+   Status i llista
+   ========================= */
+
+.referenceStatusCard {
+  margin: 12px 16px 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #f5faf5;
+  border: 1px solid #e4efe5;
+}
+
+#parkingCounter {
+  font-size: 12px;
+  font-weight: 900;
+  color: #071427;
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+
+#nearestInfo {
+  font-size: 11px;
+  color: #627487;
+  line-height: 1.35;
+}
+
+.referenceListHeader {
+  padding: 0 16px 8px;
+  font-size: 13px;
+  font-weight: 900;
+  color: #071427;
+}
+
+.referenceParkingList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 12px 8px;
+}
+
+.referenceParkingList .parkingCard {
+  border: 1px solid #e7ecf3;
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(10,20,40,0.04);
+}
+
+.referenceParkingList .parkingCard.recommended {
+  border: 2px solid #35b44a;
+  background: #f7fff8;
+}
+
+.referenceParkingList .cardTitle {
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.referenceParkingList .cardAddress {
+  font-size: 11px;
+  color: #647386;
+}
+
+.referenceListFooter {
+  padding: 10px 12px 12px;
+  border-top: 1px solid #edf0f5;
+  background: rgba(255,255,255,0.96);
+}
+
+.referenceViewAllBtn {
+  width: 100%;
+  height: 34px;
+  border-radius: 12px;
+  border: 1px solid #dbe2ec;
+  background: #fff;
+  color: #071427;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* =========================
+   Bottom filter bar
+   ========================= */
+
+.referenceBottomBar {
+  position: absolute;
+  left: calc(50% + 60px);
+  transform: translateX(-50%);
+  bottom: 18px;
+  z-index: 850;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid #e3e8ef;
+  border-radius: 22px;
+  box-shadow: 0 16px 32px rgba(10,20,40,0.14);
+  backdrop-filter: blur(12px);
+  max-width: calc(100% - 360px);
+  overflow-x: auto;
+}
+
+.referenceFilterGroup {
+  display: flex !important;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.referenceFilterLabel {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.45px;
+  color: #667085;
+}
+
+.referenceSegmented {
+  display: flex;
+  border: 1px solid #dbe2ec;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.referenceChip {
+  height: 34px;
+  padding: 0 12px !important;
+  border: none !important;
+  border-right: 1px solid #e3e8ef !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  color: #071427 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  box-shadow: none !important;
+  white-space: nowrap;
+}
+
+.referenceChip:last-child {
+  border-right: none !important;
+}
+
+.referenceChip:hover {
+  background: #f7f9fc !important;
+}
+
+.referenceChip.active {
+  background: #071427 !important;
+  color: #fff !important;
+}
+
+.chipAlta:not(.active) {
+  background: rgba(29,158,117,0.10) !important;
+  color: #1D9E75 !important;
+}
+
+.chipMitjana:not(.active) {
+  background: rgba(242,201,76,0.16) !important;
+  color: #9a7200 !important;
+}
+
+.chipBaixa:not(.active) {
+  background: rgba(235,87,87,0.12) !important;
+  color: #c53d3d !important;
+}
+
+.referenceActionsGroup {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding-left: 14px;
+  border-left: 1px solid #e3e8ef;
+}
+
+.referenceToggleBtn {
+  height: 34px;
+  padding: 0 14px !important;
+  border-radius: 14px !important;
+  border: 1px solid #dbe2ec !important;
+  background: #fff !important;
+  color: #071427 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  box-shadow: none !important;
+  white-space: nowrap;
+}
+
+.referenceToggleBtn:hover {
+  background: #f7f9fc !important;
+}
+
+.referenceToggleBtn.active {
+  background: #071427 !important;
+  color: #fff !important;
+  border-color: #071427 !important;
+}
+
+/* =========================
+   Controls del mapa
+   ========================= */
+
+.leaflet-top.leaflet-left {
+  left: auto !important;
+  right: 18px !important;
+}
+
+.leaflet-control-zoom {
+  box-shadow: 0 10px 22px rgba(10,20,40,0.12) !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  width: 38px !important;
+  height: 38px !important;
+  line-height: 38px !important;
+  font-size: 20px !important;
+}
+
+.legend {
+  background: rgba(255,255,255,0.96);
+  padding: 12px 14px;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(10,20,40,0.14);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Neutralitzem blocs antics */
+.compactFilters,
+.bottomFilterBar,
+.bottomFilterGroup,
+.bottomFilterTitle,
+.bottomSegmented,
+.bottomFilterBtn,
+.bottomActionBtn,
+.premiumFilters,
+.compactFilterLabel,
+.filterRow,
+.compactSelect,
+.areaGrid,
+.securitySegmented,
+.controlGroupTitle {
+  all: unset;
+}
+
+@media (max-width: 1180px) {
+  .referenceBottomBar {
+    left: calc(50% + 40px);
+    max-width: calc(100% - 390px);
+  }
+}
+
+@media (max-width: 980px) {
+  .referenceBottomBar {
+    left: calc(50% + 20px);
+    max-width: calc(100% - 420px);
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .sidebarReference {
+    width: 290px;
+  }
+}
+
+@media (max-width: 780px) {
+  .appViewReference {
+    height: auto;
+    min-height: calc(100vh - 76px);
+    overflow: auto;
+  }
+
+  .layoutReference {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: auto;
+  }
+
+  #map {
+    position: relative;
+    height: 52vh;
+    min-height: 360px;
+  }
+
+  .sidebarReference {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    height: auto;
+    max-width: none;
+    border-radius: 0;
+    box-shadow: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .referenceBottomBar {
+    position: relative;
+    left: auto;
+    transform: none;
+    bottom: auto;
+    margin: 12px;
+    max-width: none;
+    width: calc(100% - 24px);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .leaflet-top.leaflet-left {
+    right: 10px !important;
+  }
+}
