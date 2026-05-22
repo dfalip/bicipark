@@ -4585,3 +4585,454 @@ button {
     justify-content: center;
   }
 }
+/* =========================================================
+   BOTTOM FILTER BAR — OPCIÓ 3 COMPACTA
+   Barra inferior més baixa, horitzontal i menys invasiva
+   ========================================================= */
+
+/* Assegura que el mapa ocupi bé l'espai */
+.appViewReference {
+  height: calc(100vh - 76px) !important;
+  overflow: hidden !important;
+  background: #eef3f7 !important;
+}
+
+.layoutReference {
+  position: relative !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  background: #dfe6ef !important;
+}
+
+#map {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
+}
+
+/* =========================
+   SIDEBAR: més llegible
+   ========================= */
+
+.sidebarReference {
+  position: absolute !important;
+  top: 18px !important;
+  left: 18px !important;
+  z-index: 700 !important;
+
+  width: 420px !important;
+  max-width: calc(100vw - 44px) !important;
+  height: calc(100% - 36px) !important;
+
+  background: rgba(255,255,255,0.96) !important;
+  border: 1px solid #e4e8ef !important;
+  border-radius: 22px !important;
+  box-shadow: 0 18px 42px rgba(10,20,40,0.15) !important;
+  backdrop-filter: blur(10px) !important;
+
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.sidebarReferenceHeader {
+  padding: 18px 20px 12px !important;
+  border-bottom: 1px solid #edf0f5 !important;
+}
+
+.sidebarReferenceHeader h2 {
+  font-size: 21px !important;
+  line-height: 1.15 !important;
+  margin: 0 0 5px !important;
+  color: #071427 !important;
+}
+
+.sidebarReferenceHeader p {
+  font-size: 13px !important;
+  color: #667085 !important;
+  margin: 0 !important;
+}
+
+.referenceSearchBlock {
+  padding: 14px 20px 16px !important;
+  border-bottom: 1px solid #edf0f5 !important;
+}
+
+.referenceSelect {
+  width: 100% !important;
+  height: 42px !important;
+  border-radius: 13px !important;
+  border: 1px solid #dbe2ec !important;
+  padding: 0 12px !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  color: #071427 !important;
+  background: #fff !important;
+  margin-bottom: 10px !important;
+}
+
+.referenceSearchRow {
+  display: flex !important;
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.referenceSearchRow input {
+  flex: 1 !important;
+  min-width: 0 !important;
+  height: 42px !important;
+  border-radius: 13px !important;
+  border: 1px solid #dbe2ec !important;
+  padding: 0 12px !important;
+  font-size: 13px !important;
+}
+
+.referenceSearchRow button {
+  height: 42px !important;
+  padding: 0 15px !important;
+  border-radius: 13px !important;
+  background: #35b44a !important;
+  color: #fff !important;
+  font-weight: 900 !important;
+  font-size: 13px !important;
+}
+
+.referenceNearBtn {
+  width: 100% !important;
+  height: 40px !important;
+  border-radius: 13px !important;
+  border: 1px solid #dbe2ec !important;
+  background: #fff !important;
+  color: #071427 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+
+.referenceStatusCard {
+  margin: 14px 20px 10px !important;
+  padding: 13px 15px !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  border: 1px solid #e1e7f0 !important;
+}
+
+#parkingCounter {
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  color: #071427 !important;
+  line-height: 1.35 !important;
+  margin-bottom: 6px !important;
+}
+
+#nearestInfo {
+  font-size: 13px !important;
+  color: #667085 !important;
+  line-height: 1.4 !important;
+}
+
+.referenceListHeader {
+  padding: 6px 20px 10px !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  color: #071427 !important;
+}
+
+.referenceParkingList {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 0 14px 10px 20px !important;
+}
+
+.referenceParkingList .parkingCard {
+  width: 100% !important;
+  padding: 13px !important;
+  margin-bottom: 10px !important;
+  border-radius: 16px !important;
+  border: 1px solid #e4e8ef !important;
+  background: #fff !important;
+}
+
+.referenceListFooter {
+  padding: 12px 20px 16px !important;
+  border-top: 1px solid #edf0f5 !important;
+  background: rgba(255,255,255,0.96) !important;
+}
+
+.referenceViewAllBtn {
+  width: 100% !important;
+  height: 42px !important;
+  border-radius: 14px !important;
+  border: 1px solid #dbe2ec !important;
+  background: #fff !important;
+  color: #071427 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+/* =========================
+   BARRA INFERIOR OPCIÓ 3
+   ========================= */
+
+.referenceBottomBar {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 18px !important;
+  transform: translateX(-50%) !important;
+  z-index: 900 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 18px !important;
+
+  width: auto !important;
+  max-width: calc(100vw - 560px) !important;
+  min-height: 72px !important;
+
+  padding: 12px 18px !important;
+  border-radius: 22px !important;
+  border: 1px solid rgba(219,226,236,0.95) !important;
+  background: rgba(255,255,255,0.96) !important;
+  box-shadow: 0 16px 34px rgba(10,20,40,0.16) !important;
+  backdrop-filter: blur(12px) !important;
+
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+/* Cada bloc de filtres */
+.referenceFilterGroup {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  flex-shrink: 0 !important;
+}
+
+.referenceFilterLabel {
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.45px !important;
+  color: #667085 !important;
+  line-height: 1 !important;
+}
+
+/* Segments compactes */
+.referenceSegmented {
+  display: flex !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  border: 1px solid #dbe2ec !important;
+  border-radius: 15px !important;
+  background: #fff !important;
+  height: 36px !important;
+}
+
+/* Botons interns */
+.referenceChip {
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 13px !important;
+  border: none !important;
+  border-right: 1px solid #e4e8ef !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  color: #071427 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  line-height: 36px !important;
+  box-shadow: none !important;
+  white-space: nowrap !important;
+}
+
+.referenceChip:last-child {
+  border-right: none !important;
+}
+
+.referenceChip:hover {
+  background: #f6f8fb !important;
+}
+
+.referenceChip.active {
+  background: #071427 !important;
+  color: #fff !important;
+}
+
+/* Colors subtils de seguretat */
+.chipAlta:not(.active) {
+  background: rgba(29,158,117,0.10) !important;
+  color: #1D9E75 !important;
+}
+
+.chipMitjana:not(.active) {
+  background: rgba(242,201,76,0.16) !important;
+  color: #9a7200 !important;
+}
+
+.chipBaixa:not(.active) {
+  background: rgba(235,87,87,0.12) !important;
+  color: #c53d3d !important;
+}
+
+/* Accions de la dreta */
+.referenceActionsGroup {
+  display: flex !important;
+  align-items: flex-end !important;
+  gap: 10px !important;
+  padding-left: 16px !important;
+  border-left: 1px solid #e3e8ef !important;
+  flex-shrink: 0 !important;
+}
+
+.referenceToggleBtn {
+  height: 50px !important;
+  min-width: 72px !important;
+  padding: 0 14px !important;
+  border-radius: 16px !important;
+  border: 1px solid #dbe2ec !important;
+  background: #fff !important;
+  color: #071427 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  box-shadow: none !important;
+  white-space: nowrap !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+}
+
+.referenceToggleBtn:hover {
+  background: #f6f8fb !important;
+}
+
+.referenceToggleBtn.active {
+  background: #071427 !important;
+  color: #fff !important;
+  border-color: #071427 !important;
+}
+
+/* Llegenda: que no xoqui amb la barra inferior */
+.leaflet-bottom.leaflet-right .legend {
+  margin-bottom: 100px !important;
+}
+
+/* Controls de zoom a la dreta, com al mockup */
+.leaflet-top.leaflet-left {
+  left: auto !important;
+  right: 18px !important;
+}
+
+/* Neteja possibles regles antigues */
+.bottomFilterBar,
+.bottomFilterGroup,
+.bottomFilterTitle,
+.bottomSegmented,
+.bottomFilterBtn,
+.bottomActionBtn,
+.premiumFilters,
+.securitySegmented,
+.areaGrid,
+.compactFilters,
+.compactSelect,
+.compactFilterLabel,
+.filterRow,
+.controlGroupTitle {
+  all: unset;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 1250px) {
+  .sidebarReference {
+    width: 390px !important;
+  }
+
+  .referenceBottomBar {
+    max-width: calc(100vw - 460px) !important;
+    gap: 12px !important;
+    padding: 10px 14px !important;
+  }
+
+  .referenceChip {
+    padding: 0 10px !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .sidebarReference {
+    width: calc(100vw - 32px) !important;
+    left: 16px !important;
+    top: 16px !important;
+    height: auto !important;
+    max-height: 48vh !important;
+  }
+
+  .referenceBottomBar {
+    left: 16px !important;
+    right: 16px !important;
+    bottom: 14px !important;
+    transform: none !important;
+    max-width: none !important;
+    justify-content: flex-start !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .appViewReference {
+    height: auto !important;
+    min-height: calc(100vh - 76px) !important;
+    overflow: auto !important;
+  }
+
+  .layoutReference {
+    height: auto !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  #map {
+    position: relative !important;
+    height: 56vh !important;
+    min-height: 380px !important;
+  }
+
+  .sidebarReference {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  .referenceBottomBar {
+    position: sticky !important;
+    bottom: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    border-radius: 18px 18px 0 0 !important;
+  }
+
+  .leaflet-top.leaflet-left {
+    right: 10px !important;
+  }
+}
