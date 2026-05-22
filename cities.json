@@ -27,18 +27,18 @@
   },
 
   "new-york": {
-    "name": "New York",
-    "country": "USA",
-    "enabled": true,
-    "center": [40.7128, -74.0060],
-    "zoom": 12,
-    "searchSuffix": "New York City, USA",
-    "parkings": "./data/new-york/parkings.json",
-    "bikeLanes": null,
-    "roadRoutes": null,
-    "dataStatus": "pending_official_import",
-    "dataLabel": "Pendent d'importació oficial"
-  },
+  "name": "New York",
+  "country": "USA",
+  "enabled": true,
+  "center": [40.7128, -74.0060],
+  "zoom": 12,
+  "searchSuffix": "New York City, USA",
+  "parkings": "https://data.cityofnewyork.us/resource/592z-n7dk.geojson?$limit=50000",
+  "bikeLanes": null,
+  "roadRoutes": null,
+  "dataStatus": "official",
+  "dataLabel": "Dades oficials NYC Open Data"
+},
 
   "amsterdam": {
     "name": "Amsterdam",
