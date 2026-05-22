@@ -3146,3 +3146,211 @@ button {
     left: 10px;
   }
 }
+
+/* =========================================================
+   FILTERS — PREMIUM SEGMENTED SECURITY + AREA GRID
+   Ajust visual de seguretat i àrea dins el panell flotant
+   ========================================================= */
+
+#parkingControls {
+  padding: 14px 16px !important;
+  background: transparent !important;
+  border-bottom: 1px solid #edf0f5 !important;
+}
+
+.premiumFilters {
+  display: flex !important;
+  flex-direction: column;
+  gap: 16px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+.filterBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.premiumFilterTitle {
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.45px;
+  color: #7b8798;
+}
+
+/* ---------- SEGURETAT ---------- */
+
+.securitySegmented {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid #dbe2ec;
+  border-radius: 15px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.securityOption {
+  height: 42px;
+  padding: 0 6px !important;
+  border-radius: 0 !important;
+  border: none !important;
+  border-right: 1px solid #e3e8ef !important;
+  background: #ffffff !important;
+  color: #071427 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: none !important;
+}
+
+.securityOption:last-child {
+  border-right: none !important;
+}
+
+.securityOption:hover {
+  background: #f6f8fb !important;
+}
+
+.securityOption.active {
+  background: #071427 !important;
+  color: #ffffff !important;
+}
+
+.securityOption.active .securityDot {
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.22);
+}
+
+.securityDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.dotAll {
+  background: #071427;
+}
+
+.dotHigh {
+  background: #1D9E75;
+}
+
+.dotMedium {
+  background: #F2C94C;
+}
+
+.dotLow {
+  background: #EB5757;
+}
+
+/* Subtil tint lateral segons l'opció activa */
+.securityHigh.active {
+  background:
+    linear-gradient(180deg, rgba(29,158,117,0.24), rgba(29,158,117,0.24)),
+    #071427 !important;
+}
+
+.securityMedium.active {
+  background:
+    linear-gradient(180deg, rgba(242,201,76,0.22), rgba(242,201,76,0.22)),
+    #071427 !important;
+}
+
+.securityLow.active {
+  background:
+    linear-gradient(180deg, rgba(235,87,87,0.22), rgba(235,87,87,0.22)),
+    #071427 !important;
+}
+
+/* ---------- ÀREA ---------- */
+
+.areaGrid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+.areaOption {
+  height: 42px;
+  border-radius: 14px !important;
+  border: 1px solid #dbe2ec !important;
+  background: #ffffff !important;
+  color: #071427 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  padding: 0 10px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  box-shadow: none !important;
+}
+
+.areaOption:hover {
+  background: #f6f8fb !important;
+}
+
+.areaOption.active {
+  background: #f3efff !important;
+  color: #071427 !important;
+  border-color: #cdbdff !important;
+  box-shadow: inset 0 0 0 1px rgba(121, 88, 220, 0.16) !important;
+}
+
+.areaIcon {
+  color: #7c5ce6;
+  font-size: 13px;
+}
+
+/* ---------- OPCIONS ---------- */
+
+.premiumOptionRow {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px !important;
+}
+
+.compactOptionBtn {
+  width: 100%;
+  height: 40px;
+  padding: 0 10px !important;
+  border-radius: 14px !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  border: 1px solid #dbe2ec !important;
+  background: #ffffff !important;
+  color: #071427 !important;
+  box-shadow: none !important;
+}
+
+.compactOptionBtn:hover {
+  background: #f6f8fb !important;
+}
+
+.compactOptionBtn.active {
+  background: #071427 !important;
+  color: #ffffff !important;
+  border-color: #071427 !important;
+}
+
+/* Evitem que regles anteriors interfereixin */
+.hiddenFilterButtons {
+  display: grid !important;
+}
+
+.controlGroupTitle,
+.compactFilterLabel,
+.compactSelect,
+.filterRow {
+  display: none !important;
+}
