@@ -302,37 +302,69 @@
       </section>
 
       <div id="parkingControls">
-        <section id="filters" class="compactFilters">
-          <div class="filterRow">
-            <label class="compactFilterLabel" for="securityFilterSelect">Seguretat</label>
-            <select id="securityFilterSelect" class="compactSelect">
-              <option value="tots">Tots</option>
-              <option value="alta">Alta</option>
-              <option value="mitjana">Mitjana</option>
-              <option value="baixa">Baixa</option>
-            </select>
-          </div>
+        <section id="filters" class="premiumFilters">
+  <div class="filterBlock">
+    <div class="premiumFilterTitle">Seguretat</div>
 
-          <div class="filterRow">
-            <label class="compactFilterLabel" for="radiusSelect">Àrea</label>
-            <select id="radiusSelect" class="compactSelect">
-              <option value="all">Tota la ciutat</option>
-              <option value="500">500 m</option>
-              <option value="1000">1 km</option>
-              <option value="2000">2 km</option>
-            </select>
-          </div>
+    <div class="securitySegmented">
+      <button class="filter-btn securityOption securityAll active" data-filter="tots" type="button">
+        <span class="securityDot dotAll"></span>
+        Tots
+      </button>
 
-          <div class="filterOptionsRow">
-            <button class="filter-btn compactOptionBtn" data-filter="favorites" type="button">
-              ❤️ Favorits
-            </button>
+      <button class="filter-btn securityOption securityHigh" data-filter="alta" type="button">
+        <span class="securityDot dotHigh"></span>
+        Alta
+      </button>
 
-            <button id="bikeLaneBtn" class="bike-lane-btn compactOptionBtn" type="button">
-              🚴 Carrils bici
-            </button>
-          </div>
-        </section>
+      <button class="filter-btn securityOption securityMedium" data-filter="mitjana" type="button">
+        <span class="securityDot dotMedium"></span>
+        Mitjana
+      </button>
+
+      <button class="filter-btn securityOption securityLow" data-filter="baixa" type="button">
+        <span class="securityDot dotLow"></span>
+        Baixa
+      </button>
+    </div>
+  </div>
+
+  <div class="filterBlock">
+    <div class="premiumFilterTitle">Àrea</div>
+
+    <section id="radiusFilters" class="areaGrid">
+      <button class="radius-btn areaOption active" data-radius="all" type="button">
+        <span class="areaIcon">📍</span>
+        Tota la ciutat
+      </button>
+
+      <button class="radius-btn areaOption" data-radius="500" type="button">
+        <span class="areaIcon">◎</span>
+        500 m
+      </button>
+
+      <button class="radius-btn areaOption" data-radius="1000" type="button">
+        <span class="areaIcon">◎</span>
+        1 km
+      </button>
+
+      <button class="radius-btn areaOption" data-radius="2000" type="button">
+        <span class="areaIcon">◎</span>
+        2 km
+      </button>
+    </section>
+  </div>
+
+  <div class="filterOptionsRow premiumOptionRow">
+    <button class="filter-btn compactOptionBtn" data-filter="favorites" type="button">
+      ❤️ Favorits
+    </button>
+
+    <button id="bikeLaneBtn" class="bike-lane-btn compactOptionBtn" type="button">
+      🚴 Carrils bici
+    </button>
+  </div>
+</section>
 
         <section id="radiusFilters" class="hiddenFilterButtons">
           <button class="radius-btn active" data-radius="all">Tota la ciutat</button>
