@@ -97,32 +97,32 @@
 },
 
   "amsterdam": {
-    "name": "Amsterdam",
-    "country": "Netherlands",
-    "enabled": true,
-    "center": [52.3676, 4.9041],
-    "zoom": 13,
-    "searchSuffix": "Amsterdam, Netherlands",
-    "parkings": "./data/amsterdam/parkings.json",
-    "bikeLanes": null,
-    "roadRoutes": null,
-    "dataStatus": "pending_official_import",
-    "dataLabel": "Pendent d'importació oficial"
-  },
+  "name": "Amsterdam",
+  "country": "Netherlands",
+  "enabled": true,
+  "center": [52.3676, 4.9041],
+  "zoom": 13,
+  "searchSuffix": "Amsterdam, Netherlands",
+  "parkings": "./data/amsterdam/parkings.json",
+  "bikeLanes": null,
+  "roadRoutes": null,
+  "dataStatus": "official",
+  "dataLabel": "Dades oficials Gemeente Amsterdam"
+},
 
-  "paris": {
-    "name": "Paris",
-    "country": "France",
-    "enabled": true,
-    "center": [48.8566, 2.3522],
-    "zoom": 12,
-    "searchSuffix": "Paris, France",
-    "parkings": "./data/paris/parkings.json",
-    "bikeLanes": null,
-    "roadRoutes": null,
-    "dataStatus": "pending_official_import",
-    "dataLabel": "Pendent d'importació oficial"
-  },
+"paris": {
+  "name": "Paris",
+  "country": "France",
+  "enabled": true,
+  "center": [48.8566, 2.3522],
+  "zoom": 12,
+  "searchSuffix": "Paris, France",
+  "parkings": "./data/paris/parkings.json",
+  "bikeLanes": null,
+  "roadRoutes": null,
+  "dataStatus": "official",
+  "dataLabel": "Dades oficials Île-de-France Mobilités"
+},
 
   "hospitalet": {
     "name": "L’Hospitalet",
