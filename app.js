@@ -893,6 +893,7 @@ function updateAppUiForMode() {
   document.querySelectorAll("#modeSwitch .mode-btn").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.mode === currentMode);
   });
+  updateSecurityLegendVisibility();
 }
 
 function setAppMode(mode) {
@@ -908,9 +909,9 @@ async function ensureAppReady() {
 }
 
 function setupLegend() {
-  const legend = L.control({ position: "bottomright" });
+  securityLegend = L.control({ position: "bottomright" });
 
-  legend.onAdd = function () {
+  securityLegend.onAdd = function () {
     const div = L.DomUtil.create("div", "legend");
 
     div.innerHTML = `
@@ -923,7 +924,23 @@ function setupLegend() {
     return div;
   };
 
-  legend.addTo(map);
+  securityLegend.addTo(map);
+}
+
+function updateSecurityLegendVisibility() {
+  if (!securityLegend) return;
+
+  const legendElement = document.querySelector(".legend");
+
+  if (currentMode === "parking") {
+    if (!legendElement) {
+      securityLegend.addTo(map);
+    }
+  } else {
+    if (legendElement) {
+      map.removeControl(securityLegend);
+    }
+  }
 }
 
 async function loadBikeLanes() {
