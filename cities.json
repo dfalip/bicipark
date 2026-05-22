@@ -33,7 +33,7 @@
   "center": [40.7128, -74.0060],
   "zoom": 12,
   "searchSuffix": "New York City, USA",
-  "parkings": "parkings": "./data/new-york/parkings.json",
+  "parkings": "./data/new-york/parkings.json",
   "bikeLanes": null,
   "roadRoutes": null,
   "dataStatus": "official",
