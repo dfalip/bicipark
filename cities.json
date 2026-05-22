@@ -12,17 +12,18 @@
     "dataLabel": "Dades oficials"
   },
   "girona": {
-    "name": "Girona",
-    "country": "Spain",
-    "enabled": true,
-    "center": [41.9794, 2.8214],
-    "zoom": 14,
-    "searchSuffix": "Girona, Spain",
-    "parkings": "./data/girona/parkings.json",
-    "bikeLanes": null,
-    "dataStatus": "provisional",
-    "dataLabel": "Dades provisionals"
-  },
+  "name": "Girona",
+  "country": "Spain",
+  "enabled": true,
+  "center": [41.9794, 2.8214],
+  "zoom": 14,
+  "searchSuffix": "Girona, Spain",
+  "parkings": "./data/girona/parkings.json",
+  "bikeLanes": null,
+  "roadRoutes": "./data/girona/routes/road/routes.json",
+  "dataStatus": "partial_official",
+  "dataLabel": "Dades oficials parcials"
+},
   "hospitalet": {
     "name": "L’Hospitalet",
     "country": "Spain",
