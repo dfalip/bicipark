@@ -5260,3 +5260,74 @@ button {
   bottom: 8px !important;
   transform: none !important;
 }
+
+/* =========================================================
+   FIX BARRA FILTRES — SENSE SCROLL I BEN AJUSTADA
+   ========================================================= */
+
+.referenceBottomBar {
+  left: 560px !important;
+  right: 160px !important;
+  bottom: 10px !important;
+  transform: none !important;
+
+  width: auto !important;
+  max-width: none !important;
+
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: nowrap !important;
+
+  overflow: visible !important;
+  padding: 10px 12px !important;
+}
+
+/* Els blocs no han de forçar més amplada de la disponible */
+.referenceFilterGroup,
+.referenceActionsGroup {
+  flex-shrink: 1 !important;
+}
+
+/* Segments més compactes */
+.referenceSegmented {
+  height: 34px !important;
+}
+
+.referenceChip {
+  height: 34px !important;
+  min-height: 34px !important;
+  line-height: 34px !important;
+  padding: 0 10px !important;
+  font-size: 11px !important;
+}
+
+/* Botons Favorits / Carrils més petits */
+.referenceActionsGroup {
+  gap: 8px !important;
+  padding-left: 8px !important;
+}
+
+.referenceToggleBtn {
+  width: 56px !important;
+  min-width: 56px !important;
+  height: 50px !important;
+  padding: 4px !important;
+  font-size: 9px !important;
+  line-height: 1.05 !important;
+}
+
+/* Carrils bici una mica més ample perquè no talli tant */
+#bikeLaneBtn.referenceToggleBtn {
+  width: 60px !important;
+  min-width: 60px !important;
+}
+
+/* Evita scroll horitzontal visual */
+html,
+body,
+#appView,
+.layoutReference {
+  overflow-x: hidden !important;
+}
