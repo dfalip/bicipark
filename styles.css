@@ -1593,3 +1593,236 @@ button {
     border-radius: 14px;
   }
 }
+
+/* =========================================================
+   HOME COMPACT HERO
+   Redueix el hero perquè la home es vegi millor sense tant scroll
+   ========================================================= */
+
+#homeView {
+  max-width: 1380px;
+  padding: 18px 24px 28px;
+}
+
+#heroSection {
+  min-height: 360px;
+  grid-template-columns: 1fr 0.92fr;
+  border-radius: 22px;
+}
+
+.heroContent {
+  padding: 42px 46px;
+}
+
+.heroContent h1 {
+  font-size: 56px;
+  margin-bottom: 12px;
+}
+
+.heroContent h2 {
+  font-size: 22px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  max-width: 560px;
+}
+
+.heroContent p {
+  font-size: 16px;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  max-width: 560px;
+}
+
+.heroBadge {
+  font-size: 11px;
+  padding: 6px 10px;
+  margin-bottom: 12px;
+}
+
+.heroButtons {
+  margin-bottom: 20px;
+}
+
+.heroPrimaryBtn {
+  padding: 13px 22px;
+  font-size: 16px;
+  min-width: 245px;
+}
+
+.heroSecondaryBtn {
+  padding: 13px 18px;
+  font-size: 15px;
+}
+
+.heroFeatures {
+  gap: 20px;
+}
+
+.heroFeature {
+  min-width: 145px;
+}
+
+.heroFeature span {
+  font-size: 22px;
+}
+
+.heroFeature strong {
+  font-size: 13px;
+}
+
+.heroFeature small {
+  font-size: 11px;
+}
+
+.heroVisual {
+  min-height: 360px;
+}
+
+.heroPhotoCard {
+  min-height: 360px;
+}
+
+.heroCityTag {
+  top: 20px;
+  right: 20px;
+  padding: 8px 13px;
+  font-size: 12px;
+}
+
+/* Banner publicitari més compacte */
+.largeAd {
+  margin-top: 16px;
+  padding: 10px;
+}
+
+.adInner {
+  min-height: 52px;
+}
+
+.adInner strong {
+  font-size: 14px;
+}
+
+.adInner span {
+  font-size: 12px;
+}
+
+/* Targetes principals més compactes */
+#homeCategories {
+  margin-top: 16px;
+  gap: 16px;
+}
+
+.categoryCard {
+  min-height: 250px;
+  padding: 18px;
+  border-radius: 18px;
+}
+
+.categoryIcon {
+  width: 52px;
+  height: 52px;
+  font-size: 23px;
+}
+
+.categoryTop h3 {
+  font-size: 19px;
+  margin-bottom: 6px;
+}
+
+.categoryTop p {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.categoryArt {
+  min-height: 95px;
+  margin: 14px 0;
+}
+
+.categoryBtn {
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+/* Zona inferior una mica més compacta */
+#homeLowerGrid {
+  margin-top: 16px;
+  gap: 16px;
+}
+
+.citiesPanel,
+.partnerPanel {
+  padding: 18px;
+  border-radius: 18px;
+}
+
+.cityThumb {
+  height: 86px;
+}
+
+.cityCardHome {
+  min-height: 170px;
+}
+
+.partnerLogoPlaceholder {
+  min-height: 120px;
+}
+
+/* Footer més compacte */
+#homeFooterStrip {
+  margin-top: 16px;
+  padding: 14px 22px;
+  font-size: 13px;
+}
+
+/* Pantalles mitjanes */
+@media (max-width: 1200px) {
+  #heroSection {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .heroVisual {
+    min-height: 240px;
+  }
+
+  .heroPhotoCard {
+    min-height: 240px;
+  }
+}
+
+/* Mòbil */
+@media (max-width: 760px) {
+  #homeView {
+    padding: 12px;
+  }
+
+  #heroSection {
+    border-radius: 18px;
+  }
+
+  .heroContent {
+    padding: 30px 22px;
+  }
+
+  .heroContent h1 {
+    font-size: 42px;
+  }
+
+  .heroContent h2 {
+    font-size: 20px;
+  }
+
+  .heroContent p {
+    font-size: 15px;
+  }
+
+  .heroVisual {
+    min-height: 190px;
+  }
+
+  .heroPhotoCard {
+    min-height: 190px;
+  }
+}
