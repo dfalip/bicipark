@@ -265,38 +265,37 @@
   </main>
 
 <!-- APP -->
-<section id="appView" class="hidden-view">
-  <div id="appTopbar">
-    <div class="appTopbarLeft">
-      <button id="backHomeBtn" class="ghostBtn" type="button">← Home</button>
-
-      <div class="appTitleWrap">
-        <h2 id="appModeTitle">Aparcaments</h2>
-        <span id="citySubtitle">Aparcaments de bicicleta a Barcelona</span>
-      </div>
-    </div>
-
-    <div id="topControls">
-      <select id="citySelect"></select>
-
-      <div id="searchBox">
-        <input id="searchInput" type="text" placeholder="Busca una adreça o lloc..." />
-        <button id="searchBtn">Buscar</button>
-        <button id="nearBtn">A prop meu</button>
-      </div>
+<section id="appView" class="hidden-view appViewClean">
+  <div id="appTopbar" class="appTopbarMinimal">
+    <button id="backHomeBtn" class="hiddenUtilityBtn">← Home</button>
+    <div class="hiddenUtilityTitle">
+      <h2 id="appModeTitle">Aparcaments</h2>
+      <span id="citySubtitle">Aparcaments de bicicleta a Barcelona</span>
     </div>
   </div>
 
-  <div id="layout">
-    <aside id="sidebar">
-      <div id="sidebarHeader">
+  <div id="layout" class="layoutFloating">
+    <aside id="sidebar" class="sidebarFloatingCard">
+      <div id="sidebarHeader" class="sidebarHeaderClean">
         <div>
-          <h2>Explora</h2>
+          <h2 id="sidebarMainTitle">Explora</h2>
           <p>Selecciona ciutat, mode i filtres</p>
         </div>
+        <button class="miniIconBtn" type="button" title="Opcions">⚙️</button>
       </div>
 
-      <section id="modeSwitch">
+      <div class="sidebarSearchBlock">
+        <select id="citySelect" class="compactTopSelect"></select>
+
+        <div class="sidebarSearchRow">
+          <input id="searchInput" type="text" placeholder="Busca una adreça o lloc..." />
+          <button id="searchBtn">Buscar</button>
+        </div>
+
+        <button id="nearBtn" class="nearSoftBtn">📍 A prop meu</button>
+      </div>
+
+      <section id="modeSwitch" class="modeSwitchClean">
         <button class="mode-btn active" data-mode="parking">🚲 Aparcar</button>
         <button class="mode-btn" data-mode="road">🚴 Carretera</button>
         <button class="mode-btn" data-mode="mtb">⛰️ BTT</button>
@@ -304,46 +303,46 @@
 
       <div id="parkingControls">
         <section id="filters" class="compactFilters">
-  <div class="filterRow">
-    <label class="compactFilterLabel" for="securityFilterSelect">Seguretat</label>
-    <select id="securityFilterSelect" class="compactSelect">
-      <option value="tots">🟢 Tots</option>
-      <option value="alta">🟢 Alta seguretat</option>
-      <option value="mitjana">🟡 Mitjana</option>
-      <option value="baixa">🔴 Baixa</option>
-    </select>
-  </div>
+          <div class="filterRow">
+            <label class="compactFilterLabel" for="securityFilterSelect">Seguretat</label>
+            <select id="securityFilterSelect" class="compactSelect">
+              <option value="tots">Tots</option>
+              <option value="alta">Alta</option>
+              <option value="mitjana">Mitjana</option>
+              <option value="baixa">Baixa</option>
+            </select>
+          </div>
 
-  <div class="filterRow">
-    <label class="compactFilterLabel" for="radiusSelect">Àrea</label>
-    <select id="radiusSelect" class="compactSelect">
-      <option value="all">Tota la ciutat</option>
-      <option value="500">500 m</option>
-      <option value="1000">1 km</option>
-      <option value="2000">2 km</option>
-    </select>
-  </div>
+          <div class="filterRow">
+            <label class="compactFilterLabel" for="radiusSelect">Àrea</label>
+            <select id="radiusSelect" class="compactSelect">
+              <option value="all">Tota la ciutat</option>
+              <option value="500">500 m</option>
+              <option value="1000">1 km</option>
+              <option value="2000">2 km</option>
+            </select>
+          </div>
 
-  <div class="filterOptionsRow">
-    <button class="filter-btn compactOptionBtn" data-filter="favorites" type="button">
-      ❤️ Favorits
-    </button>
+          <div class="filterOptionsRow">
+            <button class="filter-btn compactOptionBtn" data-filter="favorites" type="button">
+              ❤️ Favorits
+            </button>
 
-    <button id="bikeLaneBtn" class="bike-lane-btn compactOptionBtn" type="button">
-      🚴 Carrils bici
-    </button>
-  </div>
-</section>
+            <button id="bikeLaneBtn" class="bike-lane-btn compactOptionBtn" type="button">
+              🚴 Carrils bici
+            </button>
+          </div>
+        </section>
 
-<section id="radiusFilters" class="hiddenFilterButtons">
-  <button class="radius-btn active" data-radius="all">Tota la ciutat</button>
-  <button class="radius-btn" data-radius="500">500 m</button>
-  <button class="radius-btn" data-radius="1000">1 km</button>
-  <button class="radius-btn" data-radius="2000">2 km</button>
-</section>
+        <section id="radiusFilters" class="hiddenFilterButtons">
+          <button class="radius-btn active" data-radius="all">Tota la ciutat</button>
+          <button class="radius-btn" data-radius="500">500 m</button>
+          <button class="radius-btn" data-radius="1000">1 km</button>
+          <button class="radius-btn" data-radius="2000">2 km</button>
+        </section>
       </div>
 
-      <section id="statusBar">
+      <section id="statusBar" class="statusCardSoft">
         <div id="parkingCounter">Carregant dades...</div>
         <div id="nearestInfo">Busca una ubicació o prem “A prop meu”.</div>
       </section>
