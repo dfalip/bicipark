@@ -27,13 +27,69 @@
   },
 
   "new-york": {
-  "name": "New York",
+  "name": "New York · Manhattan",
   "country": "USA",
   "enabled": true,
-  "center": [40.7128, -74.0060],
+  "center": [40.7831, -73.9712],
   "zoom": 12,
-  "searchSuffix": "New York City, USA",
-  "parkings": "./data/new-york/parkings.json",
+  "searchSuffix": "Manhattan, New York City, USA",
+  "parkings": "./data/new-york/parkings-manhattan.json",
+  "bikeLanes": null,
+  "roadRoutes": null,
+  "dataStatus": "official",
+  "dataLabel": "Dades oficials NYC Open Data"
+},
+
+"new-york-brooklyn": {
+  "name": "New York · Brooklyn",
+  "country": "USA",
+  "enabled": true,
+  "center": [40.6782, -73.9442],
+  "zoom": 12,
+  "searchSuffix": "Brooklyn, New York City, USA",
+  "parkings": "./data/new-york/parkings-brooklyn.json",
+  "bikeLanes": null,
+  "roadRoutes": null,
+  "dataStatus": "official",
+  "dataLabel": "Dades oficials NYC Open Data"
+},
+
+"new-york-queens": {
+  "name": "New York · Queens",
+  "country": "USA",
+  "enabled": true,
+  "center": [40.7282, -73.7949],
+  "zoom": 12,
+  "searchSuffix": "Queens, New York City, USA",
+  "parkings": "./data/new-york/parkings-queens.json",
+  "bikeLanes": null,
+  "roadRoutes": null,
+  "dataStatus": "official",
+  "dataLabel": "Dades oficials NYC Open Data"
+},
+
+"new-york-bronx": {
+  "name": "New York · Bronx",
+  "country": "USA",
+  "enabled": true,
+  "center": [40.8448, -73.8648],
+  "zoom": 12,
+  "searchSuffix": "Bronx, New York City, USA",
+  "parkings": "./data/new-york/parkings-bronx.json",
+  "bikeLanes": null,
+  "roadRoutes": null,
+  "dataStatus": "official",
+  "dataLabel": "Dades oficials NYC Open Data"
+},
+
+"new-york-staten-island": {
+  "name": "New York · Staten Island",
+  "country": "USA",
+  "enabled": true,
+  "center": [40.5795, -74.1502],
+  "zoom": 12,
+  "searchSuffix": "Staten Island, New York City, USA",
+  "parkings": "./data/new-york/parkings-staten-island.json",
   "bikeLanes": null,
   "roadRoutes": null,
   "dataStatus": "official",
