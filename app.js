@@ -156,6 +156,14 @@ function findCoordinatesDeep(obj) {
 function getName(rawItem) {
   const item = rawItem.properties || rawItem;
 
+  if (item.program && item.site_id) {
+    return `${item.program} · ${item.site_id}`;
+  }
+
+  if (item.program) {
+    return item.program;
+  }
+
   return (
     item.name ||
     item.nom ||
@@ -163,6 +171,7 @@ function getName(rawItem) {
     item.equipment_name ||
     item.NOM ||
     item.Nom ||
+    item.site_id ||
     "Aparcament bicicleta"
   );
 }
@@ -176,6 +185,19 @@ function getAddress(rawItem) {
     const number = address.address_start || "";
     const district = address.district_name || "";
     return `${street} ${number} ${district ? "— " + district : ""}`.trim();
+  }
+
+  if (item.ifoaddress || item.onstreet || item.fromstreet || item.tostreet || item.borough) {
+    const parts = [];
+
+    if (item.ifoaddress) parts.push(item.ifoaddress);
+    if (item.onstreet) parts.push(item.onstreet);
+    if (item.fromstreet || item.tostreet) {
+      parts.push(`${item.fromstreet || ""}${item.tostreet ? " / " + item.tostreet : ""}`.trim());
+    }
+    if (item.borough) parts.push(item.borough);
+
+    return parts.filter(Boolean).join(" — ");
   }
 
   return item.address || item.adreca || item.ADRECA || item.Adreca || currentCity?.name || "Ubicació";
@@ -199,16 +221,33 @@ function getPlaces(rawItem) {
     if (value !== undefined && value !== null && value !== "") return value;
   }
 
+  if (currentCityKey === "new-york") {
+    return "N/D";
+  }
+
   return "N/D";
 }
 
 function getType(rawItem) {
   const item = rawItem.properties || rawItem;
-  return item.type || item.tipus || item.TIPUS || item.category || "Aparcament bici";
+
+  return (
+    item.type ||
+    item.tipus ||
+    item.TIPUS ||
+    item.category ||
+    item.program ||
+    "Aparcament bici"
+  );
 }
 
 function getSource(rawItem) {
   const item = rawItem.properties || rawItem;
+
+  if (currentCityKey === "new-york") {
+    return "NYC Open Data / NYC DOT";
+  }
+
   return item.source || currentCity?.dataLabel || "Font no indicada";
 }
 
@@ -223,6 +262,16 @@ function estimateSecurity(rawItem) {
 
   if (item.security) return item.security;
   if (item.seguretat) return item.seguretat;
+
+  if (currentCityKey === "new-york") {
+    const text = JSON.stringify(rawItem).toLowerCase();
+
+    if (text.includes("secure")) return "alta";
+    if (text.includes("bike corral")) return "mitjana";
+    if (text.includes("rack")) return "mitjana";
+
+    return "mitjana";
+  }
 
   const text = JSON.stringify(rawItem).toLowerCase();
 
