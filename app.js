@@ -8,14 +8,13 @@ let currentFilter = "tots";
 let currentRadius = "all";
 let currentMode = "parking";
 let activeLocation = null;
+let selectedNearestParkingId = null;
 
 let searchMarker;
 let userMarker;
 let nearestMarker;
 let bikeLaneLayer;
 let bikeLanesVisible = false;
-
-let selectedNearestParkingId = null;
 
 let favorites = JSON.parse(localStorage.getItem("biciparkFavorites") || "[]");
 
@@ -237,81 +236,6 @@ function toggleFavorite(parking) {
 
   localStorage.setItem("biciparkFavorites", JSON.stringify(favorites));
 
-  function renderModePlaceholder() {
-  const container = document.getElementById("parkingList");
-  const title = document.querySelector("#sidebarHeader h2");
-
-  markers.clearLayers();
-
-  if (nearestMarker) {
-    map.removeLayer(nearestMarker);
-    nearestMarker = null;
-  }
-
-  if (currentMode === "road") {
-    title.textContent = "Rutes de carretera";
-
-    container.innerHTML = `
-      <div class="mode-placeholder">
-        <h3>🚴 Rutes de carretera</h3>
-        <p>
-          Aquest apartat servirà per mostrar rutes de bicicleta de carretera
-          vinculades a la ciutat seleccionada.
-        </p>
-        <p>Properament podràs veure:</p>
-        <ul>
-          <li>distància de la ruta</li>
-          <li>desnivell positiu</li>
-          <li>dificultat</li>
-          <li>punts d'interès</li>
-          <li>restaurants, allotjaments i parades recomanades</li>
-          <li>enllaç o descàrrega GPX</li>
-        </ul>
-      </div>
-    `;
-
-    document.getElementById("parkingCounter").textContent =
-      `Mode carretera · ${currentCity.name}`;
-
-    document.getElementById("nearestInfo").textContent =
-      "Selecciona una ruta de carretera quan estigui disponible.";
-
-    return;
-  }
-
-  if (currentMode === "mtb") {
-    title.textContent = "Rutes BTT";
-
-    container.innerHTML = `
-      <div class="mode-placeholder">
-        <h3>⛰️ Rutes BTT / muntanya</h3>
-        <p>
-          Aquest apartat servirà per mostrar rutes de bicicleta de muntanya
-          vinculades a la ciutat o territori seleccionat.
-        </p>
-        <p>Properament podràs veure:</p>
-        <ul>
-          <li>dificultat tècnica</li>
-          <li>dificultat física</li>
-          <li>tipus de terreny</li>
-          <li>desnivell</li>
-          <li>punts d'aigua</li>
-          <li>advertiments i recomanacions</li>
-          <li>enllaç o descàrrega GPX</li>
-        </ul>
-      </div>
-    `;
-
-    document.getElementById("parkingCounter").textContent =
-      `Mode BTT · ${currentCity.name}`;
-
-    document.getElementById("nearestInfo").textContent =
-      "Selecciona una ruta BTT quan estigui disponible.";
-
-    return;
-  }
-}
-  
   renderParkings();
 
   if (activeLocation) {
@@ -335,6 +259,7 @@ function getDataStatusBadge(parking) {
   if (parking.verified === true) return `<span class="badge badge-green">✓ Verificat</span>`;
   if (parking.dataStatus === "official") return `<span class="badge badge-green">Dades oficials</span>`;
   if (parking.dataStatus === "provisional") return `<span class="badge badge-yellow">Dades provisionals</span>`;
+  if (parking.dataStatus === "partial_official") return `<span class="badge badge-yellow">Dades oficials parcials</span>`;
   return `<span class="badge badge-dark">Font no indicada</span>`;
 }
 
@@ -495,11 +420,99 @@ function renderSidebar() {
   });
 }
 
+function renderModePlaceholder() {
+  const container = document.getElementById("parkingList");
+  const title = document.querySelector("#sidebarHeader h2");
+
+  markers.clearLayers();
+
+  if (nearestMarker) {
+    map.removeLayer(nearestMarker);
+    nearestMarker = null;
+  }
+
+  selectedNearestParkingId = null;
+
+  if (currentMode === "road") {
+    title.textContent = "Rutes de carretera";
+
+    container.innerHTML = `
+      <div class="mode-placeholder">
+        <h3>🚴 Rutes de carretera</h3>
+        <p>
+          Aquest apartat servirà per mostrar rutes de bicicleta de carretera
+          vinculades a la ciutat seleccionada.
+        </p>
+        <p>Properament podràs veure:</p>
+        <ul>
+          <li>distància de la ruta</li>
+          <li>desnivell positiu</li>
+          <li>dificultat</li>
+          <li>punts d'interès</li>
+          <li>restaurants, allotjaments i parades recomanades</li>
+          <li>enllaç o descàrrega GPX</li>
+        </ul>
+
+        <div class="mode-card">
+          <strong>Exemple futur</strong>
+          Girona - Els Àngels · Ruta clàssica de carretera.
+        </div>
+      </div>
+    `;
+
+    document.getElementById("parkingCounter").textContent =
+      `Mode carretera · ${currentCity.name}`;
+
+    document.getElementById("nearestInfo").textContent =
+      "Selecciona una ruta de carretera quan estigui disponible.";
+
+    return;
+  }
+
+  if (currentMode === "mtb") {
+    title.textContent = "Rutes BTT";
+
+    container.innerHTML = `
+      <div class="mode-placeholder">
+        <h3>⛰️ Rutes BTT / muntanya</h3>
+        <p>
+          Aquest apartat servirà per mostrar rutes de bicicleta de muntanya
+          vinculades a la ciutat o territori seleccionat.
+        </p>
+        <p>Properament podràs veure:</p>
+        <ul>
+          <li>dificultat tècnica</li>
+          <li>dificultat física</li>
+          <li>tipus de terreny</li>
+          <li>desnivell</li>
+          <li>punts d'aigua</li>
+          <li>advertiments i recomanacions</li>
+          <li>enllaç o descàrrega GPX</li>
+        </ul>
+
+        <div class="mode-card">
+          <strong>Exemple futur</strong>
+          Sant Miquel / Gavarres · Ruta BTT pendent de dades.
+        </div>
+      </div>
+    `;
+
+    document.getElementById("parkingCounter").textContent =
+      `Mode BTT · ${currentCity.name}`;
+
+    document.getElementById("nearestInfo").textContent =
+      "Selecciona una ruta BTT quan estigui disponible.";
+
+    return;
+  }
+}
+
 function renderParkings() {
   if (currentMode !== "parking") {
-  renderModePlaceholder();
-  return;
+    renderModePlaceholder();
+    return;
   }
+
   markers.clearLayers();
 
   const filtered = getFilteredParkings();
@@ -525,6 +538,8 @@ function renderParkings() {
 }
 
 function highlightNearestParking(lat, lng) {
+  if (currentMode !== "parking") return;
+
   const filtered = getFilteredParkings();
 
   if (filtered.length === 0) {
@@ -568,7 +583,7 @@ function setRadius(radius, rerender = true) {
   if (rerender) {
     renderParkings();
 
-    if (activeLocation) {
+    if (activeLocation && currentMode === "parking") {
       highlightNearestParking(activeLocation.lat, activeLocation.lng);
     }
   }
@@ -777,9 +792,11 @@ async function searchLocation() {
       .bindPopup(data[0].display_name)
       .openPopup();
 
-    setRadius("1000");
-    renderParkings();
-    highlightNearestParking(lat, lon);
+    if (currentMode === "parking") {
+      setRadius("1000");
+      renderParkings();
+      highlightNearestParking(lat, lon);
+    }
 
   } catch (error) {
     alert("Error cercant ubicació");
@@ -808,9 +825,11 @@ function locateUser() {
         .bindPopup("Estàs aquí")
         .openPopup();
 
-      setRadius("1000");
-      renderParkings();
-      highlightNearestParking(lat, lng);
+      if (currentMode === "parking") {
+        setRadius("1000");
+        renderParkings();
+        highlightNearestParking(lat, lng);
+      }
     },
     () => {
       alert("No s'ha pogut obtenir la teva ubicació.");
@@ -849,7 +868,7 @@ function setupEvents() {
       currentFilter = button.dataset.filter;
       renderParkings();
 
-      if (activeLocation) {
+      if (activeLocation && currentMode === "parking") {
         highlightNearestParking(activeLocation.lat, activeLocation.lng);
       }
     });
