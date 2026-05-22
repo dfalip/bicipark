@@ -453,17 +453,146 @@ function createRouteCard(route) {
       <span class="badge badge-dark">${route.distanceKm} km</span>
       <span class="badge badge-yellow">+${route.elevationM} m</span>
       <span class="badge badge-green">${route.difficulty}</span>
+      ${route.gpx ? `<span class="badge badge-dark">GPX</span>` : ""}
     </div>
   `;
 
   card.addEventListener("click", () => {
     showRoadRoute(route);
+    renderRouteDetail(route);
   });
 
   return card;
 }
 
-function showRoadRoute(route) {
+function renderRouteDetail(route) {
+  const container = document.getElementById("parkingList");
+
+  const villages = Array.isArray(route.villages)
+    ? route.villages.map(v => `<li>${v}</li>`).join("")
+    : "";
+
+  const pois = Array.isArray(route.pointsOfInterest)
+    ? route.pointsOfInterest.map(p => `<li>${p.name} · ${p.type || "Punt d’interès"}</li>`).join("")
+    : "";
+
+  const restaurants = Array.isArray(route.restaurants)
+    ? route.restaurants.map(r => `<li>${r.name}${r.note ? " · " + r.note : ""}</li>`).join("")
+    : "";
+
+  const hotels = Array.isArray(route.hotels)
+    ? route.hotels.map(h => `<li>${h.name}${h.note ? " · " + h.note : ""}</li>`).join("")
+    : "";
+
+  const notes = Array.isArray(route.notes)
+    ? route.notes.map(n => `<li>${n}</li>`).join("")
+    : "";
+
+  const detail = document.createElement("div");
+  detail.className = "route-detail";
+
+  detail.innerHTML = `
+    <h3>${route.name}</h3>
+
+    <div class="route-meta">
+      <span class="badge badge-dark">${route.distanceKm} km</span>
+      <span class="badge badge-yellow">+${route.elevationM} m</span>
+      <span class="badge badge-green">${route.difficulty}</span>
+      <span class="badge badge-dark">${route.duration || ""}</span>
+      ${route.gpx ? `<span class="badge badge-green">GPX disponible</span>` : `<span class="badge badge-yellow">Sense GPX</span>`}
+    </div>
+
+    <p>${route.description}</p>
+
+    <div class="route-section">
+      <strong>Pobles / zones de pas</strong>
+      <ul>${villages || "<li>Pendent d’afegir</li>"}</ul>
+    </div>
+
+    <div class="route-section">
+      <strong>Punts d’interès</strong>
+      <ul>${pois || "<li>Pendent d’afegir</li>"}</ul>
+    </div>
+
+    <div class="route-section">
+      <strong>Restaurants / parades</strong>
+      <ul>${restaurants || "<li>Pendent d’afegir</li>"}</ul>
+    </div>
+
+    <div class="route-section">
+      <strong>Allotjaments</strong>
+      <ul>${hotels || "<li>Pendent d’afegir</li>"}</ul>
+    </div>
+
+    <div class="route-section">
+      <strong>Notes</strong>
+      <ul>${notes || "<li>Sense notes addicionals</li>"}</ul>
+    </div>
+
+    <div class="route-warning">
+      Les dades de ruta són editorials i cal validar-les abans d’usar-les com a navegació.
+    </div>
+  `;
+
+  container.prepend(detail);
+}
+
+async function drawGpxRoute(gpxUrl, targetLayer) {
+  try {
+    const response = await fetch(gpxUrl);
+
+    if (!response.ok) {
+      console.warn("No s'ha trobat el GPX:", gpxUrl);
+      return false;
+    }
+
+    const gpxText = await response.text();
+    const points = parseGpxPoints(gpxText);
+
+    if (points.length < 2) {
+      console.warn("El GPX no té prou punts:", gpxUrl);
+      return false;
+    }
+
+    const gpxLine = L.polyline(points, {
+      color: "#0057ff",
+      weight: 5,
+      opacity: 0.9
+    });
+
+    targetLayer.addLayer(gpxLine);
+    map.fitBounds(gpxLine.getBounds(), { padding: [40, 40] });
+
+    return true;
+
+  } catch (error) {
+    console.warn("Error carregant GPX:", error);
+    return false;
+  }
+}
+
+function parseGpxPoints(gpxText) {
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(gpxText, "application/xml");
+
+  const trkpts = Array.from(xml.getElementsByTagName("trkpt"));
+  const rtepts = Array.from(xml.getElementsByTagName("rtept"));
+
+  const rawPoints = trkpts.length > 0 ? trkpts : rtepts;
+
+  return rawPoints
+    .map(point => {
+      const lat = parseFloat(point.getAttribute("lat"));
+      const lng = parseFloat(point.getAttribute("lon"));
+
+      if (isNaN(lat) || isNaN(lng)) return null;
+
+      return [lat, lng];
+    })
+    .filter(Boolean);
+}
+
+async function showRoadRoute(route) {
   if (roadRouteLayer) {
     map.removeLayer(roadRouteLayer);
   }
@@ -482,21 +611,53 @@ function showRoadRoute(route) {
 
   roadRouteLayer.addLayer(startMarker);
 
-  if (Array.isArray(route.stops)) {
-    route.stops.forEach(stop => {
-      const stopMarker = L.marker([stop.lat, stop.lng], { icon: routeStopIcon })
+  if (Array.isArray(route.pointsOfInterest)) {
+    route.pointsOfInterest.forEach(point => {
+      if (!point.lat || !point.lng) return;
+
+      const pointMarker = L.marker([point.lat, point.lng], { icon: routeStopIcon })
         .bindPopup(`
-          <strong>${stop.name}</strong><br>
-          ${stop.type || "Parada recomanada"}
+          <strong>${point.name}</strong><br>
+          ${point.type || "Punt d’interès"}
         `);
 
-      roadRouteLayer.addLayer(stopMarker);
+      roadRouteLayer.addLayer(pointMarker);
     });
+  }
+
+  let gpxDrawn = false;
+
+  if (route.gpx) {
+    gpxDrawn = await drawGpxRoute(route.gpx, roadRouteLayer);
   }
 
   roadRouteLayer.addTo(map);
 
-  map.setView([route.lat, route.lng], 11);
+  if (!gpxDrawn) {
+    const routePoints = [[route.lat, route.lng]];
+
+    if (Array.isArray(route.pointsOfInterest)) {
+      route.pointsOfInterest.forEach(point => {
+        if (point.lat && point.lng) {
+          routePoints.push([point.lat, point.lng]);
+        }
+      });
+    }
+
+    if (routePoints.length > 1) {
+      const fallbackLine = L.polyline(routePoints, {
+        color: "#1D9E75",
+        weight: 4,
+        opacity: 0.75,
+        dashArray: "6, 8"
+      });
+
+      roadRouteLayer.addLayer(fallbackLine);
+      map.fitBounds(fallbackLine.getBounds(), { padding: [40, 40] });
+    } else {
+      map.setView([route.lat, route.lng], 11);
+    }
+  }
 }
 
 function renderRoadRoutes() {
