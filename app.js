@@ -4,6 +4,8 @@ let cities = {};
 let currentCityKey = null;
 let currentCity = null;
 let allParkings = [];
+let roadRoutes = [];
+
 let currentFilter = "tots";
 let currentRadius = "all";
 let currentMode = "parking";
@@ -14,6 +16,7 @@ let searchMarker;
 let userMarker;
 let nearestMarker;
 let bikeLaneLayer;
+let roadRouteLayer;
 let bikeLanesVisible = false;
 
 let favorites = JSON.parse(localStorage.getItem("biciparkFavorites") || "[]");
@@ -41,6 +44,20 @@ const markers = L.markerClusterGroup({
 
 const searchIcon = L.divIcon({
   html: '<div class="search-pin"></div>',
+  className: "",
+  iconSize: [28, 28],
+  iconAnchor: [14, 14]
+});
+
+const routeStartIcon = L.divIcon({
+  html: '<div class="route-pin">🚴</div>',
+  className: "",
+  iconSize: [34, 34],
+  iconAnchor: [17, 17]
+});
+
+const routeStopIcon = L.divIcon({
+  html: '<div class="stop-pin">📍</div>',
   className: "",
   iconSize: [28, 28],
   iconAnchor: [14, 14]
@@ -420,6 +437,114 @@ function renderSidebar() {
   });
 }
 
+function createRouteCard(route) {
+  const card = document.createElement("div");
+  card.className = "parkingCard";
+
+  card.innerHTML = `
+    <div class="cardTop">
+      <div>
+        <div class="cardTitle">🚴 ${route.name}</div>
+        <div class="cardAddress">${route.description}</div>
+      </div>
+    </div>
+
+    <div class="cardFooter">
+      <span class="badge badge-dark">${route.distanceKm} km</span>
+      <span class="badge badge-yellow">+${route.elevationM} m</span>
+      <span class="badge badge-green">${route.difficulty}</span>
+    </div>
+  `;
+
+  card.addEventListener("click", () => {
+    showRoadRoute(route);
+  });
+
+  return card;
+}
+
+function showRoadRoute(route) {
+  if (roadRouteLayer) {
+    map.removeLayer(roadRouteLayer);
+  }
+
+  roadRouteLayer = L.layerGroup();
+
+  const startMarker = L.marker([route.lat, route.lng], { icon: routeStartIcon })
+    .bindPopup(`
+      <strong>${route.name}</strong><br>
+      Sortida: ${route.start}<br>
+      Distància: ${route.distanceKm} km<br>
+      Desnivell: +${route.elevationM} m<br>
+      Dificultat: ${route.difficulty}<br><br>
+      <small>${route.source || "Dades editorials"}</small>
+    `);
+
+  roadRouteLayer.addLayer(startMarker);
+
+  if (Array.isArray(route.stops)) {
+    route.stops.forEach(stop => {
+      const stopMarker = L.marker([stop.lat, stop.lng], { icon: routeStopIcon })
+        .bindPopup(`
+          <strong>${stop.name}</strong><br>
+          ${stop.type || "Parada recomanada"}
+        `);
+
+      roadRouteLayer.addLayer(stopMarker);
+    });
+  }
+
+  roadRouteLayer.addTo(map);
+
+  map.setView([route.lat, route.lng], 11);
+}
+
+function renderRoadRoutes() {
+  const container = document.getElementById("parkingList");
+  const title = document.querySelector("#sidebarHeader h2");
+
+  title.textContent = `Rutes de carretera a ${currentCity.name}`;
+
+  markers.clearLayers();
+  selectedNearestParkingId = null;
+
+  if (nearestMarker) {
+    map.removeLayer(nearestMarker);
+    nearestMarker = null;
+  }
+
+  if (roadRoutes.length === 0) {
+    container.innerHTML = `
+      <div class="mode-placeholder">
+        <h3>🚴 Rutes de carretera</h3>
+        <p>
+          Encara no hi ha rutes de carretera carregades per aquesta ciutat.
+        </p>
+      </div>
+    `;
+
+    document.getElementById("parkingCounter").textContent =
+      `Mode carretera · ${currentCity.name}`;
+
+    document.getElementById("nearestInfo").textContent =
+      "No hi ha rutes disponibles encara.";
+
+    return;
+  }
+
+  container.innerHTML = "";
+
+  roadRoutes.forEach(route => {
+    container.appendChild(createRouteCard(route));
+  });
+
+  document.getElementById("parkingCounter").textContent =
+    `${roadRoutes.length} rutes de carretera · ${currentCity.name}`;
+
+  document.getElementById("nearestInfo").textContent =
+    "Selecciona una ruta per veure punts recomanats al mapa.";
+}
+
 function renderModePlaceholder() {
   const container = document.getElementById("parkingList");
   const title = document.querySelector("#sidebarHeader h2");
@@ -434,38 +559,7 @@ function renderModePlaceholder() {
   selectedNearestParkingId = null;
 
   if (currentMode === "road") {
-    title.textContent = "Rutes de carretera";
-
-    container.innerHTML = `
-      <div class="mode-placeholder">
-        <h3>🚴 Rutes de carretera</h3>
-        <p>
-          Aquest apartat servirà per mostrar rutes de bicicleta de carretera
-          vinculades a la ciutat seleccionada.
-        </p>
-        <p>Properament podràs veure:</p>
-        <ul>
-          <li>distància de la ruta</li>
-          <li>desnivell positiu</li>
-          <li>dificultat</li>
-          <li>punts d'interès</li>
-          <li>restaurants, allotjaments i parades recomanades</li>
-          <li>enllaç o descàrrega GPX</li>
-        </ul>
-
-        <div class="mode-card">
-          <strong>Exemple futur</strong>
-          Girona - Els Àngels · Ruta clàssica de carretera.
-        </div>
-      </div>
-    `;
-
-    document.getElementById("parkingCounter").textContent =
-      `Mode carretera · ${currentCity.name}`;
-
-    document.getElementById("nearestInfo").textContent =
-      "Selecciona una ruta de carretera quan estigui disponible.";
-
+    renderRoadRoutes();
     return;
   }
 
@@ -489,11 +583,6 @@ function renderModePlaceholder() {
           <li>advertiments i recomanacions</li>
           <li>enllaç o descàrrega GPX</li>
         </ul>
-
-        <div class="mode-card">
-          <strong>Exemple futur</strong>
-          Sant Miquel / Gavarres · Ruta BTT pendent de dades.
-        </div>
       </div>
     `;
 
@@ -511,6 +600,11 @@ function renderParkings() {
   if (currentMode !== "parking") {
     renderModePlaceholder();
     return;
+  }
+
+  if (roadRouteLayer) {
+    map.removeLayer(roadRouteLayer);
+    roadRouteLayer = null;
   }
 
   markers.clearLayers();
@@ -591,6 +685,7 @@ function setRadius(radius, rerender = true) {
 
 function resetMapState() {
   allParkings = [];
+  roadRoutes = [];
   activeLocation = null;
   selectedNearestParkingId = null;
 
@@ -600,16 +695,18 @@ function resetMapState() {
   if (userMarker) map.removeLayer(userMarker);
   if (nearestMarker) map.removeLayer(nearestMarker);
   if (bikeLaneLayer) map.removeLayer(bikeLaneLayer);
+  if (roadRouteLayer) map.removeLayer(roadRouteLayer);
 
   searchMarker = null;
   userMarker = null;
   nearestMarker = null;
   bikeLaneLayer = null;
+  roadRouteLayer = null;
   bikeLanesVisible = false;
 
   document.getElementById("bikeLaneBtn").classList.remove("active");
   document.getElementById("nearestInfo").textContent = "Busca una ubicació o prem “A prop meu”.";
-  document.getElementById("parkingList").innerHTML = `<div class="emptySidebar">Carregant aparcaments...</div>`;
+  document.getElementById("parkingList").innerHTML = `<div class="emptySidebar">Carregant dades...</div>`;
 
   setRadius("all", false);
 }
@@ -656,6 +753,23 @@ async function loadBikeLanes() {
 
   } catch (error) {
     console.warn("No s'han pogut carregar els carrils bici:", error);
+  }
+}
+
+async function loadRoadRoutes() {
+  roadRoutes = [];
+
+  if (!currentCity.roadRoutes) return;
+
+  try {
+    const response = await fetch(currentCity.roadRoutes);
+    if (!response.ok) return;
+
+    const data = await response.json();
+    roadRoutes = Array.isArray(data) ? data : [];
+
+  } catch (error) {
+    console.warn("No s'han pogut carregar les rutes de carretera:", error);
   }
 }
 
@@ -707,6 +821,7 @@ async function loadCity(cityKey) {
   try {
     await loadParkings();
     await loadBikeLanes();
+    await loadRoadRoutes();
     renderParkings();
   } catch (error) {
     console.error(error);
