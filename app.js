@@ -889,6 +889,11 @@ function setRadius(radius, rerender = true) {
     btn.classList.toggle("active", btn.dataset.radius === radius);
   });
 
+  const radiusSelect = document.getElementById("radiusSelect");
+  if (radiusSelect) {
+    radiusSelect.value = radius;
+  }
+
   if (rerender) {
     renderParkings();
 
@@ -1272,12 +1277,52 @@ function setupEvents() {
     if (e.key === "Enter") searchLocation();
   });
 
+  const securityFilterSelect = document.getElementById("securityFilterSelect");
+
+  if (securityFilterSelect) {
+    securityFilterSelect.addEventListener("change", () => {
+      currentFilter = securityFilterSelect.value;
+
+      document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.filter === currentFilter);
+      });
+
+      renderParkings();
+
+      if (activeLocation && currentMode === "parking") {
+        highlightNearestParking(activeLocation.lat, activeLocation.lng);
+      }
+    });
+  }
+
   document.querySelectorAll(".filter-btn").forEach(button => {
     button.addEventListener("click", () => {
-      document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
-      button.classList.add("active");
+      const selectedFilter = button.dataset.filter;
 
-      currentFilter = button.dataset.filter;
+      if (selectedFilter === "favorites") {
+        if (currentFilter === "favorites") {
+          currentFilter = "tots";
+          button.classList.remove("active");
+
+          if (securityFilterSelect) {
+            securityFilterSelect.value = "tots";
+          }
+        } else {
+          currentFilter = "favorites";
+          document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+          button.classList.add("active");
+        }
+      } else {
+        document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        currentFilter = selectedFilter;
+
+        if (securityFilterSelect) {
+          securityFilterSelect.value = selectedFilter;
+        }
+      }
+
       renderParkings();
 
       if (activeLocation && currentMode === "parking") {
@@ -1285,6 +1330,20 @@ function setupEvents() {
       }
     });
   });
+
+  const radiusSelect = document.getElementById("radiusSelect");
+
+  if (radiusSelect) {
+    radiusSelect.addEventListener("change", () => {
+      if (radiusSelect.value !== "all" && !activeLocation) {
+        alert("Primer busca una ubicació.");
+        radiusSelect.value = currentRadius;
+        return;
+      }
+
+      setRadius(radiusSelect.value);
+    });
+  }
 
   document.querySelectorAll(".radius-btn").forEach(button => {
     button.addEventListener("click", () => {
