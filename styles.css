@@ -1998,3 +1998,523 @@ button {
   font-size: 28px;
   font-weight: 900;
 }
+
+/* =========================================================
+   APP VIEW — SPLIT EQUILIBRAT PREMIUM
+   Millora la vista del mapa: menys pes dels filtres i més mapa
+   ========================================================= */
+
+#appView {
+  height: calc(100vh - 76px);
+  min-height: 0;
+  background: #eef2f7;
+  overflow: hidden;
+}
+
+/* Topbar compacta */
+#appTopbar {
+  height: 74px;
+  background: #071427;
+  color: #fff;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: nowrap;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.appTopbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 260px;
+}
+
+.ghostBtn {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  padding: 9px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.ghostBtn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.appTitleWrap h2 {
+  font-size: 18px;
+  margin-bottom: 3px;
+  line-height: 1.1;
+}
+
+.appTitleWrap span {
+  font-size: 12px;
+  opacity: 0.75;
+  line-height: 1.2;
+}
+
+/* Controls superiors */
+#topControls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+#citySelect {
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: none;
+  font-size: 13px;
+  font-weight: 800;
+  color: #071427;
+  background: #fff;
+  min-width: 210px;
+}
+
+#searchBox {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+#searchInput {
+  width: 290px;
+  height: 42px;
+  padding: 0 13px;
+  border-radius: 12px;
+  border: none;
+  font-size: 13px;
+}
+
+#searchBtn,
+#nearBtn {
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+#searchBtn {
+  background: #35b44a;
+  color: #fff;
+}
+
+#nearBtn {
+  background: #fff;
+  color: #071427;
+}
+
+/* Layout principal: sidebar + mapa */
+#layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  height: calc(100vh - 152px);
+  min-height: 0;
+  background: #eef2f7;
+}
+
+/* Sidebar més elegant i compacta */
+#sidebar {
+  width: auto;
+  height: 100%;
+  background: #ffffff;
+  border-right: 1px solid #e3e8ef;
+  overflow-y: auto;
+  font-size: 13px;
+  box-shadow: 6px 0 22px rgba(10, 20, 40, 0.06);
+  z-index: 500;
+}
+
+#sidebarHeader {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid #edf0f5;
+  background: #ffffff;
+}
+
+#sidebarHeader h2 {
+  font-size: 18px;
+  color: #071427;
+  margin-bottom: 4px;
+}
+
+#sidebarHeader p {
+  font-size: 12px;
+  color: #667085;
+}
+
+/* Mode switch dins la sidebar */
+#modeSwitch {
+  background: #ffffff;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.mode-btn {
+  width: 100%;
+  background: #f3f6fa;
+  color: #071427;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 13px;
+  text-align: left;
+  border: 1px solid transparent;
+}
+
+.mode-btn.active {
+  background: #071427;
+  color: #ffffff;
+  border-color: #071427;
+}
+
+.mode-btn:hover {
+  background: #eaf0f7;
+}
+
+.mode-btn.active:hover {
+  background: #071427;
+}
+
+/* Filtres dins la sidebar, menys protagonistes */
+#parkingControls {
+  display: block;
+  padding: 12px 14px;
+  border-bottom: 1px solid #edf0f5;
+  background: #fbfcfe;
+}
+
+#filters,
+#radiusFilters {
+  background: transparent;
+  padding: 0;
+  border-bottom: none;
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+#radiusFilters {
+  margin-top: 12px;
+}
+
+.controlGroupTitle {
+  width: 100%;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #667085;
+  margin-bottom: 2px;
+}
+
+#radiusFilters span {
+  display: none;
+}
+
+.filter-btn,
+.radius-btn,
+.bike-lane-btn {
+  background: #ffffff;
+  color: #071427;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  border: 1px solid #dde3ec;
+  box-shadow: none;
+}
+
+.filter-btn.active,
+.radius-btn.active,
+.bike-lane-btn.active {
+  background: #071427;
+  color: #ffffff;
+  border-color: #071427;
+}
+
+.filter-btn:hover,
+.radius-btn:hover,
+.bike-lane-btn:hover {
+  background: #eef3f8;
+}
+
+.filter-btn.active:hover,
+.radius-btn.active:hover,
+.bike-lane-btn.active:hover {
+  background: #071427;
+}
+
+/* Status bar integrada dins sidebar */
+#statusBar {
+  background: #ffffff;
+  padding: 12px 14px;
+  display: block;
+  font-size: 12px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+#parkingCounter {
+  font-weight: 900;
+  color: #071427;
+  margin-bottom: 5px;
+}
+
+#nearestInfo {
+  color: #667085;
+  line-height: 1.35;
+}
+
+/* Llistat */
+#parkingList {
+  padding: 12px;
+}
+
+.emptySidebar {
+  color: #667085;
+  font-size: 13px;
+  padding: 14px;
+}
+
+/* Cards més netes */
+.parkingCard {
+  border: 1px solid #e7ecf3;
+  border-radius: 15px;
+  padding: 13px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: 0.18s ease;
+  background: #ffffff;
+}
+
+.parkingCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(10,20,40,0.08);
+  border-color: #d5dde8;
+}
+
+.parkingCard.recommended {
+  border: 2px solid #35b44a;
+  background: #f5fff7;
+}
+
+.cardTitle {
+  font-weight: 900;
+  color: #071427;
+  margin-bottom: 4px;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.cardAddress {
+  font-size: 12px;
+  color: #667085;
+  margin: 6px 0 10px;
+  line-height: 1.35;
+}
+
+.cardDistance {
+  font-size: 12px;
+  font-weight: 900;
+  color: #35b44a;
+  white-space: nowrap;
+}
+
+.cardFooter {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 4px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+/* Mapa: protagonista */
+#map {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: unset;
+  background: #dfe6ef;
+}
+
+/* Leaflet més integrat */
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 6px 18px rgba(10,20,40,0.14) !important;
+}
+
+.leaflet-control-zoom a {
+  border: none !important;
+  color: #071427 !important;
+}
+
+.legend {
+  background: rgba(255,255,255,0.94);
+  padding: 11px 13px;
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(10,20,40,0.16);
+  font-size: 12px;
+  line-height: 1.6;
+  backdrop-filter: blur(6px);
+}
+
+.legend strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+/* Popups més polits */
+.leaflet-popup-content-wrapper {
+  border-radius: 16px !important;
+  box-shadow: 0 14px 32px rgba(10,20,40,0.18) !important;
+}
+
+.leaflet-popup-content {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 14px 16px !important;
+}
+
+.leaflet-popup-content a {
+  display: inline-block;
+  margin-top: 6px;
+  background: #35b44a;
+  color: white !important;
+  text-decoration: none;
+  padding: 8px 11px;
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+/* Loading */
+#loadingOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.82);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#loadingOverlay.hidden {
+  display: none;
+}
+
+/* Responsive tablet */
+@media (max-width: 1100px) {
+  #appView {
+    height: auto;
+    min-height: calc(100vh - 76px);
+    overflow: auto;
+  }
+
+  #appTopbar {
+    height: auto;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .appTopbarLeft {
+    width: 100%;
+  }
+
+  #topControls {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  #citySelect {
+    flex: 1;
+    min-width: 220px;
+  }
+
+  #searchBox {
+    flex: 2;
+    min-width: 320px;
+  }
+
+  #searchInput {
+    flex: 1;
+    width: auto;
+  }
+
+  #layout {
+    grid-template-columns: 300px minmax(0, 1fr);
+    height: calc(100vh - 190px);
+  }
+}
+
+/* Responsive mòbil */
+@media (max-width: 780px) {
+  #appView {
+    overflow: auto;
+  }
+
+  #appTopbar {
+    padding: 12px;
+  }
+
+  #topControls,
+  #searchBox {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #citySelect,
+  #searchInput,
+  #searchBtn,
+  #nearBtn {
+    width: 100%;
+  }
+
+  #layout {
+    display: flex;
+    flex-direction: column-reverse;
+    height: auto;
+  }
+
+  #map {
+    height: 52vh;
+  }
+
+  #sidebar {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    border-right: none;
+    border-top: 1px solid #e3e8ef;
+  }
+
+  #modeSwitch {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .mode-btn {
+    text-align: center;
+    font-size: 12px;
+    padding: 9px 8px;
+  }
+}
