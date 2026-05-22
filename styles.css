@@ -1,3 +1,11 @@
+/* =========================================================
+   BICIPARK — STYLES CLEAN
+   Versió netejada: home + mapa amb sidebar d'informació
+   i barra inferior compacta de filtres.
+   ========================================================= */
+
+/* ---------- BASE ---------- */
+
 * {
   margin: 0;
   padding: 0;
@@ -19,6 +27,13 @@
   --shadow: 0 12px 30px rgba(10, 20, 40, 0.10);
 }
 
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: Arial, sans-serif;
   background: var(--bg);
@@ -36,6 +51,10 @@ button {
   cursor: pointer;
 }
 
+.hidden-view {
+  display: none !important;
+}
+
 /* ---------- GLOBAL HEADER ---------- */
 
 #siteHeader {
@@ -48,7 +67,7 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 26px;
-  padding: 16px 42px;
+  padding: 14px 40px;
   min-height: 76px;
 }
 
@@ -72,7 +91,7 @@ button {
 .brandText {
   display: flex;
   align-items: baseline;
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 900;
   letter-spacing: 0.5px;
 }
@@ -89,7 +108,7 @@ button {
 #mainNav {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 24px;
   flex-wrap: wrap;
 }
 
@@ -128,7 +147,7 @@ button {
 .primaryHeaderBtn {
   background: var(--navy);
   color: #fff;
-  padding: 14px 22px;
+  padding: 12px 22px;
   border-radius: 999px;
   font-weight: 800;
   font-size: 15px;
@@ -137,88 +156,87 @@ button {
 /* ---------- HOME ---------- */
 
 #homeView {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 0 0 32px;
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 18px 24px 28px;
 }
 
 #heroSection {
   width: 100%;
-  min-height: 520px;
+  min-height: 360px;
   display: grid;
-  grid-template-columns: 1.02fr 0.98fr;
+  grid-template-columns: 1fr 0.92fr;
   gap: 0;
-  border-radius: 0;
+  border-radius: 22px;
   overflow: hidden;
-  background:
-    linear-gradient(90deg, rgba(7, 20, 39, 0.96) 0%, rgba(7, 20, 39, 0.92) 34%, rgba(7, 20, 39, 0.42) 62%, rgba(7, 20, 39, 0.10) 100%),
-    linear-gradient(135deg, #1c3558 0%, #6b8eb7 36%, #d8ad77 68%, #ce8444 100%);
-  box-shadow: none;
+  background: #071427;
+  box-shadow: 0 14px 36px rgba(10, 20, 40, 0.14);
 }
 
 .heroContent {
-  padding: 72px 64px 58px;
+  padding: 42px 46px;
   color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 720px;
+  max-width: none;
+  background: linear-gradient(
+    90deg,
+    rgba(7, 20, 39, 1) 0%,
+    rgba(7, 20, 39, 0.96) 70%,
+    rgba(7, 20, 39, 0.82) 100%
+  );
 }
 
 .heroBadge {
   display: inline-block;
   width: fit-content;
-  padding: 8px 13px;
+  padding: 6px 10px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.16);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 800;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 .heroContent h1 {
-  font-size: 82px;
+  font-size: 56px;
   line-height: 0.95;
   text-transform: uppercase;
   letter-spacing: -2px;
-  margin-bottom: 20px;
-}
-
-.heroContent h1::first-letter {
-  color: #fff;
+  margin-bottom: 12px;
 }
 
 .heroContent h2 {
-  font-size: 30px;
-  line-height: 1.18;
-  margin-bottom: 16px;
-  max-width: 660px;
+  font-size: 22px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  max-width: 560px;
 }
 
 .heroContent p {
-  font-size: 20px;
-  line-height: 1.5;
-  max-width: 650px;
+  font-size: 16px;
+  line-height: 1.4;
+  max-width: 560px;
   color: rgba(255, 255, 255, 0.92);
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .heroButtons {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .heroPrimaryBtn {
   background: var(--green);
   color: #fff;
-  padding: 18px 34px;
+  padding: 13px 22px;
   border-radius: 12px;
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 900;
-  min-width: 330px;
+  min-width: 245px;
   box-shadow: 0 12px 24px rgba(53, 180, 74, 0.25);
 }
 
@@ -229,15 +247,15 @@ button {
 .heroSecondaryBtn {
   background: #fff;
   color: var(--navy);
-  padding: 18px 24px;
+  padding: 13px 18px;
   border-radius: 12px;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 800;
 }
 
 .heroFeatures {
   display: flex;
-  gap: 34px;
+  gap: 20px;
   flex-wrap: wrap;
 }
 
@@ -245,26 +263,26 @@ button {
   display: flex;
   align-items: center;
   gap: 11px;
-  min-width: 170px;
+  min-width: 145px;
 }
 
 .heroFeature span {
-  font-size: 28px;
+  font-size: 22px;
 }
 
 .heroFeature strong {
   display: block;
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .heroFeature small {
   color: rgba(255,255,255,0.78);
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .heroVisual {
   position: relative;
-  min-height: 520px;
+  min-height: 360px;
   display: flex;
   align-items: stretch;
 }
@@ -272,67 +290,55 @@ button {
 .heroPhotoCard {
   width: 100%;
   height: 100%;
+  min-height: 360px;
   position: relative;
   border-radius: 0;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.35)),
-    linear-gradient(135deg, #7aa4cf 0%, #d7e8f7 34%, #d7a06d 35%, #c67b3e 72%, #7a4b2c 100%);
   overflow: hidden;
-}
-
-.heroPhotoCard::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, transparent 0%, transparent 44%, rgba(12, 24, 45, 0.35) 45%, rgba(12, 24, 45, 0.78) 100%),
-    repeating-linear-gradient(
+  background-image:
+    linear-gradient(
       90deg,
-      rgba(255,255,255,0.18) 0px,
-      rgba(255,255,255,0.18) 4px,
-      transparent 4px,
-      transparent 58px
-    );
-  opacity: 0.22;
+      rgba(7, 20, 39, 0.45) 0%,
+      rgba(7, 20, 39, 0.12) 45%,
+      rgba(7, 20, 39, 0.08) 100%
+    ),
+    url("./assets/hero-girona-bike.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .heroPhotoOverlay {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 70% 54%, rgba(0,0,0,0.52), transparent 170px),
-    linear-gradient(to left, transparent 0%, rgba(7,20,39,0.45) 100%);
+    radial-gradient(circle at 70% 54%, rgba(0,0,0,0.36), transparent 170px),
+    linear-gradient(to left, transparent 0%, rgba(7,20,39,0.35) 100%);
 }
 
 .heroBikeSilhouette {
-  position: absolute;
-  right: 105px;
-  bottom: 100px;
-  font-size: 210px;
-  filter: grayscale(1) brightness(0.08);
-  transform: rotate(-3deg);
-  opacity: 0.95;
+  display: none;
 }
 
 .heroCityTag {
   position: absolute;
-  top: 34px;
-  right: 34px;
+  top: 20px;
+  right: 20px;
   background: rgba(255,255,255,0.94);
   color: var(--navy);
-  padding: 11px 17px;
+  padding: 8px 13px;
   border-radius: 999px;
   font-weight: 900;
+  font-size: 12px;
   box-shadow: 0 8px 18px rgba(0,0,0,0.12);
 }
 
-/* ---------- HOME CONTENT WRAP ---------- */
+/* ---------- HOME: PROMO / CARDS / LOWER ---------- */
 
 .adSlot,
 #homeCategories,
-#homeLowerGrid,
-#homeFooterStrip {
-  width: min(92vw, 1360px);
+#homeLowerGrid {
+  width: 100%;
+  max-width: none;
   margin-left: auto;
   margin-right: auto;
 }
@@ -341,14 +347,14 @@ button {
   background: #fff;
   border: 2px dashed #d7dde8;
   border-radius: 16px;
-  margin-top: -20px;
+  margin-top: 16px;
   position: relative;
   z-index: 4;
   box-shadow: var(--shadow);
 }
 
 .largeAd {
-  padding: 12px;
+  padding: 10px;
 }
 
 .smallAd {
@@ -357,7 +363,7 @@ button {
 }
 
 .adInner {
-  min-height: 70px;
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -369,28 +375,96 @@ button {
 
 .adInner strong {
   color: var(--navy);
-  font-size: 17px;
+  font-size: 14px;
 }
 
 .adInner span {
-  font-size: 14px;
+  font-size: 12px;
+}
+
+.promoAd.largeAd {
+  border: none;
+  border-radius: 18px;
+  padding: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(7, 20, 39, 0.92), rgba(22, 57, 84, 0.82)),
+    linear-gradient(135deg, #d8f1df 0%, #eaf3ff 45%, #f3efe4 100%);
+  box-shadow: 0 12px 28px rgba(10, 20, 40, 0.10);
+}
+
+.promoAdLink {
+  min-height: 58px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  text-decoration: none;
+  color: white;
+}
+
+.promoAdText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.promoAdLabel {
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(53, 180, 74, 0.18);
+  color: #b8ffc4;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.promoAdText strong {
+  color: white;
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.promoAdText small {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.promoAdButton {
+  background: white;
+  color: #071427;
+  padding: 9px 15px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.promoAdLink:hover .promoAdButton {
+  background: #35b44a;
+  color: white;
 }
 
 #homeCategories {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-  margin-top: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
 }
 
 .categoryCard {
   background: #fff;
   border-radius: 18px;
-  padding: 24px;
+  padding: 18px;
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
-  min-height: 330px;
+  min-height: 250px;
   overflow: hidden;
   position: relative;
 }
@@ -404,12 +478,12 @@ button {
 }
 
 .categoryIcon {
-  width: 66px;
-  height: 66px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 30px;
+  font-size: 23px;
   color: #fff;
   flex-shrink: 0;
 }
@@ -427,24 +501,24 @@ button {
 }
 
 .categoryTop h3 {
-  font-size: 25px;
-  margin-bottom: 9px;
+  font-size: 19px;
+  margin-bottom: 6px;
   color: var(--navy);
   text-transform: uppercase;
   letter-spacing: -0.3px;
 }
 
 .categoryTop p {
-  font-size: 15px;
+  font-size: 13px;
   color: var(--muted);
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
 .categoryArt {
   flex: 1;
-  min-height: 145px;
+  min-height: 95px;
   border-radius: 14px;
-  margin: 20px 0 18px;
+  margin: 14px 0;
   overflow: hidden;
   position: relative;
 }
@@ -458,20 +532,20 @@ button {
 .parkingArt::before {
   content: "🚲 🚲 🚲";
   position: absolute;
-  left: 44px;
-  bottom: 22px;
-  font-size: 52px;
+  left: 36px;
+  bottom: 18px;
+  font-size: 42px;
   opacity: 0.75;
 }
 
 .parkingArt::after {
   content: "∩ ∩ ∩";
   position: absolute;
-  left: 43px;
-  bottom: 75px;
-  font-size: 42px;
+  left: 38px;
+  bottom: 60px;
+  font-size: 34px;
   color: #7a9c83;
-  letter-spacing: 19px;
+  letter-spacing: 14px;
 }
 
 .roadArt {
@@ -519,16 +593,16 @@ button {
   position: absolute;
   right: 32px;
   bottom: 18px;
-  font-size: 48px;
+  font-size: 42px;
   opacity: 0.75;
 }
 
 .categoryBtn {
   align-self: flex-start;
-  padding: 13px 18px;
+  padding: 10px 14px;
   border-radius: 10px;
   font-weight: 900;
-  font-size: 15px;
+  font-size: 13px;
   position: relative;
   z-index: 2;
 }
@@ -552,17 +626,17 @@ button {
 }
 
 #homeLowerGrid {
-  margin-top: 24px;
+  margin-top: 16px;
   display: grid;
-  grid-template-columns: 1.45fr 0.95fr;
-  gap: 22px;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 16px;
 }
 
 .citiesPanel,
 .partnerPanel {
   background: #fff;
   border-radius: 18px;
-  padding: 24px;
+  padding: 18px;
   box-shadow: var(--shadow);
 }
 
@@ -580,7 +654,7 @@ button {
 .cityCardsGrid {
   margin-top: 18px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -592,7 +666,7 @@ button {
   text-align: left;
   display: flex;
   flex-direction: column;
-  min-height: 220px;
+  min-height: 170px;
 }
 
 .cityCardHome:hover {
@@ -601,7 +675,7 @@ button {
 }
 
 .cityThumb {
-  height: 118px;
+  height: 86px;
 }
 
 .cityThumbBarcelona {
@@ -610,6 +684,47 @@ button {
 
 .cityThumbGirona {
   background: linear-gradient(135deg, #8eb0db, #cde1f8 38%, #cfa06b 39%, #d68245 70%, #efc18f);
+}
+
+.cityThumbAmsterdam {
+  background: linear-gradient(135deg, #8fd3ff 0%, #dff5ff 42%, #6fbf73 43%, #3f8f51 100%);
+}
+
+.cityThumbAmsterdam::after {
+  content: "🚲";
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: 42px;
+}
+
+.cityThumbNewYork {
+  background: linear-gradient(135deg, #9fb6d8 0%, #d8e4f7 42%, #233047 43%, #0d1424 100%);
+}
+
+.cityThumbNewYork::after {
+  content: "NYC";
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: white;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.cityThumbParis {
+  background: linear-gradient(135deg, #b8cdf3 0%, #eef3ff 42%, #d8b073 43%, #8b5d33 100%);
+}
+
+.cityThumbParis::after {
+  content: "Paris";
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: #071427;
+  font-size: 28px;
+  font-weight: 900;
 }
 
 .cityThumbSoon {
@@ -655,7 +770,7 @@ button {
 }
 
 .partnerLogoPlaceholder {
-  min-height: 160px;
+  min-height: 120px;
   border: 2px dashed #c7d4cb;
   border-radius: 14px;
   display: grid;
@@ -688,245 +803,238 @@ button {
 }
 
 #homeFooterStrip {
-  margin-top: 24px;
+  margin-top: 16px;
   background: var(--navy);
   color: #fff;
-  border-radius: 0;
-  padding: 20px 42px;
+  border-radius: 18px;
+  padding: 14px 22px;
   display: flex;
   justify-content: space-between;
   gap: 18px;
   flex-wrap: wrap;
-  max-width: none;
   width: 100%;
+  max-width: none;
+  font-size: 13px;
 }
 
-/* ---------- APP ---------- */
+/* ---------- APP VIEW: MAPA ---------- */
 
-.hidden-view {
+#appView.appViewReference,
+.appViewReference {
+  position: relative;
+  height: calc(100vh - 76px);
+  min-height: 0;
+  overflow: hidden;
+  background: #eef3f7;
+}
+
+#appTopbar,
+.appTopbarReferenceHidden {
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: none !important;
+  background: transparent !important;
+  visibility: hidden !important;
+}
+
+#layout.layoutReference,
+.layoutReference {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: #dfe6ef;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: #dfe6ef;
+}
+
+/* ---------- SIDEBAR APP ---------- */
+
+#sidebar.sidebarReference,
+.sidebarReference {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 700;
+  width: 360px;
+  max-width: 360px;
+  height: calc(100% - 36px);
+  background: rgba(255,255,255,0.96);
+  border: 1px solid #e4e8ef;
+  border-radius: 22px;
+  box-shadow: 0 18px 42px rgba(10,20,40,0.15);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#sidebarHeader.sidebarReferenceHeader,
+.sidebarReferenceHeader {
+  padding: 16px 18px 10px;
+  border-bottom: 1px solid #edf0f5;
+  background: transparent;
+}
+
+.sidebarReferenceHeader h2 {
+  font-size: 20px;
+  line-height: 1.15;
+  margin: 0 0 5px;
+  color: #071427;
+}
+
+.sidebarReferenceHeader p {
+  font-size: 13px;
+  color: #667085;
+  margin: 0;
+}
+
+.referenceSearchBlock {
+  padding: 14px 18px 14px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.referenceSelect {
+  width: 100%;
+  height: 42px;
+  border-radius: 13px;
+  border: 1px solid #dbe2ec;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #071427;
+  background: #fff;
+  margin-bottom: 10px;
+}
+
+.referenceSearchRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.referenceSearchRow input,
+#searchInput {
+  flex: 1;
+  min-width: 0;
+  height: 42px;
+  border-radius: 13px;
+  border: 1px solid #dbe2ec;
+  padding: 0 12px;
+  font-size: 13px;
+  background: #fff;
+}
+
+.referenceSearchRow button,
+#searchBtn {
+  height: 42px;
+  padding: 0 15px;
+  border-radius: 13px;
+  background: #35b44a;
+  color: #fff;
+  font-weight: 900;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.referenceNearBtn,
+#nearBtn {
+  width: 100%;
+  height: 40px;
+  border-radius: 13px;
+  border: 1px solid #dbe2ec;
+  background: #fff;
+  color: #071427;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.referenceHiddenModes {
   display: none !important;
 }
 
-#appView {
-  position: relative;
-  min-height: calc(100vh - 80px);
-}
-
-#appTopbar {
-  background: var(--navy);
-  color: #fff;
-  padding: 16px 20px;
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.appTopbarLeft {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.ghostBtn {
-  background: rgba(255,255,255,0.12);
-  color: #fff;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-weight: 700;
-}
-
-.appTitleWrap h2 {
-  font-size: 22px;
-  margin-bottom: 4px;
-}
-
-.appTitleWrap span {
-  font-size: 13px;
-  opacity: 0.8;
-}
-
-#topControls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-#citySelect {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: none;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--navy);
+.referenceStatusCard,
+#statusBar.referenceStatusCard {
+  margin: 14px 18px 10px;
+  padding: 13px 14px;
+  border-radius: 16px;
   background: #fff;
-  min-width: 220px;
-}
-
-#searchBox {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-#searchInput {
-  width: 290px;
-  padding: 11px 12px;
-  border-radius: 10px;
-  border: none;
-  font-size: 14px;
-}
-
-#searchBtn {
-  background: var(--green);
-  color: #fff;
-  padding: 11px 14px;
-  border-radius: 10px;
-  font-weight: 700;
-}
-
-#nearBtn {
-  background: #fff;
-  color: var(--navy);
-  padding: 11px 14px;
-  border-radius: 10px;
-  font-weight: 700;
-}
-
-#modeSwitch {
-  background: #fff;
-  padding: 12px 20px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid var(--line);
-}
-
-.mode-btn {
-  background: #f0f2f7;
-  color: var(--navy);
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-weight: 700;
-}
-
-.mode-btn.active {
-  background: var(--navy);
-  color: #fff;
-}
-
-#parkingControls {
-  display: block;
-}
-
-#filters,
-#radiusFilters {
-  background: #fff;
-  padding: 10px 20px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-  border-bottom: 1px solid var(--line);
-}
-
-#radiusFilters span {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--navy);
-}
-
-.filter-btn,
-.radius-btn,
-.bike-lane-btn {
-  background: #f0f2f7;
-  color: var(--navy);
-  padding: 10px 12px;
-  border-radius: 10px;
-  font-weight: 700;
-}
-
-.filter-btn.active,
-.radius-btn.active,
-.bike-lane-btn.active {
-  background: var(--navy);
-  color: #fff;
-}
-
-#statusBar {
-  background: #fafbfc;
-  padding: 10px 20px;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  font-size: 13px;
-  border-bottom: 1px solid var(--line);
+  border: 1px solid #e1e7f0;
 }
 
 #parkingCounter {
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 900;
+  color: #071427;
+  line-height: 1.35;
+  margin-bottom: 6px;
 }
 
 #nearestInfo {
-  color: #555;
-}
-
-#layout {
-  display: flex;
-  height: calc(100vh - 303px);
-}
-
-#sidebar {
-  width: 320px;
-  background: #fff;
-  border-right: 1px solid var(--line);
-  overflow-y: auto;
   font-size: 13px;
+  color: #667085;
+  line-height: 1.4;
 }
 
-#sidebarHeader {
-  padding: 16px 16px 10px;
-  border-bottom: 1px solid #f0f0f0;
+.referenceListHeader {
+  padding: 6px 18px 10px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #071427;
 }
 
-#sidebarHeader h2 {
-  font-size: 18px;
-  color: var(--navy);
+#parkingList.referenceParkingList,
+.referenceParkingList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 14px 10px 18px;
 }
 
-#parkingList {
-  padding: 12px;
+.referenceParkingList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.referenceParkingList::-webkit-scrollbar-thumb {
+  background: #c6cfdd;
+  border-radius: 999px;
 }
 
 .emptySidebar {
-  color: #666;
-  font-size: 14px;
+  color: #667085;
+  font-size: 13px;
   padding: 14px;
 }
 
 .parkingCard {
-  border: 1px solid #ececec;
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  transition: 0.2s;
+  width: 100%;
+  padding: 13px;
+  margin-bottom: 10px;
+  border-radius: 16px;
+  border: 1px solid #e4e8ef;
   background: #fff;
+  cursor: pointer;
+  transition: 0.18s ease;
+  box-shadow: 0 3px 10px rgba(10,20,40,0.04);
 }
 
 .parkingCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(10,20,40,0.08);
+  border-color: #d5dde8;
 }
 
 .parkingCard.recommended {
-  border: 2px solid #1D9E75;
-  background: #f5fffb;
+  border: 2px solid #35b44a;
+  background: #f7fff8;
 }
 
 .cardTop {
@@ -937,10 +1045,11 @@ button {
 }
 
 .cardTitle {
-  font-weight: 700;
-  color: var(--navy);
+  font-weight: 900;
+  color: #071427;
   margin-bottom: 4px;
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.25;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -948,29 +1057,29 @@ button {
 
 .cardDistance {
   font-size: 12px;
-  font-weight: 700;
-  color: #1D9E75;
+  font-weight: 900;
+  color: #35b44a;
   white-space: nowrap;
 }
 
 .cardAddress {
   font-size: 12px;
-  color: #666;
+  color: #667085;
   margin: 6px 0 10px;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 .cardFooter {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .badge {
   padding: 4px 7px;
   border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 900;
 }
 
 .badge-green {
@@ -1003,96 +1112,179 @@ button {
   transform: scale(1.15);
 }
 
-.mode-placeholder {
-  padding: 18px;
-  color: #1a1a2e;
+.referenceListFooter {
+  padding: 12px 18px 16px;
+  border-top: 1px solid #edf0f5;
+  background: rgba(255,255,255,0.96);
 }
 
-.mode-placeholder h3 {
-  font-size: 18px;
-  margin-bottom: 8px;
-}
-
-.mode-placeholder p {
-  font-size: 14px;
-  color: #555;
-  line-height: 1.5;
-  margin-bottom: 10px;
-}
-
-.mode-placeholder ul {
-  padding-left: 18px;
-  color: #555;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.mode-card {
-  border: 1px solid #ececec;
+.referenceViewAllBtn {
+  width: 100%;
+  height: 42px;
   border-radius: 14px;
-  padding: 14px;
-  margin-top: 12px;
-  background: #f9fafb;
-}
-
-.route-detail {
-  padding: 16px;
-  border-bottom: 1px solid #eee;
-  background: #f9fafb;
-  margin-bottom: 12px;
-  border-radius: 14px;
-}
-
-.route-detail h3 {
-  font-size: 16px;
-  color: #1a1a2e;
-  margin-bottom: 8px;
-}
-
-.route-detail p {
+  border: 1px solid #dbe2ec;
+  background: #fff;
+  color: #071427;
   font-size: 13px;
-  color: #555;
-  line-height: 1.5;
-  margin-bottom: 8px;
+  font-weight: 900;
 }
 
-.route-meta {
+/* ---------- BOTTOM FILTER BAR ---------- */
+
+#parkingControls.referenceBottomBar,
+.referenceBottomBar {
+  position: absolute;
+  left: 395px;
+  right: 40px;
+  bottom: 24px;
+  transform: none;
+  z-index: 900;
+
+  width: auto;
+  max-width: none;
+  min-height: 76px;
+
   display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: nowrap;
+
+  padding: 12px 18px;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(219,226,236,0.95);
+  box-shadow: 0 16px 34px rgba(10,20,40,0.14);
+  backdrop-filter: blur(12px);
+
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+.referenceFilterGroup {
+  display: flex !important;
+  flex-direction: column;
   gap: 6px;
-  flex-wrap: wrap;
-  margin: 10px 0;
+  flex-shrink: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
 }
 
-.route-section {
-  margin-top: 12px;
+.referenceFilterLabel {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #667085;
+  line-height: 1;
+  text-align: center;
+  padding-left: 0;
 }
 
-.route-section strong {
-  display: block;
-  font-size: 13px;
-  margin-bottom: 5px;
-  color: #1a1a2e;
+.referenceSegmented {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  overflow: hidden;
+  border: 1px solid #dbe2ec;
+  border-radius: 16px;
+  background: #fff;
 }
 
-.route-section ul {
-  padding-left: 18px;
-  font-size: 13px;
-  color: #555;
-  line-height: 1.5;
+.referenceChip {
+  height: 38px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: none;
+  border-right: 1px solid #e6ebf2;
+  border-radius: 0;
+  background: #fff;
+  color: #0c1730;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 38px;
+  white-space: nowrap;
+  box-shadow: none;
 }
 
-.route-warning {
-  margin-top: 10px;
-  padding: 10px;
-  background: #fff3cd;
-  border-radius: 10px;
-  font-size: 12px;
-  color: #664d03;
+.referenceChip:last-child {
+  border-right: none;
 }
 
-#map {
-  flex: 1;
+.referenceChip:hover {
+  background: #f7f9fc;
 }
+
+.referenceChip.active {
+  background: #071427;
+  color: #fff;
+}
+
+.chipAlta:not(.active) {
+  background: rgba(29,158,117,0.10);
+  color: #1D9E75;
+}
+
+.chipMitjana:not(.active) {
+  background: rgba(242,201,76,0.18);
+  color: #9e7600;
+}
+
+.chipBaixa:not(.active) {
+  background: rgba(235,87,87,0.14);
+  color: #d24a4a;
+}
+
+.referenceActionsGroup {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 14px;
+  border-left: 1px solid #e3e8ef;
+}
+
+.referenceToggleBtn {
+  width: 70px;
+  min-width: 70px;
+  height: 52px;
+  padding: 5px 6px;
+  border-radius: 16px;
+  border: 1px solid #dbe2ec;
+  background: #fff;
+  color: #0c1730;
+  font-size: 10px;
+  line-height: 1.05;
+  font-weight: 900;
+  text-align: center;
+  white-space: normal;
+  box-shadow: none;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.referenceToggleBtn:hover {
+  background: #f7f9fc;
+}
+
+.referenceToggleBtn.active {
+  background: #071427;
+  color: #fff;
+  border-color: #071427;
+}
+
+#bikeLaneBtn.referenceToggleBtn {
+  width: 76px;
+  min-width: 76px;
+}
+
+/* ---------- MAP MARKERS / CLUSTERS / LEAFLET ---------- */
 
 .pin {
   border: 3px solid white;
@@ -1190,18 +1382,7 @@ button {
 }
 
 .legend {
-  background: white;
-  padding: 14px 16px;
-  border-radius: 12px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.25);
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-.legend strong {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 15px;
+  display: none !important;
 }
 
 .legend-dot {
@@ -1223,6 +1404,144 @@ button {
 .dot-baixa {
   background: #EB5757;
 }
+
+.leaflet-top.leaflet-left {
+  left: auto !important;
+  right: 18px !important;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(10,20,40,0.12) !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  width: 38px !important;
+  height: 38px !important;
+  line-height: 38px !important;
+  font-size: 20px !important;
+  border: none !important;
+  color: #071427 !important;
+}
+
+.leaflet-control-attribution {
+  margin-bottom: 0 !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 16px !important;
+  box-shadow: 0 14px 32px rgba(10,20,40,0.18) !important;
+}
+
+.leaflet-popup-content {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 14px 16px !important;
+}
+
+.leaflet-popup-content a {
+  display: inline-block;
+  margin-top: 6px;
+  background: #35b44a;
+  color: white !important;
+  text-decoration: none;
+  padding: 8px 11px;
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+/* ---------- ROUTES / MODES ---------- */
+
+.mode-placeholder {
+  padding: 18px;
+  color: #1a1a2e;
+}
+
+.mode-placeholder h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.mode-placeholder p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.mode-placeholder ul {
+  padding-left: 18px;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.mode-card {
+  border: 1px solid #ececec;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 12px;
+  background: #f9fafb;
+}
+
+.route-detail {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  background: #f9fafb;
+  margin-bottom: 12px;
+  border-radius: 14px;
+}
+
+.route-detail h3 {
+  font-size: 16px;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+}
+
+.route-detail p {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.route-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.route-section {
+  margin-top: 12px;
+}
+
+.route-section strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 5px;
+  color: #1a1a2e;
+}
+
+.route-section ul {
+  padding-left: 18px;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.route-warning {
+  margin-top: 10px;
+  padding: 10px;
+  background: #fff3cd;
+  border-radius: 10px;
+  font-size: 12px;
+  color: #664d03;
+}
+
+/* ---------- LOADING ---------- */
 
 #loadingOverlay {
   position: fixed;
@@ -1257,549 +1576,86 @@ button {
 
 /* ---------- RESPONSIVE ---------- */
 
-@media (max-width: 1200px) {
-  #siteHeader {
-    padding: 14px 22px;
+@media (max-width: 1250px) {
+  #sidebar.sidebarReference,
+  .sidebarReference {
+    width: 340px;
+    max-width: 340px;
   }
 
-  #heroSection {
-    grid-template-columns: 1fr;
+  #parkingControls.referenceBottomBar,
+  .referenceBottomBar {
+    left: 365px;
+    right: 28px;
+    gap: 10px;
+    padding: 10px 14px;
   }
 
-  .heroVisual {
-    min-height: 340px;
+  .referenceChip {
+    padding: 0 11px;
   }
 
-  .heroBikeSilhouette {
-    font-size: 150px;
-    right: 42px;
-    bottom: 50px;
+  .referenceToggleBtn {
+    width: 62px;
+    min-width: 62px;
+    font-size: 9px;
   }
 
-  #homeCategories {
-    grid-template-columns: 1fr;
-  }
-
-  #homeLowerGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .cityCardsGrid {
-    grid-template-columns: 1fr;
+  #bikeLaneBtn.referenceToggleBtn {
+    width: 68px;
+    min-width: 68px;
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   #siteHeader {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  #mainNav {
-    width: 100%;
+    padding: 14px 22px;
   }
 
   .brandText {
     font-size: 27px;
   }
 
-  .heroContent {
-    padding: 42px 24px;
-  }
-
-  .heroContent h1 {
-    font-size: 52px;
-  }
-
-  .heroContent h2 {
-    font-size: 24px;
-  }
-
-  .heroContent p {
-    font-size: 17px;
-  }
-
-  .heroPrimaryBtn,
-  .heroSecondaryBtn {
-    width: 100%;
-    min-width: auto;
-  }
-
-  .heroFeatures {
-    gap: 18px;
-  }
-
-  .partnerBox {
-    grid-template-columns: 1fr;
-  }
-
-  #appTopbar {
-    padding: 14px;
-  }
-
-  #topControls {
-    width: 100%;
-  }
-
-  #citySelect {
-    width: 100%;
-  }
-
-  #searchBox {
-    width: 100%;
-  }
-
-  #searchInput {
-    width: 100%;
-  }
-
-  #layout {
-    flex-direction: column-reverse;
+  #sidebar.sidebarReference,
+  .sidebarReference {
+    width: calc(100vw - 32px);
+    max-width: none;
+    left: 16px;
+    top: 16px;
     height: auto;
+    max-height: 48vh;
   }
 
-  #sidebar {
-    width: 100%;
-    height: 320px;
-    border-right: none;
-    border-top: 1px solid #e5e5e5;
-  }
-
-  #map {
-    height: 50vh;
-  }
-}
-
-/* =========================================================
-   HOME PREMIUM LAYOUT FIX
-   Fa que la home s'assembli més a la proposta visual inicial
-   ========================================================= */
-
-#homeView {
-  max-width: 1480px;
-  margin: 0 auto;
-  padding: 22px 28px 34px;
-}
-
-/* Header més proporcionat */
-#siteHeader {
-  padding: 14px 40px;
-}
-
-.brandText {
-  font-size: 30px;
-}
-
-#mainNav {
-  gap: 24px;
-}
-
-.primaryHeaderBtn {
-  padding: 12px 22px;
-}
-
-/* Hero centrat i amb mida de landing */
-#heroSection {
-  width: 100%;
-  min-height: 500px;
-  border-radius: 0;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  box-shadow: 0 14px 36px rgba(10, 20, 40, 0.14);
-  background: #071427;
-}
-
-/* Bloc de text del hero */
-.heroContent {
-  padding: 70px 58px;
-  max-width: none;
-  background: linear-gradient(
-    90deg,
-    rgba(7, 20, 39, 1) 0%,
-    rgba(7, 20, 39, 0.96) 70%,
-    rgba(7, 20, 39, 0.82) 100%
-  );
-}
-
-.heroContent h1 {
-  font-size: 76px;
-}
-
-.heroContent h2 {
-  font-size: 28px;
-  max-width: 620px;
-}
-
-.heroContent p {
-  max-width: 610px;
-}
-
-/* Foto real del hero */
-.heroVisual {
-  min-height: 500px;
-}
-
-.heroPhotoCard {
-  background-image:
-    linear-gradient(
-      90deg,
-      rgba(7, 20, 39, 0.45) 0%,
-      rgba(7, 20, 39, 0.12) 45%,
-      rgba(7, 20, 39, 0.08) 100%
-    ),
-    url("./assets/hero-girona-bike.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/* Eliminem l'emoji gran de bici, perquè ara hi haurà foto real */
-.heroBikeSilhouette {
-  display: none;
-}
-
-/* El tag de ciutat queda com a l'esbós */
-.heroCityTag {
-  top: 26px;
-  right: 26px;
-  background: rgba(255, 255, 255, 0.94);
-  color: #071427;
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-weight: 900;
-}
-
-/* Contingut inferior alineat amb el hero */
-.adSlot,
-#homeCategories,
-#homeLowerGrid {
-  width: 100%;
-  max-width: none;
-}
-
-.largeAd {
-  margin-top: 22px;
-}
-
-/* Targetes més equilibrades */
-#homeCategories {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
-}
-
-.categoryCard {
-  min-height: 330px;
-}
-
-/* Zona inferior equilibrada */
-#homeLowerGrid {
-  grid-template-columns: 1.35fr 1fr;
-  gap: 22px;
-}
-
-.cityCardsGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-/* Footer dins del mateix ample visual */
-#homeFooterStrip {
-  width: 100%;
-  max-width: none;
-  border-radius: 18px;
-  padding: 18px 28px;
-}
-
-/* Millora quan la pantalla és mitjana */
-@media (max-width: 1200px) {
-  #homeView {
-    padding: 18px;
-  }
-
-  #heroSection {
-    grid-template-columns: 1fr;
-  }
-
-  .heroVisual {
-    min-height: 360px;
-  }
-
-  .heroContent {
-    padding: 52px 34px;
-  }
-
-  .heroContent h1 {
-    font-size: 58px;
-  }
-
-  #homeCategories {
-    grid-template-columns: 1fr;
-  }
-
-  #homeLowerGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .cityCardsGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  #parkingControls.referenceBottomBar,
+  .referenceBottomBar {
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 }
 
-/* Millora en mòbil */
 @media (max-width: 760px) {
   #siteHeader {
+    align-items: flex-start;
+    flex-direction: column;
     padding: 14px 18px;
   }
 
-  #homeView {
-    padding: 12px;
-  }
-
-  #heroSection {
-    border-radius: 18px;
-  }
-
-  .heroContent {
-    padding: 36px 24px;
-  }
-
-  .heroContent h1 {
-    font-size: 44px;
-  }
-
-  .heroContent h2 {
-    font-size: 22px;
-  }
-
-  .heroContent p {
-    font-size: 16px;
-  }
-
-  .heroVisual {
-    min-height: 260px;
-  }
-
-  .heroPrimaryBtn,
-  .heroSecondaryBtn {
+  #mainNav {
     width: 100%;
-    min-width: 0;
   }
 
-  .cityCardsGrid {
-    grid-template-columns: 1fr;
-  }
-
-  #homeFooterStrip {
-    border-radius: 14px;
-  }
-}
-
-/* =========================================================
-   HOME COMPACT HERO
-   Redueix el hero perquè la home es vegi millor sense tant scroll
-   ========================================================= */
-
-#homeView {
-  max-width: 1380px;
-  padding: 18px 24px 28px;
-}
-
-#heroSection {
-  min-height: 360px;
-  grid-template-columns: 1fr 0.92fr;
-  border-radius: 22px;
-}
-
-.heroContent {
-  padding: 42px 46px;
-}
-
-.heroContent h1 {
-  font-size: 56px;
-  margin-bottom: 12px;
-}
-
-.heroContent h2 {
-  font-size: 22px;
-  line-height: 1.2;
-  margin-bottom: 12px;
-  max-width: 560px;
-}
-
-.heroContent p {
-  font-size: 16px;
-  line-height: 1.4;
-  margin-bottom: 20px;
-  max-width: 560px;
-}
-
-.heroBadge {
-  font-size: 11px;
-  padding: 6px 10px;
-  margin-bottom: 12px;
-}
-
-.heroButtons {
-  margin-bottom: 20px;
-}
-
-.heroPrimaryBtn {
-  padding: 13px 22px;
-  font-size: 16px;
-  min-width: 245px;
-}
-
-.heroSecondaryBtn {
-  padding: 13px 18px;
-  font-size: 15px;
-}
-
-.heroFeatures {
-  gap: 20px;
-}
-
-.heroFeature {
-  min-width: 145px;
-}
-
-.heroFeature span {
-  font-size: 22px;
-}
-
-.heroFeature strong {
-  font-size: 13px;
-}
-
-.heroFeature small {
-  font-size: 11px;
-}
-
-.heroVisual {
-  min-height: 360px;
-}
-
-.heroPhotoCard {
-  min-height: 360px;
-}
-
-.heroCityTag {
-  top: 20px;
-  right: 20px;
-  padding: 8px 13px;
-  font-size: 12px;
-}
-
-/* Banner publicitari més compacte */
-.largeAd {
-  margin-top: 16px;
-  padding: 10px;
-}
-
-.adInner {
-  min-height: 52px;
-}
-
-.adInner strong {
-  font-size: 14px;
-}
-
-.adInner span {
-  font-size: 12px;
-}
-
-/* Targetes principals més compactes */
-#homeCategories {
-  margin-top: 16px;
-  gap: 16px;
-}
-
-.categoryCard {
-  min-height: 250px;
-  padding: 18px;
-  border-radius: 18px;
-}
-
-.categoryIcon {
-  width: 52px;
-  height: 52px;
-  font-size: 23px;
-}
-
-.categoryTop h3 {
-  font-size: 19px;
-  margin-bottom: 6px;
-}
-
-.categoryTop p {
-  font-size: 13px;
-  line-height: 1.35;
-}
-
-.categoryArt {
-  min-height: 95px;
-  margin: 14px 0;
-}
-
-.categoryBtn {
-  padding: 10px 14px;
-  font-size: 13px;
-}
-
-/* Zona inferior una mica més compacta */
-#homeLowerGrid {
-  margin-top: 16px;
-  gap: 16px;
-}
-
-.citiesPanel,
-.partnerPanel {
-  padding: 18px;
-  border-radius: 18px;
-}
-
-.cityThumb {
-  height: 86px;
-}
-
-.cityCardHome {
-  min-height: 170px;
-}
-
-.partnerLogoPlaceholder {
-  min-height: 120px;
-}
-
-/* Footer més compacte */
-#homeFooterStrip {
-  margin-top: 16px;
-  padding: 14px 22px;
-  font-size: 13px;
-}
-
-/* Pantalles mitjanes */
-@media (max-width: 1200px) {
-  #heroSection {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
-
-  .heroVisual {
-    min-height: 240px;
-  }
-
-  .heroPhotoCard {
-    min-height: 240px;
-  }
-}
-
-/* Mòbil */
-@media (max-width: 760px) {
   #homeView {
     padding: 12px;
   }
 
   #heroSection {
+    grid-template-columns: 1fr;
     border-radius: 18px;
+    min-height: auto;
   }
 
   .heroContent {
@@ -1818,835 +1674,63 @@ button {
     font-size: 15px;
   }
 
-  .heroVisual {
-    min-height: 190px;
-  }
-
+  .heroVisual,
   .heroPhotoCard {
     min-height: 190px;
   }
-}
 
-/* =========================================================
-   PROMO BANNER - VERSIÓ ELEGANT I CENTRADA
-   Substitueix l'aspecte de "caixa buida" per una franja promocional
-   ========================================================= */
+  .heroPrimaryBtn,
+  .heroSecondaryBtn {
+    width: 100%;
+    min-width: 0;
+  }
 
-.promoAd.largeAd {
-  border: none !important;
-  border-radius: 18px !important;
-  padding: 0 !important;
-  margin-top: 16px !important;
-  overflow: hidden;
-  background:
-    linear-gradient(135deg, rgba(7, 20, 39, 0.92), rgba(22, 57, 84, 0.82)),
-    linear-gradient(135deg, #d8f1df 0%, #eaf3ff 45%, #f3efe4 100%) !important;
-  box-shadow: 0 12px 28px rgba(10, 20, 40, 0.10) !important;
-}
+  #homeCategories,
+  #homeLowerGrid,
+  .cityCardsGrid {
+    grid-template-columns: 1fr;
+  }
 
-.promoAdLink {
-  min-height: 92px;
-  padding: 22px 30px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 22px;
-  text-decoration: none;
-  color: white;
-}
+  .partnerBox {
+    grid-template-columns: 1fr;
+  }
 
-.promoAdText {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.promoAdLabel {
-  width: fit-content;
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: rgba(53, 180, 74, 0.18);
-  color: #b8ffc4;
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.promoAdText strong {
-  color: white !important;
-  font-size: 22px;
-  line-height: 1.15;
-}
-
-.promoAdText small {
-  color: rgba(255, 255, 255, 0.86);
-  font-size: 15px;
-  line-height: 1.35;
-}
-
-.promoAdButton {
-  background: white;
-  color: #071427;
-  padding: 13px 18px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 900;
-  white-space: nowrap;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-}
-
-.promoAdLink:hover .promoAdButton {
-  background: #35b44a;
-  color: white;
-}
-
-@media (max-width: 760px) {
   .promoAdLink {
     flex-direction: column;
     align-items: flex-start;
-    padding: 20px;
+    padding: 14px 16px;
   }
 
   .promoAdButton {
     width: 100%;
     text-align: center;
   }
-}
 
-/* =========================================================
-   PROMO BANNER - VERSIÓ MÉS PRIMA
-   ========================================================= */
-
-.promoAdLink {
-  min-height: 58px !important;
-  padding: 12px 24px !important;
-}
-
-.promoAdText {
-  gap: 2px !important;
-}
-
-.promoAdLabel {
-  padding: 3px 8px !important;
-  font-size: 10px !important;
-}
-
-.promoAdText strong {
-  font-size: 18px !important;
-}
-
-.promoAdText small {
-  font-size: 13px !important;
-}
-
-.promoAdButton {
-  padding: 9px 15px !important;
-  font-size: 13px !important;
-}
-
-@media (max-width: 760px) {
-  .promoAdLink {
-    padding: 14px 16px !important;
-  }
-}
-
-/* =========================================================
-   CITY CARDS - NOVES CIUTATS INTERNACIONALS
-   ========================================================= */
-
-.cityThumbAmsterdam {
-  background:
-    linear-gradient(135deg, #8fd3ff 0%, #dff5ff 42%, #6fbf73 43%, #3f8f51 100%);
-}
-
-.cityThumbAmsterdam::after {
-  content: "🚲";
-  display: grid;
-  place-items: center;
-  height: 100%;
-  font-size: 42px;
-}
-
-.cityThumbNewYork {
-  background:
-    linear-gradient(135deg, #9fb6d8 0%, #d8e4f7 42%, #233047 43%, #0d1424 100%);
-}
-
-.cityThumbNewYork::after {
-  content: "NYC";
-  display: grid;
-  place-items: center;
-  height: 100%;
-  color: white;
-  font-size: 28px;
-  font-weight: 900;
-  letter-spacing: 1px;
-}
-
-.cityThumbParis {
-  background:
-    linear-gradient(135deg, #b8cdf3 0%, #eef3ff 42%, #d8b073 43%, #8b5d33 100%);
-}
-
-.cityThumbParis::after {
-  content: "Paris";
-  display: grid;
-  place-items: center;
-  height: 100%;
-  color: #071427;
-  font-size: 28px;
-  font-weight: 900;
-}
-
-/* =========================================================
-   APP VIEW — SPLIT EQUILIBRAT PREMIUM
-   Millora la vista del mapa: menys pes dels filtres i més mapa
-   ========================================================= */
-
-#appView {
-  height: calc(100vh - 76px);
-  min-height: 0;
-  background: #eef2f7;
-  overflow: hidden;
-}
-
-/* Topbar compacta */
-#appTopbar {
-  height: 74px;
-  background: #071427;
-  color: #fff;
-  padding: 12px 18px;
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: center;
-  flex-wrap: nowrap;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.appTopbarLeft {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-width: 260px;
-}
-
-.ghostBtn {
-  background: rgba(255,255,255,0.12);
-  color: #fff;
-  padding: 9px 12px;
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.ghostBtn:hover {
-  background: rgba(255,255,255,0.2);
-}
-
-.appTitleWrap h2 {
-  font-size: 18px;
-  margin-bottom: 3px;
-  line-height: 1.1;
-}
-
-.appTitleWrap span {
-  font-size: 12px;
-  opacity: 0.75;
-  line-height: 1.2;
-}
-
-/* Controls superiors */
-#topControls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: nowrap;
-  min-width: 0;
-}
-
-#citySelect {
-  height: 42px;
-  padding: 0 12px;
-  border-radius: 12px;
-  border: none;
-  font-size: 13px;
-  font-weight: 800;
-  color: #071427;
-  background: #fff;
-  min-width: 210px;
-}
-
-#searchBox {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: nowrap;
-}
-
-#searchInput {
-  width: 290px;
-  height: 42px;
-  padding: 0 13px;
-  border-radius: 12px;
-  border: none;
-  font-size: 13px;
-}
-
-#searchBtn,
-#nearBtn {
-  height: 42px;
-  padding: 0 14px;
-  border-radius: 12px;
-  font-weight: 900;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-#searchBtn {
-  background: #35b44a;
-  color: #fff;
-}
-
-#nearBtn {
-  background: #fff;
-  color: #071427;
-}
-
-/* Layout principal: sidebar + mapa */
-#layout {
-  display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
-  height: calc(100vh - 152px);
-  min-height: 0;
-  background: #eef2f7;
-}
-
-/* Sidebar més elegant i compacta */
-#sidebar {
-  width: auto;
-  height: 100%;
-  background: #ffffff;
-  border-right: 1px solid #e3e8ef;
-  overflow-y: auto;
-  font-size: 13px;
-  box-shadow: 6px 0 22px rgba(10, 20, 40, 0.06);
-  z-index: 500;
-}
-
-#sidebarHeader {
-  padding: 16px 16px 12px;
-  border-bottom: 1px solid #edf0f5;
-  background: #ffffff;
-}
-
-#sidebarHeader h2 {
-  font-size: 18px;
-  color: #071427;
-  margin-bottom: 4px;
-}
-
-#sidebarHeader p {
-  font-size: 12px;
-  color: #667085;
-}
-
-/* Mode switch dins la sidebar */
-#modeSwitch {
-  background: #ffffff;
-  padding: 12px 14px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  border-bottom: 1px solid #edf0f5;
-}
-
-.mode-btn {
-  width: 100%;
-  background: #f3f6fa;
-  color: #071427;
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-weight: 900;
-  font-size: 13px;
-  text-align: left;
-  border: 1px solid transparent;
-}
-
-.mode-btn.active {
-  background: #071427;
-  color: #ffffff;
-  border-color: #071427;
-}
-
-.mode-btn:hover {
-  background: #eaf0f7;
-}
-
-.mode-btn.active:hover {
-  background: #071427;
-}
-
-/* Filtres dins la sidebar, menys protagonistes */
-#parkingControls {
-  display: block;
-  padding: 12px 14px;
-  border-bottom: 1px solid #edf0f5;
-  background: #fbfcfe;
-}
-
-#filters,
-#radiusFilters {
-  background: transparent;
-  padding: 0;
-  border-bottom: none;
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-#radiusFilters {
-  margin-top: 12px;
-}
-
-.controlGroupTitle {
-  width: 100%;
-  font-size: 11px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: #667085;
-  margin-bottom: 2px;
-}
-
-#radiusFilters span {
-  display: none;
-}
-
-.filter-btn,
-.radius-btn,
-.bike-lane-btn {
-  background: #ffffff;
-  color: #071427;
-  padding: 7px 10px;
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 12px;
-  border: 1px solid #dde3ec;
-  box-shadow: none;
-}
-
-.filter-btn.active,
-.radius-btn.active,
-.bike-lane-btn.active {
-  background: #071427;
-  color: #ffffff;
-  border-color: #071427;
-}
-
-.filter-btn:hover,
-.radius-btn:hover,
-.bike-lane-btn:hover {
-  background: #eef3f8;
-}
-
-.filter-btn.active:hover,
-.radius-btn.active:hover,
-.bike-lane-btn.active:hover {
-  background: #071427;
-}
-
-/* Status bar integrada dins sidebar */
-#statusBar {
-  background: #ffffff;
-  padding: 12px 14px;
-  display: block;
-  font-size: 12px;
-  border-bottom: 1px solid #edf0f5;
-}
-
-#parkingCounter {
-  font-weight: 900;
-  color: #071427;
-  margin-bottom: 5px;
-}
-
-#nearestInfo {
-  color: #667085;
-  line-height: 1.35;
-}
-
-/* Llistat */
-#parkingList {
-  padding: 12px;
-}
-
-.emptySidebar {
-  color: #667085;
-  font-size: 13px;
-  padding: 14px;
-}
-
-/* Cards més netes */
-.parkingCard {
-  border: 1px solid #e7ecf3;
-  border-radius: 15px;
-  padding: 13px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: 0.18s ease;
-  background: #ffffff;
-}
-
-.parkingCard:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(10,20,40,0.08);
-  border-color: #d5dde8;
-}
-
-.parkingCard.recommended {
-  border: 2px solid #35b44a;
-  background: #f5fff7;
-}
-
-.cardTitle {
-  font-weight: 900;
-  color: #071427;
-  margin-bottom: 4px;
-  font-size: 13px;
-  line-height: 1.25;
-}
-
-.cardAddress {
-  font-size: 12px;
-  color: #667085;
-  margin: 6px 0 10px;
-  line-height: 1.35;
-}
-
-.cardDistance {
-  font-size: 12px;
-  font-weight: 900;
-  color: #35b44a;
-  white-space: nowrap;
-}
-
-.cardFooter {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.badge {
-  padding: 4px 7px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 900;
-}
-
-/* Mapa: protagonista */
-#map {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  flex: unset;
-  background: #dfe6ef;
-}
-
-/* Leaflet més integrat */
-.leaflet-control-zoom {
-  border: none !important;
-  box-shadow: 0 6px 18px rgba(10,20,40,0.14) !important;
-}
-
-.leaflet-control-zoom a {
-  border: none !important;
-  color: #071427 !important;
-}
-
-.legend {
-  background: rgba(255,255,255,0.94);
-  padding: 11px 13px;
-  border-radius: 14px;
-  box-shadow: 0 8px 22px rgba(10,20,40,0.16);
-  font-size: 12px;
-  line-height: 1.6;
-  backdrop-filter: blur(6px);
-}
-
-.legend strong {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 12px;
-}
-
-/* Popups més polits */
-.leaflet-popup-content-wrapper {
-  border-radius: 16px !important;
-  box-shadow: 0 14px 32px rgba(10,20,40,0.18) !important;
-}
-
-.leaflet-popup-content {
-  font-size: 13px;
-  line-height: 1.5;
-  margin: 14px 16px !important;
-}
-
-.leaflet-popup-content a {
-  display: inline-block;
-  margin-top: 6px;
-  background: #35b44a;
-  color: white !important;
-  text-decoration: none;
-  padding: 8px 11px;
-  border-radius: 999px;
-  font-weight: 900;
-}
-
-/* Loading */
-#loadingOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(255,255,255,0.82);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-#loadingOverlay.hidden {
-  display: none;
-}
-
-/* Responsive tablet */
-@media (max-width: 1100px) {
-  #appView {
+  #appView.appViewReference,
+  .appViewReference {
     height: auto;
     min-height: calc(100vh - 76px);
     overflow: auto;
   }
 
-  #appTopbar {
+  #layout.layoutReference,
+  .layoutReference {
     height: auto;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .appTopbarLeft {
-    width: 100%;
-  }
-
-  #topControls {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-
-  #citySelect {
-    flex: 1;
-    min-width: 220px;
-  }
-
-  #searchBox {
-    flex: 2;
-    min-width: 320px;
-  }
-
-  #searchInput {
-    flex: 1;
-    width: auto;
-  }
-
-  #layout {
-    grid-template-columns: 300px minmax(0, 1fr);
-    height: calc(100vh - 190px);
-  }
-}
-
-/* Responsive mòbil */
-@media (max-width: 780px) {
-  #appView {
-    overflow: auto;
-  }
-
-  #appTopbar {
-    padding: 12px;
-  }
-
-  #topControls,
-  #searchBox {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  #citySelect,
-  #searchInput,
-  #searchBtn,
-  #nearBtn {
-    width: 100%;
-  }
-
-  #layout {
+    min-height: 100vh;
     display: flex;
-    flex-direction: column-reverse;
-    height: auto;
-  }
-
-  #map {
-    height: 52vh;
-  }
-
-  #sidebar {
-    width: 100%;
-    height: auto;
-    max-height: none;
-    border-right: none;
-    border-top: 1px solid #e3e8ef;
-  }
-
-  #modeSwitch {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-
-  .mode-btn {
-    text-align: center;
-    font-size: 12px;
-    padding: 9px 8px;
-  }
-}
-
-/* =========================================================
-   APP VIEW — FLOATING LEFT PANEL
-   Panell esquerre flotant sobre el mapa
-   ========================================================= */
-
-#layout {
-  position: relative;
-  display: block !important;
-  height: calc(100vh - 150px) !important;
-  min-height: 0;
-  background: #dfe6ef;
-  overflow: hidden;
-}
-
-#map {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-/* Panell flotant */
-#sidebar {
-  position: absolute;
-  top: 18px;
-  left: 18px;
-  width: 340px;
-  max-width: calc(100vw - 36px);
-  height: calc(100% - 36px);
-  z-index: 600;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(220, 226, 235, 0.95);
-  border-radius: 22px;
-  box-shadow: 0 18px 45px rgba(10, 20, 40, 0.22);
-  overflow-y: auto;
-  backdrop-filter: blur(10px);
-}
-
-/* Capçalera del panell */
-#sidebarHeader {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  padding: 16px 16px 12px;
-  border-bottom: 1px solid #edf0f5;
-  background: rgba(255, 255, 255, 0.96);
-  border-radius: 22px 22px 0 0;
-  backdrop-filter: blur(10px);
-}
-
-/* Botons de mode dins del panell flotant */
-#modeSwitch {
-  background: transparent;
-  padding: 12px 14px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  border-bottom: 1px solid #edf0f5;
-}
-
-/* Controls de parking més compactes */
-#parkingControls {
-  padding: 12px 14px;
-  background: rgba(248, 250, 252, 0.88);
-  border-bottom: 1px solid #edf0f5;
-}
-
-#filters,
-#radiusFilters {
-  background: transparent;
-  padding: 0;
-  border-bottom: none;
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
-}
-
-#radiusFilters {
-  margin-top: 12px;
-}
-
-/* Status integrat */
-#statusBar {
-  background: rgba(255, 255, 255, 0.92);
-  padding: 12px 14px;
-  display: block;
-  border-bottom: 1px solid #edf0f5;
-}
-
-/* Llista */
-#parkingList {
-  padding: 12px;
-}
-
-/* Evita que els controls Leaflet quedin amagats darrere el panell */
-.leaflet-top.leaflet-left {
-  left: 376px;
-  transition: left 0.2s ease;
-}
-
-/* Llegenda més discreta */
-.legend {
-  background: rgba(255, 255, 255, 0.94);
-  border-radius: 14px;
-  box-shadow: 0 8px 22px rgba(10,20,40,0.16);
-  backdrop-filter: blur(6px);
-}
-
-/* Responsive: en mòbil el panell deixa de ser flotant */
-@media (max-width: 780px) {
-  #layout {
-    display: flex !important;
-    flex-direction: column-reverse;
-    height: auto !important;
-    overflow: visible;
+    flex-direction: column;
   }
 
   #map {
     position: relative;
-    height: 52vh;
-    min-height: 360px;
+    height: 56vh;
+    min-height: 380px;
   }
 
-  #sidebar {
+  #sidebar.sidebarReference,
+  .sidebarReference {
     position: relative;
-    top: auto;
-    left: auto;
+    inset: auto;
     width: 100%;
     max-width: none;
     height: auto;
@@ -2655,3068 +1739,22 @@ button {
     box-shadow: none;
     border-left: none;
     border-right: none;
-    border-bottom: none;
   }
 
-  #sidebarHeader {
-    border-radius: 0;
-  }
-
-  .leaflet-top.leaflet-left {
-    left: 10px;
-  }
-
-  #modeSwitch {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-
-  .mode-btn {
-    text-align: center;
-  }
-}
-
-/* =========================================================
-   FILTERS — PROPOSTA 2: DESPLEGABLES COMPACTES
-   Redueix molt l'espai ocupat pels filtres dins el panell flotant
-   ========================================================= */
-
-#parkingControls {
-  padding: 12px 14px !important;
-  background: rgba(248, 250, 252, 0.92) !important;
-  border-bottom: 1px solid #edf0f5 !important;
-}
-
-.compactFilters {
-  display: flex !important;
-  flex-direction: column;
-  gap: 10px !important;
-  padding: 0 !important;
-  background: transparent !important;
-  border-bottom: none !important;
-}
-
-.filterRow {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.compactFilterLabel {
-  font-size: 10px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.45px;
-  color: #667085;
-}
-
-.compactSelect {
-  width: 100%;
-  height: 40px;
-  border: 1px solid #dbe2ec;
-  border-radius: 12px;
-  background: #ffffff;
-  color: #071427;
-  padding: 0 12px;
-  font-size: 13px;
-  font-weight: 800;
-  outline: none;
-}
-
-.compactSelect:focus {
-  border-color: #35b44a;
-  box-shadow: 0 0 0 3px rgba(53, 180, 74, 0.12);
-}
-
-.filterOptionsRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.compactOptionBtn {
-  width: 100%;
-  height: 38px;
-  padding: 0 10px !important;
-  border-radius: 12px !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  border: 1px solid #dbe2ec !important;
-  background: #ffffff !important;
-  color: #071427 !important;
-}
-
-.compactOptionBtn.active,
-.compactOptionBtn[data-filter="favorites"].active {
-  background: #071427 !important;
-  color: #ffffff !important;
-  border-color: #071427 !important;
-}
-
-.compactOptionBtn:hover {
-  background: #eef3f8 !important;
-}
-
-.compactOptionBtn.active:hover {
-  background: #071427 !important;
-}
-
-.hiddenFilterButtons {
-  display: none !important;
-}
-
-/* Amaguem l'estil antic de títols si encara apareix */
-.controlGroupTitle {
-  display: none !important;
-}
-
-/* Compactem una mica el bloc d'estat perquè el panell respiri millor */
-#statusBar {
-  padding: 10px 14px !important;
-}
-
-#parkingCounter {
-  font-size: 12px !important;
-  line-height: 1.35;
-}
-
-#nearestInfo {
-  font-size: 11px !important;
-}
-
-/* Cards una mica més compactes després de reduir filtres */
-.parkingCard {
-  padding: 12px !important;
-}
-
-.cardTitle {
-  font-size: 13px !important;
-}
-
-.cardAddress {
-  font-size: 11px !important;
-}
-
-/* =========================================================
-   APP VIEW — AJUST A LA PROPOSTA VISUAL
-   ========================================================= */
-
-.appViewClean {
-  background: #f3f5f8;
-  height: calc(100vh - 76px);
-  overflow: hidden;
-}
-
-/* Ocultem gairebé del tot la franja antiga */
-.appTopbarMinimal {
-  height: 0 !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-.hiddenUtilityBtn,
-.hiddenUtilityTitle {
-  display: none !important;
-}
-
-/* Layout */
-.layoutFloating {
-  position: relative;
-  display: block !important;
-  height: 100% !important;
-  overflow: hidden;
-}
-
-#map {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  background: #dfe6ef;
-}
-
-/* Sidebar flotant estil mockup */
-.sidebarFloatingCard {
-  position: absolute;
-  top: 18px;
-  left: 18px;
-  z-index: 600;
-  width: 280px;
-  max-width: calc(100vw - 36px);
-  height: calc(100% - 36px);
-  overflow-y: auto;
-  background: rgba(255,255,255,0.97);
-  border: 1px solid #e4e8ef;
-  border-radius: 20px;
-  box-shadow: 0 18px 45px rgba(10,20,40,0.16);
-  backdrop-filter: blur(10px);
-}
-
-/* Header net */
-.sidebarHeaderClean {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 16px 16px 12px;
-  border-bottom: 1px solid #edf0f5;
-  background: transparent;
-}
-
-.sidebarHeaderClean h2 {
-  font-size: 18px;
-  line-height: 1.1;
-  color: #071427;
-  margin-bottom: 4px;
-}
-
-.sidebarHeaderClean p {
-  font-size: 12px;
-  color: #7b8798;
-  line-height: 1.3;
-}
-
-.miniIconBtn {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  border: 1px solid #e2e7ef;
-  background: #fff;
-  font-size: 14px;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-}
-
-/* Cerca i ciutat dins del panell */
-.sidebarSearchBlock {
-  padding: 12px 16px 14px;
-  border-bottom: 1px solid #edf0f5;
-}
-
-.compactTopSelect {
-  width: 100%;
-  height: 40px;
-  border-radius: 12px;
-  border: 1px solid #dbe2ec;
-  background: #fff;
-  padding: 0 12px;
-  font-size: 13px;
-  font-weight: 800;
-  color: #071427;
-  margin-bottom: 10px;
-}
-
-.sidebarSearchRow {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.sidebarSearchRow input {
-  flex: 1;
-  height: 40px;
-  border: 1px solid #dbe2ec;
-  border-radius: 12px;
-  padding: 0 12px;
-  font-size: 13px;
-}
-
-.sidebarSearchRow button {
-  height: 40px;
-  padding: 0 12px;
-  border-radius: 12px;
-  background: #35b44a;
-  color: #fff;
-  font-weight: 900;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.nearSoftBtn {
-  width: 100%;
-  height: 38px;
-  border-radius: 12px;
-  background: #f5f8fc;
-  border: 1px solid #dde4ee;
-  color: #071427;
-  font-weight: 800;
-  font-size: 13px;
-}
-
-/* Mode switch */
-.modeSwitchClean {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  padding: 12px 16px;
-  border-bottom: 1px solid #edf0f5;
-}
-
-.modeSwitchClean .mode-btn {
-  width: 100%;
-  text-align: left;
-  padding: 11px 12px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 900;
-  border: 1px solid #e0e6ef;
-  background: #f7f9fc;
-  color: #071427;
-}
-
-.modeSwitchClean .mode-btn.active {
-  background: #071427;
-  color: #fff;
-  border-color: #071427;
-}
-
-/* Controls */
-#parkingControls {
-  padding: 12px 16px !important;
-  border-bottom: 1px solid #edf0f5;
-  background: transparent !important;
-}
-
-.compactFilters {
-  display: flex !important;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.filterRow {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.compactFilterLabel {
-  font-size: 10px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: #7b8798;
-}
-
-.compactSelect {
-  width: 100%;
-  height: 40px;
-  border-radius: 12px;
-  border: 1px solid #dbe2ec;
-  background: #fff;
-  padding: 0 12px;
-  font-size: 13px;
-  font-weight: 800;
-  color: #071427;
-}
-
-.filterOptionsRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.compactOptionBtn {
-  width: 100%;
-  height: 38px;
-  padding: 0 10px !important;
-  border-radius: 12px !important;
-  border: 1px solid #dde4ee !important;
-  background: #fff !important;
-  color: #071427 !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-}
-
-.compactOptionBtn.active {
-  background: #071427 !important;
-  color: #fff !important;
-  border-color: #071427 !important;
-}
-
-.hiddenFilterButtons,
-.controlGroupTitle {
-  display: none !important;
-}
-
-/* Estat / resum */
-.statusCardSoft {
-  margin: 12px 16px;
-  padding: 12px 14px !important;
-  border-radius: 14px;
-  background: #f5faf5;
-  border: 1px solid #e3efe3;
-}
-
-#parkingCounter {
-  font-size: 12px;
-  font-weight: 900;
-  color: #071427;
-  margin-bottom: 4px;
-  line-height: 1.35;
-}
-
-#nearestInfo {
-  font-size: 11px;
-  color: #607080;
-  line-height: 1.4;
-}
-
-/* Llista */
-#parkingList {
-  padding: 0 12px 12px;
-}
-
-.parkingCard {
-  border: 1px solid #e7ecf3;
-  border-radius: 15px;
-  padding: 12px;
-  margin-bottom: 10px;
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(10,20,40,0.04);
-}
-
-.parkingCard.recommended {
-  border: 2px solid #35b44a;
-  background: #f7fff8;
-}
-
-/* Controls del mapa desplaçats */
-.leaflet-top.leaflet-left {
-  left: 320px;
-}
-
-.legend {
-  background: rgba(255,255,255,0.96);
-  padding: 12px 14px;
-  border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(10,20,40,0.14);
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-  .sidebarFloatingCard {
-    width: 260px;
-  }
-
-  .leaflet-top.leaflet-left {
-    left: 292px;
-  }
-}
-
-@media (max-width: 780px) {
-  .appViewClean {
-    height: auto;
-    min-height: calc(100vh - 76px);
-    overflow: auto;
-  }
-
-  .layoutFloating {
-    display: flex !important;
-    flex-direction: column-reverse;
-    height: auto !important;
-  }
-
-  #map {
-    position: relative;
-    height: 52vh;
-    min-height: 360px;
-  }
-
-  .sidebarFloatingCard {
-    position: relative;
-    top: auto;
-    left: auto;
-    width: 100%;
-    max-width: none;
-    height: auto;
-    border-radius: 0;
-    box-shadow: none;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-  }
-
-  .leaflet-top.leaflet-left {
-    left: 10px;
-  }
-}
-
-/* =========================================================
-   FILTERS — PREMIUM SEGMENTED SECURITY + AREA GRID
-   Ajust visual de seguretat i àrea dins el panell flotant
-   ========================================================= */
-
-#parkingControls {
-  padding: 14px 16px !important;
-  background: transparent !important;
-  border-bottom: 1px solid #edf0f5 !important;
-}
-
-.premiumFilters {
-  display: flex !important;
-  flex-direction: column;
-  gap: 16px !important;
-  padding: 0 !important;
-  background: transparent !important;
-  border-bottom: none !important;
-}
-
-.filterBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.premiumFilterTitle {
-  font-size: 11px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.45px;
-  color: #7b8798;
-}
-
-/* ---------- SEGURETAT ---------- */
-
-.securitySegmented {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border: 1px solid #dbe2ec;
-  border-radius: 15px;
-  overflow: hidden;
-  background: #ffffff;
-}
-
-.securityOption {
-  height: 42px;
-  padding: 0 6px !important;
-  border-radius: 0 !important;
-  border: none !important;
-  border-right: 1px solid #e3e8ef !important;
-  background: #ffffff !important;
-  color: #071427 !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  box-shadow: none !important;
-}
-
-.securityOption:last-child {
-  border-right: none !important;
-}
-
-.securityOption:hover {
-  background: #f6f8fb !important;
-}
-
-.securityOption.active {
-  background: #071427 !important;
-  color: #ffffff !important;
-}
-
-.securityOption.active .securityDot {
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.22);
-}
-
-.securityDot {
-  width: 9px;
-  height: 9px;
-  border-radius: 999px;
-  flex-shrink: 0;
-}
-
-.dotAll {
-  background: #071427;
-}
-
-.dotHigh {
-  background: #1D9E75;
-}
-
-.dotMedium {
-  background: #F2C94C;
-}
-
-.dotLow {
-  background: #EB5757;
-}
-
-/* Subtil tint lateral segons l'opció activa */
-.securityHigh.active {
-  background:
-    linear-gradient(180deg, rgba(29,158,117,0.24), rgba(29,158,117,0.24)),
-    #071427 !important;
-}
-
-.securityMedium.active {
-  background:
-    linear-gradient(180deg, rgba(242,201,76,0.22), rgba(242,201,76,0.22)),
-    #071427 !important;
-}
-
-.securityLow.active {
-  background:
-    linear-gradient(180deg, rgba(235,87,87,0.22), rgba(235,87,87,0.22)),
-    #071427 !important;
-}
-
-/* ---------- ÀREA ---------- */
-
-.areaGrid {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  background: transparent !important;
-  border-bottom: none !important;
-}
-
-.areaOption {
-  height: 42px;
-  border-radius: 14px !important;
-  border: 1px solid #dbe2ec !important;
-  background: #ffffff !important;
-  color: #071427 !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  padding: 0 10px !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  box-shadow: none !important;
-}
-
-.areaOption:hover {
-  background: #f6f8fb !important;
-}
-
-.areaOption.active {
-  background: #f3efff !important;
-  color: #071427 !important;
-  border-color: #cdbdff !important;
-  box-shadow: inset 0 0 0 1px rgba(121, 88, 220, 0.16) !important;
-}
-
-.areaIcon {
-  color: #7c5ce6;
-  font-size: 13px;
-}
-
-/* ---------- OPCIONS ---------- */
-
-.premiumOptionRow {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px !important;
-}
-
-.compactOptionBtn {
-  width: 100%;
-  height: 40px;
-  padding: 0 10px !important;
-  border-radius: 14px !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  border: 1px solid #dbe2ec !important;
-  background: #ffffff !important;
-  color: #071427 !important;
-  box-shadow: none !important;
-}
-
-.compactOptionBtn:hover {
-  background: #f6f8fb !important;
-}
-
-.compactOptionBtn.active {
-  background: #071427 !important;
-  color: #ffffff !important;
-  border-color: #071427 !important;
-}
-
-/* Evitem que regles anteriors interfereixin */
-.hiddenFilterButtons {
-  display: grid !important;
-}
-
-.controlGroupTitle,
-.compactFilterLabel,
-.compactSelect,
-.filterRow {
-  display: none !important;
-}
-
-/* =========================================================
-   APP VIEW — OPCIÓ 1: BOTTOM FILTER BAR
-   Panell esquerre per informació + barra inferior per filtres
-   ========================================================= */
-
-.appViewClean {
-  background: #f3f5f8;
-  height: calc(100vh - 76px);
-  overflow: hidden;
-}
-
-/* Ocultem la franja interna antiga */
-.appTopbarMinimal {
-  height: 0 !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-.hiddenUtilityBtn,
-.hiddenUtilityTitle {
-  display: none !important;
-}
-
-/* Layout principal */
-.layoutWithBottomFilters {
-  position: relative;
-  display: block !important;
-  height: calc(100% - 92px) !important;
-  overflow: hidden;
-  background: #dfe6ef;
-}
-
-#map {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-/* Sidebar només per informació/resultats */
-.sidebarInfoCard {
-  position: absolute;
-  top: 18px;
-  left: 18px;
-  z-index: 600;
-  width: 330px;
-  max-width: calc(100vw - 36px);
-  height: calc(100% - 36px);
-  overflow-y: auto;
-  background: rgba(255,255,255,0.97);
-  border: 1px solid #e4e8ef;
-  border-radius: 22px;
-  box-shadow: 0 18px 45px rgba(10,20,40,0.16);
-  backdrop-filter: blur(10px);
-}
-
-.sidebarHeaderClean {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 16px 16px 12px;
-  border-bottom: 1px solid #edf0f5;
-  background: transparent;
-}
-
-.sidebarHeaderClean h2 {
-  font-size: 18px;
-  line-height: 1.15;
-  color: #071427;
-  margin-bottom: 4px;
-}
-
-.sidebarHeaderClean p {
-  font-size: 12px;
-  color: #7b8798;
-  line-height: 1.3;
-}
-
-.miniIconBtn {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  border: 1px solid #e2e7ef;
-  background: #fff;
-  font-size: 14px;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-}
-
-/* Cerca i ciutat */
-.sidebarSearchBlock {
-  padding: 12px 16px 14px;
-  border-bottom: 1px solid #edf0f5;
-}
-
-.compactTopSelect {
-  width: 100%;
-  height: 40px;
-  border-radius: 12px;
-  border: 1px solid #dbe2ec;
-  background: #fff;
-  padding: 0 12px;
-  font-size: 13px;
-  font-weight: 800;
-  color: #071427;
-  margin-bottom: 10px;
-}
-
-.sidebarSearchRow {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.sidebarSearchRow input {
-  flex: 1;
-  height: 40px;
-  border: 1px solid #dbe2ec;
-  border-radius: 12px;
-  padding: 0 12px;
-  font-size: 13px;
-  min-width: 0;
-}
-
-.sidebarSearchRow button {
-  height: 40px;
-  padding: 0 12px;
-  border-radius: 12px;
-  background: #35b44a;
-  color: #fff;
-  font-weight: 900;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.nearSoftBtn {
-  width: 100%;
-  height: 38px;
-  border-radius: 12px;
-  background: #f5f8fc;
-  border: 1px solid #dde4ee;
-  color: #071427;
-  font-weight: 800;
-  font-size: 13px;
-}
-
-/* Modes */
-.modeSwitchClean {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  padding: 12px 16px;
-  border-bottom: 1px solid #edf0f5;
-  background: transparent;
-}
-
-.modeSwitchClean .mode-btn {
-  width: 100%;
-  text-align: left;
-  padding: 11px 12px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 900;
-  border: 1px solid #e0e6ef;
-  background: #f7f9fc;
-  color: #071427;
-}
-
-.modeSwitchClean .mode-btn.active {
-  background: #071427;
-  color: #fff;
-  border-color: #071427;
-}
-
-/* Status */
-.statusCardSoft {
-  margin: 12px 16px;
-  padding: 12px 14px !important;
-  border-radius: 14px;
-  background: #f5faf5;
-  border: 1px solid #e3efe3;
-}
-
-#parkingCounter {
-  font-size: 12px;
-  font-weight: 900;
-  color: #071427;
-  margin-bottom: 4px;
-  line-height: 1.35;
-}
-
-#nearestInfo {
-  font-size: 11px;
-  color: #607080;
-  line-height: 1.4;
-}
-
-/* Llista */
-#parkingList {
-  padding: 0 12px 12px;
-}
-
-.parkingCard {
-  border: 1px solid #e7ecf3;
-  border-radius: 15px;
-  padding: 12px;
-  margin-bottom: 10px;
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(10,20,40,0.04);
-}
-
-.parkingCard.recommended {
-  border: 2px solid #35b44a;
-  background: #f7fff8;
-}
-
-/* =========================================================
-   Barra inferior de filtres
-   ========================================================= */
-
-.bottomFilterBar {
-  position: relative;
-  height: 92px;
-  z-index: 900;
-  background: #eef2f7;
-  border-top: 1px solid #dbe3ee;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  padding: 12px 22px;
-  box-shadow: 0 -10px 28px rgba(10,20,40,0.08);
-}
-
-.bottomFilterGroup {
-  display: flex !important;
-  flex-direction: column;
-  gap: 7px;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  background: transparent !important;
-}
-
-.bottomFilterTitle {
-  font-size: 11px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.45px;
-  color: #667085;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.bottomSegmented {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  border: 1px solid #dbe2ec;
-  border-radius: 14px;
-  background: #fff;
-}
-
-.bottomFilterBtn {
-  height: 38px;
-  padding: 0 14px !important;
-  border: none !important;
-  border-right: 1px solid #e3e8ef !important;
-  border-radius: 0 !important;
-  background: #fff !important;
-  color: #071427 !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  box-shadow: none !important;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.bottomFilterBtn:last-child {
-  border-right: none !important;
-}
-
-.bottomFilterBtn:hover {
-  background: #f6f8fb !important;
-}
-
-.bottomFilterBtn.active {
-  background: #071427 !important;
-  color: #fff !important;
-}
-
-.bottomDot {
-  width: 9px;
-  height: 9px;
-  border-radius: 999px;
-  flex-shrink: 0;
-}
-
-.dotHigh {
-  background: #1D9E75;
-}
-
-.dotMedium {
-  background: #F2C94C;
-}
-
-.dotLow {
-  background: #EB5757;
-}
-
-.securityHighText.active {
-  background:
-    linear-gradient(180deg, rgba(29,158,117,0.22), rgba(29,158,117,0.22)),
-    #071427 !important;
-}
-
-.securityMediumText.active {
-  background:
-    linear-gradient(180deg, rgba(242,201,76,0.22), rgba(242,201,76,0.22)),
-    #071427 !important;
-}
-
-.securityLowText.active {
-  background:
-    linear-gradient(180deg, rgba(235,87,87,0.22), rgba(235,87,87,0.22)),
-    #071427 !important;
-}
-
-/* Accions dreta */
-.bottomFilterActions {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  padding-left: 16px;
-  border-left: 1px solid #dbe2ec;
-}
-
-.bottomActionBtn {
-  height: 38px;
-  padding: 0 15px !important;
-  border-radius: 14px !important;
-  border: 1px solid #dbe2ec !important;
-  background: #fff !important;
-  color: #071427 !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  box-shadow: none !important;
-  white-space: nowrap;
-}
-
-.bottomActionBtn:hover {
-  background: #f6f8fb !important;
-}
-
-.bottomActionBtn.active {
-  background: #071427 !important;
-  color: #fff !important;
-  border-color: #071427 !important;
-}
-
-/* Llegenda i controls mapa */
-.leaflet-top.leaflet-left {
-  left: 366px;
-}
-
-.legend {
-  background: rgba(255,255,255,0.96);
-  padding: 12px 14px;
-  border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(10,20,40,0.14);
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-/* Evitem interferències de versions prèvies */
-.compactFilterLabel,
-.compactSelect,
-.filterRow,
-.controlGroupTitle,
-.premiumFilterTitle,
-.securitySegmented,
-.areaGrid {
-  display: none !important;
-}
-
-/* Responsive */
-@media (max-width: 1100px) {
-  .bottomFilterBar {
-    justify-content: flex-start;
-    overflow-x: auto;
-  }
-
-  .leaflet-top.leaflet-left {
-    left: 366px;
-  }
-}
-
-@media (max-width: 780px) {
-  .appViewClean {
-    height: auto;
-    min-height: calc(100vh - 76px);
-    overflow: auto;
-  }
-
-  .layoutWithBottomFilters {
-    display: flex !important;
-    flex-direction: column-reverse;
-    height: auto !important;
-  }
-
-  #map {
-    position: relative;
-    height: 52vh;
-    min-height: 360px;
-  }
-
-  .sidebarInfoCard {
-    position: relative;
-    top: auto;
-    left: auto;
-    width: 100%;
-    max-width: none;
-    height: auto;
-    border-radius: 0;
-    box-shadow: none;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-  }
-
-  .bottomFilterBar {
-    height: auto;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    justify-content: flex-start;
-    padding: 12px;
-  }
-
-  .leaflet-top.leaflet-left {
-    left: 10px;
-  }
-}
-
-/* =========================================================
-   BICIPARK — ESTIL REFERÈNCIA (com la imatge)
-   Sidebar info + mapa protagonista + bottom filter bar
-   ========================================================= */
-
-.appViewReference {
-  background: #eef3f7;
-  height: calc(100vh - 76px);
-  overflow: hidden;
-}
-
-.layoutReference {
-  position: relative;
-  height: 100%;
-  background: #dfe6ef;
-}
-
-#map {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-/* =========================
-   Sidebar
-   ========================= */
-
-.sidebarReference {
-  position: absolute;
-  top: 18px;
-  left: 18px;
-  z-index: 600;
-  width: 260px;
-  height: calc(100% - 36px);
-  background: rgba(255,255,255,0.96);
-  border: 1px solid #e4e8ef;
-  border-radius: 22px;
-  box-shadow: 0 20px 40px rgba(9, 20, 40, 0.12);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  backdrop-filter: blur(10px);
-}
-
-.sidebarReferenceHeader {
-  padding: 16px 16px 8px;
-  border-bottom: 1px solid #edf0f5;
-}
-
-.sidebarReferenceHeader h2 {
-  margin: 0 0 4px;
-  font-size: 17px;
-  line-height: 1.15;
-  color: #071427;
-}
-
-.sidebarReferenceHeader p {
-  margin: 0;
-  font-size: 12px;
-  color: #77859a;
-}
-
-.referenceSearchBlock {
-  padding: 12px 16px;
-  border-bottom: 1px solid #edf0f5;
-}
-
-.referenceSelect {
-  width: 100%;
-  height: 40px;
-  border-radius: 12px;
-  border: 1px solid #dbe2ec;
-  background: #f8fbf9;
-  padding: 0 12px;
-  font-size: 13px;
-  font-weight: 800;
-  color: #071427;
-  margin-bottom: 10px;
-}
-
-.referenceSearchRow {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.referenceSearchRow input {
-  flex: 1;
-  min-width: 0;
-  height: 40px;
-  border: 1px solid #dbe2ec;
-  border-radius: 12px;
-  padding: 0 12px;
-  font-size: 13px;
-  background: #fff;
-}
-
-.referenceSearchRow button {
-  height: 40px;
-  padding: 0 14px;
-  border-radius: 12px;
-  border: none;
-  background: #35b44a;
-  color: #fff;
-  font-weight: 900;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.referenceNearBtn {
-  width: 100%;
-  height: 38px;
-  border-radius: 12px;
-  border: 1px solid #dbe2ec;
-  background: #fff;
-  color: #071427;
-  font-size: 13px;
-  font-weight: 800;
-}
-
-/* Amaguem visualment els modes, però els mantenim per JS */
-.referenceHiddenModes {
-  display: none !important;
-}
-
-/* =========================
-   Status i llista
-   ========================= */
-
-.referenceStatusCard {
-  margin: 12px 16px 10px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: #f5faf5;
-  border: 1px solid #e4efe5;
-}
-
-#parkingCounter {
-  font-size: 12px;
-  font-weight: 900;
-  color: #071427;
-  margin-bottom: 4px;
-  line-height: 1.35;
-}
-
-#nearestInfo {
-  font-size: 11px;
-  color: #627487;
-  line-height: 1.35;
-}
-
-.referenceListHeader {
-  padding: 0 16px 8px;
-  font-size: 13px;
-  font-weight: 900;
-  color: #071427;
-}
-
-.referenceParkingList {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 12px 8px;
-}
-
-.referenceParkingList .parkingCard {
-  border: 1px solid #e7ecf3;
-  border-radius: 16px;
-  padding: 12px;
-  margin-bottom: 10px;
-  background: #fff;
-  box-shadow: 0 3px 10px rgba(10,20,40,0.04);
-}
-
-.referenceParkingList .parkingCard.recommended {
-  border: 2px solid #35b44a;
-  background: #f7fff8;
-}
-
-.referenceParkingList .cardTitle {
-  font-size: 13px;
-  font-weight: 900;
-  line-height: 1.25;
-}
-
-.referenceParkingList .cardAddress {
-  font-size: 11px;
-  color: #647386;
-}
-
-.referenceListFooter {
-  padding: 10px 12px 12px;
-  border-top: 1px solid #edf0f5;
-  background: rgba(255,255,255,0.96);
-}
-
-.referenceViewAllBtn {
-  width: 100%;
-  height: 34px;
-  border-radius: 12px;
-  border: 1px solid #dbe2ec;
-  background: #fff;
-  color: #071427;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-/* =========================
-   Bottom filter bar
-   ========================= */
-
-.referenceBottomBar {
-  position: absolute;
-  left: calc(50% + 60px);
-  transform: translateX(-50%);
-  bottom: 18px;
-  z-index: 850;
-  display: flex;
-  align-items: flex-end;
-  gap: 16px;
-  padding: 14px 18px;
-  background: rgba(255,255,255,0.96);
-  border: 1px solid #e3e8ef;
-  border-radius: 22px;
-  box-shadow: 0 16px 32px rgba(10,20,40,0.14);
-  backdrop-filter: blur(12px);
-  max-width: calc(100% - 360px);
-  overflow-x: auto;
-}
-
-.referenceFilterGroup {
-  display: flex !important;
-  flex-direction: column;
-  gap: 6px;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  background: transparent !important;
-}
-
-.referenceFilterLabel {
-  font-size: 10px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.45px;
-  color: #667085;
-}
-
-.referenceSegmented {
-  display: flex;
-  border: 1px solid #dbe2ec;
-  border-radius: 14px;
-  overflow: hidden;
-  background: #fff;
-}
-
-.referenceChip {
-  height: 34px;
-  padding: 0 12px !important;
-  border: none !important;
-  border-right: 1px solid #e3e8ef !important;
-  border-radius: 0 !important;
-  background: #fff !important;
-  color: #071427 !important;
-  font-size: 12px !important;
-  font-weight: 800 !important;
-  box-shadow: none !important;
-  white-space: nowrap;
-}
-
-.referenceChip:last-child {
-  border-right: none !important;
-}
-
-.referenceChip:hover {
-  background: #f7f9fc !important;
-}
-
-.referenceChip.active {
-  background: #071427 !important;
-  color: #fff !important;
-}
-
-.chipAlta:not(.active) {
-  background: rgba(29,158,117,0.10) !important;
-  color: #1D9E75 !important;
-}
-
-.chipMitjana:not(.active) {
-  background: rgba(242,201,76,0.16) !important;
-  color: #9a7200 !important;
-}
-
-.chipBaixa:not(.active) {
-  background: rgba(235,87,87,0.12) !important;
-  color: #c53d3d !important;
-}
-
-.referenceActionsGroup {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  padding-left: 14px;
-  border-left: 1px solid #e3e8ef;
-}
-
-.referenceToggleBtn {
-  height: 34px;
-  padding: 0 14px !important;
-  border-radius: 14px !important;
-  border: 1px solid #dbe2ec !important;
-  background: #fff !important;
-  color: #071427 !important;
-  font-size: 12px !important;
-  font-weight: 800 !important;
-  box-shadow: none !important;
-  white-space: nowrap;
-}
-
-.referenceToggleBtn:hover {
-  background: #f7f9fc !important;
-}
-
-.referenceToggleBtn.active {
-  background: #071427 !important;
-  color: #fff !important;
-  border-color: #071427 !important;
-}
-
-/* =========================
-   Controls del mapa
-   ========================= */
-
-.leaflet-top.leaflet-left {
-  left: auto !important;
-  right: 18px !important;
-}
-
-.leaflet-control-zoom {
-  box-shadow: 0 10px 22px rgba(10,20,40,0.12) !important;
-  border-radius: 14px !important;
-  overflow: hidden;
-}
-
-.leaflet-control-zoom a {
-  width: 38px !important;
-  height: 38px !important;
-  line-height: 38px !important;
-  font-size: 20px !important;
-}
-
-.legend {
-  background: rgba(255,255,255,0.96);
-  padding: 12px 14px;
-  border-radius: 16px;
-  box-shadow: 0 10px 24px rgba(10,20,40,0.14);
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-/* Neutralitzem blocs antics */
-.compactFilters,
-.bottomFilterBar,
-.bottomFilterGroup,
-.bottomFilterTitle,
-.bottomSegmented,
-.bottomFilterBtn,
-.bottomActionBtn,
-.premiumFilters,
-.compactFilterLabel,
-.filterRow,
-.compactSelect,
-.areaGrid,
-.securitySegmented,
-.controlGroupTitle {
-  all: unset;
-}
-
-@media (max-width: 1180px) {
+  #parkingControls.referenceBottomBar,
   .referenceBottomBar {
-    left: calc(50% + 40px);
-    max-width: calc(100% - 390px);
-  }
-}
-
-@media (max-width: 980px) {
-  .referenceBottomBar {
-    left: calc(50% + 20px);
-    max-width: calc(100% - 420px);
-    gap: 10px;
-    padding: 12px;
-  }
-
-  .sidebarReference {
-    width: 290px;
-  }
-}
-
-@media (max-width: 780px) {
-  .appViewReference {
-    height: auto;
-    min-height: calc(100vh - 76px);
-    overflow: auto;
-  }
-
-  .layoutReference {
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    min-height: auto;
-  }
-
-  #map {
-    position: relative;
-    height: 52vh;
-    min-height: 360px;
-  }
-
-  .sidebarReference {
-    position: relative;
-    top: auto;
+    position: sticky;
+    bottom: 0;
     left: auto;
-    width: 100%;
-    height: auto;
-    max-width: none;
-    border-radius: 0;
-    box-shadow: none;
-    border-left: none;
-    border-right: none;
-  }
-
-  .referenceBottomBar {
-    position: relative;
-    left: auto;
+    right: auto;
     transform: none;
-    bottom: auto;
-    margin: 12px;
+    width: 100%;
     max-width: none;
-    width: calc(100% - 24px);
-    flex-wrap: nowrap;
+    border-radius: 18px 18px 0 0;
     overflow-x: auto;
   }
 
   .leaflet-top.leaflet-left {
     right: 10px !important;
-  }
-}
-
-/* Compatibilitat JS: topbar ocult però existent */
-.appTopbarReferenceHidden {
-  height: 0 !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  overflow: hidden !important;
-  border: none !important;
-  background: transparent !important;
-  visibility: hidden !important;
-}
-
-/* =========================
-   AJUSTOS LAYOUT MAPA
-   ========================= */
-
-#appView {
-  position: relative;
-}
-
-#layout {
-  position: relative;
-  min-height: calc(100vh - 100px);
-}
-
-/* =========================
-   SIDEBAR ESQUERRA
-   ========================= */
-
-.sidebarReference {
-  position: absolute;
-  top: 22px;
-  left: 22px;
-  z-index: 900;
-  width: 430px;              /* abans massa estret */
-  max-width: calc(100vw - 44px);
-  max-height: calc(100vh - 150px);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(8px);
-  border: 1px solid #d9dfeb;
-  border-radius: 24px;
-  box-shadow: 0 18px 45px rgba(11, 25, 53, 0.16);
-}
-
-/* capçalera panell */
-.sidebarReferenceHeader {
-  padding: 22px 22px 10px;
-  border-bottom: 1px solid #e7ebf2;
-}
-
-.sidebarReferenceHeader h2 {
-  margin: 0 0 6px;
-  font-size: 22px;
-  line-height: 1.15;
-}
-
-.sidebarReferenceHeader p {
-  margin: 0;
-  font-size: 14px;
-  color: #6b778c;
-}
-
-/* bloc cerca */
-.referenceSearchBlock {
-  padding: 16px 22px 18px;
-  border-bottom: 1px solid #e7ebf2;
-}
-
-/* status */
-.referenceStatusCard {
-  margin: 16px 22px 10px;
-  padding: 16px 18px;
-  border: 1px solid #dfe5ef;
-  border-radius: 18px;
-  background: #ffffff;
-}
-
-#parkingCounter {
-  font-size: 17px;
-  font-weight: 800;
-  line-height: 1.3;
-  color: #0c1730;
-  margin-bottom: 8px;
-}
-
-#nearestInfo {
-  font-size: 14px;
-  line-height: 1.45;
-  color: #6a768c;
-}
-
-/* títol llista */
-.referenceListHeader {
-  padding: 6px 22px 10px;
-  font-size: 16px;
-  font-weight: 800;
-  color: #0c1730;
-}
-
-/* llista aparcaments */
-.referenceParkingList {
-  flex: 1;
-  min-height: 260px;
-  max-height: none;
-  overflow-y: auto;
-  padding: 0 16px 8px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* scroll més fi */
-.referenceParkingList::-webkit-scrollbar {
-  width: 8px;
-}
-
-.referenceParkingList::-webkit-scrollbar-thumb {
-  background: #c6cfdd;
-  border-radius: 999px;
-}
-
-/* targetes aparcaments dins la llista */
-.referenceParkingList .parkingCard,
-.referenceParkingList .parking-card,
-.referenceParkingList .parkingItem,
-.referenceParkingList .parking-item {
-  width: 100%;
-  padding: 16px 16px 14px;
-  border: 1px solid #dfe5ef;
-  border-radius: 18px;
-  background: #fff;
-  box-sizing: border-box;
-}
-
-.referenceParkingList .parkingCard h3,
-.referenceParkingList .parking-card h3,
-.referenceParkingList .parkingItem h3,
-.referenceParkingList .parking-item h3 {
-  margin: 0 0 8px;
-  font-size: 15px;
-  line-height: 1.3;
-}
-
-.referenceParkingList .parkingCard p,
-.referenceParkingList .parking-card p,
-.referenceParkingList .parkingItem p,
-.referenceParkingList .parking-item p {
-  margin: 0 0 10px;
-  font-size: 13px;
-  line-height: 1.45;
-  color: #5f6b82;
-}
-
-/* botó inferior */
-.referenceListFooter {
-  padding: 14px 22px 22px;
-  border-top: 1px solid #e7ebf2;
-  background: rgba(255,255,255,0.96);
-}
-
-.referenceViewAllBtn {
-  width: 100%;
-  min-height: 48px;
-  border-radius: 18px;
-  border: 1px solid #d3dbe8;
-  background: #fff;
-  color: #0c1730;
-  font-weight: 800;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-/* =========================
-   QUADRE FLOTANT FILTRES
-   ========================= */
-
-.referenceBottomBar {
-  position: absolute;
-  left: 50%;
-  bottom: 16px; /* baixa el quadre fins a tocar pràcticament la franja grisa */
-  transform: translateX(-50%);
-  z-index: 950;
-
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-
-  padding: 16px 20px;
-  border-radius: 24px;
-  border: 1px solid #ddd8cb;
-  background: rgba(247, 243, 232, 0.97);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 14px 34px rgba(23, 36, 64, 0.14);
-
-  width: auto;
-  max-width: calc(100vw - 520px);
-}
-
-/* grups interns */
-.referenceFilterGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.referenceFilterLabel {
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #667089;
-  text-align: center;
-}
-
-.referenceSegmented {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  border-radius: 18px;
-  border: 1px solid #d6dce6;
-  background: #fff;
-}
-
-.referenceChip {
-  min-height: 44px;
-  padding: 0 18px;
-  border: none;
-  border-right: 1px solid #e6ebf3;
-  background: transparent;
-  font-size: 14px;
-  font-weight: 800;
-  color: #0c1730;
-  cursor: pointer;
-}
-
-.referenceChip:last-child {
-  border-right: none;
-}
-
-.referenceChip.active {
-  background: #061a3b;
-  color: #fff;
-}
-
-/* to subtil per seguretat */
-.chipAlta {
-  color: #1c9b64;
-}
-
-.chipMitjana {
-  color: #b28600;
-}
-
-.chipBaixa {
-  color: #d95353;
-}
-
-.referenceActionsGroup {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.referenceToggleBtn {
-  min-height: 46px;
-  padding: 0 18px;
-  border-radius: 18px;
-  border: 1px solid #d6dce6;
-  background: #fff;
-  color: #0c1730;
-  font-weight: 800;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.referenceToggleBtn.active {
-  background: #061a3b;
-  color: #fff;
-}
-
-/* =========================
-   LLEGENDA SEGURETAT
-   ========================= */
-
-.leaflet-bottom.leaflet-right .legend,
-.leaflet-bottom.leaflet-right .securityLegend,
-.leaflet-bottom.leaflet-right .mapLegend {
-  margin-bottom: 120px !important;
-}
-
-/* =========================
-   RESPONSIVE
-   ========================= */
-
-@media (max-width: 1200px) {
-  .sidebarReference {
-    width: 390px;
-  }
-
-  .referenceBottomBar {
-    max-width: calc(100vw - 440px);
-    gap: 14px;
-    padding: 14px 16px;
-  }
-}
-
-@media (max-width: 980px) {
-  .sidebarReference {
-    width: calc(100vw - 32px);
-    left: 16px;
-    top: 16px;
-    max-height: 52vh;
-  }
-
-  .referenceBottomBar {
-    left: 16px;
-    right: 16px;
-    bottom: 14px;
-    transform: none;
-    width: auto;
-    max-width: none;
-    justify-content: center;
-  }
-}
-/* =========================================================
-   BOTTOM FILTER BAR — OPCIÓ 3 COMPACTA
-   Barra inferior més baixa, horitzontal i menys invasiva
-   ========================================================= */
-
-/* Assegura que el mapa ocupi bé l'espai */
-.appViewReference {
-  height: calc(100vh - 76px) !important;
-  overflow: hidden !important;
-  background: #eef3f7 !important;
-}
-
-.layoutReference {
-  position: relative !important;
-  height: 100% !important;
-  overflow: hidden !important;
-  background: #dfe6ef !important;
-}
-
-#map {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 1 !important;
-}
-
-/* =========================
-   SIDEBAR: més llegible
-   ========================= */
-
-.sidebarReference {
-  position: absolute !important;
-  top: 18px !important;
-  left: 18px !important;
-  z-index: 700 !important;
-
-  width: 420px !important;
-  max-width: calc(100vw - 44px) !important;
-  height: calc(100% - 36px) !important;
-
-  background: rgba(255,255,255,0.96) !important;
-  border: 1px solid #e4e8ef !important;
-  border-radius: 22px !important;
-  box-shadow: 0 18px 42px rgba(10,20,40,0.15) !important;
-  backdrop-filter: blur(10px) !important;
-
-  overflow: hidden !important;
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-.sidebarReferenceHeader {
-  padding: 18px 20px 12px !important;
-  border-bottom: 1px solid #edf0f5 !important;
-}
-
-.sidebarReferenceHeader h2 {
-  font-size: 21px !important;
-  line-height: 1.15 !important;
-  margin: 0 0 5px !important;
-  color: #071427 !important;
-}
-
-.sidebarReferenceHeader p {
-  font-size: 13px !important;
-  color: #667085 !important;
-  margin: 0 !important;
-}
-
-.referenceSearchBlock {
-  padding: 14px 20px 16px !important;
-  border-bottom: 1px solid #edf0f5 !important;
-}
-
-.referenceSelect {
-  width: 100% !important;
-  height: 42px !important;
-  border-radius: 13px !important;
-  border: 1px solid #dbe2ec !important;
-  padding: 0 12px !important;
-  font-size: 13px !important;
-  font-weight: 800 !important;
-  color: #071427 !important;
-  background: #fff !important;
-  margin-bottom: 10px !important;
-}
-
-.referenceSearchRow {
-  display: flex !important;
-  gap: 8px !important;
-  margin-bottom: 8px !important;
-}
-
-.referenceSearchRow input {
-  flex: 1 !important;
-  min-width: 0 !important;
-  height: 42px !important;
-  border-radius: 13px !important;
-  border: 1px solid #dbe2ec !important;
-  padding: 0 12px !important;
-  font-size: 13px !important;
-}
-
-.referenceSearchRow button {
-  height: 42px !important;
-  padding: 0 15px !important;
-  border-radius: 13px !important;
-  background: #35b44a !important;
-  color: #fff !important;
-  font-weight: 900 !important;
-  font-size: 13px !important;
-}
-
-.referenceNearBtn {
-  width: 100% !important;
-  height: 40px !important;
-  border-radius: 13px !important;
-  border: 1px solid #dbe2ec !important;
-  background: #fff !important;
-  color: #071427 !important;
-  font-size: 13px !important;
-  font-weight: 800 !important;
-}
-
-.referenceStatusCard {
-  margin: 14px 20px 10px !important;
-  padding: 13px 15px !important;
-  border-radius: 16px !important;
-  background: #ffffff !important;
-  border: 1px solid #e1e7f0 !important;
-}
-
-#parkingCounter {
-  font-size: 14px !important;
-  font-weight: 900 !important;
-  color: #071427 !important;
-  line-height: 1.35 !important;
-  margin-bottom: 6px !important;
-}
-
-#nearestInfo {
-  font-size: 13px !important;
-  color: #667085 !important;
-  line-height: 1.4 !important;
-}
-
-.referenceListHeader {
-  padding: 6px 20px 10px !important;
-  font-size: 16px !important;
-  font-weight: 900 !important;
-  color: #071427 !important;
-}
-
-.referenceParkingList {
-  flex: 1 !important;
-  overflow-y: auto !important;
-  padding: 0 14px 10px 20px !important;
-}
-
-.referenceParkingList .parkingCard {
-  width: 100% !important;
-  padding: 13px !important;
-  margin-bottom: 10px !important;
-  border-radius: 16px !important;
-  border: 1px solid #e4e8ef !important;
-  background: #fff !important;
-}
-
-.referenceListFooter {
-  padding: 12px 20px 16px !important;
-  border-top: 1px solid #edf0f5 !important;
-  background: rgba(255,255,255,0.96) !important;
-}
-
-.referenceViewAllBtn {
-  width: 100% !important;
-  height: 42px !important;
-  border-radius: 14px !important;
-  border: 1px solid #dbe2ec !important;
-  background: #fff !important;
-  color: #071427 !important;
-  font-size: 13px !important;
-  font-weight: 900 !important;
-}
-
-/* =========================
-   BARRA INFERIOR OPCIÓ 3
-   ========================= */
-
-.referenceBottomBar {
-  position: absolute !important;
-  left: 50% !important;
-  bottom: 18px !important;
-  transform: translateX(-50%) !important;
-  z-index: 900 !important;
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 18px !important;
-
-  width: auto !important;
-  max-width: calc(100vw - 560px) !important;
-  min-height: 72px !important;
-
-  padding: 12px 18px !important;
-  border-radius: 22px !important;
-  border: 1px solid rgba(219,226,236,0.95) !important;
-  background: rgba(255,255,255,0.96) !important;
-  box-shadow: 0 16px 34px rgba(10,20,40,0.16) !important;
-  backdrop-filter: blur(12px) !important;
-
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-}
-
-/* Cada bloc de filtres */
-.referenceFilterGroup {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  background: transparent !important;
-  flex-shrink: 0 !important;
-}
-
-.referenceFilterLabel {
-  font-size: 10px !important;
-  font-weight: 900 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.45px !important;
-  color: #667085 !important;
-  line-height: 1 !important;
-}
-
-/* Segments compactes */
-.referenceSegmented {
-  display: flex !important;
-  align-items: center !important;
-  overflow: hidden !important;
-  border: 1px solid #dbe2ec !important;
-  border-radius: 15px !important;
-  background: #fff !important;
-  height: 36px !important;
-}
-
-/* Botons interns */
-.referenceChip {
-  height: 36px !important;
-  min-height: 36px !important;
-  padding: 0 13px !important;
-  border: none !important;
-  border-right: 1px solid #e4e8ef !important;
-  border-radius: 0 !important;
-  background: #fff !important;
-  color: #071427 !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  line-height: 36px !important;
-  box-shadow: none !important;
-  white-space: nowrap !important;
-}
-
-.referenceChip:last-child {
-  border-right: none !important;
-}
-
-.referenceChip:hover {
-  background: #f6f8fb !important;
-}
-
-.referenceChip.active {
-  background: #071427 !important;
-  color: #fff !important;
-}
-
-/* Colors subtils de seguretat */
-.chipAlta:not(.active) {
-  background: rgba(29,158,117,0.10) !important;
-  color: #1D9E75 !important;
-}
-
-.chipMitjana:not(.active) {
-  background: rgba(242,201,76,0.16) !important;
-  color: #9a7200 !important;
-}
-
-.chipBaixa:not(.active) {
-  background: rgba(235,87,87,0.12) !important;
-  color: #c53d3d !important;
-}
-
-/* Accions de la dreta */
-.referenceActionsGroup {
-  display: flex !important;
-  align-items: flex-end !important;
-  gap: 10px !important;
-  padding-left: 16px !important;
-  border-left: 1px solid #e3e8ef !important;
-  flex-shrink: 0 !important;
-}
-
-.referenceToggleBtn {
-  height: 50px !important;
-  min-width: 72px !important;
-  padding: 0 14px !important;
-  border-radius: 16px !important;
-  border: 1px solid #dbe2ec !important;
-  background: #fff !important;
-  color: #071427 !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  box-shadow: none !important;
-  white-space: nowrap !important;
-
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 2px !important;
-}
-
-.referenceToggleBtn:hover {
-  background: #f6f8fb !important;
-}
-
-.referenceToggleBtn.active {
-  background: #071427 !important;
-  color: #fff !important;
-  border-color: #071427 !important;
-}
-
-/* Llegenda: que no xoqui amb la barra inferior */
-.leaflet-bottom.leaflet-right .legend {
-  margin-bottom: 100px !important;
-}
-
-/* Controls de zoom a la dreta, com al mockup */
-.leaflet-top.leaflet-left {
-  left: auto !important;
-  right: 18px !important;
-}
-
-/* Neteja possibles regles antigues */
-.bottomFilterBar,
-.bottomFilterGroup,
-.bottomFilterTitle,
-.bottomSegmented,
-.bottomFilterBtn,
-.bottomActionBtn,
-.premiumFilters,
-.securitySegmented,
-.areaGrid,
-.compactFilters,
-.compactSelect,
-.compactFilterLabel,
-.filterRow,
-.controlGroupTitle {
-  all: unset;
-}
-
-/* =========================
-   RESPONSIVE
-   ========================= */
-
-@media (max-width: 1250px) {
-  .sidebarReference {
-    width: 390px !important;
-  }
-
-  .referenceBottomBar {
-    max-width: calc(100vw - 460px) !important;
-    gap: 12px !important;
-    padding: 10px 14px !important;
-  }
-
-  .referenceChip {
-    padding: 0 10px !important;
-  }
-}
-
-@media (max-width: 980px) {
-  .sidebarReference {
-    width: calc(100vw - 32px) !important;
-    left: 16px !important;
-    top: 16px !important;
-    height: auto !important;
-    max-height: 48vh !important;
-  }
-
-  .referenceBottomBar {
-    left: 16px !important;
-    right: 16px !important;
-    bottom: 14px !important;
-    transform: none !important;
-    max-width: none !important;
-    justify-content: flex-start !important;
-  }
-}
-
-@media (max-width: 760px) {
-  .appViewReference {
-    height: auto !important;
-    min-height: calc(100vh - 76px) !important;
-    overflow: auto !important;
-  }
-
-  .layoutReference {
-    height: auto !important;
-    min-height: 100vh !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  #map {
-    position: relative !important;
-    height: 56vh !important;
-    min-height: 380px !important;
-  }
-
-  .sidebarReference {
-    position: relative !important;
-    inset: auto !important;
-    width: 100% !important;
-    max-width: none !important;
-    height: auto !important;
-    max-height: none !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    border-left: none !important;
-    border-right: none !important;
-  }
-
-  .referenceBottomBar {
-    position: sticky !important;
-    bottom: 0 !important;
-    left: auto !important;
-    right: auto !important;
-    transform: none !important;
-    width: 100% !important;
-    max-width: none !important;
-    border-radius: 18px 18px 0 0 !important;
-  }
-
-  .leaflet-top.leaflet-left {
-    right: 10px !important;
-  }
-}
-
-/* =========================================================
-   BOTTOM FILTER BAR — AJUSTADA A LA PROPOSTA FINAL
-   Compacta, blanca, baixa i amb accions a la dreta
-   ========================================================= */
-
-.referenceBottomBar {
-  position: absolute !important;
-  left: calc(50% + 110px) !important;
-  bottom: 14px !important;
-  transform: translateX(-50%) !important;
-  z-index: 950 !important;
-
-  display: flex !important;
-  align-items: center !important;
-  gap: 14px !important;
-  flex-wrap: nowrap !important;
-
-  width: auto !important;
-  max-width: 760px !important;
-  min-height: 74px !important;
-
-  padding: 10px 14px !important;
-  border-radius: 24px !important;
-  border: 1px solid #dbe2ec !important;
-  background: rgba(255,255,255,0.96) !important;
-  backdrop-filter: blur(10px) !important;
-  box-shadow: 0 18px 34px rgba(10,20,40,0.14) !important;
-
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-}
-
-/* blocs Seguretat / Àrea */
-.referenceFilterGroup {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
-  flex-shrink: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  background: transparent !important;
-}
-
-.referenceFilterLabel {
-  font-size: 10px !important;
-  font-weight: 900 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.06em !important;
-  color: #667085 !important;
-  line-height: 1 !important;
-  text-align: left !important;
-  padding-left: 4px !important;
-}
-
-.referenceSegmented {
-  display: flex !important;
-  align-items: center !important;
-  height: 40px !important;
-  overflow: hidden !important;
-  border: 1px solid #dbe2ec !important;
-  border-radius: 16px !important;
-  background: #fff !important;
-}
-
-/* botons segmentats */
-.referenceChip {
-  height: 40px !important;
-  min-height: 40px !important;
-  padding: 0 16px !important;
-  border: none !important;
-  border-right: 1px solid #e6ebf2 !important;
-  border-radius: 0 !important;
-  background: #fff !important;
-  color: #0c1730 !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  line-height: 40px !important;
-  white-space: nowrap !important;
-  box-shadow: none !important;
-}
-
-.referenceChip:last-child {
-  border-right: none !important;
-}
-
-.referenceChip:hover {
-  background: #f7f9fc !important;
-}
-
-.referenceChip.active {
-  background: #071427 !important;
-  color: #fff !important;
-}
-
-/* color subtil per la seguretat */
-.chipAlta:not(.active) {
-  background: rgba(29,158,117,0.10) !important;
-  color: #1D9E75 !important;
-}
-
-.chipMitjana:not(.active) {
-  background: rgba(242,201,76,0.18) !important;
-  color: #9e7600 !important;
-}
-
-.chipBaixa:not(.active) {
-  background: rgba(235,87,87,0.14) !important;
-  color: #d24a4a !important;
-}
-
-/* bloc d'accions de la dreta */
-.referenceActionsGroup {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  flex-shrink: 0 !important;
-  padding-left: 6px !important;
-}
-
-/* favorits i carrils bici */
-.referenceToggleBtn {
-  width: 64px !important;
-  height: 58px !important;
-  padding: 6px 6px !important;
-
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 3px !important;
-
-  border-radius: 16px !important;
-  border: 1px solid #dbe2ec !important;
-  background: #fff !important;
-  color: #0c1730 !important;
-
-  font-size: 10px !important;
-  font-weight: 800 !important;
-  line-height: 1.1 !important;
-  text-align: center !important;
-  white-space: normal !important;
-
-  box-shadow: none !important;
-}
-
-.referenceToggleBtn:hover {
-  background: #f7f9fc !important;
-}
-
-.referenceToggleBtn.active {
-  background: #071427 !important;
-  color: #fff !important;
-  border-color: #071427 !important;
-}
-
-/* si el teu botó de carrils bici té classe extra */
-#bikeLaneBtn.referenceToggleBtn {
-  width: 68px !important;
-}
-
-/* puja una mica la llegenda perquè no xoqui */
-.leaflet-bottom.leaflet-right .legend {
-  margin-bottom: 104px !important;
-}
-
-/* en pantalles una mica més petites */
-@media (max-width: 1280px) {
-  .referenceBottomBar {
-    left: calc(50% + 90px) !important;
-    max-width: 700px !important;
-    gap: 12px !important;
-    padding: 10px 12px !important;
-  }
-
-  .referenceChip {
-    padding: 0 13px !important;
-  }
-
-  .referenceToggleBtn {
-    width: 60px !important;
-    height: 56px !important;
-    font-size: 10px !important;
-  }
-}
-
-/* tablets */
-@media (max-width: 980px) {
-  .referenceBottomBar {
-    left: 16px !important;
-    right: 16px !important;
-    bottom: 12px !important;
-    transform: none !important;
-    max-width: none !important;
-    width: auto !important;
-    justify-content: flex-start !important;
-  }
-}
-
-/* mòbil */
-@media (max-width: 760px) {
-  .referenceBottomBar {
-    position: sticky !important;
-    left: auto !important;
-    right: auto !important;
-    bottom: 0 !important;
-    transform: none !important;
-    width: 100% !important;
-    max-width: none !important;
-    border-radius: 18px 18px 0 0 !important;
-  }
-}
-/* =========================================================
-   AJUST MANUAL FINAL — POSICIÓ BARRA FILTRES
-   Aquest bloc mana sobre tots els anteriors
-   ========================================================= */
-
-.referenceBottomBar {
-  left: 455px !important;
-  right: 2px !important;
-  bottom: 8px !important;
-  transform: none !important;
-}
-
-/* =========================================================
-   FIX BARRA FILTRES — SENSE SCROLL I BEN AJUSTADA
-   ========================================================= */
-
-.referenceBottomBar {
-  left: 560px !important;
-  right: 160px !important;
-  bottom: 10px !important;
-  transform: none !important;
-
-  width: auto !important;
-  max-width: none !important;
-
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 10px !important;
-  flex-wrap: nowrap !important;
-
-  overflow: visible !important;
-  padding: 10px 12px !important;
-}
-
-/* Els blocs no han de forçar més amplada de la disponible */
-.referenceFilterGroup,
-.referenceActionsGroup {
-  flex-shrink: 1 !important;
-}
-
-/* Segments més compactes */
-.referenceSegmented {
-  height: 34px !important;
-}
-
-.referenceChip {
-  height: 34px !important;
-  min-height: 34px !important;
-  line-height: 34px !important;
-  padding: 0 10px !important;
-  font-size: 11px !important;
-}
-
-/* Botons Favorits / Carrils més petits */
-.referenceActionsGroup {
-  gap: 8px !important;
-  padding-left: 8px !important;
-}
-
-.referenceToggleBtn {
-  width: 56px !important;
-  min-width: 56px !important;
-  height: 50px !important;
-  padding: 4px !important;
-  font-size: 9px !important;
-  line-height: 1.05 !important;
-}
-
-/* Carrils bici una mica més ample perquè no talli tant */
-#bikeLaneBtn.referenceToggleBtn {
-  width: 60px !important;
-  min-width: 60px !important;
-}
-
-/* Evita scroll horitzontal visual */
-html,
-body,
-#appView,
-.layoutReference {
-  overflow-x: hidden !important;
-}
-
-/* =========================================================
-   FIX FINAL — BARRA INFERIOR + LLEGENDA
-   La barra queda completa dins del mapa i s'amaga la llegenda
-   ========================================================= */
-
-/* Evita scroll horitzontal */
-html,
-body,
-#appView,
-.layoutReference {
-  overflow-x: hidden !important;
-}
-
-/* Barra inferior compacta i ben emmarcada */
-.referenceBottomBar {
-  position: absolute !important;
-
-  /* Ajusta la barra dins l'espai lliure del mapa */
-  left: 575px !important;
-  right: 145px !important;
-  bottom: 34px !important;
-  transform: none !important;
-
-  width: auto !important;
-  max-width: none !important;
-  min-height: 64px !important;
-  max-height: 76px !important;
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  flex-wrap: nowrap !important;
-
-  padding: 8px 12px !important;
-  border-radius: 20px !important;
-  border: 1px solid #dbe2ec !important;
-  background: rgba(255,255,255,0.97) !important;
-  box-shadow: 0 14px 30px rgba(10,20,40,0.14) !important;
-  backdrop-filter: blur(10px) !important;
-
-  overflow: visible !important;
-  box-sizing: border-box !important;
-}
-
-/* Grups Seguretat / Àrea */
-.referenceFilterGroup {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 5px !important;
-  flex-shrink: 0 !important;
-}
-
-.referenceFilterLabel {
-  font-size: 10px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  color: #667085 !important;
-  padding-left: 3px !important;
-}
-
-/* Botons segmentats més baixos */
-.referenceSegmented {
-  height: 34px !important;
-  border-radius: 14px !important;
-  overflow: hidden !important;
-}
-
-.referenceChip {
-  height: 34px !important;
-  min-height: 34px !important;
-  line-height: 34px !important;
-  padding: 0 11px !important;
-  font-size: 11px !important;
-  font-weight: 900 !important;
-}
-
-/* Accions dreta */
-.referenceActionsGroup {
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  padding-left: 10px !important;
-  border-left: 1px solid #e3e8ef !important;
-  flex-shrink: 0 !important;
-}
-
-.referenceToggleBtn {
-  width: 58px !important;
-  min-width: 58px !important;
-  height: 50px !important;
-  padding: 4px !important;
-  border-radius: 15px !important;
-
-  font-size: 9px !important;
-  line-height: 1.05 !important;
-  text-align: center !important;
-  white-space: normal !important;
-
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 2px !important;
-}
-
-#bikeLaneBtn.referenceToggleBtn {
-  width: 62px !important;
-  min-width: 62px !important;
-}
-
-/* Amaguem la llegenda de seguretat estimada del mapa */
-.leaflet-bottom.leaflet-right .legend {
-  display: none !important;
-}
-
-/* Attribution de Leaflet sempre visible */
-.leaflet-control-attribution {
-  margin-bottom: 0 !important;
-}
-
-/* En pantalles més petites, permet scroll només dins la barra */
-@media (max-width: 1100px) {
-  .referenceBottomBar {
-    left: 16px !important;
-    right: 16px !important;
-    bottom: 22px !important;
-    justify-content: flex-start !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-  }
-}
-
-/* =========================================================
-   AJUST FI — BARRA INFERIOR MÉS ELEGANT
-   ========================================================= */
-
-.referenceBottomBar {
-  left: 600px !important;
-  right: 90px !important;
-  bottom: 26px !important;
-
-  min-height: 62px !important;
-  max-height: 70px !important;
-
-  padding: 8px 14px !important;
-  gap: 12px !important;
-
-  background: rgba(255,255,255,0.94) !important;
-  border: 1px solid rgba(219,226,236,0.95) !important;
-  border-radius: 22px !important;
-
-  box-shadow: 0 14px 30px rgba(10,20,40,0.13) !important;
-  overflow: visible !important;
-}
-
-/* Seguretat i Àrea una mica més compactes */
-.referenceFilterGroup {
-  gap: 5px !important;
-}
-
-.referenceFilterLabel {
-  font-size: 10px !important;
-  text-align: center !important;
-  padding-left: 0 !important;
-}
-
-.referenceSegmented {
-  height: 34px !important;
-  border-radius: 15px !important;
-}
-
-.referenceChip {
-  height: 34px !important;
-  min-height: 34px !important;
-  line-height: 34px !important;
-  padding: 0 13px !important;
-  font-size: 11px !important;
-}
-
-/* Separador abans de Favorits / Carrils bici */
-.referenceActionsGroup {
-  gap: 10px !important;
-  padding-left: 14px !important;
-  border-left: 1px solid #e1e7ef !important;
-}
-
-/* Botons dreta més llegibles */
-.referenceToggleBtn {
-  width: 70px !important;
-  min-width: 70px !important;
-  height: 48px !important;
-
-  padding: 5px 6px !important;
-  border-radius: 16px !important;
-
-  font-size: 10px !important;
-  line-height: 1.05 !important;
-  font-weight: 900 !important;
-}
-
-#bikeLaneBtn.referenceToggleBtn {
-  width: 74px !important;
-  min-width: 74px !important;
-}
-
-/* Evita que el copyright de Leaflet quedi tapat */
-.leaflet-control-attribution {
-  margin-bottom: 0 !important;
-}
-
-/* Si cal, ajust per pantalles mitjanes */
-@media (max-width: 1350px) {
-  .referenceBottomBar {
-    left: 575px !important;
-    right: 70px !important;
-    bottom: 24px !important;
-    gap: 10px !important;
-  }
-
-  .referenceChip {
-    padding: 0 11px !important;
-  }
-
-  .referenceToggleBtn {
-    width: 64px !important;
-    min-width: 64px !important;
-  }
-
-  #bikeLaneBtn.referenceToggleBtn {
-    width: 68px !important;
-    min-width: 68px !important;
-  }
-}
-
-/* =========================================================
-   FIX FINAL — SIDEBAR MÉS ESTRETA + BARRA INFERIOR COMPLETA
-   ========================================================= */
-
-/* Panell esquerre més estret */
-.sidebarReference {
-  width: 360px !important;
-  max-width: 360px !important;
-}
-
-/* Text i elements del panell una mica més compactes */
-.sidebarReferenceHeader {
-  padding: 16px 18px 10px !important;
-}
-
-.sidebarReferenceHeader h2 {
-  font-size: 20px !important;
-}
-
-.sidebarReferenceHeader p {
-  font-size: 13px !important;
-}
-
-.referenceSearchBlock {
-  padding: 14px 18px 14px !important;
-}
-
-.referenceStatusCard {
-  margin: 14px 18px 10px !important;
-  padding: 13px 14px !important;
-}
-
-.referenceListHeader {
-  padding: 6px 18px 10px !important;
-}
-
-.referenceParkingList {
-  padding: 0 14px 10px 18px !important;
-}
-
-.referenceListFooter {
-  padding: 12px 18px 16px !important;
-}
-
-/* Barra inferior: més espai interior i fons més ample */
-.referenceBottomBar {
-  left: 395px !important;     /* comença just després del panell esquerre */
-  right: 40px !important;     /* arriba gairebé fins a la dreta */
-  bottom: 24px !important;
-  transform: none !important;
-
-  width: auto !important;
-  max-width: none !important;
-  min-height: 76px !important;
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 14px !important;
-  flex-wrap: nowrap !important;
-
-  padding: 12px 18px !important;
-  border-radius: 24px !important;
-  background: rgba(255,255,255,0.94) !important;
-  border: 1px solid rgba(219,226,236,0.95) !important;
-  box-shadow: 0 16px 34px rgba(10,20,40,0.14) !important;
-  backdrop-filter: blur(12px) !important;
-
-  overflow: visible !important;
-  box-sizing: border-box !important;
-}
-
-/* Grups de filtres */
-.referenceFilterGroup {
-  flex-shrink: 0 !important;
-  gap: 6px !important;
-}
-
-.referenceSegmented {
-  height: 38px !important;
-  border-radius: 16px !important;
-}
-
-.referenceChip {
-  height: 38px !important;
-  min-height: 38px !important;
-  line-height: 38px !important;
-  padding: 0 14px !important;
-  font-size: 11px !important;
-}
-
-/* Accions dreta: que quedin dins la barra */
-.referenceActionsGroup {
-  flex-shrink: 0 !important;
-  display: flex !important;
-  gap: 10px !important;
-  padding-left: 14px !important;
-  border-left: 1px solid #e3e8ef !important;
-}
-
-.referenceToggleBtn {
-  width: 70px !important;
-  min-width: 70px !important;
-  height: 52px !important;
-  padding: 5px 6px !important;
-  border-radius: 16px !important;
-  font-size: 10px !important;
-  line-height: 1.05 !important;
-  white-space: normal !important;
-}
-
-#bikeLaneBtn.referenceToggleBtn {
-  width: 76px !important;
-  min-width: 76px !important;
-}
-
-/* Evita qualsevol scroll horitzontal molest */
-html,
-body,
-#appView,
-.layoutReference {
-  overflow-x: hidden !important;
-}
-
-/* Responsive per pantalles més petites */
-@media (max-width: 1250px) {
-  .sidebarReference {
-    width: 340px !important;
-    max-width: 340px !important;
-  }
-
-  .referenceBottomBar {
-    left: 365px !important;
-    right: 28px !important;
-    gap: 10px !important;
-    padding: 10px 14px !important;
-  }
-
-  .referenceChip {
-    padding: 0 11px !important;
-  }
-
-  .referenceToggleBtn {
-    width: 62px !important;
-    min-width: 62px !important;
-    font-size: 9px !important;
-  }
-
-  #bikeLaneBtn.referenceToggleBtn {
-    width: 68px !important;
-    min-width: 68px !important;
   }
 }
