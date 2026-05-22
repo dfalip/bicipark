@@ -265,8 +265,16 @@
   </main>
 
 <!-- APP -->
-<!-- APP -->
 <section id="appView" class="hidden-view appViewReference">
+
+  <!-- Elements necessaris per compatibilitat amb app.js -->
+  <div id="appTopbar" class="appTopbarReferenceHidden">
+    <button id="backHomeBtn" type="button">← Home</button>
+    <div>
+      <h2 id="appModeTitle">Aparcaments</h2>
+    </div>
+  </div>
+
   <div id="layout" class="layoutReference">
     <aside id="sidebar" class="sidebarReference">
       <div id="sidebarHeader" class="sidebarReferenceHeader">
@@ -287,7 +295,7 @@
         <button id="nearBtn" class="referenceNearBtn" type="button">📍 A prop meu</button>
       </div>
 
-      <!-- Es manté al DOM per compatibilitat amb el JS, però amagat -->
+      <!-- Es manté al DOM per compatibilitat amb el JS -->
       <section id="modeSwitch" class="referenceHiddenModes">
         <button class="mode-btn active" data-mode="parking" type="button">🚲 Aparcar</button>
         <button class="mode-btn" data-mode="road" type="button">🚴 Carretera</button>
@@ -317,6 +325,7 @@
     <div id="parkingControls" class="referenceBottomBar">
       <section id="filters" class="referenceFilterGroup">
         <div class="referenceFilterLabel">Seguretat</div>
+
         <div class="referenceSegmented">
           <button class="filter-btn referenceChip active" data-filter="tots" type="button">Tots</button>
           <button class="filter-btn referenceChip chipAlta" data-filter="alta" type="button">Alta</button>
@@ -327,6 +336,7 @@
 
       <section id="radiusFilters" class="referenceFilterGroup">
         <div class="referenceFilterLabel">Àrea</div>
+
         <div class="referenceSegmented">
           <button class="radius-btn referenceChip active" data-radius="all" type="button">Tota la ciutat</button>
           <button class="radius-btn referenceChip" data-radius="500" type="button">500 m</button>
