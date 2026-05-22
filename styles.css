@@ -1950,3 +1950,51 @@ button {
     padding: 14px 16px !important;
   }
 }
+
+/* =========================================================
+   CITY CARDS - NOVES CIUTATS INTERNACIONALS
+   ========================================================= */
+
+.cityThumbAmsterdam {
+  background:
+    linear-gradient(135deg, #8fd3ff 0%, #dff5ff 42%, #6fbf73 43%, #3f8f51 100%);
+}
+
+.cityThumbAmsterdam::after {
+  content: "🚲";
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: 42px;
+}
+
+.cityThumbNewYork {
+  background:
+    linear-gradient(135deg, #9fb6d8 0%, #d8e4f7 42%, #233047 43%, #0d1424 100%);
+}
+
+.cityThumbNewYork::after {
+  content: "NYC";
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: white;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.cityThumbParis {
+  background:
+    linear-gradient(135deg, #b8cdf3 0%, #eef3ff 42%, #d8b073 43%, #8b5d33 100%);
+}
+
+.cityThumbParis::after {
+  content: "Paris";
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: #071427;
+  font-size: 28px;
+  font-weight: 900;
+}
