@@ -515,3 +515,84 @@ button {
   font-size: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
+
+.route-detail {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  background: #f9fafb;
+}
+
+.route-detail h3 {
+  font-size: 16px;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+}
+
+.route-detail p {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.route-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.route-section {
+  margin-top: 12px;
+}
+
+.route-section strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 5px;
+  color: #1a1a2e;
+}
+
+.route-section ul {
+  padding-left: 18px;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.route-warning {
+  margin-top: 10px;
+  padding: 10px;
+  background: #fff3cd;
+  border-radius: 10px;
+  font-size: 12px;
+  color: #664d03;
+}
+
+.route-pin {
+  background: #1a1a2e;
+  color: white;
+  border: 3px solid white;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+
+.stop-pin {
+  background: white;
+  color: #1a1a2e;
+  border: 3px solid #1a1a2e;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
