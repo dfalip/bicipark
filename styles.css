@@ -5566,3 +5566,157 @@ body,
     min-width: 68px !important;
   }
 }
+
+/* =========================================================
+   FIX FINAL — SIDEBAR MÉS ESTRETA + BARRA INFERIOR COMPLETA
+   ========================================================= */
+
+/* Panell esquerre més estret */
+.sidebarReference {
+  width: 360px !important;
+  max-width: 360px !important;
+}
+
+/* Text i elements del panell una mica més compactes */
+.sidebarReferenceHeader {
+  padding: 16px 18px 10px !important;
+}
+
+.sidebarReferenceHeader h2 {
+  font-size: 20px !important;
+}
+
+.sidebarReferenceHeader p {
+  font-size: 13px !important;
+}
+
+.referenceSearchBlock {
+  padding: 14px 18px 14px !important;
+}
+
+.referenceStatusCard {
+  margin: 14px 18px 10px !important;
+  padding: 13px 14px !important;
+}
+
+.referenceListHeader {
+  padding: 6px 18px 10px !important;
+}
+
+.referenceParkingList {
+  padding: 0 14px 10px 18px !important;
+}
+
+.referenceListFooter {
+  padding: 12px 18px 16px !important;
+}
+
+/* Barra inferior: més espai interior i fons més ample */
+.referenceBottomBar {
+  left: 395px !important;     /* comença just després del panell esquerre */
+  right: 40px !important;     /* arriba gairebé fins a la dreta */
+  bottom: 24px !important;
+  transform: none !important;
+
+  width: auto !important;
+  max-width: none !important;
+  min-height: 76px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 14px !important;
+  flex-wrap: nowrap !important;
+
+  padding: 12px 18px !important;
+  border-radius: 24px !important;
+  background: rgba(255,255,255,0.94) !important;
+  border: 1px solid rgba(219,226,236,0.95) !important;
+  box-shadow: 0 16px 34px rgba(10,20,40,0.14) !important;
+  backdrop-filter: blur(12px) !important;
+
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+/* Grups de filtres */
+.referenceFilterGroup {
+  flex-shrink: 0 !important;
+  gap: 6px !important;
+}
+
+.referenceSegmented {
+  height: 38px !important;
+  border-radius: 16px !important;
+}
+
+.referenceChip {
+  height: 38px !important;
+  min-height: 38px !important;
+  line-height: 38px !important;
+  padding: 0 14px !important;
+  font-size: 11px !important;
+}
+
+/* Accions dreta: que quedin dins la barra */
+.referenceActionsGroup {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  gap: 10px !important;
+  padding-left: 14px !important;
+  border-left: 1px solid #e3e8ef !important;
+}
+
+.referenceToggleBtn {
+  width: 70px !important;
+  min-width: 70px !important;
+  height: 52px !important;
+  padding: 5px 6px !important;
+  border-radius: 16px !important;
+  font-size: 10px !important;
+  line-height: 1.05 !important;
+  white-space: normal !important;
+}
+
+#bikeLaneBtn.referenceToggleBtn {
+  width: 76px !important;
+  min-width: 76px !important;
+}
+
+/* Evita qualsevol scroll horitzontal molest */
+html,
+body,
+#appView,
+.layoutReference {
+  overflow-x: hidden !important;
+}
+
+/* Responsive per pantalles més petites */
+@media (max-width: 1250px) {
+  .sidebarReference {
+    width: 340px !important;
+    max-width: 340px !important;
+  }
+
+  .referenceBottomBar {
+    left: 365px !important;
+    right: 28px !important;
+    gap: 10px !important;
+    padding: 10px 14px !important;
+  }
+
+  .referenceChip {
+    padding: 0 11px !important;
+  }
+
+  .referenceToggleBtn {
+    width: 62px !important;
+    min-width: 62px !important;
+    font-size: 9px !important;
+  }
+
+  #bikeLaneBtn.referenceToggleBtn {
+    width: 68px !important;
+    min-width: 68px !important;
+  }
+}
