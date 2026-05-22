@@ -12,6 +12,8 @@ let currentMode = "parking";
 let activeLocation = null;
 let selectedNearestParkingId = null;
 
+let citiesLoaded = false;
+
 let searchMarker;
 let userMarker;
 let nearestMarker;
@@ -255,7 +257,7 @@ function toggleFavorite(parking) {
 
   renderParkings();
 
-  if (activeLocation) {
+  if (activeLocation && currentMode === "parking") {
     highlightNearestParking(activeLocation.lat, activeLocation.lng);
   }
 }
@@ -356,7 +358,6 @@ function createParkingCard(parking, distance = null, recommended = false) {
         </div>
         <div class="cardAddress">${parking.address}</div>
       </div>
-
       ${distance !== null ? `<div class="cardDistance">${formatDistance(distance)}</div>` : ""}
     </div>
 
@@ -467,6 +468,9 @@ function createRouteCard(route) {
 
 function renderRouteDetail(route) {
   const container = document.getElementById("parkingList");
+  const existing = container.querySelector(".route-detail");
+
+  if (existing) existing.remove();
 
   const villages = Array.isArray(route.villages)
     ? route.villages.map(v => `<li>${v}</li>`).join("")
@@ -564,7 +568,6 @@ async function drawGpxRoute(gpxUrl, targetLayer) {
     map.fitBounds(gpxLine.getBounds(), { padding: [40, 40] });
 
     return true;
-
   } catch (error) {
     console.warn("Error carregant GPX:", error);
     return false;
@@ -674,13 +677,13 @@ function renderRoadRoutes() {
     nearestMarker = null;
   }
 
+  container.innerHTML = "";
+
   if (roadRoutes.length === 0) {
     container.innerHTML = `
       <div class="mode-placeholder">
         <h3>🚴 Rutes de carretera</h3>
-        <p>
-          Encara no hi ha rutes de carretera carregades per aquesta ciutat.
-        </p>
+        <p>Encara no hi ha rutes de carretera carregades per aquesta ciutat.</p>
       </div>
     `;
 
@@ -692,8 +695,6 @@ function renderRoadRoutes() {
 
     return;
   }
-
-  container.innerHTML = "";
 
   roadRoutes.forEach(route => {
     container.appendChild(createRouteCard(route));
@@ -724,26 +725,26 @@ function renderModePlaceholder() {
     return;
   }
 
+  if (roadRouteLayer) {
+    map.removeLayer(roadRouteLayer);
+    roadRouteLayer = null;
+  }
+
   if (currentMode === "mtb") {
-    title.textContent = "Rutes BTT";
+    title.textContent = `Rutes BTT a ${currentCity.name}`;
 
     container.innerHTML = `
       <div class="mode-placeholder">
         <h3>⛰️ Rutes BTT / muntanya</h3>
         <p>
-          Aquest apartat servirà per mostrar rutes de bicicleta de muntanya
-          vinculades a la ciutat o territori seleccionat.
+          Aquest apartat queda preparat per mostrar rutes BTT amb la mateixa estructura:
+          fitxa, punts d’interès, allotjaments i GPX.
         </p>
-        <p>Properament podràs veure:</p>
-        <ul>
-          <li>dificultat tècnica</li>
-          <li>dificultat física</li>
-          <li>tipus de terreny</li>
-          <li>desnivell</li>
-          <li>punts d'aigua</li>
-          <li>advertiments i recomanacions</li>
-          <li>enllaç o descàrrega GPX</li>
-        </ul>
+
+        <div class="mode-card">
+          <strong>Properament</strong><br>
+          Sant Miquel, Gavarres, Vall de Sant Daniel i més.
+        </div>
       </div>
     `;
 
@@ -751,13 +752,15 @@ function renderModePlaceholder() {
       `Mode BTT · ${currentCity.name}`;
 
     document.getElementById("nearestInfo").textContent =
-      "Selecciona una ruta BTT quan estigui disponible.";
+      "Les rutes BTT es mostraran aquí.";
 
     return;
   }
 }
 
 function renderParkings() {
+  if (!currentCity) return;
+
   if (currentMode !== "parking") {
     renderModePlaceholder();
     return;
@@ -872,6 +875,36 @@ function resetMapState() {
   setRadius("all", false);
 }
 
+function updateAppUiForMode() {
+  const parkingControls = document.getElementById("parkingControls");
+  const appModeTitle = document.getElementById("appModeTitle");
+
+  const labels = {
+    parking: "Aparcaments",
+    road: "Rutes de carretera",
+    mtb: "Rutes BTT"
+  };
+
+  appModeTitle.textContent = labels[currentMode] || "Aparcaments";
+  parkingControls.style.display = currentMode === "parking" ? "block" : "none";
+
+  document.querySelectorAll("#modeSwitch .mode-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.mode === currentMode);
+  });
+}
+
+function setAppMode(mode) {
+  currentMode = mode;
+  updateAppUiForMode();
+  renderParkings();
+}
+
+async function ensureAppReady() {
+  if (!citiesLoaded) {
+    await loadCities();
+  }
+}
+
 function setupLegend() {
   const legend = L.control({ position: "bottomright" });
 
@@ -911,7 +944,6 @@ async function loadBikeLanes() {
     if (bikeLanesVisible) {
       bikeLaneLayer.addTo(map);
     }
-
   } catch (error) {
     console.warn("No s'han pogut carregar els carrils bici:", error);
   }
@@ -928,7 +960,6 @@ async function loadRoadRoutes() {
 
     const data = await response.json();
     roadRoutes = Array.isArray(data) ? data : [];
-
   } catch (error) {
     console.warn("No s'han pogut carregar les rutes de carretera:", error);
   }
@@ -1016,7 +1047,7 @@ async function loadCities() {
 
     select.addEventListener("change", () => {
       loadCity(select.value);
-    });
+    }, { once: true });
 
     const firstCity = enabledCities[0]?.[0];
 
@@ -1027,8 +1058,13 @@ async function loadCities() {
     }
 
     select.value = firstCity;
+    citiesLoaded = true;
     await loadCity(firstCity);
 
+    // tornem a posar el listener normal després de la primera càrrega
+    select.onchange = () => {
+      loadCity(select.value);
+    };
   } catch (error) {
     console.error(error);
     alert("No s'han pogut carregar les ciutats.");
@@ -1039,7 +1075,7 @@ async function loadCities() {
 async function searchLocation() {
   const query = document.getElementById("searchInput").value.trim();
 
-  if (!query) return;
+  if (!query || !currentCity) return;
 
   const suffix = currentCity.searchSuffix || `${currentCity.name}, ${currentCity.country}`;
   const url =
@@ -1073,7 +1109,6 @@ async function searchLocation() {
       renderParkings();
       highlightNearestParking(lat, lon);
     }
-
   } catch (error) {
     alert("Error cercant ubicació");
   }
@@ -1113,17 +1148,50 @@ function locateUser() {
   );
 }
 
+function showHome() {
+  document.getElementById("homeView").classList.remove("hidden-view");
+  document.getElementById("appView").classList.add("hidden-view");
+
+  document.querySelectorAll("#mainNav .navLink").forEach(btn => btn.classList.remove("active"));
+  document.getElementById("navHomeBtn").classList.add("active");
+}
+
+async function showApp(mode = "parking", cityKey = null) {
+  document.getElementById("homeView").classList.add("hidden-view");
+  document.getElementById("appView").classList.remove("hidden-view");
+
+  await ensureAppReady();
+
+  if (cityKey && cities[cityKey]) {
+    const select = document.getElementById("citySelect");
+    select.value = cityKey;
+
+    if (currentCityKey !== cityKey) {
+      await loadCity(cityKey);
+    }
+  }
+
+  setAppMode(mode);
+
+  document.querySelectorAll("#mainNav .navLink").forEach(btn => btn.classList.remove("active"));
+
+  if (mode === "parking") {
+    document.querySelector('#mainNav [data-open-mode="parking"]').classList.add("active");
+  } else if (mode === "road") {
+    document.querySelector('#mainNav [data-open-mode="road"]').classList.add("active");
+  } else if (mode === "mtb") {
+    document.querySelector('#mainNav [data-open-mode="mtb"]').classList.add("active");
+  }
+
+  setTimeout(() => {
+    map.invalidateSize();
+  }, 120);
+}
+
 function setupModeSwitch() {
-  document.querySelectorAll(".mode-btn").forEach(button => {
+  document.querySelectorAll("#modeSwitch .mode-btn").forEach(button => {
     button.addEventListener("click", () => {
-      document.querySelectorAll(".mode-btn").forEach(btn => {
-        btn.classList.remove("active");
-      });
-
-      button.classList.add("active");
-      currentMode = button.dataset.mode;
-
-      renderParkings();
+      setAppMode(button.dataset.mode);
     });
   });
 }
@@ -1176,7 +1244,26 @@ function setupEvents() {
   });
 }
 
+function setupHomeNavigation() {
+  document.getElementById("logoHomeBtn").addEventListener("click", showHome);
+  document.getElementById("navHomeBtn").addEventListener("click", showHome);
+  document.getElementById("backHomeBtn").addEventListener("click", showHome);
+
+  document.querySelectorAll("[data-open-mode]").forEach(button => {
+    button.addEventListener("click", async () => {
+      const mode = button.dataset.openMode || "parking";
+      const city = button.dataset.openCity || null;
+      await showApp(mode, city);
+    });
+  });
+
+  document.getElementById("openMapBtn").addEventListener("click", async () => {
+    await showApp("parking");
+  });
+}
+
 setupLegend();
 setupEvents();
 setupModeSwitch();
-loadCities();
+setupHomeNavigation();
+showHome();
