@@ -2518,3 +2518,159 @@ button {
     padding: 9px 8px;
   }
 }
+
+/* =========================================================
+   APP VIEW — FLOATING LEFT PANEL
+   Panell esquerre flotant sobre el mapa
+   ========================================================= */
+
+#layout {
+  position: relative;
+  display: block !important;
+  height: calc(100vh - 150px) !important;
+  min-height: 0;
+  background: #dfe6ef;
+  overflow: hidden;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Panell flotant */
+#sidebar {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 340px;
+  max-width: calc(100vw - 36px);
+  height: calc(100% - 36px);
+  z-index: 600;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(220, 226, 235, 0.95);
+  border-radius: 22px;
+  box-shadow: 0 18px 45px rgba(10, 20, 40, 0.22);
+  overflow-y: auto;
+  backdrop-filter: blur(10px);
+}
+
+/* Capçalera del panell */
+#sidebarHeader {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid #edf0f5;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 22px 22px 0 0;
+  backdrop-filter: blur(10px);
+}
+
+/* Botons de mode dins del panell flotant */
+#modeSwitch {
+  background: transparent;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+/* Controls de parking més compactes */
+#parkingControls {
+  padding: 12px 14px;
+  background: rgba(248, 250, 252, 0.88);
+  border-bottom: 1px solid #edf0f5;
+}
+
+#filters,
+#radiusFilters {
+  background: transparent;
+  padding: 0;
+  border-bottom: none;
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+#radiusFilters {
+  margin-top: 12px;
+}
+
+/* Status integrat */
+#statusBar {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 12px 14px;
+  display: block;
+  border-bottom: 1px solid #edf0f5;
+}
+
+/* Llista */
+#parkingList {
+  padding: 12px;
+}
+
+/* Evita que els controls Leaflet quedin amagats darrere el panell */
+.leaflet-top.leaflet-left {
+  left: 376px;
+  transition: left 0.2s ease;
+}
+
+/* Llegenda més discreta */
+.legend {
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(10,20,40,0.16);
+  backdrop-filter: blur(6px);
+}
+
+/* Responsive: en mòbil el panell deixa de ser flotant */
+@media (max-width: 780px) {
+  #layout {
+    display: flex !important;
+    flex-direction: column-reverse;
+    height: auto !important;
+    overflow: visible;
+  }
+
+  #map {
+    position: relative;
+    height: 52vh;
+    min-height: 360px;
+  }
+
+  #sidebar {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  #sidebarHeader {
+    border-radius: 0;
+  }
+
+  .leaflet-top.leaflet-left {
+    left: 10px;
+  }
+
+  #modeSwitch {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .mode-btn {
+    text-align: center;
+  }
+}
