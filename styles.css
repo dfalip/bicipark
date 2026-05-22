@@ -5464,3 +5464,105 @@ body,
     overflow-y: hidden !important;
   }
 }
+
+/* =========================================================
+   AJUST FI — BARRA INFERIOR MÉS ELEGANT
+   ========================================================= */
+
+.referenceBottomBar {
+  left: 600px !important;
+  right: 90px !important;
+  bottom: 26px !important;
+
+  min-height: 62px !important;
+  max-height: 70px !important;
+
+  padding: 8px 14px !important;
+  gap: 12px !important;
+
+  background: rgba(255,255,255,0.94) !important;
+  border: 1px solid rgba(219,226,236,0.95) !important;
+  border-radius: 22px !important;
+
+  box-shadow: 0 14px 30px rgba(10,20,40,0.13) !important;
+  overflow: visible !important;
+}
+
+/* Seguretat i Àrea una mica més compactes */
+.referenceFilterGroup {
+  gap: 5px !important;
+}
+
+.referenceFilterLabel {
+  font-size: 10px !important;
+  text-align: center !important;
+  padding-left: 0 !important;
+}
+
+.referenceSegmented {
+  height: 34px !important;
+  border-radius: 15px !important;
+}
+
+.referenceChip {
+  height: 34px !important;
+  min-height: 34px !important;
+  line-height: 34px !important;
+  padding: 0 13px !important;
+  font-size: 11px !important;
+}
+
+/* Separador abans de Favorits / Carrils bici */
+.referenceActionsGroup {
+  gap: 10px !important;
+  padding-left: 14px !important;
+  border-left: 1px solid #e1e7ef !important;
+}
+
+/* Botons dreta més llegibles */
+.referenceToggleBtn {
+  width: 70px !important;
+  min-width: 70px !important;
+  height: 48px !important;
+
+  padding: 5px 6px !important;
+  border-radius: 16px !important;
+
+  font-size: 10px !important;
+  line-height: 1.05 !important;
+  font-weight: 900 !important;
+}
+
+#bikeLaneBtn.referenceToggleBtn {
+  width: 74px !important;
+  min-width: 74px !important;
+}
+
+/* Evita que el copyright de Leaflet quedi tapat */
+.leaflet-control-attribution {
+  margin-bottom: 0 !important;
+}
+
+/* Si cal, ajust per pantalles mitjanes */
+@media (max-width: 1350px) {
+  .referenceBottomBar {
+    left: 575px !important;
+    right: 70px !important;
+    bottom: 24px !important;
+    gap: 10px !important;
+  }
+
+  .referenceChip {
+    padding: 0 11px !important;
+  }
+
+  .referenceToggleBtn {
+    width: 64px !important;
+    min-width: 64px !important;
+  }
+
+  #bikeLaneBtn.referenceToggleBtn {
+    width: 68px !important;
+    min-width: 68px !important;
+  }
+}
