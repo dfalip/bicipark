@@ -163,7 +163,7 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 760px;
+  max-width: 720px;
 }
 
 .heroBadge {
@@ -5248,4 +5248,15 @@ button {
     max-width: none !important;
     border-radius: 18px 18px 0 0 !important;
   }
+}
+/* =========================================================
+   AJUST MANUAL FINAL — POSICIÓ BARRA FILTRES
+   Aquest bloc mana sobre tots els anteriors
+   ========================================================= */
+
+.referenceBottomBar {
+  left: 620px !important;
+  right: 300px !important;
+  bottom: 8px !important;
+  transform: none !important;
 }
