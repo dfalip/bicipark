@@ -4255,3 +4255,15 @@ button {
     right: 10px !important;
   }
 }
+
+/* Compatibilitat JS: topbar ocult però existent */
+.appTopbarReferenceHidden {
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: none !important;
+  background: transparent !important;
+  visibility: hidden !important;
+}
