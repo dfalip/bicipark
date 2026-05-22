@@ -10,9 +10,15 @@
     "lat": 41.9794,
     "lng": 2.8214,
     "description": "Ruta clàssica de carretera des de Girona, passant per la pujada d’Els Àngels, Madremanya, Monells i Santa Pellaia.",
-    "source": "Eat Sleep Cycle / dades editorials",
+    "source": "Dades editorials / pendent de GPX verificat",
     "verified": false,
-    "stops": [
+    "gpx": "./data/girona/routes/road/gpx/els-angels-santa-pellaia.gpx",
+    "villages": [
+      "Madremanya",
+      "Monells",
+      "Cassà de la Selva"
+    ],
+    "pointsOfInterest": [
       {
         "name": "Santuari dels Àngels",
         "type": "Punt d’interès",
@@ -31,6 +37,25 @@
         "lat": 41.9744,
         "lng": 2.9875
       }
+    ],
+    "restaurants": [
+      {
+        "name": "Restaurants pendents de verificar",
+        "type": "Restaurant",
+        "note": "Afegir només restaurants verificats o recomanats manualment."
+      }
+    ],
+    "hotels": [
+      {
+        "name": "Allotjaments bike-friendly pendents de verificar",
+        "type": "Allotjament",
+        "note": "Afegir només allotjaments verificats o recomanats manualment."
+      }
+    ],
+    "notes": [
+      "Ruta editorial pendent de GPX verificat.",
+      "Recomanable revisar estat de carreteres abans de sortir.",
+      "Ideal per ciclistes amb experiència mitjana."
     ]
   },
   {
@@ -44,9 +69,15 @@
     "lat": 41.9794,
     "lng": 2.8214,
     "description": "Ruta exigent cap a Banyoles i la pujada de Rocacorba, una de les ascensions més conegudes entre ciclistes a la zona de Girona.",
-    "source": "Referències ciclistes locals / dades editorials",
+    "source": "Dades editorials / pendent de GPX verificat",
     "verified": false,
-    "stops": [
+    "gpx": "./data/girona/routes/road/gpx/rocacorba-banyoles.gpx",
+    "villages": [
+      "Banyoles",
+      "Porqueres",
+      "Canet d’Adri"
+    ],
+    "pointsOfInterest": [
       {
         "name": "Estany de Banyoles",
         "type": "Punt d’interès",
@@ -54,11 +85,30 @@
         "lng": 2.7546
       },
       {
-        "name": "Pujada a Rocacorba",
+        "name": "Rocacorba",
         "type": "Port de muntanya",
         "lat": 42.0752,
         "lng": 2.7048
       }
+    ],
+    "restaurants": [
+      {
+        "name": "Restaurants pendents de verificar",
+        "type": "Restaurant",
+        "note": "Afegir restaurants recomanats a Banyoles o rodalia."
+      }
+    ],
+    "hotels": [
+      {
+        "name": "Allotjaments pendents de verificar",
+        "type": "Allotjament",
+        "note": "Afegir allotjaments bike-friendly de Girona/Banyoles."
+      }
+    ],
+    "notes": [
+      "Ruta exigent pel desnivell.",
+      "Rocacorba és una pujada dura i sostinguda.",
+      "Recomanable portar aigua i menjar suficient."
     ]
   },
   {
@@ -72,9 +122,16 @@
     "lat": 41.9794,
     "lng": 2.8214,
     "description": "Ruta més relaxada seguint la Via Verda cap a la Costa Brava. Interessant per a bici de carretera tranquil·la, gravel o cicloturisme.",
-    "source": "Eat Sleep Cycle / dades editorials",
+    "source": "Dades editorials / pendent de GPX verificat",
     "verified": false,
-    "stops": [
+    "gpx": "./data/girona/routes/road/gpx/via-verda-sant-feliu.gpx",
+    "villages": [
+      "Cassà de la Selva",
+      "Llagostera",
+      "Santa Cristina d’Aro",
+      "Sant Feliu de Guíxols"
+    ],
+    "pointsOfInterest": [
       {
         "name": "Cassà de la Selva",
         "type": "Parada intermèdia",
@@ -93,6 +150,25 @@
         "lat": 41.7833,
         "lng": 3.0306
       }
+    ],
+    "restaurants": [
+      {
+        "name": "Restaurants pendents de verificar",
+        "type": "Restaurant",
+        "note": "Afegir restaurants recomanats a Sant Feliu o S’Agaró."
+      }
+    ],
+    "hotels": [
+      {
+        "name": "Allotjaments pendents de verificar",
+        "type": "Allotjament",
+        "note": "Afegir allotjaments bike-friendly de la Costa Brava."
+      }
+    ],
+    "notes": [
+      "Ruta més accessible i adequada per cicloturisme.",
+      "Pot ser interessant també per gravel.",
+      "Comprovar l’estat del ferm abans de recomanar-la per carretera pura."
     ]
   }
 ]
