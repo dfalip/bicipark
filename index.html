@@ -265,21 +265,22 @@
   </main>
 
 <!-- APP -->
+<!-- APP -->
 <section id="appView" class="hidden-view appViewClean">
   <div id="appTopbar" class="appTopbarMinimal">
-    <button id="backHomeBtn" class="hiddenUtilityBtn">← Home</button>
+    <button id="backHomeBtn" class="hiddenUtilityBtn" type="button">← Home</button>
     <div class="hiddenUtilityTitle">
       <h2 id="appModeTitle">Aparcaments</h2>
       <span id="citySubtitle">Aparcaments de bicicleta a Barcelona</span>
     </div>
   </div>
 
-  <div id="layout" class="layoutFloating">
-    <aside id="sidebar" class="sidebarFloatingCard">
+  <div id="layout" class="layoutWithBottomFilters">
+    <aside id="sidebar" class="sidebarInfoCard">
       <div id="sidebarHeader" class="sidebarHeaderClean">
         <div>
-          <h2 id="sidebarMainTitle">Explora</h2>
-          <p>Selecciona ciutat, mode i filtres</p>
+          <h2 id="sidebarMainTitle">Parkings a Barcelona</h2>
+          <p>Informació i resultats</p>
         </div>
         <button class="miniIconBtn" type="button" title="Opcions">⚙️</button>
       </div>
@@ -289,90 +290,17 @@
 
         <div class="sidebarSearchRow">
           <input id="searchInput" type="text" placeholder="Busca una adreça o lloc..." />
-          <button id="searchBtn">Buscar</button>
+          <button id="searchBtn" type="button">Buscar</button>
         </div>
 
-        <button id="nearBtn" class="nearSoftBtn">📍 A prop meu</button>
+        <button id="nearBtn" class="nearSoftBtn" type="button">📍 A prop meu</button>
       </div>
 
       <section id="modeSwitch" class="modeSwitchClean">
-        <button class="mode-btn active" data-mode="parking">🚲 Aparcar</button>
-        <button class="mode-btn" data-mode="road">🚴 Carretera</button>
-        <button class="mode-btn" data-mode="mtb">⛰️ BTT</button>
+        <button class="mode-btn active" data-mode="parking" type="button">🚲 Aparcar</button>
+        <button class="mode-btn" data-mode="road" type="button">🚴 Carretera</button>
+        <button class="mode-btn" data-mode="mtb" type="button">⛰️ BTT</button>
       </section>
-
-      <div id="parkingControls">
-        <section id="filters" class="premiumFilters">
-  <div class="filterBlock">
-    <div class="premiumFilterTitle">Seguretat</div>
-
-    <div class="securitySegmented">
-      <button class="filter-btn securityOption securityAll active" data-filter="tots" type="button">
-        <span class="securityDot dotAll"></span>
-        Tots
-      </button>
-
-      <button class="filter-btn securityOption securityHigh" data-filter="alta" type="button">
-        <span class="securityDot dotHigh"></span>
-        Alta
-      </button>
-
-      <button class="filter-btn securityOption securityMedium" data-filter="mitjana" type="button">
-        <span class="securityDot dotMedium"></span>
-        Mitjana
-      </button>
-
-      <button class="filter-btn securityOption securityLow" data-filter="baixa" type="button">
-        <span class="securityDot dotLow"></span>
-        Baixa
-      </button>
-    </div>
-  </div>
-
-  <div class="filterBlock">
-    <div class="premiumFilterTitle">Àrea</div>
-
-    <section id="radiusFilters" class="areaGrid">
-      <button class="radius-btn areaOption active" data-radius="all" type="button">
-        <span class="areaIcon">📍</span>
-        Tota la ciutat
-      </button>
-
-      <button class="radius-btn areaOption" data-radius="500" type="button">
-        <span class="areaIcon">◎</span>
-        500 m
-      </button>
-
-      <button class="radius-btn areaOption" data-radius="1000" type="button">
-        <span class="areaIcon">◎</span>
-        1 km
-      </button>
-
-      <button class="radius-btn areaOption" data-radius="2000" type="button">
-        <span class="areaIcon">◎</span>
-        2 km
-      </button>
-    </section>
-  </div>
-
-  <div class="filterOptionsRow premiumOptionRow">
-    <button class="filter-btn compactOptionBtn" data-filter="favorites" type="button">
-      ❤️ Favorits
-    </button>
-
-    <button id="bikeLaneBtn" class="bike-lane-btn compactOptionBtn" type="button">
-      🚴 Carrils bici
-    </button>
-  </div>
-</section>
-
-        <section id="radiusFilters" class="hiddenFilterButtons">
-          <button class="radius-btn active" data-radius="all">Tota la ciutat</button>
-          <button class="radius-btn" data-radius="500">500 m</button>
-          <button class="radius-btn" data-radius="1000">1 km</button>
-          <button class="radius-btn" data-radius="2000">2 km</button>
-        </section>
-      </div>
 
       <section id="statusBar" class="statusCardSoft">
         <div id="parkingCounter">Carregant dades...</div>
@@ -385,6 +313,59 @@
     </aside>
 
     <main id="map"></main>
+  </div>
+
+  <div id="parkingControls" class="bottomFilterBar">
+    <section id="filters" class="bottomFilterGroup">
+      <div class="bottomFilterTitle">Seguretat</div>
+
+      <div class="bottomSegmented securityBottomSegmented">
+        <button class="filter-btn bottomFilterBtn active" data-filter="tots" type="button">
+          Tots
+        </button>
+
+        <button class="filter-btn bottomFilterBtn securityHighText" data-filter="alta" type="button">
+          <span class="bottomDot dotHigh"></span>Alta
+        </button>
+
+        <button class="filter-btn bottomFilterBtn securityMediumText" data-filter="mitjana" type="button">
+          <span class="bottomDot dotMedium"></span>Mitjana
+        </button>
+
+        <button class="filter-btn bottomFilterBtn securityLowText" data-filter="baixa" type="button">
+          <span class="bottomDot dotLow"></span>Baixa
+        </button>
+      </div>
+    </section>
+
+    <section id="radiusFilters" class="bottomFilterGroup">
+      <div class="bottomFilterTitle">Àrea</div>
+
+      <div class="bottomSegmented areaBottomSegmented">
+        <button class="radius-btn bottomFilterBtn active" data-radius="all" type="button">
+          Tota la ciutat
+        </button>
+        <button class="radius-btn bottomFilterBtn" data-radius="500" type="button">
+          500 m
+        </button>
+        <button class="radius-btn bottomFilterBtn" data-radius="1000" type="button">
+          1 km
+        </button>
+        <button class="radius-btn bottomFilterBtn" data-radius="2000" type="button">
+          2 km
+        </button>
+      </div>
+    </section>
+
+    <section class="bottomFilterActions">
+      <button class="filter-btn bottomActionBtn" data-filter="favorites" type="button">
+        ❤️ Favorits
+      </button>
+
+      <button id="bikeLaneBtn" class="bike-lane-btn bottomActionBtn" type="button">
+        🚴 Carrils bici
+      </button>
+    </section>
   </div>
 
   <div id="loadingOverlay" class="hidden">
