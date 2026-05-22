@@ -21,6 +21,8 @@ let bikeLaneLayer;
 let roadRouteLayer;
 let bikeLanesVisible = false;
 
+let securityLegend;
+
 let favorites = JSON.parse(localStorage.getItem("biciparkFavorites") || "[]");
 
 const map = L.map("map").setView([41.3874, 2.1686], 13);
