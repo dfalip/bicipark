@@ -1,1 +1,62 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
+  <title>Mapa ciclista | BiciPark</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  >
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/mapa-ciclista.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <a href="index.html" class="logo">BiciPark</a>
+
+    <nav>
+      <a href="index.html">Aparcaments</a>
+      <a href="mapa-ciclista.html" class="active">Mapa ciclista</a>
+    </nav>
+  </header>
+
+  <main class="bike-map-layout">
+    <aside class="route-panel">
+      <h1>Explora rutes</h1>
+
+      <label for="modalitat">Modalitat</label>
+      <select id="modalitat">
+        <option value="totes">Totes</option>
+        <option value="urbana">Urbana</option>
+        <option value="familiar">Familiar</option>
+        <option value="carretera">Carretera</option>
+        <option value="gravel">Gravel</option>
+        <option value="btt">BTT</option>
+      </select>
+
+      <label for="dificultat">Dificultat</label>
+      <select id="dificultat">
+        <option value="totes">Totes</option>
+        <option value="fàcil">Fàcil</option>
+        <option value="mitjana">Mitjana</option>
+        <option value="difícil">Difícil</option>
+      </select>
+
+      <div id="llista-rutes"></div>
+    </aside>
+
+    <section id="map"></section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="js/mapa-ciclista.js"></script>
+</body>
+</html>
