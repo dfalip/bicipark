@@ -1,1 +1,41 @@
-
+[
+  {
+    "id": "carretera-aigues",
+    "nom": "Carretera de les Aigües",
+    "modalitat": "gravel",
+    "distanciaKm": 18.4,
+    "desnivell": 270,
+    "duradaMinuts": 90,
+    "dificultat": "mitjana",
+    "circular": false,
+    "seguretat": 88,
+    "qualitat": 92,
+    "fitxer": "data/rutes/carretera-aigues.geojson"
+  },
+  {
+    "id": "front-maritim",
+    "nom": "Front Marítim de Barcelona",
+    "modalitat": "urbana",
+    "distanciaKm": 14.2,
+    "desnivell": 40,
+    "duradaMinuts": 60,
+    "dificultat": "fàcil",
+    "circular": false,
+    "seguretat": 83,
+    "qualitat": 86,
+    "fitxer": "data/rutes/front-maritim.geojson"
+  },
+  {
+    "id": "riu-besos",
+    "nom": "Ruta del riu Besòs",
+    "modalitat": "familiar",
+    "distanciaKm": 20.1,
+    "desnivell": 65,
+    "duradaMinuts": 85,
+    "dificultat": "fàcil",
+    "circular": false,
+    "seguretat": 91,
+    "qualitat": 84,
+    "fitxer": "data/rutes/besos.geojson"
+  }
+]
