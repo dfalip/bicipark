@@ -1,6 +1,6 @@
-"use strict";
+﻿"use strict";
 
-const map = L.map("map").setView([41.3874, 2.1686], 12);
+const map = L.map("bike-map").setView([41.3874, 2.1686], 12);
 
 L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -68,7 +68,7 @@ async function drawRoutes(routeList) {
 function createRoutePopup(route) {
   return `
     <strong>${escapeHtml(route.nom)}</strong><br>
-    ${route.distanciaKm} km · ${route.desnivell} m+<br>
+    ${route.distanciaKm} km Â· ${route.desnivell} m+<br>
     Seguretat: ${route.seguretat}/100<br>
     Qualitat: ${route.qualitat}/100
   `;
@@ -188,3 +188,4 @@ document
   .addEventListener("change", filterRoutes);
 
 loadRoutes();
+
