@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Missions | BiciPark</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <link rel="stylesheet" href="modules/missions/missions.css">
+</head>
+
+<body>
+  <header class="missions-topbar">
+    <a href="index.html" class="missions-brand">BiciPark</a>
+
+    <nav aria-label="Navegació principal">
+      <a href="index.html">Aparcaments</a>
+      <a href="mapa-ciclista.html">Mapa ciclista</a>
+      <a href="missions.html" class="active" aria-current="page">Missions</a>
+    </nav>
+  </header>
+
+  <main class="missions-layout">
+    <aside class="missions-panel" aria-label="Control de la missió">
+      <div class="missions-panel__header">
+        <p class="eyebrow">BiciPark Missions · prototip</p>
+        <h1 id="mission-title">Carregant missió…</h1>
+        <p id="mission-description" class="mission-description"></p>
+      </div>
+
+      <label for="mission-select">Missió</label>
+      <select id="mission-select" disabled>
+        <option>Carregant…</option>
+      </select>
+
+      <div id="mission-meta" class="mission-meta" aria-live="polite"></div>
+
+      <section class="mission-card" aria-labelledby="mission-status-title">
+        <div class="section-heading">
+          <h2 id="mission-status-title">Estat</h2>
+          <span id="mission-badge" class="status-badge status-badge--idle">Preparada</span>
+        </div>
+
+        <p id="mission-status" class="mission-status">
+          Selecciona una missió i prem «Comença».
+        </p>
+
+        <div id="live-data" class="live-data" hidden>
+          <div>
+            <span>Precisió GPS</span>
+            <strong id="accuracy-value">—</strong>
+          </div>
+          <div>
+            <span>Distància al següent punt</span>
+            <strong id="checkpoint-distance-value">—</strong>
+          </div>
+          <div>
+            <span>Mostres sobre la ruta</span>
+            <strong id="route-match-value">—</strong>
+          </div>
+          <div>
+            <span>Tag de bicicleta</span>
+            <strong id="tag-value">No requerit</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="mission-card" aria-labelledby="progress-title">
+        <div class="section-heading">
+          <h2 id="progress-title">Progrés</h2>
+          <strong id="progress-summary">0/0</strong>
+        </div>
+
+        <ol id="checkpoint-list" class="checkpoint-list"></ol>
+      </section>
+
+      <section id="reward-panel" class="reward-panel" hidden>
+        <span class="reward-icon" aria-hidden="true">🏅</span>
+        <div>
+          <h2>Missió completada</h2>
+          <p id="reward-text"></p>
+        </div>
+      </section>
+
+      <div class="mission-actions">
+        <button id="start-mission-btn" class="primary-button" type="button">
+          Comença la missió
+        </button>
+        <button id="stop-mission-btn" class="secondary-button" type="button" disabled>
+          Atura
+        </button>
+        <button id="reset-mission-btn" class="text-button" type="button">
+          Reinicia el progrés
+        </button>
+      </div>
+
+      <details class="prototype-tools">
+        <summary>Eines del prototip</summary>
+
+        <label class="toggle-row">
+          <input id="demo-tag-checkbox" type="checkbox">
+          <span>Simula que el BiciPark Tag és present</span>
+        </label>
+
+        <p>
+          Aquesta simulació només prepara la integració futura amb Bluetooth.
+          No valida cap premi real.
+        </p>
+
+        <div id="debug-tools" hidden>
+          <button id="debug-next-btn" class="secondary-button" type="button">
+            Simula l’arribada al següent punt
+          </button>
+        </div>
+      </details>
+
+      <p class="safety-note">
+        Atura’t en un lloc segur abans de consultar el mòbil.
+      </p>
+    </aside>
+
+    <section id="missions-map" class="missions-map" aria-label="Mapa de la missió"></section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script type="module" src="modules/missions/missions.js"></script>
+</body>
+</html>

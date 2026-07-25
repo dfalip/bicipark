@@ -1,0 +1,52 @@
+[
+  {
+    "id": "front-maritim-explorer",
+    "name": "Explorador del Front Marítim",
+    "description": "Segueix la ruta del Front Marítim i completa quatre punts de control geolocalitzats.",
+    "routeFile": "data/rutes/front-maritim.geojson",
+    "distanceKm": 14.2,
+    "difficulty": "Fàcil",
+    "transportModes": [
+      "bicicleta",
+      "patinet",
+      "patins"
+    ],
+    "reward": {
+      "type": "virtual",
+      "points": 500,
+      "badge": "Explorador del litoral"
+    },
+    "validation": {
+      "checkpointRadiusMeters": 45,
+      "maxAccuracyMeters": 60,
+      "consecutiveReadings": 3,
+      "minSecondsBetweenCheckpoints": 15,
+      "routeToleranceMeters": 120,
+      "minimumRouteMatchRatio": 0.55,
+      "minimumValidSamples": 5,
+      "tagRequired": false
+    },
+    "checkpoints": [
+      {
+        "id": "sortida",
+        "name": "Sortida",
+        "routeFraction": 0.03
+      },
+      {
+        "id": "punt-1",
+        "name": "Primer punt",
+        "routeFraction": 0.34
+      },
+      {
+        "id": "punt-2",
+        "name": "Segon punt",
+        "routeFraction": 0.67
+      },
+      {
+        "id": "arribada",
+        "name": "Arribada",
+        "routeFraction": 0.97
+      }
+    ]
+  }
+]
