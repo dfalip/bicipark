@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>El meu pla | BiciPark</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="./styles.css?v=1">
+  <link rel="stylesheet" href="./polish-v1-1.css?v=11">
+  <link rel="stylesheet" href="../shared/bicipark-activity-sync-v1.css?v=1">
+  <link rel="stylesheet" href="../shared/bicipark-adaptive-route-match-v1.css?v=1">
+  <link rel="stylesheet" href="../shared/bicipark-adaptive-route-match-v1-1-patch.css?v=11">
+</head>
+
+<body>
+  <header class="bp-topbar">
+    <a class="bp-brand" href="../../index.html" aria-label="BiciPark">
+      <span class="bp-brand-mark" aria-hidden="true">
+        <i></i><i></i><i></i><i></i>
+      </span>
+      <span class="bp-brand-name">BiciPark</span>
+    </a>
+
+    <nav class="bp-topnav" aria-label="Navegacio principal">
+      <a href="../../mapa-ciclista.html">Mapa</a>
+      <a href="../route-detail/">Rutes</a>
+      <a href="../../bike-bases/explore.html">Bike Bases</a>
+      <a href="../../missions.html">Missions</a>
+      <a href="../../index.html">M&#233;s</a>
+    </nav>
+
+    <div class="bp-top-actions">
+      <button class="bp-bell" type="button" aria-label="Notificacions">
+        &#128276;<span></span>
+      </button>
+
+          <button class="bp-user-avatar" id="bp-user-avatar" type="button" aria-label="Perfil">
+            <span class="bp-avatar-fallback">&#128692;</span>
+          </button>
+    </div>
+  </header>
+
+  <div class="bp-shell">
+    <aside class="bp-sidebar">
+      <div class="bp-space-title">
+        <span class="bp-space-icon">&#128100;</span>
+        <strong>El meu espai</strong>
+      </div>
+
+      <nav class="bp-side-nav" aria-label="El meu espai">
+        <button type="button" data-section="summary">
+          <span>&#8962;</span> Resum
+        </button>
+
+        <button type="button" class="is-active" data-section="plan">
+          <span>&#128197;</span> El meu pla
+        </button>
+
+        <a href="../activity-history/"><span>&#128202;</span> Historial d'activitats</a>
+
+        <a href="../route-match/">
+          <span>&#9673;</span> Route Match (perfil)
+        </a>
+
+        <button type="button" data-section="favorites">
+          <span>&#9825;</span> Favorits
+        </button>
+
+        <button type="button" data-section="goals">
+          <span>&#9873;</span> Objectius
+        </button>
+
+        <button type="button" data-section="settings">
+          <span>&#9881;</span> Configuraci&#243;
+        </button>
+      </nav>
+
+      <section class="bp-level-card">
+        <div class="bp-card-title-row">
+          <strong>El meu nivell actual:</strong>
+          <span title="Basat en el perfil Route Match">&#9432;</span>
+        </div>
+
+        <div class="bp-level-content">
+          <div class="bp-level-ring">
+            <span>&#128692;</span>
+          </div>
+
+          <div>
+            <strong id="bp-level-label">Intermedi</strong>
+            <small>Basat en les teves activitats</small>
+          </div>
+        </div>
+
+        <a href="../route-match/">Veure detall &#8594;</a>
+      </section>
+
+      <section class="bp-tip-card">
+        <div class="bp-tip-title">
+          <span>&#9728;</span>
+          <strong>Consell del dia</strong>
+        </div>
+
+        <p id="bp-tip-text">
+          Beu petits glops d'aigua cada 15-20 minuts i menja alguna cosa cada 60 minuts.
+        </p>
+
+        <strong class="bp-tip-good">Bona sortida! &#10084;</strong>
+      </section>
+    </aside>
+
+    <main class="bp-main">
+      <section class="bp-main-header">
+        <div>
+          <h1>El meu pla d'entrenament</h1>
+          <p>Entrena de manera progressiva i gaudeix del cam&#237;.</p>
+        </div>
+
+        <div class="bp-main-actions">
+          <a class="bp-btn bp-btn-light" href="../route-match/">
+            <span>&#128100;</span> Ajustar perfil
+          </a>
+
+          <button class="bp-btn bp-btn-light" id="bp-change-goal" type="button">
+            <span>&#9673;</span> Canviar objectiu
+          </button>
+        </div>
+      </section>
+
+      <div class="bp-objective-chips">
+        <span class="bp-chip is-label">Objectiu actual</span>
+        <span class="bp-chip is-goal" id="bp-goal-chip">Millorar progressivament</span>
+        <span class="bp-chip is-days" id="bp-days-chip">3 dies / setmana</span>
+      </div>
+
+      <div class="bp-content-grid">
+        <div class="bp-center-column">
+          <section class="bp-target-route">
+            <div class="bp-route-map-wrap">
+              <div id="bp-plan-map"></div>
+              <span class="bp-map-ab">A/B</span>
+            </div>
+
+            <div class="bp-route-main">
+              <small>Ruta objectiu</small>
+              <h2 id="bp-route-name">Carretera de les Aig&#252;es</h2>
+
+              <div class="bp-route-meta" id="bp-route-meta">
+                <span>&#9873; 18,4 km</span>
+                <span>&#9651; 270 m+</span>
+                <span>&#128692; Carretera</span>
+                <span>&#8634; Anada i tornada</span>
+              </div>
+
+              <div class="bp-route-reason" id="bp-route-reason">
+                &#10022; Ruta adequada amb un nivell de repte raonable per al teu estat actual.
+              </div>
+            </div>
+
+            <div class="bp-route-score">
+              <div class="bp-score-ring">
+                <strong id="bp-route-score">88%</strong>
+                <small>Compatible</small>
+              </div>
+
+              <a id="bp-route-detail-link" href="../route-detail/">Veure fitxa &#8594;</a>
+            </div>
+          </section>
+
+          <section class="bp-week-card">
+            <div class="bp-week-head">
+              <div>
+                <span>Setmana actual:</span>
+                <h2 id="bp-current-week-title">Setmana 1 de 4 &#183; Adaptaci&#243;</h2>
+                <p id="bp-week-objective">
+                  Objectiu: crear base, millorar la resist&#232;ncia i acostumar el cos al volum.
+                </p>
+              </div>
+
+              <div class="bp-progress-summary">
+                <div class="bp-progress-label">
+                  <span>Progr&#233;s del pla</span>
+                  <strong id="bp-progress-percent">10%</strong>
+                </div>
+
+                <div class="bp-progress-track">
+                  <span id="bp-progress-bar"></span>
+                </div>
+
+                <small id="bp-progress-caption">1 de 4 setmanes</small>
+              </div>
+            </div>
+
+            <div class="bp-week-tabs" id="bp-week-tabs">
+              <button class="is-active" type="button" data-week="1">
+                <strong>Setmana 1</strong>
+                <small>Adaptaci&#243;</small>
+              </button>
+
+              <button type="button" data-week="2">
+                <strong>Setmana 2</strong>
+                <small>Construcci&#243;</small>
+              </button>
+
+              <button type="button" data-week="3">
+                <strong>Setmana 3</strong>
+                <small>Consolidaci&#243;</small>
+              </button>
+
+              <button type="button" data-week="4">
+                <strong>Setmana 4</strong>
+                <small>Objectiu &#127942;</small>
+              </button>
+            </div>
+
+            <div class="bp-session-table">
+              <div class="bp-session-table-head">
+                <span>Sessi&#243;</span>
+                <span>Tipus</span>
+                <span>Descripci&#243;</span>
+                <span>Durada</span>
+                <span>Intensitat</span>
+                <span>Estat</span>
+              </div>
+
+              <div id="bp-session-rows"></div>
+            </div>
+
+            <div class="bp-week-reminder">
+              &#9432; Recorda escalfar 10-15 min i estirar suaument en acabar.
+            </div>
+
+            <div class="bp-week-actions">
+              <button class="bp-btn bp-btn-light" id="bp-replan-week" type="button">
+                &#8635; Replanificar setmana
+              </button>
+
+              <button class="bp-btn bp-btn-primary" id="bp-complete-week" type="button">
+                &#10003; He completat aquesta setmana
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <aside class="bp-right-column">
+          <section class="bp-summary-card">
+            <h3>Resum del pla</h3>
+
+            <div class="bp-summary-row">
+              <span>&#128197; Durada total</span>
+              <strong>4 setmanes</strong>
+            </div>
+
+            <div class="bp-summary-row">
+              <span>&#128197; Dies per setmana</span>
+              <strong id="bp-summary-days">3 dies</strong>
+            </div>
+
+            <div class="bp-summary-row">
+              <span>&#8635; Pr&#242;xima revisi&#243;</span>
+              <strong>En acabar setmana 4</strong>
+            </div>
+          </section>
+
+          <section class="bp-summary-card bp-route-match-card">
+            <h3>Route Match</h3>
+
+            <div class="bp-route-match-body">
+              <div class="bp-small-score">
+                <strong id="bp-side-score">88%</strong>
+                <small>Compatible</small>
+              </div>
+
+              <p id="bp-side-match-copy">
+                Ruta adequada amb un nivell de repte raonable.
+              </p>
+            </div>
+
+            <a href="../route-match/">Veure an&#224;lisi completa &#8594;</a>
+          </section>
+
+          <section class="bp-summary-card">
+            <div class="bp-card-title-inline">
+              <h3>El teu progr&#233;s</h3>
+              <small>Basat en les teves activitats</small>
+            </div>
+
+            <div class="bp-progress-metrics">
+              <div>
+                <span>&#128692;</span>
+                <strong id="bp-progress-rides">0</strong>
+                <small>aquesta setmana</small>
+              </div>
+
+              <div>
+                <span>&#9719;</span>
+                <strong id="bp-progress-time">0 h</strong>
+                <small>aquesta setmana</small>
+              </div>
+
+              <div>
+                <span>&#9651;</span>
+                <strong id="bp-progress-ascent">0 m+</strong>
+                <small>aquesta setmana</small>
+              </div>
+            </div>
+
+            <div class="bp-evolution">
+              <small>Evoluci&#243; &#250;ltimes 4 setmanes</small>
+
+              <svg viewBox="0 0 280 78" role="img" aria-label="Evolucio del pla">
+                <line x1="18" y1="54" x2="262" y2="54"></line>
+                <polyline id="bp-evolution-line" points="24,52 96,48 168,34 244,44"></polyline>
+                <circle id="bp-evo-c1" cx="24" cy="52" r="6"></circle>
+                <circle id="bp-evo-c2" cx="96" cy="48" r="4"></circle>
+                <circle id="bp-evo-c3" cx="168" cy="34" r="4"></circle>
+                <circle id="bp-evo-c4" cx="244" cy="44" r="4"></circle>
+                <text x="18" y="74">S1</text>
+                <text x="90" y="74">S2</text>
+                <text x="162" y="74">S3</text>
+                <text x="238" y="74">S4</text>
+              </svg>
+            </div>
+
+            <button class="bp-link-button" type="button" data-section="history">
+              Veure hist&#242;ric complet &#8594;
+            </button>
+          </section>
+
+          <section class="bp-summary-card bp-motivation-card">
+            <span class="bp-quote">&#10077;</span>
+            <h3>Motivaci&#243; del dia</h3>
+
+            <p>
+              No es tracta d'anar r&#224;pid. Es tracta d'anar sovint i gaudir del cam&#237;.
+            </p>
+
+            <small>&#8212; BiciPark &#10084;</small>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="bp-toast" id="bp-toast" role="status" aria-live="polite"></div>
+
+  <div class="bp-modal-backdrop" id="bp-goal-backdrop"></div>
+
+  <section class="bp-modal" id="bp-goal-modal" role="dialog" aria-modal="true" aria-labelledby="bp-goal-modal-title">
+    <div class="bp-modal-head">
+      <div>
+        <h3 id="bp-goal-modal-title">Canviar objectiu</h3>
+        <p>El pla s'adaptara automaticament al nou objectiu.</p>
+      </div>
+
+      <button id="bp-close-goal" type="button" aria-label="Tancar">&#215;</button>
+    </div>
+
+    <div class="bp-goal-options" id="bp-goal-options">
+      <button type="button" data-goal="millorar">
+        <strong>&#8599; Millorar progressivament</strong>
+        <small>Augmentar volum i capacitat a poc a poc.</small>
+      </button>
+
+      <button type="button" data-goal="dificultat">
+        <strong>&#9651; Incrementar dificultat</strong>
+        <small>Preparar pujades i rutes mes exigents.</small>
+      </button>
+
+      <button type="button" data-goal="passejar">
+        <strong>&#9728; Passejar</strong>
+        <small>Prioritzar comoditat, gaudi i ritme suau.</small>
+      </button>
+
+      <button type="button" data-goal="repte">
+        <strong>&#127942; Preparar un repte</strong>
+        <small>Treballar amb una ruta objectiu concreta.</small>
+      </button>
+    </div>
+  </section>
+
+  <script src="../route-detail/route-detail-geometry-topology-v4-2.js?v=1"></script>
+  <script src="../route-match/engine/profile-store.js?v=1"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../shared/bicipark-activity-sync-v1.js?v=1"></script>
+<script src="./app.js?v=13"></script>
+  <script src="../shared/bicipark-adaptive-route-match-v1.js?v=1"></script>
+  <script src="../shared/bicipark-adaptive-route-match-ui-v1.js?v=1"></script>
+  <script src="../shared/bicipark-adaptive-route-catalog-v1-1.js?v=11"></script>
+  <script src="../shared/bicipark-adaptive-route-match-v1-1-patch.js?v=11"></script>
+</body>
+</html>

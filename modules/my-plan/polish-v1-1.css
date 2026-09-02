@@ -1,0 +1,168 @@
+/* ==========================================================
+   BiciPark - El meu pla
+   Polish v1.1
+   Visual/usability only
+   ========================================================== */
+
+/* Sidebar: keep scrolling available but remove the distracting
+   second visible scrollbar on desktop. */
+.bp-sidebar {
+  padding-top: 20px !important;
+  padding-bottom: 22px !important;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.bp-sidebar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.bp-side-nav {
+  gap: 3px !important;
+}
+
+.bp-side-nav button,
+.bp-side-nav a {
+  min-height: 39px !important;
+}
+
+.bp-level-card,
+.bp-tip-card {
+  margin-top: 18px !important;
+}
+
+.bp-level-card {
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
+.bp-tip-card {
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
+/* Week table: fit all 6 columns at 100% zoom.
+   The previous fixed widths pushed Estado outside the card. */
+.bp-session-table {
+  width: 100%;
+  overflow: hidden !important;
+}
+
+.bp-session-table-head,
+.bp-session-row {
+  width: 100%;
+  grid-template-columns:
+    minmax(70px, .78fr)
+    minmax(100px, 1.05fr)
+    minmax(150px, 1.8fr)
+    minmax(68px, .72fr)
+    minmax(92px, .88fr)
+    minmax(72px, .72fr) !important;
+  gap: 6px !important;
+}
+
+.bp-session-table-head {
+  padding-left: 6px;
+  padding-right: 6px;
+  font-size: 8px !important;
+}
+
+.bp-session-row {
+  padding: 8px 6px !important;
+  font-size: 9.5px !important;
+}
+
+.bp-session-cell strong {
+  font-size: 9.5px !important;
+  line-height: 1.28;
+}
+
+.bp-session-cell small {
+  font-size: 7.5px !important;
+  line-height: 1.3;
+}
+
+.bp-session-description {
+  min-width: 0;
+  padding-right: 3px;
+  font-size: 9.5px !important;
+  line-height: 1.42 !important;
+}
+
+.bp-intensity {
+  grid-template-columns: repeat(5, 8px) !important;
+  gap: 3px !important;
+}
+
+.bp-intensity i {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.bp-intensity-label {
+  font-size: 7.5px !important;
+}
+
+.bp-session-status {
+  width: 100%;
+  min-width: 0 !important;
+  min-height: 30px !important;
+  padding: 0 6px !important;
+  white-space: nowrap;
+  font-size: 7.5px !important;
+}
+
+/* Progress wording has more room and hierarchy. */
+.bp-progress-summary > small {
+  min-height: 13px;
+  color: #69786f !important;
+  font-size: 7.5px !important;
+  line-height: 1.35;
+}
+
+.bp-progress-label {
+  align-items: baseline;
+}
+
+.bp-progress-label span {
+  font-weight: 700;
+}
+
+/* Slightly denser week card so more of the plan remains visible
+   without losing the editorial feel. */
+.bp-week-card {
+  padding-bottom: 15px !important;
+}
+
+.bp-week-tabs {
+  margin-top: 14px !important;
+  margin-bottom: 11px !important;
+}
+
+.bp-week-tabs button {
+  min-height: 54px !important;
+}
+
+/* Preserve horizontal scroll only on genuinely small screens. */
+@media (max-width: 760px) {
+  .bp-sidebar {
+    scrollbar-width: auto;
+  }
+
+  .bp-session-table {
+    overflow-x: auto !important;
+  }
+
+  .bp-session-table-head,
+  .bp-session-row {
+    min-width: 820px;
+    grid-template-columns:
+      95px
+      125px
+      minmax(180px, 1fr)
+      85px
+      115px
+      88px !important;
+  }
+}
