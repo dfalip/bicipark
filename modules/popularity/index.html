@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>BiciPark Popularity</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../../css/bicipark-nav.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./popularity.css"
+  >
+</head>
+
+<body>
+  <main class="pop-page">
+    <section class="pop-hero">
+      <div>
+        <span class="pop-eyebrow">
+          BICIPARK POPULARITY
+        </span>
+
+        <h1>
+          Descobreix on es concentra l'interes ciclista
+        </h1>
+
+        <p>
+          Heatmap i tendencies construits amb interaccions reals
+          dins del teu propi BiciPark. Aquesta versio no utilitza
+          dades inventades ni presenta dades externes com si fossin
+          nostres.
+        </p>
+      </div>
+
+      <div class="pop-counter">
+        <strong id="interactionCount">0</strong>
+        <span>interaccions locals</span>
+      </div>
+    </section>
+
+    <section class="pop-toolbar">
+      <div class="pop-toolbar-copy">
+        Les dades es guarden nomes en aquest navegador fins que
+        BiciPark tingui backend comunitari.
+      </div>
+
+      <div>
+        <button
+          id="refreshPopularity"
+          class="pop-btn"
+          type="button"
+        >
+          Actualitzar
+        </button>
+
+        <button
+          id="clearPopularity"
+          class="pop-btn pop-btn-danger"
+          type="button"
+        >
+          Esborrar dades locals
+        </button>
+      </div>
+    </section>
+
+    <section class="pop-grid">
+      <section class="pop-panel">
+        <div id="popularityMap"></div>
+      </section>
+
+      <aside class="pop-side">
+        <section class="pop-section">
+          <h2>Tendencies BiciPark</h2>
+
+          <p>
+            Puntuacio local: obrir una ruta pesa mes que una
+            interaccio simple; consultar Weather tambe suma interes.
+          </p>
+
+          <div
+            id="popularityRanking"
+            class="pop-ranking"
+          ></div>
+        </section>
+
+        <section class="pop-section">
+          <h3>Activitat recent</h3>
+
+          <div
+            id="recentEvents"
+            class="pop-event-list"
+          ></div>
+        </section>
+      </aside>
+    </section>
+
+    <div class="pop-note">
+      <strong>Popularity v1:</strong>
+      aquest heatmap mesura activitat dins de BiciPark, no
+      popularitat global de ciclistes. Quan disposem de backend,
+      podrem agregar dades anonimes de molts usuaris i convertir-lo
+      en una capa de popularitat real de comunitat.
+    </div>
+  </main>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  ></script>
+
+  <script
+    src="../../js/core/bicipark-core.js"
+  ></script>
+
+  <script
+    src="./popularity.js?v=3"
+  ></script>
+
+  <script
+    src="../../js/bicipark-global-nav.js"
+  ></script>
+</body>
+</html>

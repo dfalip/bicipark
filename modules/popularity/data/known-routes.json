@@ -1,0 +1,26 @@
+[
+  {
+    "id": "carretera-aigues",
+    "name": "Carretera de les Aigues",
+    "lat": 41.4146,
+    "lng": 2.1265,
+    "distanceKm": 18.4,
+    "category": "Ruta"
+  },
+  {
+    "id": "front-maritim",
+    "name": "Front Maritim de Barcelona",
+    "lat": 41.3910,
+    "lng": 2.2055,
+    "distanceKm": 14.2,
+    "category": "Ruta"
+  },
+  {
+    "id": "riu-besos",
+    "name": "Ruta del riu Besos",
+    "lat": 41.4470,
+    "lng": 2.2110,
+    "distanceKm": 20.1,
+    "category": "Ruta"
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "id": "popularity",
+  "name": "BiciPark Popularity",
+  "version": "1.0.0",
+  "description": "Heatmap i tendències basades en interaccions reals dins BiciPark.",
+  "entry": "./popularity.js",
+  "style": "./popularity.css",
+  "data": "./data/known-routes.json",
+  "dependencies": [
+    "BiciParkCore",
+    "Leaflet"
+  ]
+}
