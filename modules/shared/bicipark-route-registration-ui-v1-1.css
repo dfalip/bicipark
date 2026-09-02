@@ -1,0 +1,86 @@
+.bp-route-original-control-v11 {
+  display: none !important;
+}
+
+.bp-route-registration-group-v11 {
+  min-width: 190px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5px;
+  align-self: center;
+}
+
+.bp-route-registration-status-v11 {
+  min-height: 23px;
+  display: flex;
+  align-items: center;
+  padding: 0 9px;
+  border-radius: 999px;
+  color: #17673d;
+  background: #e8f5ec;
+  font-size: 7px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.bp-route-registration-status-v11[hidden],
+.bp-route-registration-manage-v11[hidden] {
+  display: none !important;
+}
+
+.bp-route-registration-action-v11 {
+  min-height: 43px;
+  padding: 0 14px;
+  border: 1px solid #a8d2b5;
+  border-radius: 11px;
+  color: #087b43;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.bp-route-registration-action-v11:hover {
+  border-color: #82bd94;
+  background: #f2f9f4;
+}
+
+.bp-route-registration-group-v11:not(.has-registration)
+.bp-route-registration-action-v11 {
+  min-height: 52px;
+  background: #f0f8f2;
+}
+
+.bp-route-registration-manage-v11 {
+  width: max-content;
+  min-height: 22px;
+  padding: 0;
+  border: 0;
+  color: #587067;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 7px;
+  font-weight: 850;
+  text-decoration: underline;
+  text-decoration-color: #c6d5cd;
+  text-underline-offset: 3px;
+}
+
+.bp-route-registration-manage-v11:hover {
+  color: #087b43;
+  text-decoration-color: #86b998;
+}
+/* BICIPARK_OPTION1_REGISTRATION_CSS_START */
+.bp360-actions
+#bp-route-registration-group-v11 {
+  min-width: 0 !important;
+}
+
+.bp360-actions
+.bp-route-original-control-v11 {
+  display: none !important;
+}
+/* BICIPARK_OPTION1_REGISTRATION_CSS_END */

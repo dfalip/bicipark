@@ -1,0 +1,47 @@
+/* BiciPark route registration state - fixed v1 */
+
+.bp-route-done-button.is-pending {
+  color: #17673d;
+  background: #ffffff;
+  border-color: #b9d2c2;
+  box-shadow: none;
+}
+
+.bp-route-done-button.is-pending:hover {
+  color: #0b6f3c;
+  background: #f5faf7;
+  border-color: #80b692;
+}
+
+.bp-route-done-button.is-done {
+  color: #12683b;
+  background: #e6f4e9;
+  border-color: #b6d9c0;
+  box-shadow:
+    inset 0 0 0 1px
+    rgba(18, 104, 59, .02);
+}
+
+.bp-route-done-button.is-done:hover {
+  color: #0f5e35;
+  background: #dff1e4;
+  border-color: #93c7a2;
+}
+
+.bp-route-done-button.is-pending > span,
+.bp-route-done-button.is-done > span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.bp-route-done-button.is-pending > span {
+  font-size: 19px;
+  transform: translateY(-1px);
+}
+
+.bp-route-done-button.is-done > span {
+  font-size: 18px;
+}

@@ -1,0 +1,378 @@
+/* ==========================================================
+   BiciPark Route Detail
+   Smart Route Match + Training Plan v1
+   ========================================================== */
+
+.bp360-match-card {
+  position: relative;
+}
+
+.bp360-smart-profile-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  margin-left: 5px;
+  padding: 0 7px;
+  border-radius: 999px;
+  color: #52655b;
+  background: #eef3f0;
+  font-size: 7px;
+  font-weight: 850;
+}
+
+.bp360-smart-profile-status.is-personal {
+  color: #17613a;
+  background: #e7f5ec;
+}
+
+.bp360-smart-match-copy {
+  min-width: 0;
+}
+
+.bp360-smart-match-headline {
+  margin-bottom: 7px;
+  color: #183a2a;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.bp360-smart-match-goal {
+  display: inline-flex;
+  align-items: center;
+  min-height: 21px;
+  margin-bottom: 8px;
+  padding: 0 8px;
+  border-radius: 999px;
+  color: #6950ad;
+  background: #f0ebfd;
+  font-size: 7px;
+  font-weight: 850;
+}
+
+.bp360-smart-match-list {
+  display: grid;
+  gap: 5px;
+  margin: 0 0 9px;
+  padding: 0;
+  list-style: none;
+}
+
+.bp360-smart-match-list li {
+  display: grid;
+  grid-template-columns: 15px minmax(0,1fr);
+  gap: 5px;
+  align-items: start;
+  color: #45574e;
+  font-size: 8px;
+  line-height: 1.3;
+}
+
+.bp360-smart-reason-icon {
+  width: 14px;
+  height: 14px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #17613a;
+  background: #e7f5ec;
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.bp360-smart-reason-icon.is-progress {
+  color: #9a5b00;
+  background: #fff0d5;
+}
+
+.bp360-smart-reason-icon.is-warning {
+  color: #a02d4e;
+  background: #f8e2e8;
+}
+
+.bp360-smart-match-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bp360-smart-match-actions a {
+  color: #087b43;
+  text-decoration: none;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.bp360-smart-plan-mini {
+  margin-top: 11px;
+  padding: 10px 11px;
+  border: 1px solid #dce9e0;
+  border-radius: 11px;
+  background: #f2f9f4;
+}
+
+.bp360-smart-plan-mini strong,
+.bp360-smart-plan-mini small {
+  display: block;
+}
+
+.bp360-smart-plan-mini strong {
+  color: #1a5133;
+  font-size: 9px;
+}
+
+.bp360-smart-plan-mini small {
+  margin-top: 3px;
+  color: #63756b;
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.bp360-smart-plan-mini button {
+  margin-top: 7px;
+  padding: 0;
+  border: 0;
+  color: #087b43;
+  background: transparent;
+  font-size: 8px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* Plan modal */
+
+.bp-smart-plan-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 4990;
+  display: none;
+  background: rgba(12, 34, 24, .34);
+  backdrop-filter: blur(3px);
+}
+
+.bp-smart-plan-backdrop.is-visible {
+  display: block;
+}
+
+.bp-smart-plan-modal {
+  position: fixed;
+  z-index: 5000;
+  left: 50%;
+  top: 50%;
+  width: min(620px, calc(100vw - 28px));
+  max-height: min(760px, calc(100vh - 28px));
+  display: none;
+  transform: translate(-50%, -50%);
+  overflow: auto;
+  border: 1px solid #dbe6df;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow:
+    0 28px 80px rgba(18, 50, 34, .22);
+}
+
+.bp-smart-plan-modal.is-visible {
+  display: block;
+}
+
+.bp-smart-plan-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 20px 22px 15px;
+  border-bottom: 1px solid #e5ebe7;
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(8px);
+}
+
+.bp-smart-plan-header h3 {
+  margin: 0;
+  color: #102e20;
+  font-size: 21px;
+  letter-spacing: -.025em;
+}
+
+.bp-smart-plan-header p {
+  margin: 5px 0 0;
+  color: #69776f;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.bp-smart-plan-close {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border: 1px solid #dce5df;
+  border-radius: 10px;
+  color: #244536;
+  background: #fff;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.bp-smart-plan-body {
+  padding: 17px 22px 22px;
+}
+
+.bp-smart-plan-route {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 13px;
+  border: 1px solid #dce9e0;
+  border-radius: 12px;
+  background: #f3f9f5;
+}
+
+.bp-smart-plan-route strong,
+.bp-smart-plan-route small {
+  display: block;
+}
+
+.bp-smart-plan-route strong {
+  color: #173c29;
+  font-size: 11px;
+}
+
+.bp-smart-plan-route small {
+  margin-top: 3px;
+  color: #63736a;
+  font-size: 8px;
+}
+
+.bp-smart-plan-score {
+  min-width: 54px;
+  min-height: 54px;
+  display: grid;
+  place-content: center;
+  border: 4px solid #2f9b4a;
+  border-radius: 50%;
+  color: #177237;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.bp-smart-plan-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 10px 0 14px;
+}
+
+.bp-smart-plan-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  color: #40564a;
+  background: #f0f4f1;
+  font-size: 8px;
+  font-weight: 850;
+}
+
+.bp-smart-plan-sessions {
+  display: grid;
+  gap: 8px;
+}
+
+.bp-smart-plan-session {
+  display: grid;
+  grid-template-columns: 74px minmax(0,1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 11px;
+  border: 1px solid #e4eae6;
+  border-radius: 11px;
+}
+
+.bp-smart-plan-session strong {
+  color: #1f382c;
+  font-size: 9px;
+}
+
+.bp-smart-plan-session span {
+  color: #34483d;
+  font-size: 9px;
+}
+
+.bp-smart-plan-session small {
+  color: #718077;
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.bp-smart-plan-note {
+  margin: 13px 0 0;
+  padding: 10px 11px;
+  border-radius: 10px;
+  color: #51645a;
+  background: #f7f9f8;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.bp-smart-plan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.bp-smart-plan-actions a,
+.bp-smart-plan-actions button {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 13px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.bp-smart-plan-primary {
+  border: 1px solid #087b43;
+  color: #fff !important;
+  background: #087b43;
+}
+
+.bp-smart-plan-secondary {
+  border: 1px solid #d8e2dc;
+  color: #315042 !important;
+  background: #fff;
+}
+
+.bp-smart-plan-danger {
+  margin-left: auto;
+  border: 1px solid #efdce2;
+  color: #9a3150 !important;
+  background: #fff8fa;
+}
+
+@media (max-width: 680px) {
+  .bp360-match-layout {
+    grid-template-columns: 82px minmax(0,1fr);
+  }
+
+  .bp-smart-plan-session {
+    grid-template-columns: 62px minmax(0,1fr);
+  }
+
+  .bp-smart-plan-session small {
+    grid-column: 2;
+  }
+
+  .bp-smart-plan-danger {
+    margin-left: 0;
+  }
+}

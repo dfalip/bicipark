@@ -1,0 +1,213 @@
+/* ==========================================================
+   BiciPark Route Detail - compact actions polish v1.3
+   ========================================================== */
+
+.bp360-titlebar {
+  align-items: flex-start !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 {
+  display: grid !important;
+  grid-template-columns: repeat(6, 60px) !important;
+  grid-template-areas:
+    "status status status primary primary primary"
+    "fav plan history undo download share" !important;
+  justify-content: end !important;
+  justify-items: center !important;
+  align-items: start !important;
+  column-gap: 10px !important;
+  row-gap: 10px !important;
+  flex: 0 0 auto !important;
+  margin-bottom: 6px !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 #bp-route-registration-status-v11 {
+  grid-area: status !important;
+  justify-self: stretch !important;
+  min-width: 0 !important;
+  min-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 14px !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  white-space: nowrap !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 #bp-route-registration-action-v11 {
+  grid-area: primary !important;
+  justify-self: stretch !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 40px !important;
+  padding: 0 16px !important;
+  border-radius: 14px !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  line-height: 1.15 !important;
+  white-space: nowrap !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 #bp360-favorite { grid-area: fav !important; }
+.bp360-actions.bp360-compact-polish-v13 #bp360-plan { grid-area: plan !important; }
+.bp360-actions.bp360-compact-polish-v13 #bp360-history { grid-area: history !important; }
+.bp360-actions.bp360-compact-polish-v13 #bp-route-registration-manage-v11 { grid-area: undo !important; }
+.bp360-actions.bp360-compact-polish-v13 #bp360-download { grid-area: download !important; }
+.bp360-actions.bp360-compact-polish-v13 #bp360-share { grid-area: share !important; }
+
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-action {
+  width: 60px !important;
+  min-width: 60px !important;
+  min-height: 72px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  box-shadow: none !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-icon {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  border: 1px solid #d7dfda !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  color: #193A2B !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  transition: background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-label {
+  display: block !important;
+  width: 100% !important;
+  max-width: 76px !important;
+  min-height: 24px !important;
+  margin: 0 auto !important;
+  color: #1d3328 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  text-align: center !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-action:hover .bp360-compact-icon,
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-action:focus-visible .bp360-compact-icon {
+  border-color: #9bc5aa !important;
+  background: #f5fbf7 !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 #bp360-plan .bp360-compact-icon,
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-action.is-compact-active .bp360-compact-icon {
+  color: #087b43 !important;
+  border-color: #acd4b8 !important;
+  background: #eef8f1 !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 #bp360-plan .bp360-compact-label,
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-action.is-compact-active .bp360-compact-label {
+  color: #087b43 !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 #bp-route-registration-manage-v11.bp360-is-undo-action .bp360-compact-icon {
+  color: #cf234f !important;
+  border-color: #efb9c4 !important;
+  background: #fff8fa !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 #bp-route-registration-manage-v11.bp360-is-undo-action .bp360-compact-label {
+  color: #b62648 !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-action.is-compact-disabled,
+.bp360-actions.bp360-compact-polish-v13 #bp360-download.bp360-is-unavailable {
+  cursor: default !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-action.is-compact-disabled .bp360-compact-icon,
+.bp360-actions.bp360-compact-polish-v13 #bp360-download.bp360-is-unavailable .bp360-compact-icon {
+  color: #97a39b !important;
+  border-color: #dfe6e1 !important;
+  background: #f8faf9 !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-action.is-compact-disabled .bp360-compact-label,
+.bp360-actions.bp360-compact-polish-v13 #bp360-download.bp360-is-unavailable .bp360-compact-label {
+  color: #97a39b !important;
+}
+
+.bp360-actions.bp360-compact-polish-v13 .bp360-compact-action[aria-disabled="true"] {
+  pointer-events: none !important;
+}
+
+@media (max-width: 1360px) {
+  .bp360-actions.bp360-compact-polish-v13 {
+    grid-template-columns: repeat(6, 56px) !important;
+    column-gap: 8px !important;
+  }
+
+  .bp360-actions.bp360-compact-polish-v13 .bp360-compact-action {
+    width: 56px !important;
+    min-width: 56px !important;
+  }
+
+  .bp360-actions.bp360-compact-polish-v13 .bp360-compact-icon {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+  }
+
+  .bp360-actions.bp360-compact-polish-v13 .bp360-compact-label {
+    font-size: 9.6px !important;
+    max-width: 72px !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .bp360-actions.bp360-compact-polish-v13 {
+    grid-template-columns: repeat(3, 64px) !important;
+    grid-template-areas:
+      "status status status"
+      "primary primary primary"
+      "fav plan history"
+      "undo download share" !important;
+    justify-content: end !important;
+  }
+
+  .bp360-actions.bp360-compact-polish-v13 #bp-route-registration-status-v11,
+  .bp360-actions.bp360-compact-polish-v13 #bp-route-registration-action-v11 {
+    white-space: normal !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .bp360-actions.bp360-compact-polish-v13 {
+    grid-template-columns: repeat(2, 64px) !important;
+    grid-template-areas:
+      "status status"
+      "primary primary"
+      "fav plan"
+      "history undo"
+      "download share" !important;
+    justify-content: start !important;
+  }
+}

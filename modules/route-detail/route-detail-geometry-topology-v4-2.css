@@ -1,0 +1,188 @@
+.bp360-geometry-audit {
+  display: none !important;
+}
+
+.bp360-topology-audit {
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  margin: -6px 0 16px;
+  padding: 8px 12px;
+  border: 1px solid #dce8df;
+  border-radius: 11px;
+  color: #315a46;
+  background: #f3f8f5;
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.bp360-topology-audit.is-warning {
+  border-color: #efd9a8;
+  color: #76540f;
+  background: #fff8e8;
+}
+
+.bp360-topology-audit.is-attention {
+  border-color: #ead1d9;
+  color: #7c3247;
+  background: #fdf2f5;
+}
+
+.bp360-topology-audit-icon {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #087b43;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.bp360-topology-audit.is-warning .bp360-topology-audit-icon {
+  color: #9a6100;
+}
+
+.bp360-topology-audit.is-attention .bp360-topology-audit-icon {
+  color: #a12e50;
+}
+
+.bp360-topology-audit strong {
+  font-weight: 900;
+}
+
+.bp360-topology-badges {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.bp360-topology-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 21px;
+  padding: 0 8px;
+  border-radius: 999px;
+  color: #425a4d;
+  background: rgba(255,255,255,.9);
+  font-size: 7px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.bp360-route-geometry-note {
+  color: #68776f !important;
+  font-size: 7px !important;
+  line-height: 1.25 !important;
+}
+
+.bp360-endpoint-marker {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.bp360-endpoint-pin {
+  min-width: 29px;
+  height: 29px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 7px;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  box-shadow:
+    0 3px 11px rgba(11,46,30,.23),
+    0 0 0 1px rgba(12,75,43,.08);
+  color: #fff;
+  background: #087b43;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.bp360-endpoint-pin.is-finish {
+  background: #ca3657;
+}
+
+.bp360-endpoint-pin.is-combined {
+  min-width: 37px;
+  color: #fff;
+  background:
+    linear-gradient(
+      90deg,
+      #087b43 0 47%,
+      #ffffff 47% 53%,
+      #ca3657 53% 100%
+    );
+  text-shadow: 0 1px 2px rgba(0,0,0,.22);
+}
+
+.bp360-endpoint-popup {
+  min-width: 145px;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.bp360-endpoint-popup strong {
+  color: #17382b;
+}
+
+.bp360-endpoint-legend {
+  position: absolute;
+  right: 12px;
+  bottom: 13px;
+  z-index: 610;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(19,65,42,.12);
+  border-radius: 9px;
+  color: #355346;
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 5px 18px rgba(18,55,35,.09);
+  backdrop-filter: blur(6px);
+  font-size: 7px;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+.bp360-endpoint-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bp360-endpoint-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #087b43;
+}
+
+.bp360-endpoint-dot.is-finish {
+  background: #ca3657;
+}
+
+@media (max-width: 920px) {
+  .bp360-topology-audit {
+    grid-template-columns: auto minmax(0,1fr);
+  }
+
+  .bp360-topology-badges {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}

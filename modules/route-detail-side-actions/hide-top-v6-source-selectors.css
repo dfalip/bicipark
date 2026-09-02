@@ -1,0 +1,41 @@
+﻿/*
+ * BiciPark Route Detail
+ * Hide duplicated top action row — source-selector solution v6
+ *
+ * Aquests IDs provenen directament del codi font de route-detail.
+ * No hi ha detecció per text, posició ni MutationObserver.
+ *
+ * IMPORTANT:
+ * Els controls NO s'eliminen del DOM.
+ * Només s'oculten visualment perquè el mòdul lateral existent
+ * continuï reutilitzant els mateixos handlers i funcionalitats.
+ */
+
+/* Favorite */
+.bp360-actions #bp360-favorite,
+
+/* My plan */
+.bp360-actions #bp360-plan,
+
+/* Activity history */
+.bp360-actions #bp360-history,
+
+/* Undo / registration management — generated dynamically */
+.bp360-actions #bp-route-registration-manage-v11,
+
+/* GPX download */
+.bp360-actions #bp360-download,
+
+/* Share */
+.bp360-actions #bp360-share {
+  display: none !important;
+}
+
+/*
+ * Els dos elements que deliberadament ES MANTENEN visibles:
+ *
+ * #bp-route-registration-status-v11
+ * #bp-route-registration-action-v11
+ *
+ * No els incloem en cap regla d'ocultació.
+ */

@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BiciPark Â· Fitxa de Ruta 360</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    crossorigin=""
+  >
+
+  <link rel="stylesheet" href="./route-detail.css?v=compactmockup1">
+  <link rel="stylesheet" href="./route-detail-polish-v2.css?v=2">
+  <link rel="stylesheet" href="./route-detail-weather-geometry-v3.css?v=3">
+  <link rel="stylesheet" href="./route-detail-geometry-topology-v4-2.css?v=42">
+  <link rel="stylesheet" href="./route-detail-smart-match-plan-v1.css?v=1">
+  <link rel="stylesheet" href="./route-detail-smart-match-plan-polish-v2.css?v=2">
+  <link rel="stylesheet" href="../shared/bicipark-adaptive-route-match-v1.css?v=1">
+  <link rel="stylesheet" href="../shared/bicipark-adaptive-route-match-v1-1-patch.css?v=11">
+  <link rel="stylesheet" href="../shared/bicipark-activity-sync-v1.css?v=1">
+  <link rel="stylesheet" href="../shared/bicipark-route-completion-v1.css?v=1">
+  <link rel="stylesheet" href="../shared/bicipark-route-registration-state-v1.css?v=2">
+  <link rel="stylesheet" href="../shared/bicipark-route-repeat-progress-v1.css?v=1">
+  <link rel="stylesheet" href="../shared/bicipark-route-registration-ui-v1-1.css?v=option1source1">
+  <link rel="stylesheet" href="./route-detail-actions-compact-polish-v1-3.css?v=1">
+
+<!-- BICIPARK_SIDE_ACTIONS_START -->
+<link rel="stylesheet" href="/modules/route-detail-side-actions/side-actions.css">
+<script defer src="/modules/route-detail-side-actions/side-actions.js"></script>
+<!-- BICIPARK_SIDE_ACTIONS_END -->
+
+
+
+
+<!-- BICIPARK_SIDE_ACTIONS_HIDE_TOP_V6_START -->
+<link rel="stylesheet" href="/modules/route-detail-side-actions/hide-top-v6-source-selectors.css?v=6">
+<!-- BICIPARK_SIDE_ACTIONS_HIDE_TOP_V6_END -->
+</head>
+
+<body>
+  <header class="bp360-header">
+    <a class="bp360-brand" href="../../index.html" aria-label="BiciPark">
+      <span class="bp360-brand-mark" aria-hidden="true">
+        <i></i><i></i><i></i><i></i>
+      </span>
+      <span>BiciPark</span>
+    </a>
+
+    <nav class="bp360-nav" aria-label="Navegaci&#243; principal">
+      <a href="../../mapa-ciclista.html">Mapa</a>
+      <a class="is-active" href="../../route-explorer/">Rutes</a>
+      <a href="../../bike-bases/explore.html">Bike Bases</a>
+      <a href="../../missions.html">Missions</a>
+      <a href="../../index.html#mes">M&#233;s</a>
+    </nav>
+  </header>
+
+  <main class="bp360-shell">
+    <aside class="bp360-sidebar">
+      <h1>Explora rutes</h1>
+
+      <div class="bp360-filter">
+        <label for="bp360-modality">Modalitat</label>
+        <select id="bp360-modality">
+          <option value="all">Totes</option>
+          <option value="road">Carretera</option>
+          <option value="urban">Urbana / Gravel</option>
+          <option value="mtb">BTT</option>
+        </select>
+      </div>
+
+      <div class="bp360-filter">
+        <label for="bp360-difficulty">Dificultat</label>
+        <select id="bp360-difficulty">
+          <option value="all">Totes</option>
+          <option value="easy">F&#224;cil</option>
+          <option value="medium">Mitjana</option>
+          <option value="hard">Dif&#237;cil</option>
+        </select>
+      </div>
+
+      <div class="bp360-sidebar-divider"></div>
+
+      <div class="bp360-sidebar-heading">
+        <span class="bp360-star">&#9734;</span>
+        <strong>Rutes destacades</strong>
+      </div>
+
+      <div id="bp360-route-list" class="bp360-route-list"></div>
+
+      <a class="bp360-more-routes" href="../../route-explorer/">
+        Veure mes rutes
+        <span>&#8594;</span>
+      </a>
+    </aside>
+
+    <section class="bp360-main">
+      <a class="bp360-back" href="../../mapa-ciclista.html">
+        &#8592; Torna al mapa
+      </a>
+
+      <section class="bp360-titlebar">
+        <div>
+          <div class="bp360-title-row">
+            <h2 id="bp360-title">Ruta</h2>
+            <span id="bp360-difficulty-badge" class="bp360-difficulty-badge">
+              --
+            </span>
+          </div>
+          <p id="bp360-area">--</p>
+        </div>
+
+        <div class="bp360-actions">
+          <button id="bp360-favorite" class="bp360-btn bp360-btn-light" type="button">
+            &#9825; Afegeix a favorits
+          </button>
+
+          <button id="bp360-plan" class="bp360-btn bp360-btn-primary" type="button">
+            &#9673; Afegeix al meu pla
+          </button>
+
+                    <button
+            id="bp360-history"
+            class="bp360-btn bp360-btn-light bp360-btn-history"
+            type="button"
+            hidden
+          >
+            &#9776; Veure registre
+          </button>
+<button id="bp360-download" class="bp360-btn bp360-btn-outline" type="button">
+            &#8595; Descarregar tracat
+          </button>
+
+          <button id="bp360-share" class="bp360-btn bp360-btn-icon" type="button" aria-label="Compartir">
+            &#8599;
+          </button>
+        </div>
+      </section>
+
+      <section class="bp360-kpis">
+        <article>
+          <span class="bp360-kpi-icon">&#9873;</span>
+          <div>
+            <strong id="bp360-distance">--</strong>
+            <small>Dist&#224;ncia</small>
+          </div>
+        </article>
+
+        <article>
+          <span class="bp360-kpi-icon">&#9651;</span>
+          <div>
+            <strong id="bp360-ascent">--</strong>
+            <small>Desnivell positiu</small>
+          </div>
+        </article>
+
+        <article>
+          <span class="bp360-kpi-icon">&#9716;</span>
+          <div>
+            <strong id="bp360-time">--</strong>
+            <small>Temps estimat</small>
+          </div>
+        </article>
+
+        <article>
+          <span class="bp360-kpi-icon bp360-kpi-bars">&#9612;&#9612;&#9612;</span>
+          <div>
+            <strong id="bp360-kpi-difficulty">--</strong>
+            <small>Dificultat</small>
+          </div>
+        </article>
+
+        <article>
+          <span class="bp360-kpi-icon">&#128690;</span>
+          <div>
+            <strong id="bp360-modality-value">--</strong>
+            <small>Modalitat</small>
+          </div>
+        </article>
+
+        <article>
+          <span class="bp360-kpi-icon">&#8635;</span>
+          <div>
+            <strong id="bp360-route-type">--</strong>
+            <small>Tipus de ruta</small>
+          </div>
+        </article>
+      </section>
+
+      <div class="bp360-upper-grid">
+        <div>
+          <section class="bp360-map-card">
+            <div id="bp360-map"></div>
+
+            <div id="bp360-map-status" class="bp360-map-status">
+              Carregant tracat...
+            </div>
+          </section>
+
+          <section class="bp360-altitude-card">
+            <div class="bp360-section-title">
+              <h3>Perfil d'altitud</h3>
+              <span id="bp360-profile-status">Dades del tracat</span>
+            </div>
+
+            <div id="bp360-profile" class="bp360-profile">
+              <svg
+                id="bp360-profile-svg"
+                viewBox="0 0 800 150"
+                preserveAspectRatio="none"
+                aria-label="Perfil altimetric"
+              ></svg>
+            </div>
+          </section>
+        </div>
+
+        <aside class="bp360-right-column">
+          <section class="bp360-side-card bp360-match-card">
+            <div class="bp360-section-title">
+              <h3>Es adequada per a mi?</h3>
+              <span class="bp360-beta">Route Match</span>
+            </div>
+
+            <div class="bp360-match-layout">
+              <div class="bp360-score-ring">
+                <strong id="bp360-match-score">--</strong>
+                <small>Compatible</small>
+              </div>
+
+              <div>
+                <p id="bp360-match-text">--</p>
+                <a id="bp360-match-link" href="../route-match/">
+                  Veure analisi &#8594;
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <section class="bp360-side-card">
+            <div class="bp360-section-title">
+              <h3>Meteorologia</h3>
+              <span class="bp360-state-good">Weather Route</span>
+            </div>
+
+            <div class="bp360-module-callout">
+              <span class="bp360-module-icon">&#9728;</span>
+              <div>
+                <strong>Consulta la millor finestra per sortir</strong>
+                <p>Temperatura, pluja i vent al llarg del recorregut.</p>
+              </div>
+            </div>
+
+            <a id="bp360-weather-link" class="bp360-card-link" href="../weather-route/">
+              Analitzar meteorologia &#8594;
+            </a>
+          </section>
+
+          <section class="bp360-side-card">
+            <div class="bp360-section-title">
+              <h3>Incidencies</h3>
+              <span class="bp360-state-good">Live Conditions</span>
+            </div>
+
+            <p class="bp360-card-copy">
+              Revisa obres, trams tancats i avisos abans de sortir.
+            </p>
+
+            <a class="bp360-card-link" href="../live-conditions/">
+              Veure estat actual &#8594;
+            </a>
+          </section>
+        </aside>
+      </div>
+
+      <section class="bp360-bottom-grid">
+        <article class="bp360-info-card">
+          <h3>&#128737; Seguretat i qualitat</h3>
+
+          <div class="bp360-meter-row">
+            <span>Seguretat</span>
+            <strong id="bp360-safety-label">--</strong>
+          </div>
+          <div class="bp360-meter">
+            <i id="bp360-safety-meter"></i>
+          </div>
+
+          <div class="bp360-meter-row">
+            <span>Qualitat</span>
+            <strong id="bp360-quality-label">--</strong>
+          </div>
+          <div class="bp360-meter is-quality">
+            <i id="bp360-quality-meter"></i>
+          </div>
+        </article>
+
+        <article class="bp360-info-card">
+          <h3>&#9734; Highlights</h3>
+          <ul id="bp360-highlights" class="bp360-simple-list"></ul>
+          <a class="bp360-card-link" href="../highlights/">Veure tots &#8594;</a>
+        </article>
+
+        <article class="bp360-info-card">
+          <h3>&#9673; Bike Bases properes</h3>
+          <p class="bp360-card-copy">
+            Busca allotjaments i serveis ciclistes propers a la ruta.
+          </p>
+          <a class="bp360-card-link" href="../../bike-bases/explore.html">
+            Explorar Bike Bases &#8594;
+          </a>
+        </article>
+
+        <article class="bp360-info-card">
+          <h3>&#9832; Popularitat</h3>
+          <p class="bp360-card-copy">
+            Consulta l'interes local i l'activitat registrada a BiciPark.
+          </p>
+          <a class="bp360-card-link" href="../popularity/">
+            Veure tendencies &#8594;
+          </a>
+        </article>
+
+        <article class="bp360-info-card">
+          <h3>&#127942; Missions disponibles</h3>
+          <p class="bp360-card-copy">
+            Descobreix si aquesta ruta te missions o reptes associats.
+          </p>
+          <a class="bp360-card-link" href="../../missions.html">
+            Veure missions &#8594;
+          </a>
+        </article>
+      </section>
+
+      <footer class="bp360-source-note">
+        <span>&#9432;</span>
+        BiciPark combina dades locals, comunitaries i fonts externes.
+        Valida sempre les condicions abans de sortir.
+      </footer>
+    </section>
+  </main>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    crossorigin=""
+  ></script>
+
+  <script src="./data/routes.js"></script>
+  <script src="./route-detail.js?v=compactmockup1"></script>
+  <script src="./data/integration-sources-v2.js?v=2"></script>
+  <script src="./route-detail-integrations-v2.js?v=2"></script>
+  <script src="./route-detail-weather-geometry-v3.js?v=3"></script>
+  <script src="./route-detail-geometry-topology-v4-2.js?v=42"></script>
+  <script src="../route-match/engine/profile-store.js?v=1"></script>
+  <script src="./route-detail-smart-match-plan-v1.js?v=1"></script>
+  <script src="./route-detail-smart-match-plan-polish-v2.js?v=21"></script>
+  <script src="../shared/bicipark-adaptive-route-match-v1.js?v=1"></script>
+  <script src="../shared/bicipark-adaptive-route-match-ui-v1.js?v=1"></script>
+  <script src="../shared/bicipark-adaptive-route-catalog-v1-1.js?v=11"></script>
+  <script src="../shared/bicipark-adaptive-route-match-v1-1-patch.js?v=11"></script>
+  <script src="../shared/bicipark-activity-sync-v1.js?v=1"></script>
+  <script src="../shared/bicipark-route-completion-v1.js?v=1"></script>
+  <script src="../shared/bicipark-route-registration-state-v1.js?v=2"></script>
+  <script src="../shared/bicipark-route-repeat-progress-v1.js?v=1"></script>
+  <script src="../shared/bicipark-route-registration-ui-v1-1.js?v=option1source1"></script>
+  <script src="./route-detail-actions-compact-v1.js?v=1"></script>
+  <script src="./route-detail-actions-compact-polish-v1-3.js?v=1"></script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

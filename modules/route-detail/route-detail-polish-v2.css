@@ -1,0 +1,204 @@
+/* ==========================================================
+   BiciPark Route Detail 360 - polish v2
+   ========================================================== */
+
+.bp360-sidebar {
+  align-self: start;
+  position: sticky;
+  top: 70px;
+  max-height: calc(100vh - 70px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.bp360-bottom-grid {
+  align-items: stretch;
+}
+
+.bp360-info-card {
+  min-height: 132px !important;
+}
+
+.bp360-info-card:has(.bp360-live-empty) {
+  min-height: 120px !important;
+}
+
+.bp360-live-summary {
+  margin-top: 13px;
+}
+
+.bp360-live-summary + .bp360-weather-score {
+  margin-top: 1px;
+}
+
+.bp360-weather-score {
+  font-weight: 900;
+}
+
+.bp360-best-window {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 27px;
+  margin-top: 8px;
+  padding: 0 9px;
+  border-radius: 8px;
+  color: #17613a;
+  background: #edf8f1;
+}
+
+.bp360-best-window::before {
+  content: "\2600";
+  font-size: 12px;
+}
+
+.bp360-live-empty strong {
+  font-weight: 850;
+}
+
+.bp360-live-list li {
+  min-height: 42px;
+}
+
+.bp360-live-list small {
+  text-transform: none;
+}
+
+.bp360-data-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 0 7px;
+  border-radius: 999px;
+  color: #355447;
+  background: #eef4f0;
+  font-size: 7px;
+  font-weight: 850;
+}
+
+.bp360-nearby-list {
+  margin: 10px 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.bp360-nearby-list li {
+  display: grid;
+  grid-template-columns: 30px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #edf1ef;
+}
+
+.bp360-nearby-list li:last-child {
+  border-bottom: 0;
+}
+
+.bp360-nearby-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #087b43;
+  background: #eaf6ee;
+  font-size: 13px;
+}
+
+.bp360-nearby-list strong {
+  display: block;
+  color: #22372d;
+  font-size: 9px;
+}
+
+.bp360-nearby-list small {
+  display: block;
+  margin-top: 2px;
+  color: #748078;
+  font-size: 7px;
+}
+
+.bp360-popularity-layout {
+  display: grid;
+  grid-template-columns: 74px minmax(0,1fr);
+  gap: 12px;
+  align-items: center;
+  margin: 10px 0 12px;
+}
+
+.bp360-popularity-score {
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-content: center;
+  border: 5px solid #ed7a0f;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.bp360-popularity-score strong {
+  color: #9a4a00;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.bp360-popularity-score small {
+  margin-top: 2px;
+  color: #675a4c;
+  font-size: 6px;
+  font-weight: 850;
+}
+
+.bp360-popularity-copy {
+  color: #3c4d44;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.bp360-mission-row {
+  display: grid;
+  grid-template-columns: 30px minmax(0,1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #edf1ef;
+}
+
+.bp360-mission-row:last-child {
+  border-bottom: 0;
+}
+
+.bp360-mission-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #fff3dc;
+  font-size: 13px;
+}
+
+.bp360-mission-row strong {
+  display: block;
+  font-size: 9px;
+}
+
+.bp360-mission-row small {
+  display: block;
+  margin-top: 2px;
+  color: #748078;
+  font-size: 7px;
+}
+
+.bp360-route-card-tag:empty {
+  display: none !important;
+}
+
+@media (max-width: 780px) {
+  .bp360-sidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}

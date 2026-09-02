@@ -1,0 +1,269 @@
+/* ==========================================================
+   BiciPark Activity Sync v1
+   Shared by My Plan + Activity History
+   ========================================================== */
+
+.bp-sync-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: none;
+  background: rgba(12, 34, 24, .38);
+  backdrop-filter: blur(4px);
+}
+
+.bp-sync-backdrop.is-visible {
+  display: block;
+}
+
+.bp-sync-modal {
+  position: fixed;
+  z-index: 12010;
+  left: 50%;
+  top: 50%;
+  width: min(590px, calc(100vw - 28px));
+  max-height: calc(100vh - 28px);
+  display: none;
+  overflow: auto;
+  transform: translate(-50%, -50%);
+  border: 1px solid #d9e5dd;
+  border-radius: 19px;
+  background: #fff;
+  box-shadow: 0 30px 90px rgba(15, 48, 31, .25);
+}
+
+.bp-sync-modal.is-visible {
+  display: block;
+}
+
+.bp-sync-head {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid #e7ece9;
+  background: rgba(255, 255, 255, .97);
+  backdrop-filter: blur(8px);
+}
+
+.bp-sync-head h3 {
+  margin: 0;
+  color: #102d1f;
+  font-size: 19px;
+  letter-spacing: -.02em;
+}
+
+.bp-sync-head p {
+  margin: 5px 0 0;
+  color: #718078;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.bp-sync-close {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border: 1px solid #dce4df;
+  border-radius: 9px;
+  color: #365044;
+  background: #fff;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.bp-sync-body {
+  padding: 16px 20px 20px;
+}
+
+.bp-sync-session {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 11px 12px;
+  border: 1px solid #dbe9df;
+  border-radius: 11px;
+  background: #f2f9f4;
+}
+
+.bp-sync-session-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #087b43;
+  background: #e4f4e9;
+  font-size: 17px;
+}
+
+.bp-sync-session strong,
+.bp-sync-session small {
+  display: block;
+}
+
+.bp-sync-session strong {
+  color: #173b28;
+  font-size: 10px;
+}
+
+.bp-sync-session small {
+  margin-top: 3px;
+  color: #68776f;
+  font-size: 8px;
+}
+
+.bp-sync-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.bp-sync-field {
+  display: grid;
+  gap: 5px;
+}
+
+.bp-sync-field.is-wide {
+  grid-column: 1 / -1;
+}
+
+.bp-sync-field label {
+  color: #405448;
+  font-size: 8px;
+  font-weight: 850;
+}
+
+.bp-sync-field input,
+.bp-sync-field select {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid #dce4df;
+  border-radius: 9px;
+  color: #30463a;
+  background: #fff;
+  font-size: 9px;
+}
+
+.bp-sync-feeling {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.bp-sync-feeling button {
+  min-height: 48px;
+  padding: 6px;
+  border: 1px solid #dfe7e2;
+  border-radius: 9px;
+  color: #526159;
+  background: #fff;
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.bp-sync-feeling button span {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 15px;
+}
+
+.bp-sync-feeling button.is-selected {
+  border-color: #acd7ba;
+  color: #17683b;
+  background: #edf8f1;
+}
+
+.bp-sync-note {
+  margin-top: 12px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  color: #5e6f66;
+  background: #f6f8f7;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.bp-sync-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.bp-sync-actions button {
+  min-height: 39px;
+  padding: 0 14px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.bp-sync-secondary {
+  border: 1px solid #dce4df;
+  color: #405247;
+  background: #fff;
+}
+
+.bp-sync-primary {
+  border: 1px solid #087b43;
+  color: #fff;
+  background: #087b43;
+}
+
+.bp-demo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #efdda9;
+  border-radius: 10px;
+  color: #664e15;
+  background: #fff9e9;
+  font-size: 8px;
+}
+
+.bp-demo-banner strong {
+  font-size: 9px;
+}
+
+.bp-demo-banner button {
+  min-height: 31px;
+  padding: 0 10px;
+  border: 1px solid #e6ce88;
+  border-radius: 8px;
+  color: #6a5119;
+  background: #fff;
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 850;
+}
+
+@media (max-width: 620px) {
+  .bp-sync-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bp-sync-field.is-wide {
+    grid-column: auto;
+  }
+
+  .bp-sync-feeling {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bp-demo-banner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

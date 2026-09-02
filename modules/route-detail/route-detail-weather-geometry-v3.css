@@ -1,0 +1,190 @@
+/* ==========================================================
+   BiciPark Route Detail 360
+   Weather redesign + geometry audit v3
+   ========================================================== */
+
+.bp360-weather-v3 {
+  margin-top: 13px;
+}
+
+.bp360-weather-v3-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.bp360-weather-v3-stat {
+  min-width: 0;
+  padding: 10px 9px 9px;
+  border: 1px solid #e2e9e5;
+  border-radius: 11px;
+  background: #fafcfb;
+}
+
+.bp360-weather-v3-stat-icon {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.bp360-weather-v3-stat strong {
+  display: block;
+  color: #112d20;
+  font-size: 17px;
+  line-height: 1;
+}
+
+.bp360-weather-v3-stat small {
+  display: block;
+  margin-top: 4px;
+  color: #6e7c75;
+  font-size: 7px;
+  line-height: 1.25;
+}
+
+.bp360-weather-v3-score {
+  display: grid;
+  grid-template-columns: 74px minmax(0,1fr);
+  gap: 12px;
+  align-items: center;
+  margin-top: 11px;
+  padding: 10px 11px;
+  border: 1px solid #dce9e0;
+  border-radius: 12px;
+  background:
+    linear-gradient(
+      135deg,
+      #f2faf5 0%,
+      #fbfdfb 100%
+    );
+}
+
+.bp360-weather-v3-score-badge {
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-content: center;
+  border: 5px solid #2e9a49;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.bp360-weather-v3-score-badge strong {
+  color: #137136;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.bp360-weather-v3-score-badge small {
+  margin-top: 2px;
+  color: #466053;
+  font-size: 6px;
+  font-weight: 850;
+}
+
+.bp360-weather-v3-score-copy strong {
+  display: block;
+  color: #1c3a2b;
+  font-size: 10px;
+}
+
+.bp360-weather-v3-score-copy p {
+  margin: 4px 0 0;
+  color: #5e6f66;
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.bp360-weather-v3-window {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 9px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  color: #17613a;
+  background: #eaf6ee;
+}
+
+.bp360-weather-v3-window-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  color: #996100;
+  background: #fff5d8;
+  font-size: 14px;
+}
+
+.bp360-weather-v3-window strong,
+.bp360-weather-v3-window small {
+  display: block;
+}
+
+.bp360-weather-v3-window strong {
+  font-size: 9px;
+}
+
+.bp360-weather-v3-window small {
+  margin-top: 2px;
+  color: #4d6a59;
+  font-size: 7px;
+}
+
+.bp360-weather-v3-source {
+  margin: 8px 0 1px;
+  color: #7a8780;
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.bp360-geometry-audit {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 34px;
+  margin: -6px 0 16px;
+  padding: 7px 11px;
+  border: 1px solid #dce8df;
+  border-radius: 10px;
+  color: #2e5f47;
+  background: #f2f8f4;
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.bp360-geometry-audit.is-warning {
+  border-color: #efd9a8;
+  color: #79560c;
+  background: #fff8e8;
+}
+
+.bp360-geometry-audit-icon {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: rgba(255,255,255,.75);
+  font-weight: 900;
+}
+
+.bp360-route-geometry-note {
+  color: #68776f !important;
+  font-size: 7px !important;
+  line-height: 1.25 !important;
+}
+
+@media (max-width: 780px) {
+  .bp360-weather-v3-main {
+    grid-template-columns: 1fr;
+  }
+
+  .bp360-weather-v3-score {
+    grid-template-columns: 64px minmax(0,1fr);
+  }
+}
