@@ -6,3 +6,4 @@ Desktop.ini
 *.tmp
 *.bak
 *~
+tools/scripts/archive-root-*/
