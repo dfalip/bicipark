@@ -1,0 +1,10 @@
+{
+  "id": "bike-cannon",
+  "name": "BiciPark Bike Cannon",
+  "version": "1.0.0",
+  "description": "Joc independent de llançament de bicicleta i descoberta de contingut BiciPark.",
+  "entry": "./bike-cannon.js",
+  "style": "./bike-cannon.css",
+  "data": "./data/destinations.json",
+  "dependencies": []
+}

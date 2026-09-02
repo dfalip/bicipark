@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>BiciPark Bike Cannon</title>
+
+  <link
+    rel="stylesheet"
+    href="../../css/bicipark-nav.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./bike-cannon.css"
+  >
+</head>
+
+<body>
+  <main class="bc-page">
+    <section class="bc-hero">
+      <div>
+        <span class="bc-eyebrow">
+          BICIPARK BIKE CANNON
+        </span>
+
+        <h1>
+          Dispara. Vola. Descobreix.
+        </h1>
+
+        <p>
+          Llança la bicicleta tan lluny com puguis i converteix
+          cada aterratge en una nova ruta, Highlight o Bike Base
+          per descobrir dins de BiciPark.
+        </p>
+      </div>
+
+      <div class="bc-badge">
+        <strong>&#128690; &#128165;</strong>
+        <span>PROTOTIP JUGABLE V1</span>
+      </div>
+    </section>
+
+    <section class="bc-game">
+      <aside class="bc-panel">
+        <h2>Prepara el llançament</h2>
+
+        <select
+          id="modeSelect"
+          class="bc-mode"
+          aria-label="Mode de joc"
+        >
+          <option value="discovery">
+            Descoberta
+          </option>
+
+          <option value="target">
+            Objectiu
+          </option>
+        </select>
+
+        <div
+          id="targetCard"
+          class="bc-target"
+        ></div>
+
+        <div class="bc-control">
+          <label>
+            <span>Angle</span>
+            <strong id="angleValue">45&deg;</strong>
+          </label>
+
+          <input
+            id="angleInput"
+            class="bc-range"
+            type="range"
+            min="10"
+            max="80"
+            value="45"
+          >
+        </div>
+
+        <div class="bc-control">
+          <label>
+            <span>Potencia</span>
+            <strong id="powerValue">65%</strong>
+          </label>
+
+          <input
+            id="powerInput"
+            class="bc-range"
+            type="range"
+            min="20"
+            max="100"
+            value="65"
+          >
+        </div>
+
+        <div class="bc-wind">
+          <strong>Vent:</strong>
+          <span id="windValue">-</span>
+          <br>
+          El vent pot ajudar o frenar el vol.
+        </div>
+
+        <button
+          id="launchButton"
+          class="bc-launch"
+          type="button"
+        >
+          &#128165; DISPARAR BICICLETA
+        </button>
+
+        <button
+          id="resetButton"
+          class="bc-reset"
+          type="button"
+        >
+          Nova ronda
+        </button>
+      </aside>
+
+      <section class="bc-stage">
+        <canvas
+          id="bikeCannonCanvas"
+          aria-label="Zona de joc Bike Cannon"
+        ></canvas>
+
+        <div class="bc-stage-hud">
+          <span
+            id="hudAngle"
+            class="bc-chip"
+          >
+            Angle
+          </span>
+
+          <span
+            id="hudPower"
+            class="bc-chip"
+          >
+            Potencia
+          </span>
+
+          <span
+            id="hudWind"
+            class="bc-chip"
+          >
+            Vent
+          </span>
+          <span
+            id="hudDistance"
+            class="bc-chip"
+          >
+            Previsio
+          </span>
+          <span
+            id="hudCoins"
+            class="bc-chip"
+          >
+            BiciCoins 0/0
+          </span>
+        </div>
+      </section>
+
+      <aside class="bc-panel bc-result">
+        <h2>Resultat</h2>
+
+        <div id="resultPanel">
+          <div class="bc-result-empty">
+            Ajusta angle i potencia, mira el vent i dispara.
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px">
+          Ultims llançaments
+        </h3>
+
+        <div
+          id="historyList"
+          class="bc-history"
+        ></div>
+      </aside>
+    </section>
+
+    <div class="bc-note">
+      <strong>Bike Cannon v1:</strong>
+      aquesta versio es completament independent. No modifica
+      cap modul existent. Les destinacions inicials viuen dins
+      del propi joc i els providers permetran connectar mes
+      endavant Routes, Highlights, Bike Bases, Missions i
+      Popularity sense barrejar-ne el codi.
+    </div>
+  </main>
+
+  <script
+    src="./engine/physics.js?v=3"
+  ></script>
+
+  <script
+    src="./engine/scoring.js"
+  ></script>
+
+  <script
+    src="./providers/destinations-provider.js?v=2"
+  ></script>
+
+  <script
+    src="./bike-cannon.js?v=5"
+  ></script>
+
+  <script
+    src="../../js/bicipark-global-nav.js"
+  ></script>
+</body>
+</html>

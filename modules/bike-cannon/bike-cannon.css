@@ -1,0 +1,414 @@
+:root {
+  --bc-green: #117446;
+  --bc-green-dark: #0b5735;
+  --bc-bg: #f4f7f5;
+  --bc-line: #dce6e0;
+  --bc-text: #183328;
+  --bc-muted: #6b7b72;
+  --bc-orange: #d48213;
+  --bc-sky: #dff4fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bc-bg);
+  color: var(--bc-text);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.bc-page {
+  max-width: 1420px;
+  margin: 0 auto;
+  padding: 10px 14px 22px;
+}
+
+.bc-hero {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 18px;
+  border: 1px solid var(--bc-line);
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      circle at 87% 22%,
+      rgba(212,130,19,.13),
+      transparent 26%
+    ),
+    #fff;
+}
+
+.bc-eyebrow {
+  color: var(--bc-green);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+
+.bc-hero h1 {
+  margin: 4px 0;
+  font-size: clamp(31px, 4vw, 46px);
+  line-height: .96;
+  letter-spacing: -.045em;
+}
+
+.bc-hero p {
+  max-width: 780px;
+  margin: 0;
+  color: var(--bc-muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.bc-badge {
+  min-width: 150px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #fff4e4;
+  text-align: center;
+}
+
+.bc-badge strong,
+.bc-badge span {
+  display: block;
+}
+
+.bc-badge strong {
+  color: #9a6108;
+  font-size: 20px;
+}
+
+.bc-badge span {
+  margin-top: 2px;
+  color: #866e48;
+  font-size: 7px;
+}
+
+.bc-game {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 270px minmax(0,1fr) 270px;
+  gap: 8px;
+}
+
+.bc-panel {
+  padding: 11px;
+  border: 1px solid var(--bc-line);
+  border-radius: 15px;
+  background: #fff;
+}
+
+.bc-panel h2,
+.bc-panel h3 {
+  margin: 0;
+}
+
+.bc-panel h2 {
+  font-size: 17px;
+}
+
+.bc-panel h3 {
+  font-size: 14px;
+}
+
+.bc-control {
+  margin-top: 10px;
+}
+
+.bc-control label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+  color: #53665b;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.bc-control strong {
+  color: var(--bc-green-dark);
+}
+
+.bc-range {
+  width: 100%;
+  accent-color: var(--bc-green);
+}
+
+.bc-mode {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 9px;
+  padding: 0 9px;
+  border: 1px solid #ccd9d2;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--bc-text);
+  font-size: 9px;
+}
+
+.bc-launch {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 11px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--bc-green);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.bc-launch:hover {
+  background: var(--bc-green-dark);
+}
+
+.bc-launch:disabled {
+  cursor: default;
+  opacity: .55;
+}
+
+.bc-reset {
+  width: 100%;
+  min-height: 34px;
+  margin-top: 6px;
+  border: 1px solid #cfdcd4;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--bc-green-dark);
+  font-size: 8px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.bc-wind {
+  margin-top: 9px;
+  padding: 8px;
+  border-radius: 10px;
+  background: #f1f7fa;
+  color: #46616f;
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.bc-target {
+  margin-top: 10px;
+  padding: 9px;
+  border-radius: 11px;
+  background: #f4f8f5;
+}
+
+.bc-target small,
+.bc-target strong,
+.bc-target span {
+  display: block;
+}
+
+.bc-target small {
+  color: var(--bc-muted);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.bc-target strong {
+  margin-top: 3px;
+  font-size: 13px;
+}
+
+.bc-target span {
+  margin-top: 3px;
+  color: #627168;
+  font-size: 8px;
+}
+
+.bc-stage {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--bc-line);
+  border-radius: 15px;
+  background: #fff;
+}
+
+#bikeCannonCanvas {
+  display: block;
+  width: 100%;
+  height: 560px;
+  background:
+    linear-gradient(
+      #dff4fb 0%,
+      #eff9fb 68%,
+      #dbe8d6 68%,
+      #c9dbc1 100%
+    );
+}
+
+.bc-stage-hud {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  pointer-events: none;
+}
+
+.bc-chip {
+  padding: 6px 8px;
+  border: 1px solid rgba(255,255,255,.8);
+  border-radius: 999px;
+  background: rgba(255,255,255,.9);
+  color: #345245;
+  font-size: 8px;
+  font-weight: 900;
+  backdrop-filter: blur(4px);
+}
+
+.bc-result {
+  min-height: 170px;
+}
+
+.bc-result-empty {
+  margin-top: 9px;
+  padding: 11px;
+  border: 1px dashed #d2ded7;
+  border-radius: 10px;
+  color: var(--bc-muted);
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.bc-result-card {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 12px;
+  background: #f7faf8;
+}
+
+.bc-result-emoji {
+  font-size: 26px;
+}
+
+.bc-result-card h3 {
+  margin-top: 5px;
+  font-size: 15px;
+}
+
+.bc-result-card p {
+  margin: 4px 0 0;
+  color: var(--bc-muted);
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.bc-score {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.bc-score div {
+  padding: 7px;
+  border-radius: 9px;
+  background: #fff;
+}
+
+.bc-score small,
+.bc-score strong {
+  display: block;
+}
+
+.bc-score small {
+  color: var(--bc-muted);
+  font-size: 6px;
+}
+
+.bc-score strong {
+  margin-top: 2px;
+  color: var(--bc-green-dark);
+  font-size: 15px;
+}
+
+.bc-link {
+  min-height: 34px;
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  border-radius: 9px;
+  background: var(--bc-green);
+  color: #fff !important;
+  text-decoration: none !important;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.bc-history {
+  margin-top: 9px;
+  display: grid;
+  gap: 5px;
+}
+
+.bc-history-item {
+  padding: 7px;
+  border-radius: 9px;
+  background: #f7faf8;
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.bc-note {
+  margin-top: 8px;
+  padding: 9px 11px;
+  border: 1px solid var(--bc-line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--bc-muted);
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+@media (max-width: 1100px) {
+  .bc-game {
+    grid-template-columns: 240px minmax(0,1fr);
+  }
+
+  .bc-result {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .bc-page {
+    padding: 8px;
+  }
+
+  .bc-hero,
+  .bc-game {
+    grid-template-columns: 1fr;
+  }
+
+  #bikeCannonCanvas {
+    height: 430px;
+  }
+}

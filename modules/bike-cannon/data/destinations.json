@@ -1,0 +1,134 @@
+[
+  {
+    "id": "carretera-aigues",
+    "name": "Carretera de les Aigues",
+    "type": "route",
+    "region": "Barcelona",
+    "distanceKm": 18.4,
+    "lat": 41.4146,
+    "lng": 2.1265,
+    "url": "../../mapa-ciclista.html",
+    "emoji": "\ud83c\udf3f"
+  },
+  {
+    "id": "front-maritim",
+    "name": "Front Maritim de Barcelona",
+    "type": "route",
+    "region": "Barcelona",
+    "distanceKm": 14.2,
+    "lat": 41.3910,
+    "lng": 2.2055,
+    "url": "../../mapa-ciclista.html",
+    "emoji": "\ud83c\udf0a"
+  },
+  {
+    "id": "riu-besos",
+    "name": "Ruta del riu Besos",
+    "type": "route",
+    "region": "Barcelona",
+    "distanceKm": 20.1,
+    "lat": 41.4470,
+    "lng": 2.2110,
+    "url": "../../mapa-ciclista.html",
+    "emoji": "\ud83d\udeb2"
+  },
+  {
+    "id": "camping-izarpe",
+    "name": "Camping Izarpe",
+    "type": "bike-base",
+    "region": "Navarra",
+    "distanceKm": 365,
+    "lat": 42.93854,
+    "lng": -1.69241,
+    "url": "../../bike-bases/base.html?id=camping-izarpe",
+    "emoji": "\ud83c\udfd5\ufe0f"
+  },
+  {
+    "id": "hotel-monells-summum",
+    "name": "Hotel Monells Summum",
+    "type": "bike-base",
+    "region": "Girona",
+    "distanceKm": 115,
+    "lat": 41.974951,
+    "lng": 3.000099,
+    "url": "../../bike-bases/base.html?id=hotel-monells-summum",
+    "emoji": "\ud83c\udfe1"
+  },
+  {
+    "id": "hotel-carlemany-girona",
+    "name": "Hotel Carlemany Girona",
+    "type": "bike-base",
+    "region": "Girona",
+    "distanceKm": 100,
+    "lat": 41.9794,
+    "lng": 2.8214,
+    "url": "../../bike-bases/base.html?id=hotel-carlemany-girona",
+    "emoji": "\ud83c\udfe8"
+  },
+  {
+    "id": "camping-salata",
+    "name": "Camping Salata",
+    "type": "bike-base",
+    "region": "Roses",
+    "distanceKm": 155,
+    "lat": 42.2666,
+    "lng": 3.1666,
+    "url": "../../bike-bases/base.html?id=camping-salata",
+    "emoji": "\u26fa"
+  },
+  {
+    "id": "granollers-les-angles",
+    "name": "Granollers \u2192 Les Angles",
+    "type": "tour-stage",
+    "region": "Catalunya / Franca",
+    "distanceKm": 195.9,
+    "lat": 42.578,
+    "lng": 2.074,
+    "url": "../../route-explorer/",
+    "emoji": "\ud83c\udfc1"
+  },
+  {
+    "id": "carcassonne-foix",
+    "name": "Carcassonne \u2192 Foix",
+    "type": "tour-stage",
+    "region": "Franca",
+    "distanceKm": 181.9,
+    "lat": 42.965,
+    "lng": 1.606,
+    "url": "../../route-explorer/",
+    "emoji": "\ud83c\udfc1"
+  },
+  {
+    "id": "mirador-alcalde",
+    "name": "Mirador de l'Alcalde",
+    "type": "highlight",
+    "region": "Barcelona",
+    "distanceKm": 7,
+    "lat": 41.3695,
+    "lng": 2.1568,
+    "url": "../highlights/",
+    "emoji": "\ud83d\udcf8"
+  },
+  {
+    "id": "arc-triomf",
+    "name": "Arc de Triomf",
+    "type": "highlight",
+    "region": "Barcelona",
+    "distanceKm": 5,
+    "lat": 41.3910,
+    "lng": 2.1802,
+    "url": "../highlights/",
+    "emoji": "\ud83c\udfdb\ufe0f"
+  },
+  {
+    "id": "barceloneta",
+    "name": "Platja de la Barceloneta",
+    "type": "highlight",
+    "region": "Barcelona",
+    "distanceKm": 6,
+    "lat": 41.3784,
+    "lng": 2.1925,
+    "url": "../highlights/",
+    "emoji": "\ud83c\udfd6\ufe0f"
+  }
+]
