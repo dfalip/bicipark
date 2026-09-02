@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Missions sorpresa | BiciPark</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="modules/missions-surprise/surprise.css">
+  <link rel="stylesheet" href="./css/bicipark-nav.css?v=2">
+</head>
+<body>
+  <header class="topbar">
+    <a href="index.html" class="brand">BiciPark</a>
+    <nav>
+      <a href="index.html">Aparcaments</a>
+      <a href="mapa-ciclista.html">Mapa ciclista</a>
+      <a href="missions.html">Missions</a>
+      <a href="missions-sorpresa.html" class="active">Missions sorpresa</a>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <aside class="panel">
+      <p class="eyebrow">BiciPark Missions</p>
+      <h1 id="mission-title">Carregant…</h1>
+      <p id="mission-description" class="description"></p>
+
+      <div id="admin-banner" class="admin-banner" hidden>
+        Vista d'administració del prototip
+      </div>
+
+      <label for="mission-select">Missió</label>
+      <select id="mission-select" disabled></select>
+
+      <div id="mission-meta" class="meta"></div>
+
+      <section class="surprise-card">
+        <div class="gift">🎁</div>
+        <div>
+          <h2>Premi sorpresa</h2>
+          <p id="surprise-status">
+            Hi ha una recompensa amagada en algun punt del recorregut.
+          </p>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="heading-row">
+          <h2>Estat</h2>
+          <span id="status-badge" class="badge badge-idle">Preparada</span>
+        </div>
+        <p id="status-text">Prem «Comença» quan siguis al recorregut.</p>
+
+        <div id="live-data" class="live-data" hidden>
+          <div><span>Precisió GPS</span><strong id="accuracy">—</strong></div>
+          <div><span>Premi sorpresa</span><strong id="secret-distance">Ocult</strong></div>
+          <div><span>Mostres sobre la ruta</span><strong id="route-match">—</strong></div>
+          <div><span>Tag de bicicleta</span><strong id="tag-status">No requerit</strong></div>
+        </div>
+      </section>
+
+      <section id="admin-panel" class="card" hidden>
+        <div class="heading-row">
+          <h2>Controls interns</h2>
+          <strong id="progress-summary">0/0</strong>
+        </div>
+        <ol id="checkpoint-list" class="checkpoint-list"></ol>
+      </section>
+
+      <section id="reward-panel" class="reward-card" hidden>
+        <div class="gift">🏅</div>
+        <div>
+          <h2>Sorpresa desbloquejada!</h2>
+          <p id="reward-text"></p>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button id="start-btn" class="primary">Comença</button>
+        <button id="stop-btn" disabled>Atura</button>
+        <button id="reset-btn" class="link-button">Reinicia el progrés</button>
+      </div>
+
+      <details class="tools">
+        <summary>Eines del prototip</summary>
+        <label class="toggle">
+          <input id="demo-tag" type="checkbox">
+          Simula que el tag és present
+        </label>
+        <div id="debug-tools" hidden>
+          <button id="debug-next-btn">Simula el següent control</button>
+        </div>
+      </details>
+
+      <p class="safety">Atura't en un lloc segur abans de consultar el mòbil.</p>
+    </aside>
+
+    <section id="surprise-map" class="map"></section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="modules/missions-surprise/surprise.js"></script>
+  <script src="./js/bicipark-global-nav.js?v=2"></script>
+</body>
+</html>
