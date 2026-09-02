@@ -1,0 +1,65 @@
+﻿{
+    "generatedAt":  "2026-07-27T11:04:54.8000394+02:00",
+    "imported":  [
+                     {
+                         "id":  "carretera-aigues",
+                         "name":  "Carretera Aigues",
+                         "region":  "barcelona",
+                         "modality":  "road",
+                         "difficulty":  "moderada",
+                         "distanceKm":  17.31,
+                         "sourceFile":  "data/gpx/carretera-aigues.gpx"
+                     },
+                     {
+                         "id":  "front-maritim",
+                         "name":  "Front Maritim",
+                         "region":  "barcelona",
+                         "modality":  "road",
+                         "difficulty":  "moderada",
+                         "distanceKm":  19.41,
+                         "sourceFile":  "data/gpx/front-maritim.gpx"
+                     },
+                     {
+                         "id":  "riu-besos",
+                         "name":  "Riu Besos",
+                         "region":  "barcelona",
+                         "modality":  "road",
+                         "difficulty":  "moderada",
+                         "distanceKm":  67.07,
+                         "sourceFile":  "data/gpx/riu-besos.gpx"
+                     },
+                     {
+                         "id":  "besos",
+                         "name":  "Besos",
+                         "region":  "barcelona",
+                         "modality":  "road",
+                         "difficulty":  "moderada",
+                         "distanceKm":  67.07,
+                         "sourceFile":  "data/rutes/besos.geojson"
+                     },
+                     {
+                         "id":  "carretera-aigues-2",
+                         "name":  "Carretera Aigues",
+                         "region":  "barcelona",
+                         "modality":  "road",
+                         "difficulty":  "moderada",
+                         "distanceKm":  17.31,
+                         "sourceFile":  "data/rutes/carretera-aigues.geojson"
+                     },
+                     {
+                         "id":  "front-maritim-2",
+                         "name":  "Front Maritim",
+                         "region":  "barcelona",
+                         "modality":  "road",
+                         "difficulty":  "moderada",
+                         "distanceKm":  19.41,
+                         "sourceFile":  "data/rutes/front-maritim.geojson"
+                     }
+                 ],
+    "skipped":  [
+
+                ],
+    "errors":  [
+
+               ]
+}

@@ -1,0 +1,11 @@
+﻿[
+    {
+        "id":  "tour-de-france-2026",
+        "title":  "Tour de France 2026",
+        "description":  "19 etapes amb GPX interactiu i 2 etapes amb mapa final oficial. En fer zoom out apareixen progressivament més trams.",
+        "href":  "../tour-2026/",
+        "sourceId":  "tour-de-france-2026",
+        "badge":  "Col·lecció segmentada",
+        "enabled":  true
+    }
+]

@@ -1,0 +1,14 @@
+﻿[
+    {
+        "id":  "tour-de-france-2026",
+        "name":  "Tour de France 2026",
+        "type":  "segmented-route",
+        "catalog":  "./data/generated/tour-2026.json",
+        "color":  "#d6b900",
+        "wholeRouteZoom":  6,
+        "regionalPadding":  0.35,
+        "localPadding":  0.12,
+        "visibleByDefault":  true,
+        "enabled":  true
+    }
+]

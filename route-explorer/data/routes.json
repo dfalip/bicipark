@@ -1,0 +1,176 @@
+﻿[
+    {
+        "id":  "carretera-aigues",
+        "name":  "Carretera Aigues",
+        "region":  "barcelona",
+        "area":  "",
+        "modality":  "road",
+        "difficulty":  "moderada",
+        "featured":  true,
+        "priority":  101,
+        "minimumZoom":  8,
+        "distanceKm":  17.31,
+        "elevationGain":  0,
+        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
+        "center":  {
+                       "lat":  41.404252,
+                       "lng":  2.111981
+                   },
+        "bounds":  {
+                       "south":  41.389228,
+                       "west":  2.095005,
+                       "north":  41.419276,
+                       "east":  2.128958
+                   },
+        "geometryFile":  "./data/routes/auto/barcelona/carretera-aigues.gpx",
+        "enabled":  true,
+        "autoImported":  true,
+        "needsReview":  true,
+        "sourceFile":  "data/gpx/carretera-aigues.gpx"
+    },
+    {
+        "id":  "front-maritim",
+        "name":  "Front Maritim",
+        "region":  "barcelona",
+        "area":  "",
+        "modality":  "road",
+        "difficulty":  "moderada",
+        "featured":  true,
+        "priority":  102,
+        "minimumZoom":  8,
+        "distanceKm":  19.41,
+        "elevationGain":  0,
+        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
+        "center":  {
+                       "lat":  41.378282,
+                       "lng":  2.195456
+                   },
+        "bounds":  {
+                       "south":  41.351782,
+                       "west":  2.17501,
+                       "north":  41.404781,
+                       "east":  2.215901
+                   },
+        "geometryFile":  "./data/routes/auto/barcelona/front-maritim.gpx",
+        "enabled":  true,
+        "autoImported":  true,
+        "needsReview":  true,
+        "sourceFile":  "data/gpx/front-maritim.gpx"
+    },
+    {
+        "id":  "riu-besos",
+        "name":  "Riu Besos",
+        "region":  "barcelona",
+        "area":  "",
+        "modality":  "road",
+        "difficulty":  "moderada",
+        "featured":  true,
+        "priority":  103,
+        "minimumZoom":  8,
+        "distanceKm":  67.07,
+        "elevationGain":  0,
+        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
+        "center":  {
+                       "lat":  41.528852,
+                       "lng":  2.196434
+                   },
+        "bounds":  {
+                       "south":  41.421025,
+                       "west":  2.158016,
+                       "north":  41.63668,
+                       "east":  2.234851
+                   },
+        "geometryFile":  "./data/routes/auto/barcelona/riu-besos.gpx",
+        "enabled":  true,
+        "autoImported":  true,
+        "needsReview":  true,
+        "sourceFile":  "data/gpx/riu-besos.gpx"
+    },
+    {
+        "id":  "besos",
+        "name":  "Besos",
+        "region":  "barcelona",
+        "area":  "",
+        "modality":  "road",
+        "difficulty":  "moderada",
+        "featured":  true,
+        "priority":  104,
+        "minimumZoom":  8,
+        "distanceKm":  67.07,
+        "elevationGain":  0,
+        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
+        "center":  {
+                       "lat":  41.528852,
+                       "lng":  2.196434
+                   },
+        "bounds":  {
+                       "south":  41.421025,
+                       "west":  2.158016,
+                       "north":  41.63668,
+                       "east":  2.234851
+                   },
+        "geometryFile":  "./data/routes/auto/barcelona/besos.geojson",
+        "enabled":  true,
+        "autoImported":  true,
+        "needsReview":  true,
+        "sourceFile":  "data/rutes/besos.geojson"
+    },
+    {
+        "id":  "carretera-aigues-2",
+        "name":  "Carretera Aigues",
+        "region":  "barcelona",
+        "area":  "",
+        "modality":  "road",
+        "difficulty":  "moderada",
+        "featured":  true,
+        "priority":  105,
+        "minimumZoom":  8,
+        "distanceKm":  17.31,
+        "elevationGain":  0,
+        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
+        "center":  {
+                       "lat":  41.404252,
+                       "lng":  2.111981
+                   },
+        "bounds":  {
+                       "south":  41.389228,
+                       "west":  2.095005,
+                       "north":  41.419276,
+                       "east":  2.128958
+                   },
+        "geometryFile":  "./data/routes/auto/barcelona/carretera-aigues-2.geojson",
+        "enabled":  true,
+        "autoImported":  true,
+        "needsReview":  true,
+        "sourceFile":  "data/rutes/carretera-aigues.geojson"
+    },
+    {
+        "id":  "front-maritim-2",
+        "name":  "Front Maritim",
+        "region":  "barcelona",
+        "area":  "",
+        "modality":  "road",
+        "difficulty":  "moderada",
+        "featured":  false,
+        "priority":  105,
+        "minimumZoom":  8,
+        "distanceKm":  19.41,
+        "elevationGain":  0,
+        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
+        "center":  {
+                       "lat":  41.378282,
+                       "lng":  2.195456
+                   },
+        "bounds":  {
+                       "south":  41.351782,
+                       "west":  2.17501,
+                       "north":  41.404781,
+                       "east":  2.215901
+                   },
+        "geometryFile":  "./data/routes/auto/barcelona/front-maritim-2.geojson",
+        "enabled":  true,
+        "autoImported":  true,
+        "needsReview":  true,
+        "sourceFile":  "data/rutes/front-maritim.geojson"
+    }
+]

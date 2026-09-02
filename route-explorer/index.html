@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Explorador progressiu de rutes ciclistes de Bicipark."
+  >
+
+  <title>Explorador de rutes | Bicipark</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../css/bicipark-nav.css">
+  <link rel="stylesheet" href="../modules/weather-route/adapters/route-explorer-adapter.css?v=3">
+  <link rel="stylesheet" href="../modules/route-match/adapters/site-integration.css?v=1">
+</head>
+
+<body class="route-explorer-body">
+  <header class="route-explorer-header">
+    <div>
+      <p class="route-explorer-eyebrow">Bicipark · Rutes</p>
+      <h1>Explorador de rutes</h1>
+    </div>
+
+    <nav class="route-explorer-header-links" aria-label="Navegació">
+      <a href="../explora/">Explora</a>
+      <a href="../index.html">Mapa principal</a>
+    </nav>
+  </header>
+
+  <main class="route-explorer-layout">
+    <aside class="route-explorer-panel">
+      <section class="route-explorer-controls">
+        <label for="regionFilter">Regió</label>
+        <select id="regionFilter">
+          <option value="all">Catalunya sencera</option>
+          <option value="barcelona">Barcelona</option>
+          <option value="girona">Girona</option>
+          <option value="tarragona">Tarragona</option>
+          <option value="lleida">Lleida</option>
+        </select>
+
+        <div class="route-explorer-control-grid">
+          <label>
+            <span>Modalitat</span>
+            <select id="modalityFilter">
+              <option value="all">Totes</option>
+              <option value="road">Carretera</option>
+              <option value="btt">BTT</option>
+              <option value="gravel">Gravel</option>
+              <option value="urban">Urbana</option>
+              <option value="greenway">Via verda</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Dificultat</span>
+            <select id="difficultyFilter">
+              <option value="all">Totes</option>
+              <option value="facil">Fàcil</option>
+              <option value="moderada">Moderada</option>
+              <option value="dificil">Difícil</option>
+              <option value="experta">Experta</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="route-explorer-check">
+          <input id="showOtherRoutes" type="checkbox" checked>
+          <span>Mostrar altres rutes quan n’hi ha una de seleccionada</span>
+        </label>
+      </section>
+
+      <section class="route-explorer-legend" aria-label="Llegenda">
+        <strong>Dificultat</strong>
+
+        <span>
+          <i class="route-line route-line-easy"></i>
+          Fàcil
+        </span>
+
+        <span>
+          <i class="route-line route-line-moderate"></i>
+          Moderada
+        </span>
+
+        <span>
+          <i class="route-line route-line-hard"></i>
+          Difícil
+        </span>
+
+        <span>
+          <i class="route-line route-line-expert"></i>
+          Experta
+        </span>
+      </section>
+
+      <p id="viewStatus" class="route-explorer-status">
+        Preparant el catàleg…
+      </p>
+
+      <section
+        id="routeList"
+        class="route-explorer-route-list"
+        aria-label="Rutes visibles"
+      ></section>
+
+      <section id="collectionsSection" class="route-explorer-collections" hidden>
+        <h2>Col·leccions especials</h2>
+        <div id="collectionList"></div>
+      </section>
+    </aside>
+
+    <section class="route-explorer-map-column">
+      <div
+        id="routeMap"
+        class="route-explorer-map"
+        aria-label="Mapa progressiu de rutes"
+      ></div>
+
+      <article id="routeDetails" class="route-explorer-details">
+        <p class="route-explorer-details-kicker">
+          Navegació progressiva
+        </p>
+
+        <h2>Acosta’t a una regió per descobrir-ne les rutes</h2>
+
+        <p>
+          A escala de Catalunya es mostren agrupacions territorials.
+          En fer zoom apareixen primer les rutes destacades i després
+          la resta de recorreguts de la zona visible.
+        </p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="route-explorer-footer">
+    <p>
+      El color representa la dificultat. La regió s’identifica mitjançant
+      filtres i etiquetes.
+    </p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="./app.js"></script>
+  <script src="../js/bicipark-global-nav.js"></script>
+  <script src="../modules/weather-route/adapters/route-explorer-adapter.js?v=3"></script>
+  <script src="../modules/popularity/adapters/route-explorer-tracker.js?v=1"></script>
+  <script src="../modules/route-match/adapters/route-explorer-adapter.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,511 @@
+﻿:root {
+  --routes-green: #176b45;
+  --routes-green-dark: #0f5134;
+  --routes-text: #1f2937;
+  --routes-muted: #667085;
+  --routes-border: #d9dee5;
+  --routes-surface: #ffffff;
+  --routes-background: #f4f6f8;
+  --difficulty-easy: #16856b;
+  --difficulty-moderate: #2864dc;
+  --difficulty-hard: #e18118;
+  --difficulty-expert: #a43a78;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+.route-explorer-body {
+  margin: 0;
+  background: var(--routes-background);
+  color: var(--routes-text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.route-explorer-header {
+  display: flex;
+  min-height: 74px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 20px;
+  background: var(--routes-surface);
+  border-bottom: 1px solid var(--routes-border);
+}
+
+.route-explorer-header h1 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.route-explorer-eyebrow {
+  margin: 0 0 3px;
+  color: var(--routes-green);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.route-explorer-header-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.route-explorer-header-links a {
+  color: var(--routes-green);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.route-explorer-layout {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  height: calc(100vh - 74px);
+  grid-template-columns: minmax(340px, 420px) minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.route-explorer-panel {
+  min-width: 0;
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--routes-surface);
+  border-right: 1px solid var(--routes-border);
+}
+
+.route-explorer-controls {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  background: #f8faf9;
+  border: 1px solid var(--routes-border);
+  border-radius: 11px;
+}
+
+.route-explorer-controls label,
+.route-explorer-control-grid span {
+  color: #475467;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.route-explorer-controls select {
+  width: 100%;
+  padding: 9px 10px;
+  background: #fff;
+  border: 1px solid var(--routes-border);
+  border-radius: 8px;
+  font: inherit;
+}
+
+.route-explorer-control-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.route-explorer-control-grid label {
+  display: grid;
+  gap: 6px;
+}
+
+.route-explorer-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.route-explorer-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px 13px;
+  margin: 12px 0;
+  padding: 10px 11px;
+  background: #fff;
+  border: 1px solid var(--routes-border);
+  border-radius: 9px;
+  font-size: 0.76rem;
+}
+
+.route-explorer-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.route-line {
+  display: inline-block;
+  width: 25px;
+  height: 4px;
+  border-radius: 999px;
+}
+
+.route-line-easy {
+  background: var(--difficulty-easy);
+}
+
+.route-line-moderate {
+  background: var(--difficulty-moderate);
+}
+
+.route-line-hard {
+  background: var(--difficulty-hard);
+}
+
+.route-line-expert {
+  background: var(--difficulty-expert);
+}
+
+.route-explorer-status {
+  margin: 12px 0;
+  color: var(--routes-muted);
+  font-size: 0.82rem;
+}
+
+.route-explorer-route-list {
+  display: grid;
+  gap: 8px;
+}
+
+.route-explorer-route-card {
+  padding: 11px;
+  background: #fff;
+  border: 1px solid var(--routes-border);
+  border-radius: 10px;
+}
+
+.route-explorer-route-card.is-selected {
+  background: #eef8f2;
+  border-color: #83b99a;
+}
+
+.route-explorer-route-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.route-explorer-route-card h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.route-explorer-route-badge {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  padding: 4px 7px;
+  background: #f2f4f7;
+  color: #475467;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.route-explorer-route-meta {
+  margin: 7px 0 9px;
+  color: var(--routes-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.route-explorer-route-action {
+  padding: 7px 10px;
+  background: var(--routes-green);
+  color: #fff;
+  border: 0;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.route-explorer-empty {
+  padding: 18px;
+  color: var(--routes-muted);
+  border: 1px dashed var(--routes-border);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.route-explorer-collections {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--routes-border);
+}
+
+.route-explorer-collections h2 {
+  margin: 0 0 9px;
+  font-size: 1rem;
+}
+
+.route-explorer-collection-card {
+  padding: 11px;
+  background: #fffceb;
+  border: 1px solid #ead77b;
+  border-radius: 10px;
+}
+
+.route-explorer-collection-card strong,
+.route-explorer-collection-card span {
+  display: block;
+}
+
+.route-explorer-collection-card span {
+  margin: 5px 0 9px;
+  color: #5f5000;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.route-explorer-collection-card a {
+  color: var(--routes-green-dark);
+  font-weight: 800;
+}
+
+.route-explorer-map-column {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  grid-template-rows: minmax(360px, 1fr) auto;
+  overflow: hidden;
+}
+
+.route-explorer-map {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #dce7ec;
+}
+
+.route-explorer-details {
+  padding: 15px 18px;
+  background: #fff;
+  border-top: 1px solid var(--routes-border);
+}
+
+.route-explorer-details-kicker {
+  margin: 0 0 4px;
+  color: var(--routes-green);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.route-explorer-details h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.route-explorer-details p {
+  margin: 7px 0 0;
+  color: #475467;
+  line-height: 1.45;
+}
+
+.route-explorer-details-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 11px;
+}
+
+.route-explorer-details-grid div {
+  padding: 8px;
+  background: #f5f7f6;
+  border-radius: 8px;
+}
+
+.route-explorer-details-grid span,
+.route-explorer-details-grid strong {
+  display: block;
+}
+
+.route-explorer-details-grid span {
+  color: var(--routes-muted);
+  font-size: 0.69rem;
+}
+
+.route-explorer-details-grid strong {
+  margin-top: 3px;
+  font-size: 0.84rem;
+}
+
+.route-region-marker {
+  display: grid;
+  width: 98px;
+  min-height: 62px;
+  place-items: center;
+  padding: 7px;
+  background: rgb(255 255 255 / 92%);
+  color: var(--routes-text);
+  border: 2px solid var(--routes-green);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 18%);
+  text-align: center;
+}
+
+.route-region-marker strong,
+.route-region-marker small {
+  display: block;
+}
+
+.route-region-marker small {
+  margin-top: 3px;
+  color: var(--routes-muted);
+  font-size: 0.66rem;
+}
+
+.route-explorer-footer {
+  padding: 15px 20px;
+  background: #fff;
+  color: var(--routes-muted);
+  border-top: 1px solid var(--routes-border);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.route-explorer-footer p {
+  margin: 0;
+}
+
+@media (max-width: 880px) {
+  .route-explorer-layout {
+    display: flex;
+    height: auto;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .route-explorer-panel {
+    overflow: visible;
+    border-right: 0;
+    border-bottom: 1px solid var(--routes-border);
+  }
+
+  .route-explorer-map-column {
+    min-height: 640px;
+    grid-template-rows: 460px auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .route-explorer-header {
+    align-items: flex-start;
+  }
+
+  .route-explorer-control-grid,
+  .route-explorer-details-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* BICIPARK_SEGMENTED_ROUTES_V4 */
+.route-explorer-route-card.is-segmented {
+  border-left: 5px solid #d6b900;
+}
+
+.route-explorer-route-card.is-segmented.is-selected {
+  border-left-color: #8a7600;
+}
+
+.route-explorer-collection-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.route-explorer-collection-actions button,
+.route-explorer-collection-actions a {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.route-explorer-collection-actions button {
+  background: var(--routes-green);
+  color: #fff;
+  border: 0;
+}
+
+.route-explorer-collection-actions a {
+  background: #e9edf1;
+  color: #344054;
+}
+
+.route-explorer-route-badge {
+  max-width: 165px;
+  white-space: normal;
+  text-align: center;
+}
+/* BICIPARK_STAGE_NUMBER_MARKERS_V1 */
+.route-stage-number-icon {
+  background: transparent;
+  border: 0;
+}
+
+.route-stage-number-marker {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #f4d000;
+  color: #161616;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow:
+    0 2px 7px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.route-stage-number-marker.is-selected {
+  width: 34px;
+  height: 34px;
+  margin: -2px;
+  background: #111827;
+  color: #fff;
+  border-color: #f4d000;
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.42),
+    0 0 0 2px rgba(244, 208, 0, 0.45);
+}
+
+.route-stage-number-icon:hover .route-stage-number-marker {
+  transform: scale(1.12);
+}
+

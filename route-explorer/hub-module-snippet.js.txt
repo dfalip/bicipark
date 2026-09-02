@@ -1,0 +1,13 @@
+﻿  {
+    id: "route-explorer",
+    category: "routes",
+    title: "Explorador de rutes",
+    description:
+      "Descobreix rutes progressivament segons la regió, el zoom, la modalitat i la dificultat.",
+    href: "../route-explorer/",
+    icon: "🧭",
+    status: "Nou",
+    statusType: "new",
+    tags: ["Zoom progressiu", "Regions", "GeoJSON i GPX"],
+    enabled: true
+  }
