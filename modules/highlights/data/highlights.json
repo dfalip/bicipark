@@ -1,0 +1,14 @@
+[
+  {"id":"bcn-aigues","name":"Carretera de les Aigues","category":"tram-bonic","lat":41.41658,"lng":2.10956,"region":"Barcelona","description":"Tram panoramic molt popular per pedalar amb vistes sobre la ciutat.","rating":4.9,"votes":104},
+  {"id":"bcn-mirador-alcalde","name":"Mirador de l'Alcalde","category":"mirador","lat":41.36781,"lng":2.16493,"region":"Barcelona","description":"Mirador de Montjuic amb bones vistes sobre Barcelona i el port.","rating":4.7,"votes":38},
+  {"id":"bcn-arc-triomf","name":"Arc de Triomf","category":"monument","lat":41.39105,"lng":2.18065,"region":"Barcelona","description":"Punt emblematic molt proper a itineraris ciclistes urbans.","rating":4.6,"votes":54},
+  {"id":"bcn-barceloneta","name":"Platja de la Barceloneta","category":"platja","lat":41.37822,"lng":2.19247,"region":"Barcelona","description":"Parada davant del mar connectada amb el front maritim ciclista.","rating":4.5,"votes":61},
+  {"id":"bcn-sants","name":"Barcelona Sants","category":"estacio","lat":41.37904,"lng":2.14003,"region":"Barcelona","description":"Estacio ferroviaria util per combinar bicicleta i transport public.","rating":4.1,"votes":17},
+  {"id":"girona-pont-pedra","name":"Pont de Pedra","category":"monument","lat":41.98269,"lng":2.82373,"region":"Girona","description":"Punt central de Girona i bon lloc de referencia abans o despres d'una ruta.","rating":4.5,"votes":29},
+  {"id":"girona-devesa","name":"Parc de la Devesa","category":"tram-bonic","lat":41.98772,"lng":2.81752,"region":"Girona","description":"Gran espai verd al costat del centre de Girona.","rating":4.6,"votes":31},
+  {"id":"girona-estacio","name":"Estacio de Girona","category":"estacio","lat":41.97933,"lng":2.81672,"region":"Girona","description":"Connexio ferroviaria util per iniciar o acabar escapades ciclistes.","rating":4.2,"votes":14},
+  {"id":"banyoles-estany","name":"Estany de Banyoles","category":"tram-bonic","lat":42.11808,"lng":2.75255,"region":"Pla de l'Estany","description":"Entorn natural molt interessant per combinar amb rutes de la comarca.","rating":4.9,"votes":85},
+  {"id":"roses-ciutadella","name":"Ciutadella de Roses","category":"monument","lat":42.26403,"lng":3.17089,"region":"Roses","description":"Punt patrimonial molt proper al passeig i a les rutes de Roses.","rating":4.6,"votes":42},
+  {"id":"roses-badia","name":"Badia de Roses","category":"platja","lat":42.26369,"lng":3.17555,"region":"Roses","description":"Punt de costa ideal com a parada abans o despres d'una ruta.","rating":4.7,"votes":58},
+  {"id":"monells-centre","name":"Monells","category":"monument","lat":41.97508,"lng":2.99981,"region":"Baix Emporda","description":"Nucli medieval molt atractiu com a parada en rutes per l'Emporda.","rating":4.8,"votes":47}
+]

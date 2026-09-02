@@ -1,0 +1,9 @@
+{
+  "id": "highlights",
+  "name": "BiciPark Highlights",
+  "version": "1.0.0",
+  "entry": "./highlights.js",
+  "style": "./highlights.css",
+  "data": "./data/highlights.json",
+  "integration": "standalone-first"
+}

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BiciPark Highlights</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="../../css/bicipark-nav.css">
+  <link rel="stylesheet" href="./highlights.css">
+</head>
+<body>
+  <main class="hl-page">
+    <section class="hl-hero">
+      <div>
+        <span class="hl-eyebrow">BICIPARK HIGHLIGHTS</span>
+        <h1>Descobreix qu&egrave; val la pena trobar pel cam&iacute;</h1>
+        <p>Miradors, monuments, platges, estacions, trams bonics i Bike Bases. Els Highlights converteixen una ruta en una experi&egrave;ncia de descoberta.</p>
+      </div>
+      <div class="hl-counter"><strong id="highlightCount">0</strong><span>Highlights visibles</span></div>
+    </section>
+
+    <section class="hl-toolbar">
+      <input id="highlightSearch" class="hl-search" type="search" placeholder="Cerca un lloc, territori o Highlight...">
+      <button id="nearMeButton" class="hl-btn hl-btn-primary" type="button">&#9673; A prop meu</button>
+      <button id="fitButton" class="hl-btn" type="button">Veure tots</button>
+    </section>
+
+    <div id="highlightCategories" class="hl-categories"></div>
+
+    <section class="hl-layout">
+      <aside class="hl-list-panel">
+        <div class="hl-list-head"><h2>Highlights</h2><small id="listCount">0 resultats</small></div>
+        <div id="highlightList" class="hl-list"></div>
+      </aside>
+      <section class="hl-map-panel"><div id="highlightsMap"></div></section>
+    </section>
+
+    <div class="hl-note"><strong>Arquitectura modular:</strong> aquest m&ograve;dul viu a <code>/modules/highlights/</code>. Encara no modifica el mapa principal. Quan el validem, l'activarem mitjan&ccedil;ant un adapter independent.</div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./adapters/map-fit-guard.js?v=1"></script>
+
+  <script src="../../js/core/bicipark-core.js"></script>
+  <script src="./highlights.js"></script>
+  <script src="../../js/bicipark-global-nav.js"></script>
+</body>
+</html>
