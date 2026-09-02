@@ -1,1 +1,8 @@
 .bicipark-backups/
+*.zip
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.tmp
+*.bak
+*~
