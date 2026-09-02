@@ -1,0 +1,1347 @@
+:root {
+  --bg: #f5f3ee;
+  --panel: #ffffff;
+  --soft: #f4f8f6;
+  --line: #dce5df;
+  --green: #117446;
+  --green-dark: #0c5a36;
+  --text: #173328;
+  --muted: #65756d;
+  --shadow-lg: 0 22px 54px rgba(29, 47, 39, .10);
+  --shadow-md: 0 12px 28px rgba(29, 47, 39, .08);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(17,116,70,.05), transparent 28%),
+    radial-gradient(circle at 88% 82%, rgba(17,116,70,.04), transparent 30%),
+    var(--bg);
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; }
+
+.homepage {
+  padding: 18px;
+}
+
+.layout {
+  max-width: 1420px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr) 310px;
+  gap: 22px;
+  align-items: start;
+}
+
+.rail {
+  display: grid;
+  gap: 20px;
+}
+
+.rail-intro {
+  padding: 18px 8px 8px;
+}
+.rail-kicker {
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+.rail-intro h1 {
+  margin: 8px 0 8px;
+  font-size: 30px;
+  line-height: 1.05;
+  letter-spacing: -.04em;
+}
+.rail-intro p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.rail-line {
+  width: 56px;
+  height: 4px;
+  display: block;
+  margin-top: 16px;
+  border-radius: 999px;
+  background: var(--green);
+}
+
+.main-panel {
+  overflow: hidden;
+  border: 1px solid #dfe7e2;
+  border-radius: 30px;
+  background: var(--panel);
+  box-shadow: var(--shadow-lg);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+}
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e4f0e8;
+  color: var(--green-dark);
+  font-size: 20px;
+}
+.brand-copy {
+  display: grid;
+  gap: 2px;
+}
+.brand-copy strong {
+  color: var(--green-dark);
+  font-size: 18px;
+  letter-spacing: -.02em;
+}
+.brand-copy small {
+  color: #7b8981;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.board-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.board-nav > a,
+.nav-more-btn {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #2e463b;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.board-nav > a:hover,
+.nav-more-btn:hover {
+  background: #f2f7f4;
+}
+
+.nav-more { position: relative; }
+.nav-more-btn { gap: 4px; }
+
+.more-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: 250px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity .16s ease, transform .16s ease;
+  z-index: 20;
+}
+.nav-more.is-open .more-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.more-menu a {
+  display: block;
+  padding: 10px;
+  border-radius: 10px;
+}
+.more-menu a:hover { background: #f3f8f5; }
+.more-menu strong,
+.more-menu small {
+  display: block;
+}
+.more-menu strong { font-size: 12px; }
+.more-menu small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.topbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.icon-pill,
+.avatar-pill {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f5f8f6;
+  border: 1px solid #e4ece7;
+  color: #3e5249;
+}
+.avatar-pill {
+  background:
+    radial-gradient(circle at 50% 35%, #f3cca5 0 22%, transparent 23%),
+    radial-gradient(circle at 50% 82%, #5a7a67 0 30%, transparent 31%),
+    radial-gradient(circle at 50% 17%, #32443d 0 18%, transparent 19%),
+    #eef5f0;
+}
+
+.mobile-menu-btn {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+.mobile-menu-btn span {
+  width: 18px;
+  height: 2px;
+  display: block;
+  margin: 4px auto;
+  border-radius: 999px;
+  background: var(--green-dark);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.02fr .98fr;
+  min-height: 330px;
+}
+.hero-copy {
+  padding: 42px 42px 38px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.93)),
+    linear-gradient(rgba(17,116,70,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17,116,70,.055) 1px, transparent 1px);
+  background-size: auto, 34px 34px, 34px 34px;
+}
+.hero-copy h2 {
+  max-width: 430px;
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(46px, 5.7vw, 64px);
+  line-height: .95;
+  letter-spacing: -.06em;
+}
+.hero-copy p {
+  max-width: 430px;
+  margin: 16px 0 0;
+  color: #57655d;
+  font-size: 18px;
+  line-height: 1.5;
+}
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+}
+
+.btn {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-primary {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(17,116,70,.18);
+}
+.btn-secondary {
+  border: 1px solid #c8dbd1;
+  background: #fff;
+  color: var(--green-dark);
+}
+
+.hero-media {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(214,232,237,.24), rgba(197,221,228,.18)),
+    url('../assets/homepage/hero_photo.png');
+  background-size: cover;
+  background-position: center;
+}
+.hero-pins {
+  position: absolute;
+  inset: 0;
+}
+.pin {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 4px solid rgba(255,255,255,.92);
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 6px 14px rgba(0,0,0,.14);
+}
+.p1 { left: 8%; top: 14%; }
+.p2 { left: 26%; top: 22%; }
+.p3 { left: 40%; top: 52%; }
+.p4 { left: 66%; top: 18%; }
+.p5 { left: 86%; top: 30%; }
+
+.content-section {
+  padding: 22px 28px 10px;
+}
+.content-section h3 {
+  margin: 0 0 14px;
+  color: var(--green-dark);
+  font-size: 24px;
+  letter-spacing: -.03em;
+}
+.soft-section {
+  margin: 4px 24px 8px;
+  padding: 18px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #f6faf7, #edf4f0);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.content-card,
+.rail-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: var(--shadow-md);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.content-card:hover,
+.rail-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(28, 47, 39, .10);
+}
+
+.content-media {
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+}
+.media-map { background-image: url('../assets/homepage/map_card.png'); }
+.media-routes { background-image: url('../assets/homepage/routes_card.png'); }
+.media-bases { background-image: url('../assets/homepage/bases_card.png'); }
+.media-game { background-image: url('../assets/homepage/game_card.png'); }
+.media-tour { background-image: url('../assets/homepage/tour_card.png'); }
+.media-jump { background-image: url('../assets/homepage/routes_card.png'); }
+
+.content-body {
+  padding: 14px;
+}
+.content-body h4 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: -.02em;
+}
+.content-body p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.challenge-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 12px;
+}
+.challenge-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  min-height: 74px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+}
+.challenge-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #fff4d4;
+  font-size: 24px;
+}
+.challenge-card strong,
+.challenge-card small {
+  display: block;
+}
+.challenge-card strong { font-size: 15px; }
+.challenge-card small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.partner-banner {
+  margin: 24px 24px 16px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 180px 1fr auto;
+  gap: 18px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: linear-gradient(180deg, #f6faf7, #edf5f1);
+}
+.partner-image {
+  min-height: 108px;
+  border-radius: 16px;
+  background: url('../assets/homepage/partner_card.png') center/cover no-repeat;
+}
+.partner-kicker {
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+.partner-copy h3 {
+  margin: 4px 0 6px;
+  color: var(--green-dark);
+  font-size: 28px;
+  letter-spacing: -.03em;
+}
+.partner-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.partner-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.partner-tags span {
+  padding: 6px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: #56655d;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 18px 24px 24px;
+}
+.footer-brand {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.footer-brand strong,
+.footer-brand small {
+  display: block;
+}
+.footer-brand small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 24px;
+}
+.footer-links > div {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+}
+.footer-links strong {
+  color: #55645c;
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+.footer-links a {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.rail-card {
+  padding: 14px;
+}
+.rail-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.dot-badge {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+}
+.rail-card-head strong {
+  font-size: 16px;
+}
+
+.image-card {
+  min-height: 200px;
+  border-radius: 18px;
+  background-size: cover;
+  background-position: center;
+}
+.image-map-large { background-image: url('../assets/homepage/map_card.png'); }
+.image-mission-large {
+  min-height: 320px;
+  background-image: url('../assets/homepage/mission_panel.png');
+  background-position: top center;
+}
+
+.lodge-card {
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff;
+}
+.lodge-card-image {
+  height: 154px;
+  background: url('../assets/homepage/lodge_card.png') center/cover no-repeat;
+}
+.lodge-card-body {
+  position: relative;
+  padding: 14px;
+}
+.lodge-card-body h4 {
+  margin: 0;
+  font-size: 18px;
+}
+.lodge-card-body p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+.score-pill {
+  display: inline-flex;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #edf7f0;
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 900;
+}
+.lodge-score {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  color: var(--green-dark);
+  font-size: 22px;
+}
+
+.spot-small-card {
+  padding: 14px;
+}
+.spot-small-card h4 {
+  margin: 0;
+  font-size: 16px;
+}
+.spot-small-card p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+.small-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  margin-top: 12px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+}
+.small-btn.alt {
+  background: #fff;
+  color: var(--green-dark);
+  border: 1px solid #c8dbd1;
+}
+.spot-image {
+  min-height: 120px;
+  margin-top: 12px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+}
+.image-game-spot { background-image: url('../assets/homepage/game_card.png'); }
+.image-tour-spot { background-image: url('../assets/homepage/tour_card.png'); }
+
+.tour-copy {
+  margin: 0;
+  font-size: 11px;
+}
+
+@media (max-width: 1320px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rail-left,
+  .rail-right {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+  .rail-intro {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 980px) {
+  .hero,
+  .partner-banner {
+    grid-template-columns: 1fr;
+  }
+  .card-grid,
+  .challenge-row,
+  .footer-links,
+  .rail-left,
+  .rail-right {
+    grid-template-columns: 1fr;
+  }
+  .footer {
+    flex-direction: column;
+  }
+  .topbar {
+    flex-wrap: wrap;
+  }
+  .topbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 760px) {
+  .homepage {
+    padding: 10px;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .topbar-right {
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .board-nav {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: 8px;
+  }
+
+  .board-nav.is-open {
+    display: flex;
+  }
+
+  .board-nav > a,
+  .nav-more-btn {
+    justify-content: space-between;
+  }
+
+  .more-menu {
+    position: static;
+    width: 100%;
+    margin-top: 6px;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    box-shadow: none;
+    display: none;
+  }
+
+  .nav-more.is-open .more-menu {
+    display: block;
+  }
+
+  .topbar-actions {
+    display: none;
+  }
+
+  .hero-copy {
+    padding: 28px 20px;
+  }
+
+  .hero-copy h2 {
+    font-size: clamp(40px, 13vw, 54px);
+  }
+
+  .hero-copy p {
+    font-size: 15px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .content-section {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .soft-section,
+  .partner-banner {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+}
+/* BICIPARK COMPACT TUNING START */
+@media (min-width: 1200px) {
+  .homepage {
+    padding: 12px;
+  }
+
+  .layout {
+    max-width: 1360px;
+    grid-template-columns: 282px minmax(0, 1fr) 272px;
+    gap: 16px;
+  }
+
+  .rail,
+  .rail-left,
+  .rail-right {
+    gap: 16px;
+  }
+
+  .rail-intro {
+    padding: 10px 6px 4px;
+  }
+
+  .rail-intro h1 {
+    font-size: 24px;
+  }
+
+  .rail-intro p {
+    font-size: 13px;
+  }
+
+  .main-panel {
+    border-radius: 26px;
+  }
+
+  .topbar {
+    padding: 12px 18px;
+  }
+
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  .brand-copy strong {
+    font-size: 16px;
+  }
+
+  .board-nav > a,
+  .nav-more-btn {
+    min-height: 34px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .icon-pill,
+  .avatar-pill {
+    width: 30px;
+    height: 30px;
+  }
+
+  .hero {
+    min-height: 280px;
+    grid-template-columns: .96fr 1.04fr;
+  }
+
+  .hero-copy {
+    padding: 30px 32px 28px;
+  }
+
+  .hero-copy h2 {
+    max-width: 360px;
+    font-size: clamp(38px, 4.2vw, 54px);
+  }
+
+  .hero-copy p {
+    max-width: 360px;
+    margin-top: 12px;
+    font-size: 15px;
+  }
+
+  .hero-actions {
+    margin-top: 18px;
+    gap: 10px;
+  }
+
+  .btn {
+    min-height: 40px;
+    padding: 9px 15px;
+    font-size: 12px;
+  }
+
+  .pin {
+    width: 24px;
+    height: 24px;
+    border-width: 3px;
+  }
+
+  .content-section {
+    padding: 16px 22px 8px;
+  }
+
+  .content-section h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+
+  .soft-section {
+    margin: 2px 20px 6px;
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .card-grid,
+  .challenge-row {
+    gap: 10px;
+  }
+
+  .content-card,
+  .rail-card {
+    border-radius: 18px;
+  }
+
+  .content-media {
+    height: 86px;
+  }
+
+  .content-body {
+    padding: 11px 12px 12px;
+  }
+
+  .content-body h4 {
+    font-size: 15px;
+  }
+
+  .content-body p {
+    margin-top: 4px;
+    font-size: 10px;
+  }
+
+  .challenge-card {
+    min-height: 64px;
+    padding: 12px;
+    border-radius: 14px;
+  }
+
+  .challenge-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    font-size: 20px;
+  }
+
+  .challenge-card strong {
+    font-size: 13px;
+  }
+
+  .challenge-card small {
+    font-size: 9px;
+  }
+
+  .partner-banner {
+    margin: 18px 20px 12px;
+    padding: 14px;
+    gap: 14px;
+    grid-template-columns: 150px 1fr auto;
+    border-radius: 20px;
+  }
+
+  .partner-image {
+    min-height: 92px;
+  }
+
+  .partner-copy h3 {
+    font-size: 22px;
+  }
+
+  .partner-copy p {
+    font-size: 11px;
+  }
+
+  .partner-tags span {
+    padding: 5px 8px;
+    font-size: 8px;
+  }
+
+  .footer {
+    padding: 14px 20px 20px;
+    gap: 18px;
+  }
+
+  .footer-links {
+    gap: 18px;
+  }
+
+  .rail-card {
+    padding: 12px;
+  }
+
+  .rail-card-head {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .dot-badge {
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+
+  .rail-card-head strong {
+    font-size: 14px;
+  }
+
+  .image-card {
+    min-height: 166px;
+    border-radius: 16px;
+  }
+
+  .image-mission-large {
+    min-height: 240px;
+  }
+
+  .lodge-card-image {
+    height: 130px;
+  }
+
+  .lodge-card-body {
+    padding: 12px;
+  }
+
+  .lodge-card-body h4 {
+    font-size: 15px;
+  }
+
+  .lodge-card-body p {
+    font-size: 10px;
+  }
+
+  .score-pill {
+    margin-top: 8px;
+    padding: 5px 8px;
+    font-size: 8px;
+  }
+
+  .lodge-score {
+    top: 12px;
+    right: 12px;
+    font-size: 16px;
+  }
+
+  .spot-small-card {
+    padding: 12px;
+  }
+
+  .spot-small-card h4 {
+    font-size: 14px;
+  }
+
+  .spot-small-card p,
+  .tour-copy {
+    font-size: 9px;
+  }
+
+  .small-btn {
+    min-height: 30px;
+    margin-top: 10px;
+    padding: 7px 12px;
+    font-size: 10px;
+  }
+
+  .spot-image {
+    min-height: 96px;
+    margin-top: 10px;
+  }
+}
+
+@media (min-width: 1200px) and (max-height: 900px) {
+  .homepage {
+    padding: 8px;
+  }
+
+  .layout {
+    max-width: 1320px;
+    grid-template-columns: 264px minmax(0, 1fr) 256px;
+    gap: 14px;
+  }
+
+  .hero {
+    min-height: 256px;
+  }
+
+  .hero-copy {
+    padding: 24px 28px 24px;
+  }
+
+  .hero-copy h2 {
+    font-size: clamp(34px, 3.8vw, 48px);
+    max-width: 320px;
+  }
+
+  .hero-copy p {
+    max-width: 320px;
+    font-size: 14px;
+  }
+
+  .content-media {
+    height: 78px;
+  }
+
+  .image-card {
+    min-height: 150px;
+  }
+
+  .image-mission-large {
+    min-height: 212px;
+  }
+
+  .lodge-card-image {
+    height: 118px;
+  }
+
+  .spot-image {
+    min-height: 84px;
+  }
+}
+/* BICIPARK COMPACT TUNING END */
+/* BICIPARK HERO MAP OVERLAY START */
+.hero-media {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    linear-gradient(180deg, rgba(214,232,237,.12), rgba(197,221,228,.08)),
+    url('../assets/homepage/hero_photo.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-pins {
+  display: none !important;
+}
+
+.hero-media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 700'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.34' stroke-width='1.35' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M42 572 L128 518 L215 460 L304 410 L392 353 L478 286 L572 234 L658 203 L761 170 L876 128 L1010 88 L1150 64'/%3E%3Cpath d='M165 610 L234 532 L315 474 L399 438 L508 404 L609 352 L692 278 L814 223 L925 174 L1067 114'/%3E%3Cpath d='M78 432 L186 390 L289 336 L392 294 L494 261 L616 226 L733 176 L880 134 L1040 102'/%3E%3Cpath d='M268 640 L310 550 L357 468 L406 377 L438 294 L471 215 L518 129'/%3E%3Cpath d='M535 662 L563 602 L598 533 L635 463 L668 400 L699 325 L736 247 L775 166 L812 98'/%3E%3Cpath d='M827 648 L828 559 L839 488 L861 414 L883 343 L901 271 L920 190 L951 114'/%3E%3Cpath d='M154 252 L263 242 L374 235 L486 226 L611 221 L740 205 L884 180 L1001 163'/%3E%3Cpath d='M140 170 L207 205 L285 246 L361 289 L440 330 L519 382 L603 426 L684 468 L773 525 L863 584'/%3E%3Cpath d='M493 61 L545 117 L603 170 L650 223 L702 277 L756 339 L827 391 L896 441 L971 496'/%3E%3C/g%3E%3Cg fill='%23ffffff' fill-opacity='0.42'%3E%3Ccircle cx='315' cy='474' r='3.5'/%3E%3Ccircle cx='406' cy='377' r='3.5'/%3E%3Ccircle cx='616' cy='226' r='3.5'/%3E%3Ccircle cx='736' cy='247' r='3.5'/%3E%3Ccircle cx='883' cy='343' r='3.5'/%3E%3Ccircle cx='920' cy='190' r='3.5'/%3E%3Ccircle cx='263' cy='242' r='3.5'/%3E%3Ccircle cx='650' cy='223' r='3.5'/%3E%3Ccircle cx='896' cy='441' r='3.5'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center;
+  opacity: .72;
+  mix-blend-mode: screen;
+}
+
+.hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg,
+      rgba(255,255,255,.84) 0%,
+      rgba(255,255,255,.52) 14%,
+      rgba(255,255,255,.16) 28%,
+      rgba(255,255,255,0) 46%
+    ),
+    radial-gradient(circle at 20% 52%, rgba(255,255,255,.24), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 28%);
+}
+
+.hero-media > * {
+  position: relative;
+  z-index: 3;
+}
+/* BICIPARK HERO MAP OVERLAY END */
+/* BICIPARK FINAL HOMEPAGE REFINEMENT START */
+
+/* ---------------------------------------------------------
+   Desktop composition
+   --------------------------------------------------------- */
+
+@media (min-width: 1461px) {
+  .homepage {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .layout {
+    max-width: 1520px;
+    grid-template-columns: 300px minmax(0, 1fr) 300px;
+    gap: 18px;
+  }
+
+  .rail {
+    align-content: start;
+  }
+
+  .main-panel {
+    min-width: 0;
+  }
+}
+
+/* ---------------------------------------------------------
+   Side cards: remove presentation-badge spacing
+   --------------------------------------------------------- */
+
+.rail-card-head {
+  gap: 0;
+  min-height: 30px;
+}
+
+.rail-card-head strong {
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.rail-right .rail-card-head strong {
+  white-space: normal;
+}
+
+/* ---------------------------------------------------------
+   Bike Base card: prevent name / score overlap
+   --------------------------------------------------------- */
+
+.lodge-card-body {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 10px;
+  row-gap: 4px;
+  align-items: start;
+}
+
+.lodge-card-body h4 {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.lodge-score {
+  position: static !important;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  justify-self: end;
+  margin: 0;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.lodge-card-body p {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: 2px 0 0;
+}
+
+.score-pill {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  justify-self: start;
+  margin-top: 6px;
+}
+
+/* ---------------------------------------------------------
+   Medium desktops / laptops:
+   main product first, support modules underneath.
+   --------------------------------------------------------- */
+
+@media (max-width: 1460px) {
+  .homepage {
+    padding: 12px;
+  }
+
+  .layout {
+    max-width: 1120px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .main-panel {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+  }
+
+  .rail-left {
+    grid-column: 1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .rail-right {
+    grid-column: 1;
+    grid-row: 3;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .rail-left .rail-card,
+  .rail-right .rail-card {
+    min-width: 0;
+  }
+
+  .image-mission-large {
+    min-height: 250px;
+  }
+
+  .image-map-large {
+    min-height: 250px;
+  }
+
+  .lodge-card-image {
+    height: 150px;
+  }
+
+  .spot-image {
+    min-height: 110px;
+  }
+}
+
+/* ---------------------------------------------------------
+   Tablets
+   --------------------------------------------------------- */
+
+@media (max-width: 980px) {
+  .layout {
+    max-width: 760px;
+  }
+
+  .rail-left,
+  .rail-right {
+    grid-template-columns: 1fr;
+  }
+
+  .image-map-large,
+  .image-mission-large {
+    min-height: 230px;
+  }
+
+  .rail-right .rail-card-head strong {
+    white-space: normal;
+  }
+}
+
+/* ---------------------------------------------------------
+   Mobile
+   --------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .homepage {
+    padding: 8px;
+  }
+
+  .layout {
+    gap: 12px;
+  }
+
+  .rail-left,
+  .rail-right {
+    gap: 12px;
+  }
+
+  .rail-card {
+    padding: 12px;
+  }
+
+  .image-map-large,
+  .image-mission-large {
+    min-height: 190px;
+  }
+}
+
+/* BICIPARK FINAL HOMEPAGE REFINEMENT END */
