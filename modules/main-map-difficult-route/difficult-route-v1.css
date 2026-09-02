@@ -1,0 +1,95 @@
+/* ==========================================================
+   BiciPark official difficult route v1
+   Volta integral de Collserola
+   ========================================================== */
+
+.bp-official-hard-route-card {
+  cursor: pointer;
+}
+
+.bp-official-hard-route-card .bp-official-route-source {
+  display: block;
+  margin-top: 7px;
+  color: #67766e;
+  font-size: 8px;
+  line-height: 1.25;
+}
+
+.bp-official-hard-route-card .bp-official-route-source strong {
+  color: #43564c;
+}
+
+.bp-hard-route-popup {
+  min-width: 245px;
+  color: #173328;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.bp-hard-route-popup-kicker {
+  color: #CA3657;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.bp-hard-route-popup h3 {
+  margin: 4px 0 8px;
+  font-size: 15px;
+}
+
+.bp-hard-route-popup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.bp-hard-route-popup-stat {
+  padding: 7px 8px;
+  border-radius: 9px;
+  background: #f2f6f5;
+}
+
+.bp-hard-route-popup-stat small,
+.bp-hard-route-popup-stat strong {
+  display: block;
+}
+
+.bp-hard-route-popup-stat small {
+  color: #74847b;
+  font-size: 7px;
+}
+
+.bp-hard-route-popup-stat strong {
+  margin-top: 2px;
+  color: #173328;
+  font-size: 10px;
+}
+
+.bp-hard-route-popup-note {
+  margin-top: 8px;
+  color: #687a70;
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.bp-hard-route-popup a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  margin-top: 9px;
+  padding: 5px 9px;
+  border: 1px solid #cfdcd5;
+  border-radius: 8px;
+  color: #CA3657 !important;
+  background: #fff;
+  text-decoration: none !important;
+  font-size: 8px;
+  font-weight: 900;
+}

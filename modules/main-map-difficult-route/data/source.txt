@@ -1,0 +1,22 @@
+Official page:
+https://parcnaturalcollserola.cat/itinerais/volta-integral/
+
+Downloaded KML:
+https://parcnaturalcollserola.cat/kml/itinerarios/it50.kml
+
+Route:
+Volta integral de Collserola
+
+Source:
+Parc Natural de la Serra de Collserola
+
+Published characteristics:
+- Type: mountain bike
+- Difficulty: high
+- Time: 7 h 30 min
+- Distance: 67.9 km
+
+BiciPark classification:
+- Dificil
+
+This file is kept as the original KML downloaded from the official source.
