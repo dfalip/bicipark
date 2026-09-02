@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BiciPark · Joc 3 clics</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="modules/joc-3clics/game.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">BiciPark</a>
+
+    <nav aria-label="Navegació principal">
+      <a href="index.html">Inici</a>
+      <a href="mapa-ciclista.html">Mapa ciclista</a>
+      <a href="joc-3clics.html" class="active">Joc 3 clics</a>
+    </nav>
+  </header>
+
+  <main class="game-shell">
+    <aside class="panel">
+      <div class="eyebrow">BiciPark Geo Challenge</div>
+
+      <h1 id="place-title">Carregant repte…</h1>
+      <p id="place-hint" class="hint"></p>
+
+      <section class="stats">
+        <div class="stat">
+          <span>Temps</span>
+          <strong id="timer">00:00.0</strong>
+        </div>
+
+        <div class="stat">
+          <span>Intent</span>
+          <strong id="attempt">1 / 3</strong>
+        </div>
+
+        <div class="stat">
+          <span>Punts</span>
+          <strong id="score">—</strong>
+        </div>
+      </section>
+
+      <section class="instructions">
+        <h2>Com funciona</h2>
+        <p>
+          Tens 3 clics. Cada clic centra el mapa i apropa la zona seleccionada.
+          Si encertes prou a prop al primer o segon clic, la ronda acaba abans
+          i obtens més punts.
+        </p>
+      </section>
+
+      <section class="status-card">
+        <strong id="status-title">Busca el lloc</strong>
+        <p id="status-text">Fes el primer clic al mapa. El temps ja està corrent.</p>
+      </section>
+
+      <section id="result-card" class="result-card" hidden>
+        <div class="result-icon">🏁</div>
+        <div>
+          <h2 id="result-title">Resultat</h2>
+          <p id="result-distance"></p>
+          <p id="result-detail"></p>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button id="next-btn" type="button" class="primary" hidden>Següent repte</button>
+        <button id="restart-btn" type="button" class="secondary">Reinicia la ronda</button>
+      </div>
+
+      <details class="debug-box">
+        <summary>Opcions de prova</summary>
+        <label class="check-row">
+          <input id="show-answer-checkbox" type="checkbox">
+          Mostrar la ubicació real abans d'acabar
+        </label>
+      </details>
+    </aside>
+
+    <section class="map-wrap">
+      <div id="three-click-map" class="map" aria-label="Mapa del joc"></div>
+
+      <div class="map-overlay">
+        <div class="step-chip" id="step-chip">Clic 1 · Món</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="modules/joc-3clics/game.js"></script>
+</body>
+</html>

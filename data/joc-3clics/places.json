@@ -1,0 +1,82 @@
+﻿[
+  {
+    "id": "sagrada-familia",
+    "name": "Sagrada Família",
+    "city": "Barcelona",
+    "country": "Espanya",
+    "lat": 41.40363,
+    "lng": 2.17436,
+    "icon": "⛪",
+    "hint": "Un dels monuments més coneguts de Barcelona."
+  },
+  {
+    "id": "parc-guell",
+    "name": "Parc Güell",
+    "city": "Barcelona",
+    "country": "Espanya",
+    "lat": 41.41449,
+    "lng": 2.15269,
+    "icon": "🦎",
+    "hint": "Parc modernista de Barcelona."
+  },
+  {
+    "id": "tibidabo",
+    "name": "Tibidabo",
+    "city": "Barcelona",
+    "country": "Espanya",
+    "lat": 41.42249,
+    "lng": 2.11858,
+    "icon": "🎡",
+    "hint": "Muntanya i parc d'atraccions sobre Barcelona."
+  },
+  {
+    "id": "camp-nou",
+    "name": "Camp Nou",
+    "city": "Barcelona",
+    "country": "Espanya",
+    "lat": 41.38090,
+    "lng": 2.12282,
+    "icon": "⚽",
+    "hint": "Estadi de futbol a Barcelona."
+  },
+  {
+    "id": "torre-eiffel",
+    "name": "Torre Eiffel",
+    "city": "París",
+    "country": "França",
+    "lat": 48.85837,
+    "lng": 2.29448,
+    "icon": "🗼",
+    "hint": "Símbol monumental de París."
+  },
+  {
+    "id": "louvre",
+    "name": "Museu del Louvre",
+    "city": "París",
+    "country": "França",
+    "lat": 48.86061,
+    "lng": 2.33764,
+    "icon": "🏛️",
+    "hint": "Gran museu situat al centre de París."
+  },
+  {
+    "id": "arc-triomf-paris",
+    "name": "Arc de Triomf",
+    "city": "París",
+    "country": "França",
+    "lat": 48.87379,
+    "lng": 2.29503,
+    "icon": "🏛️",
+    "hint": "Monument situat a l'oest del centre de París."
+  },
+  {
+    "id": "sant-pere",
+    "name": "Plaça de Sant Pere",
+    "city": "Ciutat del Vaticà",
+    "country": "Vaticà",
+    "lat": 41.90220,
+    "lng": 12.45726,
+    "icon": "⛪",
+    "hint": "Gran plaça davant de la basílica de Sant Pere."
+  }
+]
