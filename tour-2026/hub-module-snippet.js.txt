@@ -1,0 +1,13 @@
+﻿  {
+    id: "tour-2026",
+    category: "routes",
+    title: "Tour de France 2026",
+    description:
+      "Consulta les 21 etapes oficials i les geometries GPX disponibles i validades.",
+    href: "../tour-2026/",
+    icon: "🟨",
+    status: "Nou",
+    statusType: "new",
+    tags: ["21 etapes", "GPX", "Tour 2026"],
+    enabled: true
+  }

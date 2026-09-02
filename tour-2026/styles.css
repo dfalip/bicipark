@@ -1,0 +1,420 @@
+﻿:root {
+  --tour-yellow: #f4d719;
+  --tour-yellow-dark: #6c5d00;
+  --tour-green: #176b45;
+  --tour-text: #1f2937;
+  --tour-muted: #667085;
+  --tour-border: #d9dee5;
+  --tour-surface: #ffffff;
+  --tour-background: #f4f6f8;
+  --tour-danger: #b42318;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+.tour-body {
+  margin: 0;
+  background: var(--tour-background);
+  color: var(--tour-text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.tour-header {
+  display: flex;
+  min-height: 74px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 20px;
+  background: var(--tour-surface);
+  border-bottom: 1px solid var(--tour-border);
+}
+
+.tour-header h1 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.tour-eyebrow {
+  margin: 0 0 3px;
+  color: var(--tour-yellow-dark);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tour-header-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.tour-header-links a {
+  color: var(--tour-green);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.tour-header-links a:hover {
+  text-decoration: underline;
+}
+
+.tour-layout {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  height: calc(100vh - 74px);
+  grid-template-columns: minmax(330px, 410px) minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.tour-panel {
+  min-width: 0;
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--tour-surface);
+  border-right: 1px solid var(--tour-border);
+}
+
+.tour-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-bottom: 14px;
+}
+
+.tour-summary div {
+  padding: 11px;
+  background: #f7f7f2;
+  border: 1px solid var(--tour-border);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.tour-summary span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--tour-muted);
+  font-size: 0.76rem;
+}
+
+.tour-summary strong {
+  font-size: 1.05rem;
+}
+
+.tour-controls {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.tour-controls label {
+  color: #475467;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.tour-controls select {
+  width: 100%;
+  padding: 10px 11px;
+  background: #fff;
+  border: 1px solid var(--tour-border);
+  border-radius: 9px;
+  font: inherit;
+}
+
+.tour-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.tour-catalog-status {
+  margin: 12px 0;
+  color: var(--tour-muted);
+  font-size: 0.82rem;
+}
+
+.tour-stage-list {
+  display: grid;
+  gap: 8px;
+}
+
+.tour-stage-button {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: #fff;
+  color: inherit;
+  border: 1px solid var(--tour-border);
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tour-stage-button:hover {
+  border-color: #c1aa00;
+}
+
+.tour-stage-button.is-selected {
+  background: #fffceb;
+  border-color: #c1aa00;
+}
+
+.tour-stage-number {
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  background: var(--tour-yellow);
+  color: #292400;
+  border-radius: 50%;
+  font-weight: 800;
+}
+
+.tour-stage-main strong,
+.tour-stage-main small {
+  display: block;
+}
+
+.tour-stage-main small {
+  margin-top: 4px;
+  color: var(--tour-muted);
+}
+
+.tour-geometry-state {
+  display: inline-flex;
+  min-height: 25px;
+  align-items: center;
+  padding: 4px 7px;
+  background: #f2f4f7;
+  color: #475467;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.tour-geometry-state.is-available {
+  background: #eaf6ef;
+  color: #0f5134;
+}
+
+.tour-geometry-state.is-rejected {
+  background: #ffebe9;
+  color: var(--tour-danger);
+}
+
+.tour-map-column {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  grid-template-rows: minmax(360px, 1fr) auto;
+  overflow: hidden;
+}
+
+.tour-map {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #dce7ec;
+}
+
+.tour-details {
+  padding: 15px 18px;
+  background: var(--tour-surface);
+  border-top: 1px solid var(--tour-border);
+}
+
+.tour-details-kicker {
+  margin: 0 0 5px;
+  color: var(--tour-yellow-dark);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tour-details h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.tour-details p {
+  margin: 7px 0 0;
+  color: #475467;
+  line-height: 1.45;
+}
+
+.tour-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tour-detail-grid div {
+  padding: 9px;
+  background: #f7f7f2;
+  border-radius: 8px;
+}
+
+.tour-detail-grid span,
+.tour-detail-grid strong {
+  display: block;
+}
+
+.tour-detail-grid span {
+  color: var(--tour-muted);
+  font-size: 0.72rem;
+}
+
+.tour-detail-grid strong {
+  margin-top: 3px;
+  font-size: 0.88rem;
+}
+
+.tour-detail-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tour-detail-links a {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  padding: 8px 11px;
+  background: var(--tour-green);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.tour-detail-links a.secondary {
+  background: #e9edf1;
+  color: #344054;
+}
+
+.tour-route-warning {
+  margin-top: 10px;
+  padding: 10px;
+  background: #fff8dd;
+  color: #5f5000;
+  border: 1px solid #ead77b;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.tour-route-error {
+  background: #ffebe9;
+  color: #8a1c13;
+  border-color: #f4b7b2;
+}
+
+.tour-footer {
+  padding: 16px 20px;
+  background: #fff;
+  color: var(--tour-muted);
+  border-top: 1px solid var(--tour-border);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.tour-footer p {
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .tour-layout {
+    display: flex;
+    height: auto;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .tour-panel {
+    overflow: visible;
+    border-right: 0;
+    border-bottom: 1px solid var(--tour-border);
+  }
+
+  .tour-map-column {
+    min-height: 620px;
+    grid-template-rows: 450px auto;
+  }
+}
+
+@media (max-width: 580px) {
+  .tour-header {
+    align-items: flex-start;
+  }
+
+  .tour-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tour-stage-button {
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  .tour-geometry-state {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+/* BICIPARK_TOUR_MISSING_STAGES_V1 */
+.tour-geometry-state.is-map {
+  background: #e8f1ff;
+  color: #184f90;
+}
+
+.tour-official-map {
+  margin: 14px 0 0;
+  padding: 0;
+}
+
+.tour-official-map a {
+  display: block;
+  overflow: hidden;
+  background: #eef1f3;
+  border: 1px solid var(--tour-border);
+  border-radius: 10px;
+}
+
+.tour-official-map img {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+}
+
+.tour-official-map figcaption {
+  margin-top: 7px;
+  color: var(--tour-muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+

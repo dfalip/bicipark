@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Etapes i recorreguts disponibles del Tour de France 2026 a Bicipark."
+  >
+
+  <title>Tour de France 2026 | Bicipark</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../css/bicipark-nav.css">
+</head>
+
+<body class="tour-body">
+  <header class="tour-header">
+    <div>
+      <p class="tour-eyebrow">Bicipark · Rutes especials</p>
+      <h1>Tour de France 2026</h1>
+    </div>
+
+    <nav class="tour-header-links" aria-label="Navegació">
+      <a href="../explora/">Explora</a>
+      <a href="../index.html">Mapa principal</a>
+    </nav>
+  </header>
+
+  <main class="tour-layout">
+    <aside class="tour-panel">
+      <section class="tour-summary">
+        <div>
+          <span>Etapes</span>
+          <strong>21</strong>
+        </div>
+
+        <div>
+          <span>Distància oficial</span>
+          <strong>3.320,7 km</strong>
+        </div>
+      </section>
+
+      <section class="tour-controls" aria-label="Filtres">
+        <label for="typeFilter">Tipus d’etapa</label>
+
+        <select id="typeFilter">
+          <option value="all">Totes</option>
+          <option value="flat">Planes</option>
+          <option value="hilly">Accidentades</option>
+          <option value="mountain">Muntanya</option>
+          <option value="team-time-trial">
+            Contrarellotge per equips
+          </option>
+          <option value="individual-time-trial">
+            Contrarellotge individual
+          </option>
+        </select>
+
+        <label class="tour-check">
+          <input id="availableOnly" type="checkbox">
+          <span>Només amb geometria disponible</span>
+        </label>
+      </section>
+
+      <p id="catalogStatus" class="tour-catalog-status">
+        Carregant el catàleg…
+      </p>
+
+      <section
+        id="stageList"
+        class="tour-stage-list"
+        aria-label="Etapes del Tour 2026"
+      ></section>
+    </aside>
+
+    <section class="tour-map-column">
+      <div
+        id="tourMap"
+        class="tour-map"
+        aria-label="Mapa de les etapes del Tour de France 2026"
+      ></div>
+
+      <article id="stageDetails" class="tour-details">
+        <div>
+          <p class="tour-details-kicker">
+            Selecciona una etapa
+          </p>
+
+          <h2>Consulta’n les dades i el recorregut disponible</h2>
+
+          <p>
+            Bicipark només dibuixa geometries que han superat la
+            comprovació automàtica de distància.
+          </p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="tour-footer">
+    <p>
+      Dades d’etapes: web oficial del Tour de France.
+      Les geometries GPX opcionals són de referència externa i
+      s’identifiquen separadament.
+    </p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="./app.js"></script>
+  <script src="../js/bicipark-global-nav.js"></script>
+</body>
+</html>
