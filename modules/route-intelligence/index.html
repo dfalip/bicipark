@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>BiciPark Route Intelligence</title>
+
+  <link
+    rel="stylesheet"
+    href="../../css/bicipark-nav.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./route-intelligence.css"
+  >
+</head>
+
+<body>
+  <main class="ri-page">
+    <section class="ri-hero">
+      <div>
+        <span class="ri-eyebrow">
+          BICIPARK ROUTE INTELLIGENCE
+        </span>
+
+        <h1>
+          Entén per què una ruta és bona per pedalar
+        </h1>
+
+        <p>
+          Un score explicable que combina només senyals disponibles.
+          Si un factor no té dades, BiciPark no l'inventa ni penalitza
+          artificialment la ruta.
+        </p>
+      </div>
+
+      <div class="ri-hero-score">
+        <small>ROUTE SCORE</small>
+        <strong id="riHeroScore">-</strong>
+        <span>/100</span>
+      </div>
+    </section>
+
+    <section class="ri-toolbar">
+      <select
+        id="riRouteSelect"
+        class="ri-select"
+      ></select>
+
+      <button
+        id="riAnalyzeButton"
+        class="ri-btn"
+        type="button"
+      >
+        Recalcular
+      </button>
+    </section>
+
+    <div
+      id="riStatus"
+      class="ri-status"
+    >
+      Preparant Route Intelligence...
+    </div>
+
+    <section class="ri-top-grid">
+      <article class="ri-route-card">
+        <small>RUTA SELECCIONADA</small>
+
+        <h2 id="riRouteName">
+          -
+        </h2>
+
+        <div
+          id="riRouteMeta"
+          class="ri-meta"
+        ></div>
+      </article>
+
+      <article class="ri-summary-card">
+        <div
+          id="riRing"
+          class="ri-ring"
+          style="--score:0"
+        >
+          <div class="ri-ring-value">
+            <strong id="riRingScore">-</strong>
+            <span>/100</span>
+          </div>
+        </div>
+
+        <div class="ri-summary-copy">
+          <h3 id="riOverallLabel">
+            Sense prou dades
+          </h3>
+
+          <p id="riOverallCopy">
+            Calculant factors disponibles...
+          </p>
+        </div>
+      </article>
+    </section>
+
+    <section
+      id="riFactors"
+      class="ri-factors"
+    ></section>
+
+    <section class="ri-lower-grid">
+      <article class="ri-explain-card">
+        <h3>Per què?</h3>
+
+        <ul
+          id="riExplainList"
+          class="ri-explain-list"
+        ></ul>
+      </article>
+
+      <article class="ri-sources-card">
+        <h3>Fonts utilitzades</h3>
+
+        <div
+          id="riSourceList"
+          class="ri-source-list"
+        ></div>
+      </article>
+    </section>
+
+    <div class="ri-note">
+      <strong>Route Intelligence v1:</strong>
+      Seguretat i qualitat provenen dels scores base actuals de
+      BiciPark. Meteorologia prové d'Open-Meteo. Popularity usa
+      activitat local del navegador. Bike Bases, Highlights i
+      Incidències només entren al càlcul si BiciPark pot llegir
+      un dataset compatible. Els factors sense dades es
+      reponderen automàticament i no redueixen el resultat.
+    </div>
+  </main>
+
+  <script
+    src="../../js/core/bicipark-core.js"
+  ></script>
+
+  <script
+    src="./route-intelligence.js?v=1"
+  ></script>
+
+  <script
+    src="../../js/bicipark-global-nav.js"
+  ></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "id": "route-intelligence",
+  "name": "BiciPark Route Intelligence",
+  "version": "1.0.0",
+  "description": "Score explicable de ruta combinant senyals disponibles de BiciPark.",
+  "entry": "./route-intelligence.js",
+  "style": "./route-intelligence.css",
+  "data": "./data/known-routes.json"
+}
