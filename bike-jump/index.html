@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Joc de salt amb bicicleta de Bicipark."
+  >
+
+  <title>Bike Jump | Bicipark</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../css/bicipark-nav.css">
+</head>
+
+<body class="bike-jump-body">
+  <header class="bike-jump-header">
+    <div>
+      <p class="bike-jump-eyebrow">Bicipark Games</p>
+      <h1>Bike Jump</h1>
+    </div>
+
+    <nav class="bike-jump-header-links" aria-label="Navegació">
+      <a href="../explora/">Explora</a>
+      <a href="../index.html">Mapa principal</a>
+    </nav>
+  </header>
+
+  <main class="bike-jump-main">
+    <section class="bike-jump-dashboard">
+      <article class="bike-jump-stat">
+        <span>Salt</span>
+        <strong id="attemptValue">1 / 3</strong>
+      </article>
+
+      <article class="bike-jump-stat">
+        <span>Puntuació total</span>
+        <strong id="totalScoreValue">0</strong>
+      </article>
+
+      <article class="bike-jump-stat">
+        <span>Rècord local</span>
+        <strong id="highScoreValue">0</strong>
+      </article>
+
+      <article class="bike-jump-stat">
+        <span>Vent</span>
+        <strong id="windValue">0,0 m/s</strong>
+      </article>
+    </section>
+
+    <section class="bike-jump-game-shell">
+      <canvas
+        id="gameCanvas"
+        width="1000"
+        height="560"
+        aria-label="Trampolí i salt amb bicicleta"
+      ></canvas>
+
+      <div id="countdown" class="bike-jump-countdown" hidden></div>
+    </section>
+
+    <section class="bike-jump-controls">
+      <div class="bike-jump-power-panel">
+        <div class="bike-jump-power-header">
+          <span>Potència</span>
+          <strong id="powerValue">0%</strong>
+        </div>
+
+        <div class="bike-jump-power-track">
+          <div id="powerBar" class="bike-jump-power-bar"></div>
+        </div>
+
+        <p id="statusText" aria-live="polite">
+          Mantén premut «Preparar salt» i deixa’l anar prop del final del trampolí.
+        </p>
+      </div>
+
+      <div class="bike-jump-action-grid">
+        <button
+          id="launchButton"
+          class="bike-jump-button bike-jump-button-primary"
+          type="button"
+        >
+          Preparar salt
+        </button>
+
+        <button
+          id="restartButton"
+          class="bike-jump-button bike-jump-button-secondary"
+          type="button"
+        >
+          Reiniciar partida
+        </button>
+      </div>
+
+      <div class="bike-jump-rotation-controls">
+        <button id="rotateLeftButton" type="button">
+          ↶ Inclinar enrere
+        </button>
+
+        <button id="rotateRightButton" type="button">
+          Inclinar endavant ↷
+        </button>
+      </div>
+
+      <p class="bike-jump-help">
+        Teclat: mantén <strong>espai</strong> per preparar el salt i
+        deixa’l anar per enlairar-te. Durant el vol utilitza
+        <strong>←</strong> i <strong>→</strong>.
+      </p>
+    </section>
+
+    <section id="resultPanel" class="bike-jump-result" hidden>
+      <div>
+        <p class="bike-jump-result-kicker">Resultat del salt</p>
+        <h2 id="resultTitle">Aterratge</h2>
+        <p id="resultDescription"></p>
+      </div>
+
+      <div class="bike-jump-result-grid">
+        <article>
+          <span>Distància</span>
+          <strong id="distanceResult">0 m</strong>
+        </article>
+
+        <article>
+          <span>Sortida</span>
+          <strong id="takeoffResult">0</strong>
+        </article>
+
+        <article>
+          <span>Control</span>
+          <strong id="controlResult">0</strong>
+        </article>
+
+        <article>
+          <span>Aterratge</span>
+          <strong id="landingResult">0</strong>
+        </article>
+
+        <article>
+          <span>Total del salt</span>
+          <strong id="jumpScoreResult">0</strong>
+        </article>
+      </div>
+
+      <button
+        id="nextAttemptButton"
+        class="bike-jump-button bike-jump-button-primary"
+        type="button"
+      >
+        Següent salt
+      </button>
+    </section>
+  </main>
+
+  <footer class="bike-jump-footer">
+    <p>
+      Trampolí fictici inspirat en l’esport dels salts d’esquí,
+      adaptat a una bicicleta i amb gràfics originals.
+    </p>
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+  <script src="../js/bicipark-global-nav.js"></script>
+</body>
+</html>

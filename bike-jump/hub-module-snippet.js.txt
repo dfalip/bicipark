@@ -1,0 +1,13 @@
+﻿  {
+    id: "bike-jump",
+    category: "games",
+    title: "Bike Jump",
+    description:
+      "Baixa pel trampolí, calcula la sortida, controla la bicicleta en vol i aterra sobre la pendent.",
+    href: "../bike-jump/",
+    icon: "🚵",
+    status: "Nou",
+    statusType: "new",
+    tags: ["Física", "Salt", "3 intents"],
+    enabled: true
+  }
