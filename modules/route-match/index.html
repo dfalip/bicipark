@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>BiciPark · Pla ciclista personal</title>
+
+  <link
+    rel="stylesheet"
+    href="./route-match.css?v=1"
+  >
+</head>
+
+<body>
+  <main class="rm-page">
+    <section
+      class="rm-stage"
+      aria-label="BiciPark Pla ciclista personal"
+    >
+      <img
+        class="rm-stage-image"
+        src="./assets/route-match-approved-mockup.png"
+        alt="Mockup aprovat del pla ciclista personal BiciPark"
+      >
+
+      <a
+        class="rm-hotspot hs-nav-map"
+        href="../../mapa-ciclista.html"
+        aria-label="Mapa"
+      >Mapa</a>
+
+      <a
+        class="rm-hotspot hs-nav-routes"
+        href="../../route-explorer/"
+        aria-label="Rutes"
+      >Rutes</a>
+
+      <a
+        class="rm-hotspot hs-nav-bases"
+        href="../../bike-bases/explore.html"
+        aria-label="Bike Bases"
+      >Bike Bases</a>
+
+      <a
+        class="rm-hotspot hs-nav-missions"
+        href="../../missions.html"
+        aria-label="Missions"
+      >Missions</a>
+
+      <button
+        class="rm-hotspot hs-profile-top"
+        type="button"
+        data-action="profile"
+        aria-label="Obrir el perfil ciclista"
+      >Perfil</button>
+
+      <button
+        class="rm-hotspot hs-edit-profile"
+        type="button"
+        data-action="profile"
+        aria-label="Editar perfil"
+      >Editar perfil</button>
+
+      <button
+        class="rm-hotspot hs-goal-improve"
+        type="button"
+        data-goal="millorar"
+        aria-label="Objectiu: millorar"
+      >Millorar</button>
+
+      <button
+        class="rm-hotspot hs-goal-hard"
+        type="button"
+        data-goal="dificultat"
+        aria-label="Objectiu: incrementar dificultat"
+      >Incrementar dificultat</button>
+
+      <button
+        class="rm-hotspot hs-goal-walk"
+        type="button"
+        data-goal="passejar"
+        aria-label="Objectiu: passejar"
+      >Passejar</button>
+
+      <button
+        class="rm-hotspot hs-goal-challenge"
+        type="button"
+        data-goal="repte"
+        aria-label="Objectiu: preparar repte"
+      >Preparar repte</button>
+
+      <a
+        class="rm-hotspot hs-all-routes"
+        href="../../route-explorer/"
+        aria-label="Veure totes les rutes"
+      >Veure totes les rutes</a>
+
+      <a
+        class="rm-hotspot hs-route-1"
+        href="../../modules/weather-route/?route=carretera-aigues"
+        aria-label="Veure Carretera de les Aigues"
+      >Carretera de les Aigues</a>
+
+      <a
+        class="rm-hotspot hs-route-2"
+        href="../../modules/weather-route/?route=riu-besos"
+        aria-label="Veure Ruta del riu Besos"
+      >Ruta del riu Besos</a>
+
+      <a
+        class="rm-hotspot hs-route-3"
+        href="../../route-explorer/"
+        aria-label="Veure Volta suau al Pla de l'Estany"
+      >Volta suau al Pla de l'Estany</a>
+
+      <button
+        class="rm-hotspot hs-activate-plan"
+        type="button"
+        data-action="activate-plan"
+        aria-label="Activar pla basic d'exercicis"
+      >Activar pla</button>
+
+      <button
+        class="rm-hotspot hs-adjust-goals"
+        type="button"
+        data-action="profile"
+        aria-label="Ajustar objectius"
+      >Ajustar objectius</button>
+    </section>
+  </main>
+
+  <div
+    id="rmToast"
+    class="rm-toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+  <div
+    id="rmBackdrop"
+    class="rm-drawer-backdrop"
+  ></div>
+
+  <aside
+    id="rmDrawer"
+    class="rm-drawer"
+    aria-hidden="true"
+  >
+    <div class="rm-drawer-head">
+      <div>
+        <div class="rm-drawer-eyebrow">
+          EL TEU PERFIL CICLISTA
+        </div>
+
+        <h2>
+          Ajusta el teu pla
+        </h2>
+      </div>
+
+      <button
+        id="rmClose"
+        class="rm-close"
+        type="button"
+        aria-label="Tancar"
+      >
+        ×
+      </button>
+    </div>
+
+    <form
+      id="rmProfileForm"
+      class="rm-form"
+    >
+      <div class="rm-field">
+        <label for="rmLevel">
+          Nivell
+        </label>
+
+        <select id="rmLevel">
+          <option>Principiant</option>
+          <option>Ocasional</option>
+          <option selected>Intermedi</option>
+          <option>Avançat</option>
+          <option>Expert</option>
+        </select>
+      </div>
+
+      <div class="rm-grid-2">
+        <div class="rm-field">
+          <label for="rmDays">
+            Dies / setmana
+          </label>
+
+          <input
+            id="rmDays"
+            type="number"
+            min="1"
+            max="7"
+            value="3"
+          >
+        </div>
+
+        <div class="rm-field">
+          <label for="rmWeeklyHours">
+            Hores / setmana
+          </label>
+
+          <input
+            id="rmWeeklyHours"
+            type="number"
+            min="1"
+            max="30"
+            step="0.5"
+            value="5"
+          >
+        </div>
+      </div>
+
+      <div class="rm-field">
+        <label for="rmGoal">
+          Objectiu principal
+        </label>
+
+        <select id="rmGoal">
+          <option value="millorar">
+            Millorar progressivament
+          </option>
+          <option value="dificultat">
+            Incrementar dificultat
+          </option>
+          <option value="passejar">
+            Passejar
+          </option>
+          <option value="repte">
+            Preparar un repte
+          </option>
+        </select>
+      </div>
+
+      <div class="rm-field">
+        <label for="rmTerrain">
+          Terreny preferit
+        </label>
+
+        <select id="rmTerrain">
+          <option>Carretera</option>
+          <option>Gravel</option>
+          <option>MTB</option>
+          <option selected>Carretera + Gravel</option>
+        </select>
+      </div>
+
+      <div class="rm-grid-2">
+        <div class="rm-field">
+          <label for="rmDistanceMin">
+            Distància habitual min.
+          </label>
+
+          <input
+            id="rmDistanceMin"
+            type="number"
+            min="0"
+            value="30"
+          >
+        </div>
+
+        <div class="rm-field">
+          <label for="rmDistanceMax">
+            Distància habitual max.
+          </label>
+
+          <input
+            id="rmDistanceMax"
+            type="number"
+            min="0"
+            value="50"
+          >
+        </div>
+      </div>
+
+      <div class="rm-grid-2">
+        <div class="rm-field">
+          <label for="rmElevationMin">
+            Desnivell habitual min.
+          </label>
+
+          <input
+            id="rmElevationMin"
+            type="number"
+            min="0"
+            value="400"
+          >
+        </div>
+
+        <div class="rm-field">
+          <label for="rmElevationMax">
+            Desnivell habitual max.
+          </label>
+
+          <input
+            id="rmElevationMax"
+            type="number"
+            min="0"
+            value="800"
+          >
+        </div>
+      </div>
+
+      <button
+        class="rm-primary"
+        type="submit"
+      >
+        Guardar i recalcular
+      </button>
+
+      <button
+        id="rmReset"
+        class="rm-secondary"
+        type="button"
+      >
+        Recuperar perfil inicial
+      </button>
+    </form>
+
+    <section
+      id="rmPlanPreview"
+      class="rm-plan-preview"
+    >
+      <h3>Pla bàsic recomanat</h3>
+
+      <div id="rmPlanRows"></div>
+    </section>
+  </aside>
+
+  <script src="./engine/profile-store.js?v=1"></script>
+  <script src="./engine/match-engine.js?v=1"></script>
+  <script src="./engine/training-plan-engine.js?v=2"></script>
+  <script src="./route-match.js?v=1"></script>
+</body>
+</html>

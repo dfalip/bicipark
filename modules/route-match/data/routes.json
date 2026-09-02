@@ -1,0 +1,35 @@
+[
+  {
+    "id": "carretera-aigues",
+    "name": "Carretera de les Aigues",
+    "mode": "Carretera",
+    "difficulty": "Moderada",
+    "distanceKm": 38,
+    "elevationM": 620,
+    "durationMin": 130,
+    "baseMatch": 92,
+    "tags": ["progressio", "resistencia", "paisatge"]
+  },
+  {
+    "id": "riu-besos",
+    "name": "Ruta del riu Besos",
+    "mode": "Gravel",
+    "difficulty": "Moderada",
+    "distanceKm": 42,
+    "elevationM": 350,
+    "durationMin": 140,
+    "baseMatch": 88,
+    "tags": ["resistencia", "suau", "progressio"]
+  },
+  {
+    "id": "pla-estany",
+    "name": "Volta suau al Pla de l'Estany",
+    "mode": "Carretera",
+    "difficulty": "Facil",
+    "distanceKm": 55,
+    "elevationM": 480,
+    "durationMin": 165,
+    "baseMatch": 85,
+    "tags": ["paisatge", "resistencia", "passeig"]
+  }
+]

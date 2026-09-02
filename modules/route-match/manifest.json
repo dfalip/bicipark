@@ -1,0 +1,14 @@
+{
+  "id": "route-match",
+  "name": "BiciPark Route Match & Cycling Coach",
+  "version": "1.0.0",
+  "description": "Recomanacio personalitzada de rutes i pla basic d'exercicis.",
+  "visualMode": "approved-mockup-overlay",
+  "entry": "./route-match.js",
+  "style": "./route-match.css",
+  "engines": [
+    "./engine/profile-store.js",
+    "./engine/match-engine.js",
+    "./engine/training-plan-engine.js"
+  ]
+}

@@ -1,0 +1,217 @@
+/* ==========================================================
+   BiciPark Route Match - site integration
+   Independent from the Route Match module internals.
+   ========================================================== */
+
+.bp-rm-home-card {
+  position: relative;
+  overflow: hidden;
+  margin: 18px auto;
+  max-width: 1180px;
+  min-height: 285px;
+  display: grid;
+  grid-template-columns: minmax(0, .82fr) minmax(440px, 1.18fr);
+  align-items: stretch;
+  border: 1px solid rgba(28, 83, 55, .13);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 9% 15%, rgba(31, 123, 74, .10), transparent 31%),
+    linear-gradient(135deg, #fbfaf5 0%, #f3f7f2 100%);
+  box-shadow: 0 20px 55px rgba(33, 72, 51, .09);
+}
+
+.bp-rm-home-copy {
+  position: relative;
+  z-index: 2;
+  padding: 34px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.bp-rm-home-eyebrow {
+  color: #08733f;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.bp-rm-home-copy h2 {
+  max-width: 510px;
+  margin: 9px 0 10px;
+  color: #123a29;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(31px, 3vw, 45px);
+  line-height: .98;
+  letter-spacing: -.035em;
+}
+
+.bp-rm-home-copy p {
+  max-width: 515px;
+  margin: 0;
+  color: #63746b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.bp-rm-home-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.bp-rm-home-primary,
+.bp-rm-home-secondary {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 17px;
+  border-radius: 12px;
+  text-decoration: none !important;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.bp-rm-home-primary {
+  border: 1px solid #0b653b;
+  background: #0b653b;
+  color: #fff !important;
+}
+
+.bp-rm-home-secondary {
+  border: 1px solid #c9d9cf;
+  background: rgba(255,255,255,.75);
+  color: #0b653b !important;
+}
+
+.bp-rm-home-media {
+  position: relative;
+  min-height: 285px;
+  overflow: hidden;
+  background: #eef4ef;
+}
+
+.bp-rm-home-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, #f5f7f2 0%, rgba(245,247,242,.38) 14%, transparent 34%);
+}
+
+.bp-rm-home-media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.02);
+}
+
+/* Route Explorer CTA */
+
+.bp-rm-route-explorer-cta {
+  width: 100%;
+  margin: 0 0 14px;
+  display: grid;
+  grid-template-columns: 42px minmax(0,1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 11px 13px;
+  border: 1px solid #cdded3;
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, #f7fbf8, #eef7f1);
+  color: #123d2a !important;
+  text-decoration: none !important;
+  box-shadow: 0 8px 20px rgba(24,71,45,.05);
+}
+
+.bp-rm-route-explorer-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #0d7143;
+  color: #fff;
+  font-size: 19px;
+}
+
+.bp-rm-route-explorer-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.bp-rm-route-explorer-copy strong {
+  color: #133b2a;
+  font-size: 13px;
+}
+
+.bp-rm-route-explorer-copy small {
+  color: #66776e;
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.bp-rm-route-explorer-arrow {
+  color: #0e6e42;
+  font-size: 19px;
+  font-weight: 900;
+}
+
+/* Global nav adapter */
+
+.bp-rm-global-nav-link {
+  display: flex !important;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none !important;
+}
+
+.bp-rm-global-nav-link .bp-rm-global-nav-icon {
+  font-size: 15px;
+}
+
+.bp-rm-global-nav-top {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid #cae0d2;
+  border-radius: 11px;
+  background: #eef7f2;
+  color: #0a673c !important;
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+  .bp-rm-home-card {
+    grid-template-columns: 1fr;
+  }
+
+  .bp-rm-home-media {
+    min-height: 330px;
+  }
+}
+
+@media (max-width: 700px) {
+  .bp-rm-home-card {
+    margin: 12px;
+    border-radius: 20px;
+  }
+
+  .bp-rm-home-copy {
+    padding: 25px 21px;
+  }
+
+  .bp-rm-home-media {
+    min-height: 260px;
+  }
+}
