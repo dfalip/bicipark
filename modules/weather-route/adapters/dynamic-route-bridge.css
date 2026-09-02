@@ -1,0 +1,14 @@
+.wr-dynamic-warning {
+  margin-top: 6px;
+  padding: 7px 9px;
+  border: 1px solid #e2d9b7;
+  border-radius: 10px;
+  background: #fffaf0;
+  color: #7b6420;
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.wr-dynamic-warning strong {
+  font-weight: 900;
+}

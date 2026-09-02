@@ -1,0 +1,14 @@
+{
+  "id": "weather-route",
+  "name": "BiciPark Weather Route",
+  "version": "1.0.0",
+  "description": "Meteorologia i vent al llarg d'una ruta ciclista.",
+  "entry": "./weather-route.js",
+  "style": "./weather-route.css",
+  "data": "./data/weather-routes.json",
+  "dependencies": [
+    "BiciParkCore",
+    "Leaflet",
+    "Open-Meteo"
+  ]
+}

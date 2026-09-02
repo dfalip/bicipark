@@ -1,0 +1,47 @@
+[
+  {
+    "id": "carretera-aigues",
+    "name": "Carretera de les Aigues",
+    "distanceKm": 18.4,
+    "elevationM": 270,
+    "difficulty": "Mitjana",
+    "mode": "Gravel / urbana",
+    "points": [
+      [41.42370, 2.09980],
+      [41.42015, 2.11240],
+      [41.41635, 2.12570],
+      [41.41185, 2.13980],
+      [41.40520, 2.15320]
+    ]
+  },
+  {
+    "id": "front-maritim",
+    "name": "Front Maritim de Barcelona",
+    "distanceKm": 14.2,
+    "elevationM": 40,
+    "difficulty": "Facil",
+    "mode": "Urbana",
+    "points": [
+      [41.41155, 2.22630],
+      [41.40110, 2.21600],
+      [41.39125, 2.20520],
+      [41.38270, 2.19480],
+      [41.37405, 2.18555]
+    ]
+  },
+  {
+    "id": "riu-besos",
+    "name": "Ruta del riu Besos",
+    "distanceKm": 20.1,
+    "elevationM": 65,
+    "difficulty": "Facil",
+    "mode": "Urbana / via verda",
+    "points": [
+      [41.49400, 2.19050],
+      [41.46950, 2.19940],
+      [41.44740, 2.21020],
+      [41.42520, 2.22070],
+      [41.40820, 2.22450]
+    ]
+  }
+]

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>BiciPark Weather Route</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../../css/bicipark-nav.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./weather-route.css"
+  >
+  <link rel="stylesheet" href="./adapters/dynamic-route-bridge.css?v=3">
+  <link rel="stylesheet" href="./adapters/viewport-fit-v5.css?v=5">
+</head>
+
+<body>
+  <main class="wr-page">
+    <section class="wr-hero">
+      <div>
+        <span class="wr-eyebrow">
+          BICIPARK WEATHER ROUTE
+        </span>
+
+        <h1>
+          La meteorologia que importa mentre pedales
+        </h1>
+
+        <p>
+          Temperatura, pluja i vent analitzats al llarg de la ruta.
+          El sentit del recorregut permet estimar on tindras vent de
+          cara, lateral o favorable.
+        </p>
+      </div>
+
+      <div class="wr-source">
+        <strong>Open-Meteo</strong>
+        <span>Previsio meteorologica</span>
+      </div>
+    </section>
+
+    <section class="wr-toolbar">
+      <select
+        id="routeSelect"
+        class="wr-select"
+        aria-label="Ruta"
+      ></select>
+
+      <input
+        id="dateInput"
+        class="wr-input"
+        type="date"
+      >
+
+      <select
+        id="hourSelect"
+        class="wr-select"
+        aria-label="Hora"
+      >
+        <option value="7">07:00</option>
+        <option value="8">08:00</option>
+        <option value="9" selected>09:00</option>
+        <option value="10">10:00</option>
+        <option value="11">11:00</option>
+        <option value="12">12:00</option>
+        <option value="13">13:00</option>
+        <option value="14">14:00</option>
+        <option value="15">15:00</option>
+        <option value="16">16:00</option>
+        <option value="17">17:00</option>
+        <option value="18">18:00</option>
+        <option value="19">19:00</option>
+      </select>
+
+      <button
+        id="analyzeButton"
+        class="wr-btn"
+        type="button"
+      >
+        Analitzar ruta
+      </button>
+    </section>
+
+    <div
+      id="weatherStatus"
+      class="wr-status"
+    >
+      Preparant Weather Route...
+    </div>
+
+    <section class="wr-summary-grid">
+      <article class="wr-summary">
+        <small>RUTA SELECCIONADA</small>
+
+        <h2 id="summaryRouteName">
+          -
+        </h2>
+
+        <div
+          id="routeMeta"
+          class="wr-route-meta"
+        ></div>
+      </article>
+
+      <article class="wr-score-card">
+        <small>TEMPERATURA MITJANA</small>
+        <strong id="tempValue">-</strong>
+        <span>al llarg de la ruta</span>
+      </article>
+
+      <article class="wr-score-card">
+        <small>PROBABILITAT PLUJA</small>
+        <strong id="rainValue">-</strong>
+        <span>mitjana del recorregut</span>
+      </article>
+
+      <article class="wr-score-card">
+        <small>VENT</small>
+        <strong id="windValue">-</strong>
+        <span id="windMax">-</span>
+      </article>
+
+      <article class="wr-score-card wr-ride-score">
+        <small>WEATHER SCORE</small>
+        <strong>
+          <span id="rideScore">-</span>/100
+        </strong>
+        <span id="rideScoreLabel">
+          -
+        </span>
+      </article>
+    </section>
+
+    <section class="wr-main-grid">
+      <div class="wr-panel">
+        <div id="weatherRouteMap"></div>
+      </div>
+
+      <aside class="wr-side">
+        <section class="wr-section">
+          <div class="wr-section-head">
+            <h3>Vent al llarg de la ruta</h3>
+            <small>segons el sentit de marxa</small>
+          </div>
+
+          <div
+            id="windSegments"
+            class="wr-segments"
+          >
+            <div class="wr-empty">
+              Analitzant...
+            </div>
+          </div>
+        </section>
+
+        <section class="wr-section">
+          <div class="wr-section-head">
+            <h3>Millor hora per sortir</h3>
+            <small>Weather Score</small>
+          </div>
+
+          <div
+            id="bestHours"
+            class="wr-hours"
+          >
+            <div class="wr-empty">
+              Analitzant...
+            </div>
+          </div>
+        </section>
+      </aside>
+    </section>
+
+    <div class="wr-note">
+      <strong>Weather Route v1:</strong>
+      les rutes d'aquesta pantalla utilitzen punts meteorologics de
+      mostreig. El seguent pas sera connectar el modul a les geometries
+      reals de Route Explorer mitjancant un adapter independent.
+      La previsio depen de la disponibilitat del servei Open-Meteo.
+    </div>
+  </main>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  ></script>
+  <script src="./adapters/viewport-fit-v5.js?v=5"></script>
+
+
+  <script
+    src="../../js/core/bicipark-core.js"
+  ></script>
+
+    <script src="./adapters/dynamic-route-bridge.js?v=4"></script>
+<script
+    src="./weather-route.js"
+  ></script>
+  <script src="./adapters/weather-route-enhancer-v2.js?v=2"></script>
+
+
+  <script
+    src="../../js/bicipark-global-nav.js"
+  ></script>
+  <script src="../popularity/adapters/weather-geo-bridge.js?v=2"></script>
+</body>
+</html>

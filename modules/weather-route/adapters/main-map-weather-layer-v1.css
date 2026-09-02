@@ -1,0 +1,147 @@
+/* ==========================================================
+   BiciPark Weather Route -> main map
+   Visual polish v2
+   ========================================================== */
+
+.bp-weather-map-marker-wrap {
+  background: transparent;
+  border: 0;
+}
+
+.bp-weather-map-marker {
+  min-width: 42px;
+  min-height: 29px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 7px;
+  border: 2px solid rgba(255,255,255,.98);
+  border-radius: 999px;
+  background: #117446;
+  color: #fff;
+  box-shadow:
+    0 4px 11px rgba(25,65,45,.20),
+    0 0 0 1px rgba(18,74,47,.06);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.bp-weather-map-marker.is-good {
+  background: #117446;
+}
+
+.bp-weather-map-marker.is-caution {
+  background: #c98618;
+}
+
+.bp-weather-map-marker.is-poor {
+  background: #c84f45;
+}
+
+.bp-weather-map-marker-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.bp-weather-map-marker-temp {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.bp-weather-map-alert {
+  margin-left: 1px;
+  padding-left: 5px;
+  border-left: 1px solid rgba(255,255,255,.45);
+  font-size: 7px;
+  font-weight: 900;
+  opacity: .98;
+}
+
+.bp-weather-map-popup {
+  min-width: 245px;
+  color: #173328;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.bp-weather-map-popup-kicker {
+  color: #117446;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.bp-weather-map-popup h3 {
+  margin: 4px 0 7px;
+  font-size: 15px;
+}
+
+.bp-weather-map-popup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.bp-weather-map-popup-stat {
+  padding: 7px 8px;
+  border-radius: 9px;
+  background: #f3f7f4;
+}
+
+.bp-weather-map-popup-stat small,
+.bp-weather-map-popup-stat strong {
+  display: block;
+}
+
+.bp-weather-map-popup-stat small {
+  color: #75847c;
+  font-size: 7px;
+}
+
+.bp-weather-map-popup-stat strong {
+  margin-top: 2px;
+  color: #173328;
+  font-size: 11px;
+}
+
+.bp-weather-map-popup-note {
+  margin-top: 7px;
+  color: #728078;
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.bp-weather-map-popup a {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 9px;
+  padding: 6px 10px;
+  border: 1px solid #cddbd2;
+  border-radius: 9px;
+  background: #fff;
+  color: #0c663c !important;
+  text-decoration: none !important;
+  font-size: 8px;
+  font-weight: 900;
+}

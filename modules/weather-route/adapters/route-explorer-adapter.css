@@ -1,0 +1,27 @@
+.bp-wr-route-btn {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  padding: 7px 10px;
+  border: 1px solid #c8dbd0;
+  border-radius: 9px;
+  background: #eef7f2;
+  color: #0d663c !important;
+  text-decoration: none !important;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.bp-wr-route-btn:hover {
+  background: #e2f1e9;
+}
+
+.bp-wr-route-btn.is-estimated {
+  border-color: #d9d4bd;
+  background: #faf8ef;
+  color: #7a6420 !important;
+}
