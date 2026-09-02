@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ruta Bicipark &middot; Camping Izarpe</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+  >
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../css/bicipark-nav.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow" id="pageEyebrow">BICIPARK &middot; BIKE BASE</div>
+      <h1>Camping Izarpe</h1>
+    </div>
+
+    <nav class="topnav">
+      <a href="./">&larr; Bike Bases</a>
+      <a href="../explora/">Explora</a>
+    </nav>
+  </header>
+
+  <main class="route-page route-page-v4">
+    <section class="route-hero">
+      <div class="route-kicker">
+        <span class="pill" id="modePill"></span>
+        <span class="pill" id="routePill"></span>
+        <span class="pill">BIKE BASE: IZARPE</span>
+      </div>
+
+      <h1 id="routeName"></h1>
+      <p class="lead" id="routeSummary"></p>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span>Dist&agrave;ncia publicada</span>
+          <strong id="officialDistance">--</strong>
+        </div>
+
+        <div class="stat-box">
+          <span>Desnivell positiu publicat</span>
+          <strong id="officialGain">--</strong>
+        </div>
+
+        <div class="stat-box">
+          <span>&Iacute;ndex IBP</span>
+          <strong id="officialIbp">--</strong>
+        </div>
+
+        <div class="stat-box">
+          <span>Modalitat</span>
+          <strong id="officialMode">--</strong>
+        </div>
+      </div>
+
+      <div class="route-toolbar">
+        <a
+          class="primary"
+          id="officialLink"
+          target="_blank"
+          rel="noopener"
+        >Font publicada &nearr;</a>
+
+        <a
+          class="secondary"
+          id="localGpxLink"
+          download
+        >Descarregar GPX local &darr;</a>
+
+        <a
+          class="route-button mission-route-button hidden"
+          id="missionLink"
+          href="./mission-plazaola.html"
+        >Missi&oacute; Bicipark &#127919;</a>
+      </div>
+    </section>
+
+    <section class="route-main-grid">
+      <div class="route-map-card route-map-card-v4">
+        <div id="routeMap"></div>
+      </div>
+
+      <aside class="route-summary-side">
+        <section class="info-card route-difficulty-card">
+          <div class="eyebrow">DIFICULTAT</div>
+          <h2 id="difficultyTitle"></h2>
+
+          <div class="difficulty-row">
+            <div class="difficulty">
+              <span>F&iacute;sica</span>
+              <strong id="physicalDifficulty"></strong>
+            </div>
+
+            <div class="difficulty">
+              <span>T&egrave;cnica</span>
+              <strong id="technicalDifficulty"></strong>
+            </div>
+          </div>
+
+          <p class="small-note">
+            Les dades publicades i les calculades sobre el GPX
+            es mantenen separades per no barrejar metodologies.
+          </p>
+        </section>
+
+        <section class="info-card route-quick-card">
+          <div class="eyebrow">AQUESTA RUTA</div>
+          <h2>Resum r&agrave;pid</h2>
+
+          <div class="route-quick-grid">
+            <div>
+              <span>Bike Base</span>
+              <strong>Camping Izarpe</strong>
+            </div>
+
+            <div>
+              <span>Ruta</span>
+              <strong id="quickRouteNumber">--</strong>
+            </div>
+
+            <div>
+              <span>Modalitat</span>
+              <strong id="quickMode">--</strong>
+            </div>
+
+            <div>
+              <span>Dist&agrave;ncia</span>
+              <strong id="quickDistance">--</strong>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </section>
+
+    <section class="route-info-grid">
+      <section class="poi-card route-info-panel">
+        <div class="eyebrow">PUNTS D'INTER&Egrave;S</div>
+        <h2>Qu&egrave; trobar&agrave;s</h2>
+        <ul class="poi-list" id="highlightsList"></ul>
+      </section>
+
+      <section class="safety-card route-info-panel">
+        <div class="eyebrow">ABANS DE SORTIR</div>
+        <h2>Recomanacions</h2>
+        <ul class="safety-list" id="cautionsList"></ul>
+      </section>
+    </section>
+
+    <section class="elevation-card elevation-card-v4">
+      <div class="elevation-heading">
+        <div>
+          <div class="eyebrow">PERFIL DE RUTA</div>
+          <h2>Altitud</h2>
+        </div>
+
+        <div class="elevation-mini-meta">
+          <span id="chartDistance">Dist&agrave;ncia GPX: --</span>
+          <span id="chartElevation">Altitud GPX: --</span>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="elevationChart"></canvas>
+      </div>
+
+      <div class="gpx-status" id="gpxStatus">
+        Carregant el GPX local...
+      </div>
+
+      <div class="file-loader">
+        <label for="gpxFile">
+          Si el GPX local no est&agrave; disponible, pots seleccionar
+          manualment un fitxer GPX:
+        </label>
+        <input id="gpxFile" type="file" accept=".gpx,application/gpx+xml">
+      </div>
+
+      <p class="small-note" id="distanceExplanation"></p>
+    </section>
+
+    <p class="small-note route-source-footer">
+      Camping Izarpe no est&agrave; afiliat ni col&middot;labora
+      actualment amb Bicipark. Les dades s'han estructurat a partir
+      de fonts p&uacute;bliques. Comprova sempre el track, el temps,
+      l'estat dels camins i la informaci&oacute; oficial abans de sortir.
+    </p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./data/izarpe-routes.js"></script>
+  <script src="./route-detail.js"></script>
+  <script src="../js/bicipark-global-nav.js"></script>
+</body>
+</html>

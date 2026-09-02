@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bike Base · Bicipark</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="./styles.css">
+<style>
+body{background:#f6f8f7}
+.bbpage{max-width:1400px;margin:auto;padding:22px}
+.hero,.card,.mapcard{background:#fff;border:1px solid #dfe6e2;border-radius:20px;box-shadow:0 8px 24px rgba(30,55,42,.08)}
+.hero{padding:22px;display:grid;grid-template-columns:1fr 360px;gap:20px}
+.hero h1{font-size:48px;margin:10px 0 4px}.muted{color:#66736c}
+.badges,.modes{display:flex;gap:7px;flex-wrap:wrap}
+.badge,.modes span{padding:6px 9px;border-radius:999px;background:#eaf7ef;color:#126c41;font-size:10px;font-weight:900}
+.badge.warn{background:#fff4df;color:#85601c}
+.actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.actions a{padding:10px 13px;border-radius:11px;text-decoration:none;font-weight:900}
+.primary{background:#14834f;color:white}.secondary{background:#eaf5ee;color:#126c41}
+.score{display:flex;align-items:center;gap:14px;background:#f4faf6;border-radius:18px;padding:17px}
+.circle{width:92px;height:92px;border:7px solid #14834f;border-radius:50%;display:grid;place-content:center;text-align:center;color:#126c41}
+.circle strong{font-size:34px}.circle small{color:#718077}
+.grid{display:grid;grid-template-columns:1.6fr .7fr;gap:16px;margin-top:16px;align-items:start}
+.mapcard{overflow:hidden}#map{height:520px}
+.side{display:grid;gap:16px}
+.card{padding:17px}
+.services{display:grid;gap:7px}
+.service,.criterion{padding:9px;border-radius:11px;background:#f6f8f7}
+.service{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:center}
+.criterion{display:grid;grid-template-columns:1fr auto;gap:8px}
+.criterion small{grid-column:1/-1;color:#6f7b75}
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.markerWrap{background:transparent!important;border:0!important}
+.marker{
+  width:56px;height:56px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1px;background:#14834f;border:4px solid #fff;
+  box-shadow:0 8px 18px rgba(0,0,0,.22)
+}
+.markerMain{font-size:18px;line-height:1}
+.markerBike{font-size:16px;line-height:1;transform:translateY(-1px)}
+@media(max-width:900px){.hero,.grid,.bottom{grid-template-columns:1fr}.hero h1{font-size:36px}#map{height:440px}}
+</style>
+  <link rel="stylesheet" href="./base-routes-extra.css">
+  <link rel="stylesheet" href="../css/bicipark-nav.css">
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <div class="eyebrow">BICIPARK · BIKE BASE</div>
+    <h1 id="head">Bike Base</h1>
+  </div>
+  <nav class="topnav">
+    <a href="./">← Bike Bases</a>
+    <a href="../mapa-ciclista.html">Mapa principal</a>
+  </nav>
+</header>
+
+<main class="bbpage">
+  <section class="hero">
+    <div>
+      <div class="badges">
+        <span class="badge" id="typeBadge">🚲 BIKE BASE</span>
+        <span class="badge warn" id="status"></span>
+      </div>
+
+      <h1 id="name"></h1>
+      <p class="muted" id="category"></p>
+      <p id="description"></p>
+      <p id="location"></p>
+
+      <div class="actions">
+        <a class="primary" id="official" target="_blank" rel="noopener">Web oficial ↗</a>
+        <a class="secondary" id="routes" target="_blank" rel="noopener">Rutes oficials ↗</a>
+      </div>
+    </div>
+
+    <div class="score" id="score"></div>
+  </section>
+
+  <section class="grid">
+    <div class="mapcard"><div id="map"></div></div>
+
+    <aside class="side">
+      <section class="card">
+        <div class="eyebrow">CICLISME</div>
+        <h2>Modalitats</h2>
+        <div class="modes" id="modes"></div>
+      </section>
+
+      <section class="card">
+        <div class="eyebrow">SERVEIS</div>
+        <h2>Per al ciclista</h2>
+        <div class="services" id="services"></div>
+      </section>
+    </aside>
+  </section>
+
+  <section class="bottom">
+    <section class="card">
+      <div class="eyebrow">BIKE FRIENDLY INDEX</div>
+      <h2>Com es calcula</h2>
+      <div id="criteria"></div>
+    </section>
+
+    <section class="card">
+      <div class="eyebrow">RUTES</div>
+      <h2>Des d'aquesta Bike Base</h2>
+      <p id="routesNote"></p>
+      <div class="service">
+        <span>🚧</span>
+        <strong>Proper pas: importar GPX, desnivell i punts d'interès.</strong>
+      </div>
+    </section>
+  </section>
+
+  <p class="muted" style="font-size:11px">
+    Fitxa creada per Bicipark a partir d'informació pública. L'establiment no està afiliat ni col·labora actualment amb Bicipark, tret que s'indiqui el contrari.
+  </p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="./bike-base-data.js"></script>
+<script src="./bike-friendly-engine.js"></script>
+<script>
+function getTypeVisual(base){
+  const type = String(base && base.type || "").toLowerCase().trim();
+  if(type === "camping") return { icon:"⛺", badge:"⛺ CÀMPING BIKE BASE" };
+  if(type === "hotel")   return { icon:"🏨", badge:"🏨 HOTEL BIKE BASE" };
+  if(type === "hostel")  return { icon:"🛏️", badge:"🛏️ HOSTEL BIKE BASE" };
+  if(type === "apartment" || type === "apartament" || type === "casa-rural" || type === "house"){
+    return { icon:"🏠", badge:"🏠 CASA / APARTAMENT BIKE BASE" };
+  }
+  return { icon:"📍", badge:"🚲 BIKE BASE" };
+}
+
+(async()=>{
+  const id = new URLSearchParams(location.search).get("id");
+  if(!id) return;
+
+  const base = await BiciparkBikeBases.loadBase(id);
+  const rating = BiciparkBikeFriendly.calculate(base);
+  const visual = getTypeVisual(base);
+
+  document.title = base.name + " · Bicipark";
+  head.textContent = base.name;
+  name.textContent = base.name;
+  category.textContent = base.categoryLabel || "";
+  description.textContent = base.description || "";
+  location.textContent = "📍 " + (base.location.address || base.location.locality || "");
+  status.textContent = base.status.label || "";
+  typeBadge.textContent = visual.badge;
+
+  if(base.links && base.links.official){
+    official.href = base.links.official;
+  } else {
+    official.hidden = true;
+  }
+
+  if(base.links && base.links.routes){
+    routes.href = base.links.routes;
+  } else {
+    routes.hidden = true;
+  }
+
+  modes.innerHTML = (base.routes.modeLabels || []).map(x => `<span>${x}</span>`).join("");
+  services.innerHTML = (base.serviceLabels || [])
+    .filter(x => base.services && base.services[x.key])
+    .map(x => `<div class="service"><span>${x.icon || "•"}</span><strong>${x.label}</strong></div>`)
+    .join("");
+
+  score.innerHTML =
+    `<div class="circle"><strong>${rating.score}</strong><small>/ ${rating.maxScore}</small></div>` +
+    `<div><div class="eyebrow">BIKE FRIENDLY</div><h2>${rating.level}</h2><span class="badge warn">${rating.statusLabel}</span></div>`;
+
+  criteria.innerHTML = rating.criteria
+    .map(x => `<div class="criterion"><strong>${x.label}</strong><b>${x.points}/${x.maxPoints}</b><small>${x.evidence}</small></div>`)
+    .join("");
+
+  routesNote.textContent = base.routes.notes || "";
+
+  const lat = Number(base.location.lat);
+  const lng = Number(base.location.lng);
+  const map = L.map("map").setView([lat, lng], 13);
+
+  L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    { maxZoom:19, attribution:"&copy; OpenStreetMap contributors" }
+  ).addTo(map);
+
+  const icon = L.divIcon({
+    className: "markerWrap",
+    html:
+      '<div class="marker">' +
+        '<span class="markerMain">' + visual.icon + '</span>' +
+        '<span class="markerBike">🚲</span>' +
+      '</div>',
+    iconSize: [56,56],
+    iconAnchor: [28,28]
+  });
+
+  L.marker([lat,lng], { icon })
+    .addTo(map)
+    .bindPopup(
+      `<strong>${base.name}</strong><br>${base.categoryLabel || ""}<br>${base.location.address || ""}`
+    )
+    .openPopup();
+})().catch(console.error);
+</script>
+  <script src="./data/base-routes.js"></script>
+  <script src="./base-routes-extra.js"></script>
+  <script src="./base-context-fixes.js"></script>
+  <script src="../js/bicipark-global-nav.js"></script>
+</body>
+</html>

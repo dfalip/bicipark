@@ -1,0 +1,262 @@
+/* BICIPARK_BIKE_BASE_PROFILE_POPUP_V3 */
+
+.bicipark-bikebase-popup-shell {
+  max-width: calc(100vw - 48px) !important;
+}
+
+.bicipark-bikebase-popup-shell
+.leaflet-popup-content-wrapper {
+  box-sizing: border-box;
+  max-width: calc(100vw - 48px);
+  border-radius: 15px !important;
+  overflow: hidden;
+}
+
+.bicipark-bikebase-popup-shell
+.leaflet-popup-content {
+  width: 286px !important;
+  max-width: calc(100vw - 90px) !important;
+  margin: 12px 14px !important;
+  box-sizing: border-box;
+}
+
+.bb-profile-popup-v2 {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  color: #14251c;
+}
+
+.bb-profile-popup-v2,
+.bb-profile-popup-v2 * {
+  box-sizing: border-box;
+}
+
+.bb-profile-popup-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 9px;
+  min-width: 0;
+}
+
+.bb-profile-popup-title {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.bb-profile-popup-kicker {
+  color: #14834f;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .07em;
+}
+
+.bb-profile-popup-head h3 {
+  margin: 2px 0 0;
+  font-size: 16px;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.bb-profile-popup-score {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: grid;
+  place-content: center;
+  border-radius: 50%;
+  border: 4px solid #14834f;
+  background: #fff;
+  text-align: center;
+  color: #126c41;
+}
+
+.bb-profile-popup-score strong {
+  display: block;
+  font-size: 16px;
+  line-height: .9;
+}
+
+.bb-profile-popup-score span {
+  display: block;
+  margin-top: 2px;
+  color: #718077;
+  font-size: 7px;
+}
+
+.bb-profile-popup-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  margin-top: 8px;
+}
+
+.bb-profile-popup-chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-width: 0;
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: #f1f4f2;
+  color: #536159;
+  font-size: 8px;
+  line-height: 1.15;
+  font-weight: 800;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.bb-profile-popup-chip.score {
+  background: #e9f7ee;
+  color: #126c41;
+}
+
+.bb-profile-popup-chip.modes {
+  flex: 1 1 100%;
+  border-radius: 8px;
+}
+
+.bb-profile-popup-status {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 7px;
+  padding: 6px 8px;
+  border-radius: 9px;
+  font-size: 8px;
+  line-height: 1.25;
+  font-weight: 800;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.bb-profile-popup-status.public {
+  background: #fff5e3;
+  color: #845f18;
+}
+
+.bb-profile-popup-status.verified {
+  background: #eaf2ff;
+  color: #285b9e;
+}
+
+.bb-profile-popup-status.partner {
+  background: #f1eaff;
+  color: #6842a0;
+}
+
+.bb-profile-popup-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.bb-profile-popup-button {
+  width: 100%;
+  min-width: 0;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+  text-decoration: none !important;
+  font-family: inherit;
+  font-size: 9px;
+  line-height: 1.15;
+  font-weight: 900;
+  overflow: hidden;
+}
+
+.bb-profile-popup-button span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.bb-profile-popup-button.primary {
+  background: #14834f;
+  color: #fff !important;
+}
+
+.bb-profile-popup-button.secondary {
+  background: #edf5f0;
+  color: #126c41 !important;
+}
+
+.bb-profile-popup-button:hover {
+  filter: brightness(.97);
+}
+
+.bb-profile-popup-button strong {
+  flex: 0 0 auto;
+  font-size: 12px;
+}
+
+.leaflet-popup-tip-container {
+  margin-top: -1px;
+}
+
+@media (max-width: 600px) {
+  .bicipark-bikebase-popup-shell
+  .leaflet-popup-content {
+    width: min(272px, calc(100vw - 82px)) !important;
+  }
+
+  .bb-profile-popup-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* BICIPARK_POPUP_MARKER_VISIBILITY_V1 */
+
+.bicipark-bikebase-popup-shell {
+  margin-bottom: 46px !important;
+}
+
+/*
+Connector between the raised information card
+and the geographic Bike Base marker.
+*/
+.bicipark-bikebase-popup-shell
+.leaflet-popup-tip-container {
+  overflow: visible;
+}
+
+.bicipark-bikebase-popup-shell
+.leaflet-popup-tip-container::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 15px;
+  width: 2px;
+  height: 29px;
+  margin-left: -1px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(20,131,79,.52),
+      rgba(20,131,79,.12)
+    );
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .bicipark-bikebase-popup-shell {
+    margin-bottom: 42px !important;
+  }
+
+  .bicipark-bikebase-popup-shell
+  .leaflet-popup-tip-container::after {
+    height: 25px;
+  }
+}

@@ -1,0 +1,151 @@
+{
+    "schemaVersion":  1,
+    "id":  "hotel-carlemany-girona",
+    "slug":  "carlemany-girona",
+    "name":  "Hotel Carlemany Girona",
+    "type":  "hotel",
+    "categoryLabel":  "Hotel 4★ · Bike Friendly",
+    "description":  "Hotel cèntric de Girona amb zona segura per a bicicletes i serveis específics per a ciclistes.",
+    "location":  {
+                     "country":  "ES",
+                     "region":  "Girona · Gironès",
+                     "locality":  "Girona",
+                     "address":  "Plaça Miquel Santaló, 17002 Girona",
+                     "lat":  41.979167,
+                     "lng":  2.822500
+                 },
+    "status":  {
+                   "code":  "public-unverified",
+                   "label":  "Informació pública · No verificada",
+                   "affiliated":  false,
+                   "verified":  false,
+                   "partner":  false
+               },
+    "links":  {
+                  "official":  "https://www.hotelcarlemanygirona.com/",
+                  "bikeFriendly":  "https://www.hotelcarlemanygirona.com/en/surroundings/cycling-in-girona",
+                  "routes":  "https://www.hotelcarlemanygirona.com/en/surroundings/cycling-in-girona"
+              },
+    "sources":  [
+                    "https://www.hotelcarlemanygirona.com/en/surroundings/cycling-in-girona",
+                    "https://www.hotelcarlemanygirona.com/en/surroundings/what-to-do-in-girona/the-traka-adventure-in-girona",
+                    "https://www.hotelcarlemanygirona.com/ca/hotel-centre-girona"
+                ],
+    "routes":  {
+                   "count":  3,
+                   "countLabel":  "Rutes recomanades des de Girona",
+                   "modes":  [
+                                 "road",
+                                 "gravel"
+                             ],
+                   "modeLabels":  [
+                                      "Carretera",
+                                      "Gravel"
+                                  ],
+                   "notes":  "L’hotel publica propostes ciclistes per Girona i l’Empordà i es presenta com a base bike-friendly per esdeveniments de gravel com The Traka.",
+                   "integratedCount":  3,
+                   "selectionType":  "hotel-recommended",
+                   "publicLabel":  "3 rutes recomanades pel mateix hotel integrades a Bicipark"
+               },
+    "services":  {
+                     "bikeStorage":  true,
+                     "repair":  true,
+                     "bikeWash":  true,
+                     "rental":  true,
+                     "ebikeCharging":  true,
+                     "freshWater":  true,
+                     "restaurant":  true,
+                     "supermarket":  false,
+                     "pool":  false
+                 },
+    "serviceLabels":  [
+                          {
+                              "key":  "bikeStorage",
+                              "label":  "Aparcament tancat i videovigilat",
+                              "icon":  "🔒"
+                          },
+                          {
+                              "key":  "repair",
+                              "label":  "Eines per ajustos i reparacions",
+                              "icon":  "🔧"
+                          },
+                          {
+                              "key":  "bikeWash",
+                              "label":  "Zona de neteja",
+                              "icon":  "🚿"
+                          },
+                          {
+                              "key":  "rental",
+                              "label":  "Lloguer de bicicletes / acord local",
+                              "icon":  "🚲"
+                          },
+                          {
+                              "key":  "ebikeCharging",
+                              "label":  "Càrrega d’e-bike",
+                              "icon":  "⚡"
+                          },
+                          {
+                              "key":  "freshWater",
+                              "label":  "Aigua fresca",
+                              "icon":  "💧"
+                          },
+                          {
+                              "key":  "restaurant",
+                              "label":  "Esmorzar i restaurant",
+                              "icon":  "🍽️"
+                          }
+                      ],
+    "bikeFriendly":  {
+                         "methodologyVersion":  "1.0",
+                         "criteria":  {
+                                          "storage":  {
+                                                          "label":  "Guarda-bicis",
+                                                          "weight":  20,
+                                                          "available":  true,
+                                                          "evidence":  "Zona tancada i videovigilada per unes 40 bicicletes"
+                                                      },
+                                          "repair":  {
+                                                         "label":  "Taller / reparació",
+                                                         "weight":  15,
+                                                         "available":  true,
+                                                         "evidence":  "Espai de manteniment i eines"
+                                                     },
+                                          "wash":  {
+                                                       "label":  "Rentat de bicicletes",
+                                                       "weight":  10,
+                                                       "available":  true,
+                                                       "evidence":  "Zona de neteja publicada"
+                                                   },
+                                          "rental":  {
+                                                         "label":  "Lloguer bici / e-bike",
+                                                         "weight":  10,
+                                                         "available":  true,
+                                                         "evidence":  "Servei o col·laboració de lloguer disponible"
+                                                     },
+                                          "routes":  {
+                                                         "label":  "Oferta de rutes",
+                                                         "weight":  15,
+                                                         "available":  true,
+                                                         "evidence":  "Propostes de rutes de Girona i Empordà"
+                                                     },
+                                          "diversity":  {
+                                                            "label":  "Diversitat de modalitats",
+                                                            "weight":  10,
+                                                            "available":  true,
+                                                            "evidence":  "Carretera i Gravel"
+                                                        },
+                                          "services":  {
+                                                           "label":  "Serveis bàsics",
+                                                           "weight":  10,
+                                                           "available":  true,
+                                                           "evidence":  "Esmorzar, restaurant, aigua i càrrega e-bike"
+                                                       },
+                                          "verified":  {
+                                                           "label":  "Fitxa verificada",
+                                                           "weight":  10,
+                                                           "available":  false,
+                                                           "evidence":  "Pendent de verificació Bicipark"
+                                                       }
+                                      }
+                     }
+}

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Explora Bike Bases · Bicipark</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./explore-bike-bases.css">
+  <link rel="stylesheet" href="../css/bicipark-nav.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">BICIPARK · BIKE BASES</div>
+      <h1>Explora Bike Bases</h1>
+    </div>
+
+    <nav class="topnav">
+      <a href="./">← Camping Izarpe</a>
+      <a href="../mapa-ciclista.html">Mapa principal</a>
+    </nav>
+  </header>
+
+  <main class="bb-explorer">
+    <section class="bb-explorer-hero">
+      <div>
+        <div class="eyebrow">ALLOTJAMENTS PER CICLISTES</div>
+        <h1>Troba una base per descobrir un territori en bicicleta</h1>
+        <p>
+          Filtra per tipus d'allotjament, modalitat, serveis i
+          Bike Friendly Index.
+        </p>
+      </div>
+
+      <div class="bb-explorer-count">
+        <strong id="resultCount">0</strong>
+        <span>Bike Bases</span>
+      </div>
+    </section>
+
+    <section class="bb-filter-card">
+      <div class="bb-filter-main">
+        <label class="bb-filter-search">
+          <span>On vols pedalar?</span>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Girona, Navarra, Monells..."
+            autocomplete="off"
+          >
+        </label>
+
+        <label>
+          <span>Allotjament</span>
+          <select id="typeFilter">
+            <option value="">Tots</option>
+            <option value="camping">Càmping</option>
+            <option value="hotel">Hotel</option>
+            <option value="hostel">Hostel</option>
+            <option value="apartment">Casa / apartament</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Modalitat</span>
+          <select id="modeFilter">
+            <option value="">Totes</option>
+            <option value="road">Carretera</option>
+            <option value="gravel">Gravel</option>
+            <option value="mtb">MTB</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Bike Friendly</span>
+          <select id="scoreFilter">
+            <option value="0">Qualsevol</option>
+            <option value="60">60+</option>
+            <option value="80">80+</option>
+            <option value="90">90+</option>
+          </select>
+        </label>
+
+        <button
+          class="bb-nearby-button"
+          id="nearbyBtn"
+          type="button"
+        >
+          ◎ A prop meu
+        </button>
+      </div>
+
+      <div class="bb-service-filters">
+        <span>Serveis:</span>
+
+        <label>
+          <input type="checkbox" value="bikeStorage" class="serviceFilter">
+          Guarda-bicis
+        </label>
+
+        <label>
+          <input type="checkbox" value="repair" class="serviceFilter">
+          Taller
+        </label>
+
+        <label>
+          <input type="checkbox" value="bikeWash" class="serviceFilter">
+          Rentat
+        </label>
+
+        <label>
+          <input type="checkbox" value="rental" class="serviceFilter">
+          Lloguer
+        </label>
+
+        <button
+          class="bb-clear-button"
+          id="clearFiltersBtn"
+          type="button"
+        >
+          Netejar filtres
+        </button>
+      </div>
+
+      <div class="bb-location-status" id="locationStatus"></div>
+    </section>
+
+    <section class="bb-explorer-layout">
+      <div class="bb-list-column">
+        <div class="bb-list-toolbar">
+          <div>
+            <div class="eyebrow">RESULTATS</div>
+            <h2>Bike Bases</h2>
+          </div>
+
+          <select id="sortFilter" aria-label="Ordenar">
+            <option value="score">Millor Bike Friendly</option>
+            <option value="name">Nom</option>
+            <option value="routes">Més rutes</option>
+            <option value="distance">Més a prop</option>
+          </select>
+        </div>
+
+        <div id="bikeBaseList" class="bb-base-list"></div>
+
+        <div id="emptyState" class="bb-empty hidden">
+          <strong>No hem trobat cap Bike Base</strong>
+          <span>Prova de treure algun filtre.</span>
+        </div>
+      </div>
+
+      <div class="bb-map-column">
+        <div id="bikeBaseExploreMap"></div>
+
+        <div class="bb-map-legend">
+          <span><b>⛺</b> Càmping</span>
+          <span><b>🏨</b> Hotel</span>
+          <span><b>🏠</b> Casa / apartament</span>
+          <span><b>🛏️</b> Hostel</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./bike-base-data.js"></script>
+  <script src="./bike-friendly-engine.js"></script>
+  <script src="./explore-bike-bases.js"></script>
+  <script src="../js/bicipark-global-nav.js"></script>
+</body>
+</html>

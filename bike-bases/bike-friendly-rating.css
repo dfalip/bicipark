@@ -1,0 +1,243 @@
+/* BICIPARK_BIKE_FRIENDLY_INDEX_V1 */
+
+.bike-friendly-score-card {
+  margin-top: 16px;
+  padding: 17px;
+  border-radius: 18px;
+  border: 1px solid rgba(20,131,79,.18);
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(20,131,79,.13),
+      transparent 42%
+    ),
+    #fff;
+  box-shadow: var(--shadow);
+}
+
+.bf-score-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.bf-kicker {
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.bike-friendly-score-card h3,
+.bike-friendly-methodology h3 {
+  margin: 4px 0 0;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.bf-score-circle {
+  width: 70px;
+  height: 70px;
+  flex: 0 0 70px;
+  display: grid;
+  place-content: center;
+  border-radius: 50%;
+  text-align: center;
+  border: 6px solid #dce5e0;
+  background: #fff;
+}
+
+.bf-score-circle.excellent {
+  border-color: #14834f;
+  color: #0d673d;
+}
+
+.bf-score-circle.good {
+  border-color: #6aa36f;
+  color: #456f49;
+}
+
+.bf-score-circle.basic {
+  border-color: #d4a238;
+  color: #8b6418;
+}
+
+.bf-score-circle.limited {
+  border-color: #c66b6b;
+  color: #8d3e3e;
+}
+
+.bf-score-circle strong {
+  display: block;
+  font-size: 25px;
+  line-height: .9;
+}
+
+.bf-score-circle span {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.bf-level-row {
+  margin-top: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bf-level,
+.bf-status {
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.bf-level {
+  background: var(--green-soft);
+  color: var(--green-dark);
+}
+
+.bf-status.public {
+  background: #fff4df;
+  color: #8a641d;
+}
+
+.bf-status.verified {
+  background: #eaf2ff;
+  color: #285b9e;
+}
+
+.bf-status.partner {
+  background: #f1eaff;
+  color: #6842a0;
+}
+
+.bf-progress {
+  height: 8px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e7ece9;
+}
+
+.bf-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      90deg,
+      #4aa96c,
+      #14834f
+    );
+}
+
+.bf-details-button {
+  margin-top: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--green-dark);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.bike-friendly-methodology {
+  margin-top: 16px;
+  padding: 17px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.bf-methodology-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bf-close-button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background: #f1f4f2;
+  color: #5e6b64;
+  font-size: 18px;
+}
+
+.bf-methodology-intro {
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.bf-criteria-list {
+  display: grid;
+  gap: 7px;
+}
+
+.bf-criterion {
+  display: grid;
+  grid-template-columns: 31px minmax(0,1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 11px;
+  background: #f7f9f8;
+}
+
+.bf-criterion-icon {
+  width: 29px;
+  text-align: center;
+  font-size: 17px;
+}
+
+.bf-criterion-copy strong {
+  display: block;
+  font-size: 11px;
+}
+
+.bf-criterion-copy span {
+  display: block;
+  margin-top: 1px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.bf-criterion-points {
+  min-width: 42px;
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: #eef1ef;
+  color: #59655f;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.bf-criterion-points.full {
+  background: #e6f5ec;
+  color: #126b40;
+}
+
+.bf-criterion-points.zero {
+  background: #fff0e6;
+  color: #95521c;
+}
+
+.bf-methodology-note {
+  margin-top: 10px;
+  padding: 9px;
+  border-radius: 10px;
+  background: #fff8e7;
+  color: #735b27;
+  font-size: 9px;
+  line-height: 1.4;
+}

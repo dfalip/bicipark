@@ -1,0 +1,147 @@
+{
+    "schemaVersion":  1,
+    "id":  "camping-salata",
+    "slug":  "camping-salata",
+    "name":  "Camping Salatà",
+    "type":  "camping",
+    "categoryLabel":  "Càmping · Bike Friendly",
+    "description":  "Càmping a Roses amb lloguer de bicicletes, zona de neteja i columna d’eines per a petits ajustos i reparacions.",
+    "location":  {
+                     "country":  "ES",
+                     "region":  "Girona · Alt Empordà",
+                     "locality":  "Roses",
+                     "address":  "C/ del Port Reig, 44, 17480 Roses, Girona",
+                     "lat":  42.266467,
+                     "lng":  3.156067
+                 },
+    "status":  {
+                   "code":  "public-unverified",
+                   "label":  "Informació pública · No verificada",
+                   "affiliated":  false,
+                   "verified":  false,
+                   "partner":  false
+               },
+    "links":  {
+                  "official":  "https://www.campingsalata.com/",
+                  "bikeFriendly":  "https://www.campingsalata.com/es/instalaciones/bike-friendly/",
+                  "routes":  "https://www.campingsalata.com/es/actividades/"
+              },
+    "sources":  [
+                    "https://www.campingsalata.com/es/instalaciones/bike-friendly/",
+                    "https://www.campingsalata.com/es/instalaciones/",
+                    "https://www.campingsalata.com/es/restaurantes/"
+                ],
+    "routes":  {
+                   "count":  3,
+                   "countLabel":  "Activitats ciclistes · rutes Bicipark pendents",
+                   "modes":  [
+                                 "road",
+                                 "gravel",
+                                 "mtb"
+                             ],
+                   "modeLabels":  [
+                                      "Carretera",
+                                      "Gravel",
+                                      "MTB"
+                                  ],
+                   "notes":  "El càmping publica serveis bike-friendly i activitats en bicicleta, però no hem localitzat un catàleg propi de tracks o rutes detallades. Bicipark les pot incorporar més endavant.",
+                   "integratedCount":  3,
+                   "selectionType":  "official-destination-curation",
+                   "publicLabel":  "3 rutes oficials de Roses seleccionades per Bicipark"
+               },
+    "services":  {
+                     "bikeStorage":  false,
+                     "repair":  true,
+                     "bikeWash":  true,
+                     "rental":  true,
+                     "ebikeCharging":  false,
+                     "restaurant":  true,
+                     "supermarket":  true,
+                     "pool":  true
+                 },
+    "serviceLabels":  [
+                          {
+                              "key":  "repair",
+                              "label":  "Columna d’eines",
+                              "icon":  "🔧"
+                          },
+                          {
+                              "key":  "bikeWash",
+                              "label":  "Espai de neteja de bicicletes",
+                              "icon":  "🚿"
+                          },
+                          {
+                              "key":  "rental",
+                              "label":  "Lloguer BTT i bicicletes de passeig",
+                              "icon":  "🚲"
+                          },
+                          {
+                              "key":  "restaurant",
+                              "label":  "Restaurant i xiringuito",
+                              "icon":  "🍽️"
+                          },
+                          {
+                              "key":  "supermarket",
+                              "label":  "Minimarket",
+                              "icon":  "🛒"
+                          },
+                          {
+                              "key":  "pool",
+                              "label":  "Piscina i spa",
+                              "icon":  "🏊"
+                          }
+                      ],
+    "bikeFriendly":  {
+                         "methodologyVersion":  "1.0",
+                         "criteria":  {
+                                          "storage":  {
+                                                          "label":  "Guarda-bicis",
+                                                          "weight":  20,
+                                                          "available":  false,
+                                                          "evidence":  "No hem trobat evidència pública clara de guarda-bicis específic"
+                                                      },
+                                          "repair":  {
+                                                         "label":  "Taller / reparació",
+                                                         "weight":  15,
+                                                         "available":  true,
+                                                         "evidence":  "Columna d’eines per petits ajustos"
+                                                     },
+                                          "wash":  {
+                                                       "label":  "Rentat de bicicletes",
+                                                       "weight":  10,
+                                                       "available":  true,
+                                                       "evidence":  "Espai específic de neteja"
+                                                   },
+                                          "rental":  {
+                                                         "label":  "Lloguer bici / e-bike",
+                                                         "weight":  10,
+                                                         "available":  true,
+                                                         "evidence":  "Lloguer de BTT i bicicletes de passeig"
+                                                     },
+                                          "routes":  {
+                                                         "label":  "Oferta de rutes",
+                                                         "weight":  15,
+                                                         "available":  false,
+                                                         "evidence":  "Activitats ciclistes, però sense catàleg públic de tracks localitzat"
+                                                     },
+                                          "diversity":  {
+                                                            "label":  "Diversitat de modalitats",
+                                                            "weight":  10,
+                                                            "available":  true,
+                                                            "evidence":  "BTT i cicloturisme / passeig"
+                                                        },
+                                          "services":  {
+                                                           "label":  "Serveis bàsics",
+                                                           "weight":  10,
+                                                           "available":  true,
+                                                           "evidence":  "Restaurant, xiringuito i minimarket"
+                                                       },
+                                          "verified":  {
+                                                           "label":  "Fitxa verificada",
+                                                           "weight":  10,
+                                                           "available":  false,
+                                                           "evidence":  "Pendent de verificació Bicipark"
+                                                       }
+                                      }
+                     }
+}

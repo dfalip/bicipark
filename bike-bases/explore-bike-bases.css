@@ -1,0 +1,481 @@
+:root {
+  --bb-green: #14834f;
+  --bb-green-dark: #0e653c;
+  --bb-green-soft: #eaf7ef;
+}
+
+body {
+  background: #f5f8f6;
+}
+
+.bb-explorer {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 22px;
+}
+
+.bb-explorer-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 25px;
+  align-items: flex-end;
+  padding: 22px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+
+.bb-explorer-hero h1 {
+  max-width: 850px;
+  margin: 5px 0 7px;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.03;
+  letter-spacing: -.04em;
+}
+
+.bb-explorer-hero p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.bb-explorer-count {
+  min-width: 130px;
+  padding: 14px;
+  border-radius: 17px;
+  background: var(--bb-green-soft);
+  color: var(--bb-green-dark);
+  text-align: center;
+}
+
+.bb-explorer-count strong {
+  display: block;
+  font-size: 38px;
+  line-height: 1;
+}
+
+.bb-explorer-count span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.bb-filter-card {
+  margin-top: 16px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.bb-filter-main {
+  display: grid;
+  grid-template-columns: minmax(250px, 1.6fr) repeat(3, minmax(140px, .65fr)) auto;
+  gap: 9px;
+  align-items: end;
+}
+
+.bb-filter-main label,
+.bb-filter-search {
+  display: grid;
+  gap: 5px;
+}
+
+.bb-filter-main label > span {
+  font-size: 10px;
+  font-weight: 900;
+  color: #66736c;
+}
+
+.bb-filter-main input,
+.bb-filter-main select,
+.bb-list-toolbar select {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid #d9e2dd;
+  border-radius: 11px;
+  background: #fff;
+  font: inherit;
+}
+
+.bb-nearby-button,
+.bb-clear-button {
+  border: 0;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.bb-nearby-button {
+  min-height: 42px;
+  padding: 8px 13px;
+  border-radius: 11px;
+  background: var(--bb-green);
+  color: #fff;
+}
+
+.bb-service-filters {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.bb-service-filters > span {
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.bb-service-filters label {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: #f2f5f3;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.bb-clear-button {
+  margin-left: auto;
+  padding: 6px 8px;
+  background: transparent;
+  color: var(--bb-green-dark);
+  font-size: 10px;
+}
+
+.bb-location-status {
+  min-height: 15px;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.bb-explorer-layout {
+  display: grid;
+  grid-template-columns: minmax(420px, .9fr) minmax(0, 1.35fr);
+  gap: 16px;
+  align-items: start;
+  margin-top: 16px;
+}
+
+.bb-list-column {
+  min-width: 0;
+}
+
+.bb-list-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 10px;
+}
+
+.bb-list-toolbar h2 {
+  margin: 3px 0 0;
+}
+
+.bb-list-toolbar select {
+  width: auto;
+  min-width: 180px;
+}
+
+.bb-base-list {
+  display: grid;
+  gap: 11px;
+}
+
+.bb-result-card {
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  box-shadow: var(--shadow);
+}
+
+.bb-result-type {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: var(--bb-green-soft);
+  color: var(--bb-green-dark);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.bb-type-icon {
+  font-size: 14px;
+}
+
+.bb-result-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 9px;
+}
+
+.bb-result-head h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.bb-result-head p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.bb-result-score {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  display: grid;
+  place-content: center;
+  border: 5px solid var(--bb-green);
+  border-radius: 50%;
+  text-align: center;
+  color: var(--bb-green-dark);
+}
+
+.bb-result-score strong {
+  font-size: 18px;
+  line-height: .9;
+}
+
+.bb-result-score span {
+  font-size: 7px;
+  color: var(--muted);
+}
+
+.bb-result-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.bb-result-meta span,
+.bb-result-services span {
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: #f2f5f3;
+  color: #526159;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.bb-distance {
+  background: #edf3ff !important;
+  color: #285b9e !important;
+}
+
+.bb-result-services {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-top: 7px;
+}
+
+.bb-result-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.bb-result-status {
+  color: #85601c;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.bb-result-footer a {
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: var(--bb-green);
+  color: #fff;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.bb-map-column {
+  position: sticky;
+  top: 12px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+
+#bikeBaseExploreMap {
+  height: 680px;
+}
+
+.bb-map-legend {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+}
+
+.bb-map-legend span {
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: #f4f6f5;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.bb-explore-marker-wrap {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.bb-explore-marker {
+  width: 52px;
+  height: 52px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--bb-green);
+  border: 4px solid #fff;
+  box-shadow: 0 6px 17px rgba(0,0,0,.25);
+}
+
+.bb-explore-marker .type {
+  font-size: 23px;
+}
+
+.bb-explore-marker .bike {
+  position: absolute;
+  right: -7px;
+  bottom: -6px;
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 13px;
+  box-shadow: 0 3px 8px rgba(0,0,0,.2);
+}
+
+.bb-explore-popup {
+  min-width: 200px;
+  display: grid;
+  gap: 5px;
+}
+
+.bb-explore-popup strong {
+  font-size: 15px;
+}
+
+.bb-explore-popup span {
+  font-size: 10px;
+}
+
+.bb-explore-popup a {
+  margin-top: 4px;
+  color: var(--bb-green-dark);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.bb-empty {
+  display: grid;
+  gap: 5px;
+  padding: 30px;
+  border: 1px dashed #cfd8d3;
+  border-radius: 17px;
+  background: #fff;
+  text-align: center;
+}
+
+.bb-empty span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 1050px) {
+  .bb-filter-main {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .bb-filter-search {
+    grid-column: 1 / -1;
+  }
+
+  .bb-explorer-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .bb-map-column {
+    position: relative;
+    top: 0;
+    grid-row: 1;
+  }
+
+  #bikeBaseExploreMap {
+    height: 480px;
+  }
+}
+
+@media (max-width: 650px) {
+  .bb-explorer {
+    padding: 12px;
+  }
+
+  .bb-explorer-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .bb-explorer-count {
+    width: 100%;
+  }
+
+  .bb-filter-main {
+    grid-template-columns: 1fr;
+  }
+
+  .bb-filter-search {
+    grid-column: auto;
+  }
+
+  .bb-clear-button {
+    margin-left: 0;
+  }
+
+  .bb-list-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .bb-list-toolbar select {
+    width: 100%;
+  }
+
+  .bb-result-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #bikeBaseExploreMap {
+    height: 420px;
+  }
+}

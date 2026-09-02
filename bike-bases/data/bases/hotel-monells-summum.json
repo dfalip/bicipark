@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "id": "hotel-monells-summum",
+  "slug": "monells-summum",
+  "name": "Hotel Monells Summum",
+  "type": "hotel",
+  "categoryLabel": "Hotel boutique · Bike Friendly",
+  "description": "Hotel boutique al cor de Monells amb serveis específics per a ciclistes de carretera, gravel i MTB.",
+  "location": {
+    "country": "ES",
+    "region": "Girona · Empordà",
+    "locality": "Monells",
+    "address": "Carrer Vilanova, 11, 17121 Monells, Girona",
+    "lat": 41.974951,
+    "lng": 3.000099
+  },
+  "status": {
+    "code": "public-unverified",
+    "label": "Informació pública · No verificada",
+    "affiliated": false,
+    "verified": false,
+    "partner": false
+  },
+  "links": {
+    "official": "https://hotelmonellssummum.com/",
+    "bikeFriendly": "https://hotelmonellssummum.com/en/bike-friendly/",
+    "routes": "https://hotelmonellssummum.com/en/portfolio/rutas-bici/"
+  },
+  "routes": {
+    "count": 1,
+    "countLabel": "Sortida ciclista publicada + informació de rutes",
+    "modes": ["road","gravel","mtb"],
+    "modeLabels": ["Carretera","Gravel","MTB"],
+    "notes": "L'hotel publica informació tècnica de rutes i sortides per carretera, gravel i MTB. Les rutes detallades Bicipark s'afegiran després."
+  },
+  "services": {
+    "bikeStorage": true,
+    "repair": true,
+    "bikeWash": true,
+    "rental": true,
+    "ebikeCharging": true,
+    "earlyBreakfast": true,
+    "sportMassage": true,
+    "tourGuide": true,
+    "pool": true
+  },
+  "serviceLabels": [
+    {"key":"bikeStorage","label":"Aparcament tancat per a bicicletes","icon":"🔒"},
+    {"key":"repair","label":"Taller i eines","icon":"🔧"},
+    {"key":"bikeWash","label":"Neteja de bicicletes","icon":"🚿"},
+    {"key":"rental","label":"Lloguer de bicicletes","icon":"🚲"},
+    {"key":"ebikeCharging","label":"Càrrega d'e-bike","icon":"⚡"},
+    {"key":"earlyBreakfast","label":"Early breakfast sota petició","icon":"☕"},
+    {"key":"sportMassage","label":"Massatge esportiu","icon":"💆"},
+    {"key":"tourGuide","label":"Guia ciclista / turístic","icon":"🧭"}
+  ],
+  "bikeFriendly": {
+    "methodologyVersion": "1.0",
+    "criteria": {
+      "storage":{"label":"Guarda-bicis","weight":20,"available":true,"evidence":"Aparcament de bicicletes tancat"},
+      "repair":{"label":"Taller / reparació","weight":15,"available":true,"evidence":"Eines i auto-taller mecànic"},
+      "wash":{"label":"Rentat de bicicletes","weight":10,"available":true,"evidence":"Zona de neteja publicada"},
+      "rental":{"label":"Lloguer bici / e-bike","weight":10,"available":true,"evidence":"Servei de lloguer publicat"},
+      "routes":{"label":"Oferta de rutes","weight":15,"available":true,"evidence":"Informació tècnica de rutes i sortides"},
+      "diversity":{"label":"Diversitat de modalitats","weight":10,"available":true,"evidence":"Carretera, Gravel i MTB"},
+      "services":{"label":"Serveis bàsics","weight":10,"available":true,"evidence":"Early breakfast, càrrega e-bike i recuperació"},
+      "verified":{"label":"Fitxa verificada","weight":10,"available":false,"evidence":"Pendent de verificació"}
+    }
+  }
+}

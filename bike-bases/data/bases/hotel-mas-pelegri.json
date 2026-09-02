@@ -1,0 +1,160 @@
+{
+    "schemaVersion":  1,
+    "id":  "hotel-mas-pelegri",
+    "slug":  "mas-pelegri",
+    "name":  "Hotel Mas Pelegrí",
+    "type":  "hotel",
+    "categoryLabel":  "Hotel rural · Cycling \u0026 multi-activity",
+    "description":  "Hotel rural especialitzat en ciclisme i activitats esportives, amb serveis molt complets per carretera, gravel i MTB.",
+    "location":  {
+                     "country":  "ES",
+                     "region":  "Girona · Pla de l’Estany",
+                     "locality":  "Serinyà",
+                     "address":  "Camí de Bosquerós, 17852 Serinyà, Girona",
+                     "lat":  42.177472,
+                     "lng":  2.756520
+                 },
+    "status":  {
+                   "code":  "public-unverified",
+                   "label":  "Informació pública · No verificada",
+                   "affiliated":  false,
+                   "verified":  false,
+                   "partner":  false
+               },
+    "links":  {
+                  "official":  "https://www.maspelegri.com/",
+                  "bikeFriendly":  "https://www.maspelegri.com/facilities-services",
+                  "routes":  "https://www.maspelegri.com/copy-of-cycling"
+              },
+    "sources":  [
+                    "https://www.maspelegri.com/",
+                    "https://www.maspelegri.com/facilities-services",
+                    "https://www.maspelegri.com/copy-of-cycling"
+                ],
+    "routes":  {
+                   "count":  3,
+                   "countLabel":  "100+ rutes des de l’hotel",
+                   "modes":  [
+                                 "road",
+                                 "gravel",
+                                 "mtb"
+                             ],
+                   "modeLabels":  [
+                                      "Carretera",
+                                      "Gravel",
+                                      "MTB"
+                                  ],
+                   "notes":  "L’hotel publica més de 100 rutes des de la porta, amb mapes i tracks GPS, des de 10 fins a 200 km.",
+                   "integratedCount":  3,
+                   "selectionType":  "nearby-official-curation",
+                   "publicLabel":  "100+ rutes declarades per l hotel; 3 rutes publiques properes integrades a Bicipark"
+               },
+    "services":  {
+                     "bikeStorage":  true,
+                     "repair":  true,
+                     "bikeWash":  true,
+                     "rental":  true,
+                     "ebikeCharging":  false,
+                     "earlyBreakfast":  true,
+                     "sportMassage":  true,
+                     "tourGuide":  true,
+                     "restaurant":  true,
+                     "supermarket":  false,
+                     "pool":  true
+                 },
+    "serviceLabels":  [
+                          {
+                              "key":  "bikeStorage",
+                              "label":  "Bike room gran amb suports",
+                              "icon":  "🔒"
+                          },
+                          {
+                              "key":  "repair",
+                              "label":  "Eines i mecànic de bicicletes",
+                              "icon":  "🔧"
+                          },
+                          {
+                              "key":  "bikeWash",
+                              "label":  "Zona de neteja de bicicletes",
+                              "icon":  "🚿"
+                          },
+                          {
+                              "key":  "rental",
+                              "label":  "Lloguer carretera / trail / MTB",
+                              "icon":  "🚲"
+                          },
+                          {
+                              "key":  "sportMassage",
+                              "label":  "Massatge esportiu",
+                              "icon":  "💆"
+                          },
+                          {
+                              "key":  "tourGuide",
+                              "label":  "Coaching i guiatge",
+                              "icon":  "🧭"
+                          },
+                          {
+                              "key":  "restaurant",
+                              "label":  "Esmorzar esportiu i restaurant",
+                              "icon":  "🍽️"
+                          },
+                          {
+                              "key":  "pool",
+                              "label":  "Piscina de 25 m",
+                              "icon":  "🏊"
+                          }
+                      ],
+    "bikeFriendly":  {
+                         "methodologyVersion":  "1.0",
+                         "criteria":  {
+                                          "storage":  {
+                                                          "label":  "Guarda-bicis",
+                                                          "weight":  20,
+                                                          "available":  true,
+                                                          "evidence":  "Bike room gran a planta baixa"
+                                                      },
+                                          "repair":  {
+                                                         "label":  "Taller / reparació",
+                                                         "weight":  15,
+                                                         "available":  true,
+                                                         "evidence":  "Eines, mecànic i bike fitting"
+                                                     },
+                                          "wash":  {
+                                                       "label":  "Rentat de bicicletes",
+                                                       "weight":  10,
+                                                       "available":  true,
+                                                       "evidence":  "Zona de neteja publicada"
+                                                   },
+                                          "rental":  {
+                                                         "label":  "Lloguer bici / e-bike",
+                                                         "weight":  10,
+                                                         "available":  true,
+                                                         "evidence":  "Lloguer de bicicletes a l’hotel"
+                                                     },
+                                          "routes":  {
+                                                         "label":  "Oferta de rutes",
+                                                         "weight":  15,
+                                                         "available":  true,
+                                                         "evidence":  "100+ rutes, mapes i GPS"
+                                                     },
+                                          "diversity":  {
+                                                            "label":  "Diversitat de modalitats",
+                                                            "weight":  10,
+                                                            "available":  true,
+                                                            "evidence":  "Carretera, Gravel i MTB"
+                                                        },
+                                          "services":  {
+                                                           "label":  "Serveis bàsics",
+                                                           "weight":  10,
+                                                           "available":  true,
+                                                           "evidence":  "Restaurant, esmorzar esportiu, piscina i recuperació"
+                                                       },
+                                          "verified":  {
+                                                           "label":  "Fitxa verificada",
+                                                           "weight":  10,
+                                                           "available":  false,
+                                                           "evidence":  "Pendent de verificació Bicipark"
+                                                       }
+                                      }
+                     }
+}

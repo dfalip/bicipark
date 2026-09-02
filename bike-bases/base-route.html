@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ruta Bike Base \u00b7 Bicipark</title>
+
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./base-route.css">
+  <link rel="stylesheet" href="../css/bicipark-nav.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">BICIPARK \u00b7 BIKE BASE ROUTE</div>
+      <strong>Bicipark</strong>
+    </div>
+
+    <nav class="topnav">
+      <a id="backToBase" href="./explore.html">\u2190 Bike Base</a>
+      <a href="./explore.html">Explora Bike Bases</a>
+      <a href="../mapa-ciclista.html">Mapa principal</a>
+    </nav>
+  </header>
+
+  <main class="bb-route-page">
+    <section id="routeHero" class="bb-route-hero">
+      <div>
+        <div id="routeOrigin" class="bb-route-origin"></div>
+        <div id="routeMode" class="bb-route-mode"></div>
+        <h1 id="routeName">Carregant ruta...</h1>
+        <p id="routeSummary"></p>
+      </div>
+
+      <div class="bb-route-basebox">
+        <span>BIKE BASE</span>
+        <strong id="routeBaseName"></strong>
+        <a id="routeBaseLink" href="./explore.html">Veure Bike Base \u2192</a>
+      </div>
+    </section>
+
+    <section class="bb-route-overview">
+      <div class="bb-route-mapcard">
+        <div class="bb-route-section-head">
+          <div>
+            <div class="eyebrow">TRA\u00c7AT REAL</div>
+            <h2>Mapa i perfil del recorregut</h2>
+          </div>
+          <span id="trackStatus" class="bb-real-track-badge"></span>
+        </div>
+
+        <div class="bb-wikiloc-frame-wrap">
+          <iframe
+            id="wikilocFrame"
+            title="Tra\u00e7at real de la ruta"
+            loading="lazy"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <div id="measurementNote" class="bb-measure-note hidden"></div>
+
+        <div class="bb-map-actions">
+          <a id="openTrackLink" target="_blank" rel="noopener">
+            Obrir tra\u00e7at original \u2197
+          </a>
+
+          <a id="downloadTrackLink" target="_blank" rel="noopener">
+            Descarregar / enviar a GPS \u2197
+          </a>
+        </div>
+      </div>
+
+      <aside class="bb-route-side">
+        <section class="bb-route-panel">
+          <div class="eyebrow">RESUM</div>
+          <h2>Dades de la ruta</h2>
+
+          <div class="bb-route-stats">
+            <div>
+              <span>Dist\u00e0ncia</span>
+              <strong id="statDistance"></strong>
+            </div>
+
+            <div>
+              <span>Desnivell +</span>
+              <strong id="statAscent"></strong>
+            </div>
+
+            <div>
+              <span>Dificultat</span>
+              <strong id="statDifficulty"></strong>
+            </div>
+
+            <div>
+              <span>Durada</span>
+              <strong id="statDuration"></strong>
+            </div>
+
+            <div>
+              <span>Tipus</span>
+              <strong id="statType"></strong>
+            </div>
+
+            <div>
+              <span>Modalitat</span>
+              <strong id="statMode"></strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="bb-route-panel">
+          <div class="eyebrow">PROCED\u00c8NCIA</div>
+          <h2>Font i autoria</h2>
+
+          <div class="bb-provenance">
+            <div>
+              <span>Classificaci\u00f3 Bicipark</span>
+              <strong id="sourceClassification"></strong>
+            </div>
+
+            <div>
+              <span>Font</span>
+              <strong id="sourceLabel"></strong>
+            </div>
+
+            <div>
+              <span>Autor del track</span>
+              <strong id="trackAuthor"></strong>
+            </div>
+          </div>
+
+          <a
+            id="sourceLink"
+            class="bb-source-button"
+            target="_blank"
+            rel="noopener"
+          >
+            Consultar font \u2197
+          </a>
+        </section>
+      </aside>
+    </section>
+
+    <section class="bb-route-detail-grid">
+      <section class="bb-route-panel">
+        <div class="eyebrow">PUNTS D'INTER\u00c8S</div>
+        <h2>Qu\u00e8 trobar\u00e0s pel cam\u00ed</h2>
+        <div id="poiList" class="bb-pill-list"></div>
+      </section>
+
+      <section class="bb-route-panel">
+        <div class="eyebrow">RECOMANACIONS</div>
+        <h2>Abans de sortir</h2>
+        <ul id="recommendationList" class="bb-advice-list"></ul>
+      </section>
+    </section>
+
+    <section class="bb-route-disclaimer">
+      <strong>Sobre el tra\u00e7at:</strong>
+      Bicipark mostra el recorregut real publicat a la font indicada.
+      No generem ni aproximem la geometria. La disponibilitat de
+      desc\u00e0rrega del fitxer dep\u00e8n del prove\u00efdor original.
+    </section>
+  </main>
+
+  <script src="./data/base-routes.js"></script>
+  <script src="./base-route.js"></script>
+  <script src="../js/bicipark-global-nav.js"></script>
+</body>
+</html>

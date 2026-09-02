@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "id": "camping-izarpe",
+  "slug": "izarpe",
+  "name": "Camping Izarpe",
+  "type": "camping",
+  "categoryLabel": "C\u00e0mping \u00b7 Centre de cicloturisme",
+  "location": {
+    "country": "ES",
+    "region": "Navarra",
+    "locality": "Ar\u00f3stegui",
+    "lat": 42.93854,
+    "lng": -1.69241
+  },
+  "status": {
+    "code": "public-unverified",
+    "label": "Informaci\u00f3 p\u00fablica \u00b7 No verificada",
+    "affiliated": false,
+    "verified": false,
+    "partner": false
+  },
+  "routes": {
+    "count": 9,
+    "modes": [
+      "road",
+      "gravel",
+      "mtb"
+    ],
+    "modeLabels": [
+      "Carretera",
+      "Gravel",
+      "MTB"
+    ]
+  },
+  "services": {
+    "bikeStorage": true,
+    "repair": true,
+    "bikeWash": true,
+    "rental": true,
+    "ebikeRental": true,
+    "restaurant": true,
+    "supermarket": true,
+    "pool": true
+  },
+  "bikeFriendly": {
+    "methodologyVersion": "1.0",
+    "criteria": {
+      "storage": {
+        "label": "Guarda-bicis",
+        "weight": 20,
+        "available": true,
+        "evidence": "Servei publicat"
+      },
+      "repair": {
+        "label": "Taller / reparaci\u00f3",
+        "weight": 15,
+        "available": true,
+        "evidence": "Servei publicat"
+      },
+      "wash": {
+        "label": "Rentat de bicicletes",
+        "weight": 10,
+        "available": true,
+        "evidence": "Servei publicat"
+      },
+      "rental": {
+        "label": "Lloguer bici / e-bike",
+        "weight": 10,
+        "available": true,
+        "evidence": "Servei publicat"
+      },
+      "routes": {
+        "label": "Oferta de rutes",
+        "weight": 15,
+        "available": true,
+        "evidence": "9 rutes publicades"
+      },
+      "diversity": {
+        "label": "Diversitat de modalitats",
+        "weight": 10,
+        "available": true,
+        "evidence": "Carretera, Gravel i MTB"
+      },
+      "services": {
+        "label": "Serveis b\u00e0sics",
+        "weight": 10,
+        "available": true,
+        "evidence": "Restaurant i supermercat"
+      },
+      "verified": {
+        "label": "Fitxa verificada",
+        "weight": 10,
+        "available": false,
+        "evidence": "Pendent de verificaci\u00f3"
+      }
+    }
+  }
+}

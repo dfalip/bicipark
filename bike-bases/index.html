@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bicipark &middot; Bike Bases</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+  >
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./bike-friendly-rating.css">
+  <link rel="stylesheet" href="./bike-base-profile-popup.css">
+  <link rel="stylesheet" href="../css/bicipark-nav.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">BICIPARK &middot; BIKE BASES</div>
+      <h1>Punts base per descobrir un territori en bicicleta</h1>
+    </div>
+
+    <nav class="topnav">
+      <a href="../explora/">&larr; Explora</a>
+      <a href="../">Mapa principal</a>
+    <a href="./explore.html">Totes les Bike Bases</a></nav>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="intro-card">
+        <div class="bike-base-badge">&#128690; BIKE BASE</div>
+
+        <h2 id="baseName"></h2>
+        <p id="baseType" class="muted"></p>
+
+        <div class="notice">
+          Informaci&oacute; basada en fonts p&uacute;bliques.
+          Aquest establiment no est&agrave; afiliat ni col&middot;labora
+          actualment amb Bicipark.
+        </div>
+
+        <div class="address" id="baseAddress"></div>
+
+        <div class="button-row">
+          <a
+            id="officialLink"
+            target="_blank"
+            rel="noopener"
+            class="primary"
+          >Web oficial &nearr;</a>
+
+          <a
+            id="cyclingLink"
+            target="_blank"
+            rel="noopener"
+            class="secondary"
+          >Rutes oficials &nearr;</a>
+        </div>
+      </div>
+
+      <section>
+        <h3>Serveis per al ciclista</h3>
+        <div class="services" id="services"></div>
+      </section>
+    </aside>
+
+    <section class="content">
+      <div class="map-card">
+        <div id="map"></div>
+      </div>
+
+      <div class="routes-head">
+        <div>
+          <div class="eyebrow">SORTINT DES D'AQU&Iacute;</div>
+          <h2>Rutes ciclistes</h2>
+        </div>
+
+        <div class="filters">
+          <button class="filter active" data-mode="all">Totes</button>
+          <button class="filter" data-mode="road">Carretera</button>
+          <button class="filter" data-mode="gravel">Gravel</button>
+          <button class="filter" data-mode="mtb">MTB</button>
+        </div>
+      </div>
+
+      <div class="routes-grid" id="routes"></div>
+
+      <section class="future-card">
+        <div>
+          <div class="eyebrow">BICIPARK EXPERIENCE</div>
+          <h2>De directori a experi&egrave;ncia ciclista</h2>
+          <p>
+            La Ruta 5 ja &eacute;s la primera prova completa:
+            GPX, mapa, perfil d'altitud, dificultat, punts d'inter&egrave;s
+            i recomanacions. Si funciona b&eacute;, aplicarem el mateix model
+            a la resta de rutes i Bike Bases.
+          </p>
+        </div>
+
+        <a class="feature-cta" href="./route-plazaola.html">
+          Veure Ruta 5 &rarr;
+        </a>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./data/bike-bases.js"></script>
+  <script src="./app.js"></script>
+  <script src="./bike-base-data.js"></script>
+  <script src="./bike-friendly-engine.js"></script>
+  <script src="./bike-friendly-rating.js"></script>
+  <script src="./bike-base-profile-popup.js"></script>
+  <script src="../js/bicipark-global-nav.js"></script>
+</body>
+</html>

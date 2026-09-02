@@ -1,0 +1,162 @@
+{
+    "schemaVersion":  1,
+    "updated":  "2026-08-25",
+    "bases":  [
+                  {
+                      "id":  "camping-izarpe",
+                      "slug":  "izarpe",
+                      "name":  "Camping Izarpe",
+                      "type":  "camping",
+                      "categoryLabel":  "Càmping · Centre de cicloturisme",
+                      "country":  "ES",
+                      "region":  "Navarra",
+                      "locality":  "Aróstegui",
+                      "lat":  42.93854,
+                      "lng":  -1.69241,
+                      "profileUrl":  "./bike-bases/",
+                      "profileUrlFromBikeBases":  "./",
+                      "routesCount":  9,
+                      "modes":  [
+                                    "road",
+                                    "gravel",
+                                    "mtb"
+                                ],
+                      "modeLabels":  [
+                                         "Carretera",
+                                         "Gravel",
+                                         "MTB"
+                                     ],
+                      "status":  "public-unverified",
+                      "statusLabel":  "Informació pública · No verificada",
+                      "affiliated":  false,
+                      "verified":  false,
+                      "partner":  false,
+                      "dataFile":  "./data/bases/camping-izarpe.json"
+                  },
+                  {
+                      "id":  "hotel-monells-summum",
+                      "slug":  "monells-summum",
+                      "name":  "Hotel Monells Summum",
+                      "type":  "hotel",
+                      "categoryLabel":  "Hotel boutique · Bike Friendly",
+                      "country":  "ES",
+                      "region":  "Girona · Empordà",
+                      "locality":  "Monells",
+                      "lat":  41.974951,
+                      "lng":  3.000099,
+                      "profileUrl":  "./bike-bases/base.html?id=hotel-monells-summum",
+                      "profileUrlFromBikeBases":  "./base.html?id=hotel-monells-summum",
+                      "routesCount":  1,
+                      "modes":  [
+                                    "road",
+                                    "gravel",
+                                    "mtb"
+                                ],
+                      "modeLabels":  [
+                                         "Carretera",
+                                         "Gravel",
+                                         "MTB"
+                                     ],
+                      "status":  "public-unverified",
+                      "statusLabel":  "Informació pública · No verificada",
+                      "affiliated":  false,
+                      "verified":  false,
+                      "partner":  false,
+                      "dataFile":  "./data/bases/hotel-monells-summum.json"
+                  },
+                  {
+                      "id":  "hotel-mas-pelegri",
+                      "slug":  "mas-pelegri",
+                      "name":  "Hotel Mas Pelegrí",
+                      "type":  "hotel",
+                      "categoryLabel":  "Hotel rural · Cycling \u0026 multi-activity",
+                      "country":  "ES",
+                      "region":  "Girona · Pla de l’Estany",
+                      "locality":  "Serinyà",
+                      "lat":  42.177472,
+                      "lng":  2.756520,
+                      "profileUrl":  "./bike-bases/base.html?id=hotel-mas-pelegri",
+                      "profileUrlFromBikeBases":  "./base.html?id=hotel-mas-pelegri",
+                      "routesCount":  3,
+                      "modes":  [
+                                    "road",
+                                    "gravel",
+                                    "mtb"
+                                ],
+                      "modeLabels":  [
+                                         "Carretera",
+                                         "Gravel",
+                                         "MTB"
+                                     ],
+                      "status":  "public-unverified",
+                      "statusLabel":  "Informació pública · No verificada",
+                      "affiliated":  false,
+                      "verified":  false,
+                      "partner":  false,
+                      "dataFile":  "./data/bases/hotel-mas-pelegri.json",
+                      "routesInfoLabel":  "3 integrades a Bicipark; 100+ declarades per l hotel"
+                  },
+                  {
+                      "id":  "hotel-carlemany-girona",
+                      "slug":  "carlemany-girona",
+                      "name":  "Hotel Carlemany Girona",
+                      "type":  "hotel",
+                      "categoryLabel":  "Hotel 4★ · Bike Friendly",
+                      "country":  "ES",
+                      "region":  "Girona · Gironès",
+                      "locality":  "Girona",
+                      "lat":  41.979167,
+                      "lng":  2.822500,
+                      "profileUrl":  "./bike-bases/base.html?id=hotel-carlemany-girona",
+                      "profileUrlFromBikeBases":  "./base.html?id=hotel-carlemany-girona",
+                      "routesCount":  3,
+                      "modes":  [
+                                    "road",
+                                    "gravel"
+                                ],
+                      "modeLabels":  [
+                                         "Carretera",
+                                         "Gravel"
+                                     ],
+                      "status":  "public-unverified",
+                      "statusLabel":  "Informació pública · No verificada",
+                      "affiliated":  false,
+                      "verified":  false,
+                      "partner":  false,
+                      "dataFile":  "./data/bases/hotel-carlemany-girona.json",
+                      "routesInfoLabel":  "3 rutes recomanades per l hotel integrades"
+                  },
+                  {
+                      "id":  "camping-salata",
+                      "slug":  "camping-salata",
+                      "name":  "Camping Salatà",
+                      "type":  "camping",
+                      "categoryLabel":  "Càmping · Bike Friendly",
+                      "country":  "ES",
+                      "region":  "Girona · Alt Empordà",
+                      "locality":  "Roses",
+                      "lat":  42.266467,
+                      "lng":  3.156067,
+                      "profileUrl":  "./bike-bases/base.html?id=camping-salata",
+                      "profileUrlFromBikeBases":  "./base.html?id=camping-salata",
+                      "routesCount":  3,
+                      "modes":  [
+                                    "road",
+                                    "gravel",
+                                    "mtb"
+                                ],
+                      "modeLabels":  [
+                                         "Carretera",
+                                         "Gravel",
+                                         "MTB"
+                                     ],
+                      "status":  "public-unverified",
+                      "statusLabel":  "Informació pública · No verificada",
+                      "affiliated":  false,
+                      "verified":  false,
+                      "partner":  false,
+                      "dataFile":  "./data/bases/camping-salata.json",
+                      "routesInfoLabel":  "3 rutes oficials de Roses seleccionades"
+                  }
+              ]
+}

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Missi&oacute; Plazaola &middot; Bicipark</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./mission-plazaola.css">
+  <link rel="stylesheet" href="../css/bicipark-nav.css">
+</head>
+
+<body>
+  <header class="topbar mission-topbar">
+    <div>
+      <div class="eyebrow">BICIPARK &middot; BIKE BASE MISSION</div>
+      <h1>Camping Izarpe</h1>
+    </div>
+
+    <nav class="topnav">
+      <a href="./route.html?id=5">&larr; Ruta 5</a>
+      <a href="./">Bike Base</a>
+    </nav>
+  </header>
+
+  <main class="mission-page">
+    <section class="mission-hero">
+      <div class="mission-kicker">
+        <span>GRAVEL</span>
+        <span>53,1 KM</span>
+        <span>5 CHECKPOINTS</span>
+        <span>1.500 PUNTS</span>
+      </div>
+
+      <div class="mission-title-row">
+        <div>
+          <div class="eyebrow">MISSI&Oacute; IZARPE 01</div>
+          <h1>Missi&oacute; Plazaola</h1>
+
+          <p>
+            Completa els cinc checkpoints de la Ruta 5 i torna a
+            Camping Izarpe. El temps queda registrat, per&ograve;
+            <strong>no dona punts</strong>: la missi&oacute; premia
+            completar el recorregut, no anar m&eacute;s r&agrave;pid.
+          </p>
+        </div>
+
+        <div class="mission-score">
+          <span>Puntuaci&oacute;</span>
+          <strong id="scoreValue">0</strong>
+          <small>/ 1.500</small>
+        </div>
+      </div>
+
+      <div class="mission-hud">
+        <div>
+          <span>Estat</span>
+          <strong id="missionStatus">Preparada</strong>
+        </div>
+
+        <div>
+          <span>Checkpoint</span>
+          <strong id="checkpointStatus">0 / 5</strong>
+        </div>
+
+        <div>
+          <span>Temps</span>
+          <strong id="elapsedTime">00:00:00</strong>
+        </div>
+
+        <div>
+          <span>GPS</span>
+          <strong id="gpsStatus">Aturat</strong>
+        </div>
+      </div>
+
+      <div class="mission-actions">
+        <button class="mission-primary" id="startMissionBtn">
+          Iniciar missi&oacute;
+        </button>
+
+        <button class="mission-secondary" id="gpsBtn">
+          Activar GPS
+        </button>
+
+        <button class="mission-danger hidden" id="resetMissionBtn">
+          Reiniciar
+        </button>
+      </div>
+
+      <div class="mission-note">
+        Usa el m&ograve;bil en un suport adequat o atura't per consultar-lo.
+        No manipulis el dispositiu mentre circules.
+      </div>
+    </section>
+
+    <section class="mission-layout">
+      <div class="mission-map-card">
+        <div id="missionMap"></div>
+
+        <div class="next-checkpoint-card" id="nextCheckpointCard">
+          <span>Seg&uuml;ent checkpoint</span>
+          <strong id="nextCheckpointName">Inicia la missi&oacute;</strong>
+          <small id="nextCheckpointDistance">--</small>
+
+          <button
+            class="validate-btn"
+            id="validateCheckpointBtn"
+            disabled
+          >
+            Encara massa lluny
+          </button>
+
+          <button
+            class="demo-btn hidden"
+            id="demoCheckpointBtn"
+          >
+            Simular arribada
+          </button>
+        </div>
+      </div>
+
+      <aside class="mission-side">
+        <section class="mission-card">
+          <div class="eyebrow">PROGR&Eacute;S</div>
+          <h2>Checkpoints</h2>
+
+          <div id="checkpointList" class="checkpoint-list"></div>
+        </section>
+
+        <section class="mission-card">
+          <div class="eyebrow">GPS</div>
+          <h2>Posici&oacute; actual</h2>
+
+          <div class="gps-grid">
+            <div>
+              <span>Dist&agrave;ncia</span>
+              <strong id="distanceToNext">--</strong>
+            </div>
+
+            <div>
+              <span>Precisi&oacute;</span>
+              <strong id="gpsAccuracy">--</strong>
+            </div>
+          </div>
+
+          <p class="small-note">
+            Un checkpoint es pot validar quan ets dins del radi
+            indicat. La precisi&oacute; dep&egrave;n del dispositiu i
+            de la cobertura GPS.
+          </p>
+        </section>
+
+        <section class="mission-card mission-reward-card">
+          <div class="eyebrow">RECOMPENSA</div>
+          <h2>Com es guanyen els punts?</h2>
+
+          <div class="reward-row">
+            <span>5 checkpoints</span>
+            <strong>5 &times; 200</strong>
+          </div>
+
+          <div class="reward-row">
+            <span>Missi&oacute; completada</span>
+            <strong>+500</strong>
+          </div>
+
+          <div class="reward-total">
+            <span>Total</span>
+            <strong>1.500 punts</strong>
+          </div>
+        </section>
+
+        <section
+          class="mission-card mission-complete hidden"
+          id="completeCard"
+        >
+          <div class="complete-icon">&#127942;</div>
+          <div class="eyebrow">MISSI&Oacute; COMPLETADA</div>
+          <h2>Plazaola completada!</h2>
+          <p id="completeSummary"></p>
+
+          <a class="mission-primary link-button" href="./">
+            Tornar a Camping Izarpe
+          </a>
+        </section>
+      </aside>
+    </section>
+
+    <p class="mission-footer-note">
+      Aquesta &eacute;s una experi&egrave;ncia Bicipark creada a partir
+      de la Ruta 5 publicada per l'Associaci&oacute; de Campings de Navarra.
+      Camping Izarpe no est&agrave; afiliat ni col&middot;labora actualment
+      amb Bicipark.
+    </p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./mission-plazaola.js"></script>
+  <script src="../js/bicipark-global-nav.js"></script>
+</body>
+</html>
