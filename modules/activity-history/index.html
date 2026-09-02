@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Historial d'activitats | BiciPark</title>
+  <link rel="stylesheet" href="./styles.css?v=1">
+  <link rel="stylesheet" href="../shared/bicipark-activity-sync-v1.css?v=1">
+  <link rel="stylesheet" href="./activity-history-polish-v1-1.css?v=11">
+  <link rel="stylesheet" href="./activity-sync-v1-2.css?v=12">
+  <link rel="stylesheet" href="../shared/bicipark-adaptive-route-match-v1.css?v=1">
+  <link rel="stylesheet" href="../shared/bicipark-adaptive-route-match-v1-1-patch.css?v=11">
+  <link rel="stylesheet" href="../shared/bicipark-adaptive-route-match-v1-1-1-polish.css?v=1">
+</head>
+
+<body>
+  <header class="bp-topbar">
+    <a class="bp-brand" href="../../index.html" aria-label="BiciPark">
+      <span class="bp-brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="bp-brand-name">BiciPark</span>
+    </a>
+
+    <nav class="bp-topnav" aria-label="Navegacio principal">
+      <a href="../../mapa-ciclista.html">Mapa</a>
+      <a href="../route-detail/">Rutes</a>
+      <a href="../../bike-bases/explore.html">Bike Bases</a>
+      <a href="../../missions.html">Missions</a>
+      <a href="../../index.html">M&#233;s</a>
+    </nav>
+
+    <div class="bp-top-actions">
+      <button class="bp-bell" type="button" aria-label="Notificacions">&#128276;<span></span></button>
+      <a class="bp-avatar" href="../route-match/" aria-label="Perfil">&#128692;</a>
+    </div>
+  </header>
+
+  <div class="bp-shell">
+    <aside class="bp-sidebar">
+      <div class="bp-space-title">
+        <span>&#128100;</span>
+        <strong>El meu espai</strong>
+      </div>
+
+      <nav class="bp-side-nav" aria-label="El meu espai">
+        <a href="../my-plan/"><span>&#8962;</span> Resum</a>
+        <a href="../my-plan/"><span>&#128197;</span> El meu pla</a>
+        <a class="is-active" href="./"><span>&#128202;</span> Historial d'activitats</a>
+        <a href="../route-match/"><span>&#9673;</span> Route Match (perfil)</a>
+        <button type="button" data-placeholder="Favorits"><span>&#9825;</span> Favorits</button>
+        <button type="button" data-placeholder="Objectius"><span>&#9873;</span> Objectius</button>
+        <button type="button" data-placeholder="Configuracio"><span>&#9881;</span> Configuraci&#243;</button>
+      </nav>
+
+      <section class="bp-level-card">
+        <div class="bp-card-title-row">
+          <strong>El meu nivell actual:</strong>
+          <span>&#9432;</span>
+        </div>
+
+        <div class="bp-level-content">
+          <div class="bp-level-ring"><span>&#128692;</span></div>
+          <div>
+            <strong id="bp-level-side">Intermedi</strong>
+            <small>Basat en les teves activitats</small>
+          </div>
+        </div>
+
+        <a href="../route-match/">Veure detall &#8594;</a>
+      </section>
+
+      <section class="bp-tip-card">
+        <div class="bp-tip-title">
+          <span>&#9728;</span>
+          <strong>Consell del dia</strong>
+        </div>
+
+        <p id="bp-tip-text">Dormir b&#233; &#233;s tan important com entrenar.</p>
+        <strong>Bona sortida! &#10084;</strong>
+      </section>
+    </aside>
+
+    <main class="bp-main">
+      <section class="bp-main-head">
+        <div>
+          <h1>Historial d'activitats</h1>
+          <p>Revisa les teves sortides, el teu progr&#233;s i com evoluciona el teu nivell.</p>
+        </div>
+
+        <div class="bp-head-actions">
+          <label class="bp-btn bp-btn-light">
+            <input id="bp-import-file" type="file" accept=".gpx,.json,.geojson" hidden>
+            <span>&#8679;</span> Importar activitat
+          </label>
+
+          <button class="bp-btn bp-btn-primary" id="bp-add-activity" type="button">
+            <span>+</span> Afegir activitat manualment
+          </button>
+        </div>
+      </section>
+
+      <section class="bp-kpi-grid">
+        <article class="bp-kpi">
+          <span class="bp-kpi-icon is-green">&#128692;</span>
+          <div>
+            <small>Sortides</small>
+            <strong id="bp-kpi-rides">0</strong>
+            <p>aquestes 4 setmanes</p>
+            <em id="bp-kpi-rides-delta">&#8599; +0 vs per&#237;ode anterior</em>
+          </div>
+        </article>
+
+        <article class="bp-kpi">
+          <span class="bp-kpi-icon is-green">&#9687;</span>
+          <div>
+            <small>Temps total</small>
+            <strong id="bp-kpi-time">0 h</strong>
+            <p>aquestes 4 setmanes</p>
+            <em id="bp-kpi-time-delta">&#8599; +0 h</em>
+          </div>
+        </article>
+
+        <article class="bp-kpi">
+          <span class="bp-kpi-icon is-purple">&#9650;</span>
+          <div>
+            <small>Desnivell total</small>
+            <strong id="bp-kpi-ascent">0 m+</strong>
+            <p>aquestes 4 setmanes</p>
+            <em id="bp-kpi-ascent-delta">&#8599; +0 m+</em>
+          </div>
+        </article>
+
+        <article class="bp-kpi">
+          <span class="bp-kpi-icon is-blue">&#9903;</span>
+          <div>
+            <small>Dist&#224;ncia total</small>
+            <strong id="bp-kpi-distance">0 km</strong>
+            <p>aquestes 4 setmanes</p>
+            <em id="bp-kpi-distance-delta">&#8599; +0 km</em>
+          </div>
+        </article>
+
+        <article class="bp-kpi">
+          <span class="bp-kpi-icon is-orange">&#8767;</span>
+          <div>
+            <small>Nivell actual</small>
+            <strong id="bp-kpi-level">Intermedi</strong>
+            <p id="bp-kpi-match">Route Match mitj&#224;: --</p>
+            <em id="bp-kpi-level-delta">&#8599; En millora</em>
+          </div>
+        </article>
+      </section>
+
+      <section class="bp-progress-grid">
+        <article class="bp-progress-card">
+          <h3>Progr&#233;s del pla actual</h3>
+          <div class="bp-plan-progress-title">
+            <span id="bp-plan-week">Setmana 1 de 4 &#183; Adaptaci&#243;</span>
+            <strong id="bp-plan-percent">0%</strong>
+          </div>
+          <div class="bp-progress-track"><span id="bp-plan-bar"></span></div>
+          <small id="bp-plan-caption">0 sessions completades</small>
+        </article>
+
+        <article class="bp-progress-card">
+          <h3>&#9734; Sensaci&#243; mitjana</h3>
+          <div class="bp-feeling-score">
+            <strong id="bp-feeling-score">-- / 5</strong>
+            <span id="bp-feeling-dots"></span>
+          </div>
+          <small>Basat en les &#250;ltimes 10 sortides</small>
+        </article>
+
+        <article class="bp-progress-card is-chart">
+          <div class="bp-chart-head">
+            <h3>Evoluci&#243; del nivell (Route Match)</h3>
+            <div>
+              <strong id="bp-chart-current">--%</strong>
+              <small>mitjana actual</small>
+              <em id="bp-chart-delta">&#8599; +0%</em>
+            </div>
+          </div>
+
+          <svg id="bp-level-chart" viewBox="0 0 420 126" aria-label="Evolucio Route Match">
+            <g class="grid">
+              <line x1="35" y1="18" x2="330" y2="18"></line>
+              <line x1="35" y1="48" x2="330" y2="48"></line>
+              <line x1="35" y1="78" x2="330" y2="78"></line>
+              <line x1="35" y1="108" x2="330" y2="108"></line>
+            </g>
+            <g class="axis-labels">
+              <text x="4" y="21">100%</text>
+              <text x="10" y="51">75%</text>
+              <text x="10" y="81">50%</text>
+              <text x="10" y="111">25%</text>
+              <text x="52" y="123">S1</text>
+              <text x="137" y="123">S2</text>
+              <text x="222" y="123">S3</text>
+              <text x="307" y="123">S4</text>
+            </g>
+            <polyline id="bp-chart-line" points=""></polyline>
+            <g id="bp-chart-points"></g>
+          </svg>
+        </article>
+      </section>
+
+      <section class="bp-activities-section">
+        <div class="bp-activities-title-row">
+          <h2>Les teves activitats</h2>
+
+          <select id="bp-sort">
+            <option value="recent">Ordenar per: M&#233;s recent</option>
+            <option value="distance">Dist&#224;ncia</option>
+            <option value="ascent">Desnivell</option>
+            <option value="duration">Temps</option>
+          </select>
+        </div>
+
+        <div class="bp-filters">
+          <select id="bp-filter-type">
+            <option value="all">Totes les activitats</option>
+            <option value="Carretera">Carretera</option>
+            <option value="Gravel">Gravel</option>
+            <option value="MTB">MTB</option>
+            <option value="Urbana">Urbana</option>
+          </select>
+
+          <select id="bp-filter-plan">
+            <option value="all">Totes les rutes</option>
+            <option value="plan">Relacionades amb el pla</option>
+            <option value="outside">Fora del pla</option>
+          </select>
+
+          <select id="bp-filter-period">
+            <option value="28">Ultimes 4 setmanes</option>
+            <option value="90">Ultims 3 mesos</option>
+            <option value="365">Ultim any</option>
+            <option value="all">Tot l'historial</option>
+          </select>
+        </div>
+
+        <div class="bp-table-wrap">
+          <table class="bp-activity-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Ruta / Lloc</th>
+                <th>Dist&#224;ncia</th>
+                <th>Desnivell</th>
+                <th>Temps</th>
+                <th>Dificultat</th>
+                <th>Sensaci&#243;</th>
+                <th>Relacionada amb el pla</th>
+                <th>Accions</th>
+              </tr>
+            </thead>
+            <tbody id="bp-activity-body"></tbody>
+          </table>
+        </div>
+
+        <div class="bp-empty" id="bp-empty" hidden>
+          Encara no hi ha activitats amb aquests filtres.
+        </div>
+      </section>
+
+      <section class="bp-next-card">
+        <span>&#8599;</span>
+        <div>
+          <strong>Vas per bon cam&#237;!</strong>
+          <p id="bp-next-copy">Continua aix&#237; i BiciPark podr&#224; proposar-te rutes cada vegada m&#233;s ajustades.</p>
+        </div>
+        <a href="../route-match/">Troba la propera ruta per a mi &#8594;</a>
+      </section>
+    </main>
+  </div>
+
+  <div class="bp-toast" id="bp-toast" role="status"></div>
+
+  <div class="bp-modal-backdrop" id="bp-modal-backdrop"></div>
+
+  <section class="bp-modal" id="bp-activity-modal" role="dialog" aria-modal="true">
+    <div class="bp-modal-head">
+      <div>
+        <h3>Afegir activitat</h3>
+        <p>Registra una sortida i BiciPark l'utilitzara per calcular el teu progr&#233;s.</p>
+      </div>
+      <button id="bp-close-modal" type="button">&#215;</button>
+    </div>
+
+    <form id="bp-activity-form">
+      <div class="bp-form-grid">
+        <label>Data
+          <input name="date" type="date" required>
+        </label>
+
+        <label>Hora
+          <input name="time" type="time" value="09:00">
+        </label>
+
+        <label class="is-wide">Ruta / lloc
+          <input name="name" type="text" placeholder="Ex. Carretera de les Aigues" required>
+        </label>
+
+        <label>Lloc
+          <input name="location" type="text" placeholder="Barcelona">
+        </label>
+
+        <label>Modalitat
+          <select name="type">
+            <option>Carretera</option>
+            <option>Gravel</option>
+            <option>MTB</option>
+            <option>Urbana</option>
+          </select>
+        </label>
+
+        <label>Distancia (km)
+          <input name="distanceKm" type="number" min="0" step="0.1" required>
+        </label>
+
+        <label>Desnivell (m+)
+          <input name="ascentM" type="number" min="0" step="1" required>
+        </label>
+
+        <label>Durada
+          <input name="duration" type="text" placeholder="2:15 h" required>
+        </label>
+
+        <label>Dificultat
+          <select name="difficulty">
+            <option>F&#224;cil</option>
+            <option selected>Mitjana</option>
+            <option>Exigent</option>
+          </select>
+        </label>
+
+        <label>Sensacio
+          <select name="feeling">
+            <option value="5">Molt facil</option>
+            <option value="4" selected>Be</option>
+            <option value="3">Exigent</option>
+            <option value="2">Massa dura</option>
+            <option value="1">Molt dura</option>
+          </select>
+        </label>
+
+        <label>Route Match (%)
+          <input name="matchScore" type="number" min="0" max="100" value="75">
+        </label>
+
+        <label class="is-wide">Relacionada amb el pla
+          <select name="planRelation">
+            <option value="">Fora del pla</option>
+            <option value="Ruta objectiu">Ruta objectiu</option>
+            <option value="Base aerobica">Base aerobica</option>
+            <option value="Treball tecnic">Treball tecnic</option>
+            <option value="Recuperacio">Recuperacio</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="bp-form-actions">
+        <button class="bp-btn bp-btn-light" type="button" id="bp-cancel-modal">Cancel&#183;lar</button>
+        <button class="bp-btn bp-btn-primary" type="submit">Guardar activitat</button>
+      </div>
+    </form>
+  </section>
+
+  <script src="../route-match/engine/profile-store.js?v=1"></script>
+    <script src="../shared/bicipark-activity-sync-v1.js?v=1"></script>
+<script src="./app.js?v=2"></script>
+  <script src="./activity-history-polish-v1-1.js?v=11"></script>
+  <script src="./activity-sync-v1-2.js?v=12"></script>
+  <script src="../route-detail/route-detail-geometry-topology-v4-2.js?v=adaptive1"></script>
+  <script src="../shared/bicipark-adaptive-route-match-v1.js?v=1"></script>
+  <script src="../shared/bicipark-adaptive-route-match-ui-v1.js?v=1"></script>
+  <script src="../shared/bicipark-adaptive-route-catalog-v1-1.js?v=11"></script>
+  <script src="../shared/bicipark-adaptive-route-match-v1-1-patch.js?v=11"></script>
+  <script src="../shared/bicipark-adaptive-route-match-v1-1-1-polish.js?v=1"></script>
+</body>
+</html>

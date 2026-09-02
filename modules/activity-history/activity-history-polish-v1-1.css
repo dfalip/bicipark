@@ -1,0 +1,125 @@
+/* ==========================================================
+   BiciPark Activity History - Activity Sync polish v1.1
+   ========================================================== */
+
+/* Desktop: use the available width instead of forcing a wide table. */
+@media (min-width: 1101px) {
+  .bp-table-wrap {
+    width: 100%;
+    overflow-x: hidden !important;
+  }
+
+  .bp-activity-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed;
+  }
+
+  .bp-activity-table th,
+  .bp-activity-table td {
+    min-width: 0;
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+    overflow-wrap: anywhere;
+  }
+
+  .bp-activity-table th:nth-child(1),
+  .bp-activity-table td:nth-child(1) {
+    width: 9%;
+  }
+
+  .bp-activity-table th:nth-child(2),
+  .bp-activity-table td:nth-child(2) {
+    width: 19%;
+  }
+
+  .bp-activity-table th:nth-child(3),
+  .bp-activity-table td:nth-child(3) {
+    width: 7%;
+  }
+
+  .bp-activity-table th:nth-child(4),
+  .bp-activity-table td:nth-child(4) {
+    width: 7%;
+  }
+
+  .bp-activity-table th:nth-child(5),
+  .bp-activity-table td:nth-child(5) {
+    width: 7%;
+  }
+
+  .bp-activity-table th:nth-child(6),
+  .bp-activity-table td:nth-child(6) {
+    width: 8%;
+  }
+
+  .bp-activity-table th:nth-child(7),
+  .bp-activity-table td:nth-child(7) {
+    width: 11%;
+  }
+
+  .bp-activity-table th:nth-child(8),
+  .bp-activity-table td:nth-child(8) {
+    width: 19%;
+  }
+
+  .bp-activity-table th:nth-child(9),
+  .bp-activity-table td:nth-child(9) {
+    width: 5%;
+    text-align: center;
+  }
+
+  .bp-route-cell {
+    grid-template-columns: 34px minmax(0, 1fr) !important;
+    gap: 7px !important;
+  }
+
+  .bp-thumb {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .bp-feeling {
+    min-width: 0 !important;
+  }
+
+  .bp-plan-relation {
+    min-width: 0 !important;
+    grid-template-columns: 22px minmax(0, 1fr) !important;
+    gap: 5px !important;
+  }
+
+  .bp-plan-relation > span {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  .bp-row-menu {
+    width: 28px !important;
+    height: 28px !important;
+  }
+}
+
+/* On narrower screens horizontal scroll remains preferable to crushing data. */
+@media (max-width: 1100px) {
+  .bp-table-wrap {
+    overflow-x: auto !important;
+  }
+
+  .bp-activity-table {
+    min-width: 980px !important;
+    table-layout: auto;
+  }
+}
+
+/* Demo state should feel informational rather than performance-positive. */
+.bp-demo-kpi-label {
+  color: #8a6b22 !important;
+  font-weight: 750 !important;
+}
+
+/* Slightly improve the plan progress caption hierarchy. */
+#bp-plan-caption {
+  color: #68776f !important;
+  font-weight: 650;
+}

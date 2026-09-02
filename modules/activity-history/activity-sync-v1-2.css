@@ -1,0 +1,29 @@
+/* ==========================================================
+   BiciPark Activity Sync v1.2
+   ========================================================== */
+
+.bp-history-chart-note {
+  margin: 3px 0 0;
+  color: #7a8780;
+  font-size: 7.5px;
+  line-height: 1.35;
+}
+
+.bp-history-chart-note strong {
+  color: #40584b;
+}
+
+.bp-history-duration-estimated {
+  color: #6e7b74;
+}
+
+.bp-history-duration-estimated::after {
+  content: " estim.";
+  color: #8b9690;
+  font-size: .82em;
+}
+
+.bp-history-duration-pending {
+  color: #b07118;
+  font-weight: 750;
+}

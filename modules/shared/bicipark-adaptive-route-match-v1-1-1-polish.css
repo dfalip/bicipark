@@ -1,0 +1,33 @@
+/* BiciPark Adaptive Route Match polish v1.1.1 */
+
+.bp-adaptive-purpose {
+  align-self: flex-start;
+  min-height: 21px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 7px;
+  margin-bottom: 8px;
+  border-radius: 999px;
+  font-size: 6.7px;
+  font-weight: 900;
+}
+
+.bp-adaptive-purpose.is-progression {
+  color: #166d3d;
+  background: #e9f6ed;
+}
+
+.bp-adaptive-purpose.is-recovery {
+  color: #316a8a;
+  background: #eaf5fb;
+}
+
+.bp-adaptive-purpose.is-balanced {
+  color: #6a53b6;
+  background: #f0ecfd;
+}
+
+.bp-adaptive-purpose.is-future {
+  color: #9b6411;
+  background: #fff0d7;
+}
