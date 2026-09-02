@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
@@ -16,6 +16,16 @@
 
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="css/mapa-ciclista.css">
+  <link rel="stylesheet" href="./css/bicipark-nav.css">
+  <link rel="stylesheet" href="./modules/highlights/adapters/main-map-adapter.css?v=1">
+  <link rel="stylesheet" href="./modules/live-conditions/adapters/main-map-adapter.css?v=1">
+  <link rel="stylesheet" href="./modules/map-tools/map-tools.css?v=1">
+  <link rel="stylesheet" href="./modules/popularity/adapters/main-map-adapter.css?v=1">
+  <link rel="stylesheet" href="./modules/weather-route/adapters/main-map-weather-layer-v1.css?v=2">
+  <link rel="stylesheet" href="./css/mapa-ciclista-compact-sidebar-v2.css?v=10">
+<link rel="stylesheet" href="css/mapa-ciclista-sidebar-proposta-a.css?v=3">
+<link rel="stylesheet" href="./modules/main-map-difficult-route/difficult-route-v1.css?v=1">
+  <link rel="stylesheet" href="./css/route-difficulty-colors-v6.css?v=6">
 </head>
 
 <body>
@@ -25,7 +35,9 @@
     <nav>
       <a href="index.html">Aparcaments</a>
       <a href="mapa-ciclista.html" class="active">Mapa ciclista</a>
-      <a href="missions.html">Missions</a>
+      <a href="./bike-bases/explore.html">Bike Bases</a>
+<a href="missions.html">Missions</a>
+   <a href="missions-sorpresa.html">Missions sorpresa</a>
  </nav>
   </header>
 
@@ -58,9 +70,30 @@
   </main>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="js/mapa-ciclista.js"></script>
+  <script src="./modules/live-conditions/adapters/main-map-adapter.js?v=1"></script>
+
+  <script src="./modules/highlights/adapters/main-map-adapter.js?v=1"></script>
+
+    <script src="./modules/map-tools/map-tools.js?v=1"></script>
+<script src="js/mapa-ciclista.js"></script>
+  <script src="./js/bike-bases-map-integration.js"></script>
+  <script src="./js/bike-bases-main-map-actions.js"></script>
+  <script src="./js/bicipark-global-nav.js"></script>
+  <script src="./modules/popularity/adapters/main-map-adapter.js?v=2"></script>
+  <script src="./modules/popularity/adapters/map-tools-adapter.js?v=1"></script>
+  <script src="./modules/weather-route/adapters/main-map-weather-layer-v1.js?v=3"></script>
+  <script src="./modules/weather-route/adapters/map-tools-weather-adapter-v1.js?v=2"></script>
+  <script src="./js/mapa-ciclista-compact-sidebar-v1.js?v=4"></script>
+<script defer src="js/mapa-ciclista-sidebar-proposta-a.js?v=3"></script>
+<script src="./modules/main-map-difficult-route/difficult-route-v1.js?v=1"></script>
+  <script src="./js/route-difficulty-colors-v7.js?v=7"></script>
+  <script src="./js/main-map-route-detail-bridge-v1.js?v=1"></script>
 </body>
 </html>
+
+
+
+
 
 
 

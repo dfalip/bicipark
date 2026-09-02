@@ -1,0 +1,230 @@
+/* ==========================================================
+   BiciPark main map compact sidebar v4
+   Map-first desktop layout + dynamic gap repair.
+   ========================================================== */
+
+@media (min-width: 1100px) {
+
+  .bp-map-compact-shell {
+    gap: 0 !important;
+    column-gap: 0 !important;
+  }
+
+  .bp-map-compact-shell > .bp-map-compact-sidebar {
+    width: 315px !important;
+    min-width: 315px !important;
+    max-width: 315px !important;
+    flex: 0 0 315px !important;
+    margin-right: 0 !important;
+  }
+
+  .bp-map-compact-map-pane {
+    min-width: 0 !important;
+  }
+
+  /*
+   * JS calculates the exact rendered gap.
+   * Do not hard-code 80/90px because it can vary by viewport.
+   */
+  .bp-map-gap-dynamic-fix {
+    margin-left:
+      calc(-1 * var(--bp-sidebar-gap)) !important;
+
+    width:
+      calc(100% + var(--bp-sidebar-gap)) !important;
+
+    max-width:
+      none !important;
+  }
+
+  .bp-map-compact-sidebar {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  .bp-map-compact-sidebar h1 {
+    margin-top: 17px !important;
+    margin-bottom: 2px !important;
+    font-size: 28px !important;
+    line-height: 1.02 !important;
+    letter-spacing: -.025em !important;
+  }
+
+  .bp-map-compact-sidebar label,
+  .bp-map-compact-sidebar > div > label {
+    font-size: 14px !important;
+    line-height: 1.15 !important;
+  }
+
+  .bp-map-compact-sidebar select {
+    min-height: 41px !important;
+    padding-left: 12px !important;
+    padding-right: 34px !important;
+    font-size: 13px !important;
+  }
+
+  .bp-map-compact-sidebar article,
+  .bp-map-compact-sidebar [class*="route-card"],
+  .bp-map-compact-sidebar [class*="ruta-card"] {
+    padding-top: 11px !important;
+    padding-bottom: 11px !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    border-radius: 14px !important;
+  }
+
+  .bp-map-compact-sidebar article h2,
+  .bp-map-compact-sidebar article h3,
+  .bp-map-compact-sidebar [class*="route-card"] h2,
+  .bp-map-compact-sidebar [class*="route-card"] h3,
+  .bp-map-compact-sidebar [class*="ruta-card"] h2,
+  .bp-map-compact-sidebar [class*="ruta-card"] h3 {
+    margin-top: 0 !important;
+    margin-bottom: 5px !important;
+    font-size: 16px !important;
+    line-height: 1.14 !important;
+  }
+
+  .bp-map-compact-sidebar article p,
+  .bp-map-compact-sidebar article span,
+  .bp-map-compact-sidebar [class*="route-card"] p,
+  .bp-map-compact-sidebar [class*="route-card"] span,
+  .bp-map-compact-sidebar [class*="ruta-card"] p,
+  .bp-map-compact-sidebar [class*="ruta-card"] span {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+  }
+
+  .bp-map-compact-sidebar article + article,
+  .bp-map-compact-sidebar [class*="route-card"] + [class*="route-card"],
+  .bp-map-compact-sidebar [class*="ruta-card"] + [class*="ruta-card"] {
+    margin-top: 10px !important;
+  }
+
+  .bp-map-compact-sidebar [class*="score"],
+  .bp-map-compact-sidebar [class*="badge"],
+  .bp-map-compact-sidebar [class*="pill"] {
+    font-size: 11px !important;
+  }
+}
+
+@media (min-width: 1100px) and (max-width: 1450px) {
+
+  .bp-map-compact-shell > .bp-map-compact-sidebar {
+    width: 295px !important;
+    min-width: 295px !important;
+    max-width: 295px !important;
+    flex-basis: 295px !important;
+  }
+
+  .bp-map-compact-sidebar {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .bp-map-compact-sidebar h1 {
+    font-size: 26px !important;
+  }
+
+  .bp-map-compact-sidebar article h2,
+  .bp-map-compact-sidebar article h3,
+  .bp-map-compact-sidebar [class*="route-card"] h2,
+  .bp-map-compact-sidebar [class*="route-card"] h3,
+  .bp-map-compact-sidebar [class*="ruta-card"] h2,
+  .bp-map-compact-sidebar [class*="ruta-card"] h3 {
+    font-size: 15px !important;
+  }
+}
+
+/* BICIPARK_FILTERS_TITLE_V9_START */
+@media (min-width: 1100px) {
+
+  /* Titol mes discret: el mapa ha de tenir mes protagonisme */
+  body .bp-map-compact-sidebar h1 {
+    font-size: 24px !important;
+    line-height: 1.02 !important;
+    margin-top: 16px !important;
+    margin-bottom: 3px !important;
+  }
+
+  /*
+   * Filtres molt compactes.
+   * Regla deliberadament especifica per guanyar qualsevol
+   * width:100% heretat del layout original.
+   */
+  body .bp-map-compact-shell
+  .bp-map-compact-sidebar select {
+    display: block !important;
+    box-sizing: border-box !important;
+
+    width: 115px !important;
+    min-width: 115px !important;
+    max-width: 115px !important;
+
+    flex: 0 0 115px !important;
+
+    min-height: 38px !important;
+    height: 38px !important;
+
+    padding-left: 10px !important;
+    padding-right: 27px !important;
+
+    font-size: 12px !important;
+  }
+}
+
+@media (min-width: 1100px) and (max-width: 1450px) {
+
+  body .bp-map-compact-sidebar h1 {
+    font-size: 23px !important;
+  }
+
+  body .bp-map-compact-shell
+  .bp-map-compact-sidebar select {
+    width: 110px !important;
+    min-width: 110px !important;
+    max-width: 110px !important;
+    flex-basis: 110px !important;
+  }
+}
+/* BICIPARK_FILTERS_TITLE_V9_END */
+
+/* BICIPARK_FILTER_DIMENSIONS_V10_START */
+@media (min-width: 1100px) {
+
+  /*
+   * Recuperem la llargada horitzontal anterior.
+   * Reduim nomes el gruix/alçada visual del control.
+   */
+  body .bp-map-compact-shell
+  .bp-map-compact-sidebar select {
+    width: 145px !important;
+    min-width: 145px !important;
+    max-width: 145px !important;
+    flex: 0 0 145px !important;
+
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 10px !important;
+    padding-right: 28px !important;
+
+    font-size: 12px !important;
+    line-height: 30px !important;
+  }
+}
+
+@media (min-width: 1100px) and (max-width: 1450px) {
+
+  body .bp-map-compact-shell
+  .bp-map-compact-sidebar select {
+    width: 140px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
+    flex-basis: 140px !important;
+  }
+}
+/* BICIPARK_FILTER_DIMENSIONS_V10_END */

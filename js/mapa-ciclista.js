@@ -1,6 +1,8 @@
 ﻿"use strict";
 
 const map = L.map("bike-map").setView([41.3874, 2.1686], 12);
+  // BICIPARK_MAIN_MAP_EXPORT_V1
+  window.BICIPARK_MAIN_MAP = map;
 
 L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -188,4 +190,5 @@ document
   .addEventListener("change", filterRoutes);
 
 loadRoutes();
+
 

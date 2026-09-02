@@ -1,0 +1,298 @@
+
+/* === BICIPARK SIDEBAR PROPOSTA A: START === */
+:root {
+  --bp-sidebar-a-width: 238px;
+  --bp-sidebar-a-padding-x: 18px;
+  --bp-sidebar-a-padding-y: 18px;
+  --bp-sidebar-a-border: #e6ebe6;
+  --bp-sidebar-a-text: #10233f;
+  --bp-sidebar-a-muted: #4f5f6c;
+  --bp-sidebar-a-green: #0f7a44;
+  --bp-sidebar-a-green-soft: #e7f4ec;
+  --bp-sidebar-a-blue-soft: #e3f0f8;
+  --bp-sidebar-a-red-soft: #faecec;
+  --bp-sidebar-a-shadow: 0 10px 30px rgba(12, 28, 18, 0.06);
+}
+
+.bp-proposal-a-layout {
+  display: grid !important;
+  grid-template-columns: var(--bp-sidebar-a-width) minmax(0, 1fr) !important;
+  column-gap: 0 !important;
+  gap: 0 !important;
+  align-items: stretch !important;
+  background: #ffffff !important;
+}
+
+.bp-proposal-a-sidebar {
+  width: var(--bp-sidebar-a-width) !important;
+  min-width: var(--bp-sidebar-a-width) !important;
+  max-width: var(--bp-sidebar-a-width) !important;
+  box-sizing: border-box !important;
+  padding: var(--bp-sidebar-a-padding-y) var(--bp-sidebar-a-padding-x) !important;
+  background: #ffffff !important;
+  border-right: 1px solid var(--bp-sidebar-a-border) !important;
+  margin: 0 !important;
+  overflow-y: auto;
+}
+
+.bp-proposal-a-map-pane {
+  min-width: 0 !important;
+  background: #ffffff !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+}
+
+.bp-proposal-a-layout > * {
+  margin-left: 0 !important;
+}
+
+.bp-proposal-a-sidebar .bp-title,
+.bp-proposal-a-sidebar h1,
+.bp-proposal-a-sidebar h2,
+.bp-proposal-a-sidebar h3 {
+  color: var(--bp-sidebar-a-text) !important;
+}
+
+.bp-proposal-a-sidebar .bp-title {
+  font-size: 24px !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.02em !important;
+  font-weight: 800 !important;
+  margin: 4px 0 14px 0 !important;
+}
+
+.bp-proposal-a-sidebar .bp-filter-group {
+  margin-bottom: 18px !important;
+}
+
+.bp-proposal-a-sidebar .bp-filter-label {
+  display: block;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #243549 !important;
+  margin-bottom: 8px !important;
+}
+
+.bp-proposal-a-sidebar select,
+.bp-proposal-a-sidebar .bp-filter-select {
+  display: block !important;
+  width: 178px !important;
+  max-width: 178px !important;
+  min-width: 178px !important;
+  height: 34px !important;
+  border: 1px solid #cfd7d2 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #12263f !important;
+  padding: 0 34px 0 12px !important;
+  font-size: 14px !important;
+  box-shadow: none !important;
+}
+
+.bp-proposal-a-sidebar .bp-divider {
+  height: 1px;
+  background: var(--bp-sidebar-a-border);
+  margin: 8px 0 14px 0;
+}
+
+.bp-proposal-a-sidebar .bp-featured-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #10233f;
+}
+
+.bp-proposal-a-sidebar .bp-featured-header svg {
+  width: 16px;
+  height: 16px;
+  color: #10233f;
+  flex: 0 0 auto;
+}
+
+.bp-proposal-a-sidebar .bp-featured-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bp-proposal-a-sidebar .bp-featured-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e2e9e5;
+  border-radius: 16px;
+  padding: 14px 14px 12px 16px;
+  box-shadow: 0 2px 12px rgba(13, 32, 21, 0.04);
+  overflow: hidden;
+}
+
+.bp-proposal-a-sidebar .bp-featured-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 16px 0 0 16px;
+  background: #8bc34a;
+}
+
+.bp-proposal-a-sidebar .bp-featured-card.bp-accent-green::before { background: #9bc53d; }
+.bp-proposal-a-sidebar .bp-featured-card.bp-accent-blue::before { background: #60b6da; }
+.bp-proposal-a-sidebar .bp-featured-card.bp-accent-red::before { background: #ef6b6b; }
+
+.bp-proposal-a-sidebar .bp-featured-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.bp-proposal-a-sidebar .bp-featured-card-title {
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+  color: #11253f !important;
+  margin: 0 0 8px 0 !important;
+}
+
+.bp-proposal-a-sidebar .bp-featured-card-arrow {
+  width: 18px;
+  height: 18px;
+  color: #16263b;
+  flex: 0 0 auto;
+  margin-top: 2px;
+  opacity: 0.9;
+}
+
+.bp-proposal-a-sidebar .bp-featured-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #243549 !important;
+  font-size: 12px !important;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.bp-proposal-a-sidebar .bp-featured-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bp-proposal-a-sidebar .bp-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px !important;
+  font-weight: 700;
+  color: #244b36;
+  background: var(--bp-sidebar-a-green-soft);
+}
+
+.bp-proposal-a-sidebar .bp-chip.bp-chip-blue {
+  color: #26425a;
+  background: var(--bp-sidebar-a-blue-soft);
+}
+
+.bp-proposal-a-sidebar .bp-all-routes {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 42px;
+  margin-top: 14px;
+  padding: 0 14px;
+  border: 1px solid #d9e2dd;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #0f6f3f !important;
+  text-decoration: none !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+
+.bp-proposal-a-sidebar .bp-all-routes svg {
+  width: 16px;
+  height: 16px;
+}
+
+.bp-proposal-a-sidebar .bp-existing-route-card,
+.bp-proposal-a-sidebar .route-card,
+.bp-proposal-a-sidebar [data-route-card='true'] {
+  display: none !important;
+}
+
+@media (max-width: 1100px) {
+  .bp-proposal-a-layout {
+    display: block !important;
+  }
+
+  .bp-proposal-a-sidebar {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--bp-sidebar-a-border) !important;
+  }
+
+  .bp-proposal-a-sidebar select,
+  .bp-proposal-a-sidebar .bp-filter-select {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+}
+/* === BICIPARK SIDEBAR PROPOSTA A: END === */
+
+/* BICIPARK_ROUTE_TEXT_FIX_V2_START */
+.bp-proposal-a-sidebar .bp-featured-card {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.bp-proposal-a-sidebar .bp-featured-card * {
+  text-decoration: none !important;
+}
+
+.bp-proposal-a-sidebar .bp-featured-card-title {
+  font-size: 13px !important;
+  line-height: 1.16 !important;
+  letter-spacing: -0.01em !important;
+  font-weight: 800 !important;
+  margin: 0 0 6px 0 !important;
+}
+
+.bp-proposal-a-sidebar .bp-featured-meta {
+  font-size: 11px !important;
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.bp-proposal-a-sidebar .bp-chip {
+  font-size: 10.5px !important;
+  min-height: 22px !important;
+  padding: 0 8px !important;
+}
+/* BICIPARK_ROUTE_TEXT_FIX_V2_END */
+
+/* BICIPARK_DIFFICULTY_COMPAT_V3_CSS_START */
+.bp-proposal-a-sidebar .bp-featured-empty-v3 {
+  margin: 4px 0 2px;
+  padding: 12px 10px;
+  border: 1px dashed #d9e2dd;
+  border-radius: 12px;
+  color: #68776f;
+  background: #f8faf8;
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: center;
+}
+/* BICIPARK_DIFFICULTY_COMPAT_V3_CSS_END */

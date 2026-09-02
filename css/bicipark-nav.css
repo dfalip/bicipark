@@ -1,0 +1,321 @@
+:root {
+  --bp-nav-green: #117446;
+  --bp-nav-green-dark: #0c5a36;
+  --bp-nav-soft: #eef6f1;
+  --bp-nav-line: #dce6e0;
+  --bp-nav-text: #173328;
+  --bp-nav-muted: #718078;
+  --bp-nav-height: 66px;
+}
+
+.bicipark-legacy-site-header {
+  display: none !important;
+}
+
+#bp-global-nav {
+  position: sticky;
+  top: 0;
+  z-index: 999999;
+  width: 100%;
+  min-height: var(--bp-nav-height);
+  border-bottom: 1px solid var(--bp-nav-line);
+  background: rgba(255, 255, 255, .96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--bp-nav-text);
+  box-sizing: border-box;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+#bp-global-nav *,
+#bp-global-nav *::before,
+#bp-global-nav *::after {
+  box-sizing: border-box;
+}
+
+.bp-nav-inner {
+  width: min(100% - 30px, 1480px);
+  min-height: var(--bp-nav-height);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.bp-nav-brand {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.bp-nav-brand-mark {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid #d7e8de;
+  background: var(--bp-nav-soft);
+  font-size: 20px;
+}
+
+.bp-nav-brand-copy {
+  display: grid;
+  gap: 1px;
+}
+
+.bp-nav-brand-copy strong {
+  color: var(--bp-nav-green-dark);
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: -.025em;
+}
+
+.bp-nav-brand-copy small {
+  color: var(--bp-nav-muted);
+  font-size: 7px;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.bp-nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.bp-nav-link,
+.bp-nav-more-btn {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 11px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #30463b;
+  text-decoration: none;
+  white-space: nowrap;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bp-nav-link:hover,
+.bp-nav-more-btn:hover {
+  background: #f2f7f4;
+  color: var(--bp-nav-green-dark);
+}
+
+.bp-nav-link.is-active,
+.bp-nav-more.is-active > .bp-nav-more-btn {
+  background: #e7f3eb;
+  color: var(--bp-nav-green-dark);
+}
+
+.bp-nav-link.is-active::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bp-nav-green);
+}
+
+.bp-nav-more {
+  position: relative;
+}
+
+.bp-nav-more-btn svg {
+  width: 12px;
+  height: 12px;
+  transition: transform .15s ease;
+}
+
+.bp-nav-more.is-open .bp-nav-more-btn svg {
+  transform: rotate(180deg);
+}
+
+.bp-nav-menu {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  width: 290px;
+  padding: 8px;
+  border: 1px solid var(--bp-nav-line);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 18px 42px rgba(28, 48, 39, .14);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-7px);
+  transition:
+    opacity .15s ease,
+    transform .15s ease;
+}
+
+.bp-nav-more.is-open .bp-nav-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.bp-nav-menu a {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 9px;
+  align-items: center;
+  padding: 9px;
+  border-radius: 11px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.bp-nav-menu a:hover,
+.bp-nav-menu a.is-active {
+  background: #f2f7f4;
+}
+
+.bp-nav-menu-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--bp-nav-soft);
+  font-size: 17px;
+}
+
+.bp-nav-menu-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.bp-nav-menu-copy strong {
+  color: #2c4337;
+  font-size: 11px;
+}
+
+.bp-nav-menu-copy small {
+  color: var(--bp-nav-muted);
+  font-size: 9px;
+  line-height: 1.3;
+}
+
+.bp-nav-mobile-btn {
+  display: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--bp-nav-line);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.bp-nav-mobile-btn span {
+  width: 18px;
+  height: 2px;
+  display: block;
+  margin: 4px auto;
+  border-radius: 999px;
+  background: var(--bp-nav-green-dark);
+}
+
+@media (max-width: 920px) {
+  .bp-nav-inner {
+    position: relative;
+    min-height: 62px;
+  }
+
+  .bp-nav-brand-copy small {
+    display: none;
+  }
+
+  .bp-nav-mobile-btn {
+    display: block;
+  }
+
+  .bp-nav-links {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 8px);
+    display: none;
+    align-items: stretch;
+    flex-direction: column;
+    padding: 9px;
+    border: 1px solid var(--bp-nav-line);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 18px 42px rgba(28, 48, 39, .14);
+  }
+
+  .bp-nav-links.is-open {
+    display: flex;
+  }
+
+  .bp-nav-link,
+  .bp-nav-more-btn {
+    width: 100%;
+    justify-content: space-between;
+    min-height: 42px;
+  }
+
+  .bp-nav-more {
+    width: 100%;
+  }
+
+  .bp-nav-menu {
+    position: static;
+    width: 100%;
+    display: none;
+    margin-top: 4px;
+    border-radius: 12px;
+    box-shadow: none;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  .bp-nav-more.is-open .bp-nav-menu {
+    display: block;
+  }
+}
+
+@media (max-width: 520px) {
+  .bp-nav-inner {
+    width: min(100% - 18px, 1480px);
+  }
+
+  .bp-nav-brand-mark {
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+  }
+
+  .bp-nav-brand-copy strong {
+    font-size: 16px;
+  }
+}
+/* BICIPARK MISSIONS LEGACY HEADER FIX START */
+body.bp-global-nav-mounted > header:not(#bp-global-nav).bicipark-legacy-site-header,
+body.bp-global-nav-mounted > nav:not(#bp-global-nav).bicipark-legacy-site-header {
+  display: none !important;
+}
+/* BICIPARK MISSIONS LEGACY HEADER FIX END */
