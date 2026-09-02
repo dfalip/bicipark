@@ -1,0 +1,25 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#bfe1ed"/>
+      <stop offset="100%" stop-color="#edf6f1"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#sky)"/>
+  <circle cx="970" cy="130" r="68" fill="#f1d274"/>
+
+  <path d="M0 510 C240 390 370 515 570 405 C790 285 940 455 1200 350 L1200 750 L0 750 Z" fill="#6f9c78"/>
+  <circle cx="190" cy="350" r="105" fill="#35684b"/>
+  <rect x="176" y="410" width="28" height="185" fill="#6b4c38"/>
+  <circle cx="980" cy="300" r="125" fill="#2f6045"/>
+  <rect x="964" y="385" width="32" height="210" fill="#6b4c38"/>
+  <path d="M490 750 L560 430 L655 430 L765 750 Z" fill="#c8c3b6"/>
+
+  <rect x="42" y="42" width="205" height="64" rx="18" fill="#123f2d" opacity="0.9"/>
+  <text x="145" y="83" text-anchor="middle" font-family="Arial" font-size="25" fill="#ffffff">IMATGE DEMO</text>
+
+  <rect x="48" y="590" width="650" height="112" rx="20" fill="#ffffff" opacity="0.9"/>
+  <text x="78" y="635" font-family="Arial" font-size="36" font-weight="700" fill="#173d2e">Entorn natural prop de Barcelona</text>
+  <text x="78" y="676" font-family="Arial" font-size="24" fill="#405c50">La coordenada real es mostra després de respondre.</text>
+</svg>

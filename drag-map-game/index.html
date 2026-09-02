@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arrossega el lloc · Bicipark</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+  >
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../css/bicipark-nav.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-pin">📍</div>
+      <div class="brand-copy">
+        <div class="brand-title">Arrossega el lloc</div>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="score-chip">
+        <span class="chip-icon">⭐</span>
+        <div class="chip-copy">
+          <span class="chip-label">Puntuació</span>
+          <strong id="scoreLabel">0</strong>
+        </div>
+      </div>
+
+      <div class="score-chip">
+        <span class="chip-icon">🏆</span>
+        <div class="chip-copy">
+          <span class="chip-label">Ronda</span>
+          <strong id="roundLabel">1 / 5</strong>
+        </div>
+      </div>
+
+      <div class="score-chip timer-chip">
+        <span class="chip-icon">⏱️</span>
+        <div class="chip-copy">
+          <span class="chip-label">Temps</span>
+          <strong><span id="timerLabel">35</span>s · <span id="timerMultiplier">100%</span></strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="header-btn" id="helpBtn">?</button>
+      <button class="menu-btn" id="newGameBtn">Nova partida ☰</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <aside class="left-card">
+      <div class="left-pill">🎯 ON ÉS?</div>
+
+      <div class="target-image-box">
+        <img id="targetIcon" alt="">
+      </div>
+
+      <h1 id="targetTitle">Barcelona · Sagrada Família</h1>
+      <p id="targetSubtitle">Nivell fàcil</p>
+
+      <div class="target-help" id="instructionText">
+        Arrossega el mapa i fes clic al lloc on creus que és!
+      </div>
+
+      <div class="city-select-row">
+        <label for="citySelect">Ciutat</label>
+        <select id="citySelect">
+          <option value="all">Totes</option>
+          <option value="Barcelona">Barcelona</option>
+          <option value="París">París</option>
+          <option value="Roma">Roma</option>
+        </select>
+      </div>
+
+      <div class="time-box">
+        <div class="time-box-head">
+          <span>Temps de ronda</span>
+          <strong id="timeHeadline">35s</strong>
+        </div>
+        <div class="time-bar">
+          <div class="time-bar-fill" id="timeBarFill"></div>
+        </div>
+        <div class="time-box-foot">
+          <span>Sense penalització: primers 5s</span>
+          <strong id="timeMultiplierInline">100%</strong>
+        </div>
+      </div>
+    </aside>
+
+    <section class="map-stage">
+      <div id="map"></div>
+
+      <div class="floating-distance hidden" id="distanceCard">
+        <span>Has quedat a</span>
+        <strong id="distanceLabel">0 km</strong>
+      </div>
+
+      <div class="result-toast hidden" id="resultPanel">
+        <div class="result-toast-icon" id="resultEmoji">🙂</div>
+        <div class="result-toast-copy">
+          <h2 id="resultTitle">Molt bé!</h2>
+          <p id="resultText"></p>
+
+          <div class="distance-scale-wrap">
+            <div class="distance-scale">
+              <span class="scale-emoji">☹️</span>
+              <div class="scale-bar">
+                <div class="scale-marker" id="scaleMarker"></div>
+              </div>
+              <span class="scale-emoji">😄</span>
+            </div>
+
+            <div class="scale-labels">
+              <span>Lluny</span>
+              <strong id="scaleDistanceValue">0 km</strong>
+              <span>A prop</span>
+            </div>
+          </div>
+
+          <div class="round-metrics">
+            <div><span>Punts</span><strong id="roundScore">0 ⭐</strong></div>
+            <div><span>Temps</span><strong id="roundTimeUsed">0s</strong></div>
+            <div><span>Multiplicador</span><strong id="roundMultiplier">100%</strong></div>
+          </div>
+
+          <div class="toast-actions">
+            <button class="secondary-btn" id="retryBtn">Torna a provar</button>
+            <button class="primary-btn" id="nextBtn">Següent ronda →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+      <div class="city-watermark" id="cityWatermark">EUROPA</div>
+      <div class="decor-layer" id="decorLayer" aria-hidden="true"></div>
+      <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+  </main>
+
+  <div class="modal-overlay hidden" id="helpModal">
+    <div class="modal-card">
+      <h3>Com jugar</h3>
+      <ol>
+        <li>Mira la icona i el nom del lloc.</li>
+        <li>Fes clic al mapa on creguis que és.</li>
+        <li>Veuràs la posició real, la distància i els punts.</li>
+        <li>Com més ràpid i més a prop, millor puntuació.</li>
+      </ol>
+      <button class="primary-btn" id="closeHelpBtn">Entesos</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./data/challenges.js"></script>
+  <script src="./app.js"></script>
+  <script src="../js/bicipark-global-nav.js"></script>
+</body>
+</html>
+

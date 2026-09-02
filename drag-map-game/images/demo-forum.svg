@@ -1,0 +1,24 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#bfe1ed"/>
+      <stop offset="100%" stop-color="#edf6f1"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#sky)"/>
+  <circle cx="970" cy="130" r="68" fill="#f1d274"/>
+
+  <rect y="420" width="1200" height="330" fill="#85c7d8"/>
+  <path d="M0 475 C150 440 260 505 400 470 C560 430 700 510 850 470 C1010 425 1090 490 1200 455" fill="none" stroke="#ffffff" stroke-width="14" opacity="0.8"/>
+  <path d="M235 610 L395 365 L535 610 Z" fill="#c6bfae"/>
+  <rect x="700" y="295" width="210" height="240" rx="18" fill="#6b7c83"/>
+  <rect x="755" y="235" width="98" height="95" rx="12" fill="#4c6068"/>
+
+  <rect x="42" y="42" width="205" height="64" rx="18" fill="#123f2d" opacity="0.9"/>
+  <text x="145" y="83" text-anchor="middle" font-family="Arial" font-size="25" fill="#ffffff">IMATGE DEMO</text>
+
+  <rect x="48" y="590" width="650" height="112" rx="20" fill="#ffffff" opacity="0.9"/>
+  <text x="78" y="635" font-family="Arial" font-size="36" font-weight="700" fill="#173d2e">Paisatge litoral i arquitectura</text>
+  <text x="78" y="676" font-family="Arial" font-size="24" fill="#405c50">Substitueix aquesta il·lustració per una fotografia real.</text>
+</svg>

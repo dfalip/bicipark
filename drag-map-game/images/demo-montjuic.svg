@@ -1,0 +1,23 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#bfe1ed"/>
+      <stop offset="100%" stop-color="#edf6f1"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#sky)"/>
+  <circle cx="970" cy="130" r="68" fill="#f1d274"/>
+
+  <path d="M0 500 C180 360 330 520 510 405 C700 280 850 490 1200 330 L1200 750 L0 750 Z" fill="#7da485"/>
+  <path d="M470 750 L555 375 L665 375 L805 750 Z" fill="#c8c3b6"/>
+  <path d="M605 750 L615 392" stroke="#ffffff" stroke-width="10" stroke-dasharray="32 24"/>
+  <rect x="815" y="270" width="230" height="170" rx="20" fill="#8b6c59"/>
+
+  <rect x="42" y="42" width="205" height="64" rx="18" fill="#123f2d" opacity="0.9"/>
+  <text x="145" y="83" text-anchor="middle" font-family="Arial" font-size="25" fill="#ffffff">IMATGE DEMO</text>
+
+  <rect x="48" y="590" width="650" height="112" rx="20" fill="#ffffff" opacity="0.9"/>
+  <text x="78" y="635" font-family="Arial" font-size="36" font-weight="700" fill="#173d2e">Pujada urbana i entorn esportiu</text>
+  <text x="78" y="676" font-family="Arial" font-size="24" fill="#405c50">Arrossega la imatge fins al lloc que consideris correcte.</text>
+</svg>
