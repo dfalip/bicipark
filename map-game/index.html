@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>On és això? | Bicipark</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+  <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body class="map-game-body">
+  <header class="map-game-header">
+    <div>
+      <p class="map-game-eyebrow">Bicipark Labs</p>
+      <h1>On és això?</h1>
+    </div>
+
+    <a class="map-game-back-link" href="../index.html">
+      Tornar a Bicipark
+    </a>
+  </header>
+
+  <main class="map-game-layout">
+    <aside class="map-game-panel">
+      <section id="roundScreen">
+        <div class="map-game-status-grid">
+          <article class="map-game-status-card">
+            <span>Ronda</span>
+            <strong id="roundNumber">1 / 5</strong>
+          </article>
+
+          <article class="map-game-status-card">
+            <span>Puntuació</span>
+            <strong id="totalScore">0</strong>
+          </article>
+        </div>
+
+        <figure class="map-game-photo-frame">
+          <img
+            id="gameImage"
+            src=""
+            alt="Fotografia que cal ubicar al mapa"
+          >
+          <figcaption id="difficulty" class="map-game-difficulty"></figcaption>
+        </figure>
+
+        <p class="map-game-instructions">
+          Observa la fotografia i marca al mapa el lloc on creus que s'ha fet.
+          Pots arrossegar el marcador abans de confirmar.
+        </p>
+
+        <button
+          id="confirmButton"
+          class="map-game-button map-game-button-primary"
+          type="button"
+          disabled
+        >
+          Confirmar ubicació
+        </button>
+
+        <button
+          id="nextButton"
+          class="map-game-button map-game-button-secondary"
+          type="button"
+          hidden
+        >
+          Següent fotografia
+        </button>
+
+        <section
+          id="resultBox"
+          class="map-game-result"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <strong id="resultPoints" class="map-game-result-points"></strong>
+          <p id="resultDistance"></p>
+          <p id="resultDescription"></p>
+        </section>
+      </section>
+
+      <section id="finalScreen" class="map-game-final" hidden>
+        <h2>Partida finalitzada</h2>
+        <p>Has aconseguit:</p>
+        <strong id="finalScore" class="map-game-final-score">0 punts</strong>
+
+        <button
+          id="restartButton"
+          class="map-game-button map-game-button-primary"
+          type="button"
+        >
+          Tornar a jugar
+        </button>
+      </section>
+    </aside>
+
+    <section
+      id="gameMap"
+      class="map-game-map"
+      aria-label="Mapa interactiu del joc"
+    ></section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,19 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c8e5f1"/>
+      <stop offset="100%" stop-color="#eef6f2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="750" fill="url(#sky)"/>
+  <path d="M0 520 C180 430 340 570 520 480 C700 390 880 530 1200 410 L1200 750 L0 750 Z" fill="#7ba783"/>
+  <path d="M0 640 C240 570 420 675 650 605 C880 535 1030 620 1200 560 L1200 750 L0 750 Z" fill="#3f7258"/>
+  <path d="M500 750 L580 430 L700 430 L820 750 Z" fill="#c9c7bd"/>
+  <path d="M610 750 L635 430" stroke="#ffffff" stroke-width="8" stroke-dasharray="28 24"/>
+  <circle cx="980" cy="145" r="62" fill="#f3d77a"/>
+  <rect x="40" y="40" width="170" height="66" rx="18" fill="#123f2d" opacity="0.88"/>
+  <text x="125" y="82" text-anchor="middle" font-family="Arial" font-size="26" fill="#ffffff">DEMO 01</text>
+  <rect x="50" y="585" width="535" height="108" rx="18" fill="#ffffff" opacity="0.88"/>
+  <text x="78" y="628" font-family="Arial" font-size="34" font-weight="700" fill="#173d2e">Paisatge urbà ciclista</text>
+  <text x="78" y="669" font-family="Arial" font-size="24" fill="#405c50">Substitueix aquesta il·lustració per una fotografia real.</text>
+</svg>
