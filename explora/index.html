@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Accés als mapes, rutes, missions i jocs de Bicipark."
+  >
+
+  <title>Explora Bicipark</title>
+
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./bike-bases-integration.css">
+</head>
+
+<body class="hub-body">
+  <header class="hub-header">
+    <a class="hub-brand" href="../index.html" aria-label="Bicipark, inici">
+      <span class="hub-brand-mark" aria-hidden="true">B</span>
+
+      <span>
+        <strong>Bicipark</strong>
+        <small>Explora</small>
+      </span>
+    </a>
+
+    <a class="hub-home-link" href="../index.html">
+      Tornar al mapa
+    </a>
+  </header>
+
+  <main class="hub-main">
+    <section class="hub-hero">
+      <p class="hub-eyebrow">Tot Bicipark en un sol lloc</p>
+
+      <h1>Què vols fer avui?</h1>
+
+      <p class="hub-introduction">
+        Consulta el mapa, descobreix rutes, completa missions o posa a
+        prova la teva orientació amb els jocs geogràfics.
+      </p>
+    </section>
+
+    <nav
+      id="categoryNavigation"
+      class="hub-category-navigation"
+      aria-label="Categories de mòduls"
+    ></nav>
+
+    <section
+      id="moduleGrid"
+      class="hub-module-grid"
+      aria-live="polite"
+    ></section>
+
+    <p id="emptyMessage" class="hub-empty-message" hidden>
+      No hi ha cap mòdul disponible en aquesta categoria.
+    </p>
+  </main>
+
+  <footer class="hub-footer">
+    <a href="../index.html">Mapa principal</a>
+    <span aria-hidden="true">·</span>
+    <span>Bicipark Labs</span>
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+  <script src="./bike-bases-integration.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,138 @@
+﻿/* BICIPARK_BIKE_BASES_INTEGRATION_V1 */
+
+.bicipark-bike-bases-card {
+  min-height: 210px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(17, 120, 72, .18);
+  background:
+    radial-gradient(circle at 88% 10%, rgba(34, 170, 99, .16), transparent 34%),
+    linear-gradient(145deg, #ffffff 0%, #eef9f2 100%);
+  color: #173225;
+  text-decoration: none;
+  box-shadow: 0 12px 30px rgba(20, 72, 43, .10);
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease;
+}
+
+.bicipark-bike-bases-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(17, 120, 72, .34);
+  box-shadow: 0 18px 38px rgba(20, 72, 43, .15);
+}
+
+.bb-card-icon {
+  flex: 0 0 96px;
+  width: 96px;
+  height: 96px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 27px;
+  background: #157a4a;
+  box-shadow: 0 12px 24px rgba(21, 122, 74, .22);
+}
+
+.bb-tent {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.bb-bike {
+  position: absolute;
+  right: -9px;
+  bottom: -8px;
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 25px;
+  box-shadow: 0 5px 14px rgba(0,0,0,.16);
+}
+
+.bb-card-copy {
+  min-width: 0;
+}
+
+.bb-card-kicker {
+  color: #147b4a;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.bicipark-bike-bases-card h2 {
+  margin: 4px 0 6px;
+  font-size: 25px;
+  line-height: 1.1;
+}
+
+.bicipark-bike-bases-card p {
+  max-width: 620px;
+  margin: 0;
+  color: #5a6b62;
+  line-height: 1.45;
+  font-size: 14px;
+}
+
+.bb-card-meta {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.bb-card-meta span {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(21, 122, 74, .09);
+  color: #176c45;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.bb-card-cta {
+  margin-top: 13px;
+  color: #147b4a;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.bicipark-bike-bases-fallback {
+  margin: 24px 0;
+}
+
+.bb-fallback-title {
+  margin-bottom: 10px;
+  color: #64756b;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+@media (max-width: 680px) {
+  .bicipark-bike-bases-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .bb-card-icon {
+    width: 76px;
+    height: 76px;
+    flex-basis: 76px;
+  }
+
+  .bb-tent {
+    font-size: 39px;
+  }
+}
