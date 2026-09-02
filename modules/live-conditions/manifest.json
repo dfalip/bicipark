@@ -1,0 +1,13 @@
+{
+  "id": "live-conditions",
+  "name": "BiciPark Live Conditions",
+  "version": "1.0.0",
+  "description": "Incidencies, estat de trams i avisos ciclistes.",
+  "entry": "./live-conditions.js",
+  "style": "./live-conditions.css",
+  "data": "./data/conditions-demo.json",
+  "dependencies": [
+    "BiciParkCore",
+    "Leaflet"
+  ]
+}

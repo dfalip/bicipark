@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>BiciPark Live Conditions</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../../css/bicipark-nav.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./live-conditions.css"
+  >
+</head>
+
+<body>
+  <main class="lc-page">
+    <section class="lc-hero">
+      <div>
+        <span class="lc-eyebrow">
+          BICIPARK LIVE CONDITIONS
+        </span>
+
+        <h1>
+          Sap qu&egrave; trobar&agrave;s abans de pedalar
+        </h1>
+
+        <p>
+          Incid&egrave;ncies, obres, fang, obstacles, tancaments i
+          avisos de la comunitat. Aquesta primera versi&oacute; &eacute;s
+          un MVP local i modular.
+        </p>
+      </div>
+
+      <div class="lc-hero-action">
+        <button
+          id="reportButton"
+          class="lc-btn lc-btn-primary"
+          type="button"
+        >
+          + Informar d'un problema
+        </button>
+      </div>
+    </section>
+
+    <section class="lc-toolbar">
+      <input
+        id="conditionSearch"
+        class="lc-search"
+        type="search"
+        placeholder="Cerca per lloc o descripcio..."
+      >
+
+      <select
+        id="conditionType"
+        class="lc-select"
+      >
+        <option value="all">
+          Tots els tipus
+        </option>
+        <option value="works">Obres</option>
+        <option value="closed">Tancament</option>
+        <option value="mud">Fang</option>
+        <option value="obstacle">Obstacle</option>
+        <option value="traffic">Transit</option>
+        <option value="danger">Perill</option>
+        <option value="maintenance">Manteniment</option>
+        <option value="other">Altres</option>
+      </select>
+
+      <button
+        id="fitConditionsButton"
+        class="lc-btn"
+        type="button"
+      >
+        Veure tots
+      </button>
+    </section>
+
+    <div class="lc-status-filters">
+      <button
+        class="lc-status-filter is-active"
+        type="button"
+        data-status-filter="all"
+      >
+        Tots
+      </button>
+
+      <button
+        class="lc-status-filter"
+        type="button"
+        data-status-filter="open"
+      >
+        &#128994; Transitable
+      </button>
+
+      <button
+        class="lc-status-filter"
+        type="button"
+        data-status-filter="caution"
+      >
+        &#128992; Precaucio
+      </button>
+
+      <button
+        class="lc-status-filter"
+        type="button"
+        data-status-filter="closed"
+      >
+        &#128308; Tancat
+      </button>
+    </div>
+
+    <section class="lc-layout">
+      <aside class="lc-panel lc-list-panel">
+        <div class="lc-list-head">
+          <h2>Estat actual</h2>
+          <small id="conditionCount">
+            0 avisos
+          </small>
+        </div>
+
+        <div
+          id="conditionList"
+          class="lc-list"
+        ></div>
+      </aside>
+
+      <section class="lc-panel">
+        <div id="liveConditionsMap"></div>
+      </section>
+    </section>
+
+    <div class="lc-note">
+      <strong>Important:</strong>
+      els avisos que venen inclosos ara s&oacute;n exemples de
+      demostraci&oacute;, no incid&egrave;ncies reals. Els avisos que
+      introdueixis amb el formulari es guarden nom&eacute;s en aquest
+      navegador fins que constru&iuml;m el backend comunitari.
+    </div>
+  </main>
+
+  <div
+    id="reportModal"
+    class="lc-modal"
+    aria-hidden="true"
+  >
+    <section class="lc-dialog">
+      <div class="lc-dialog-head">
+        <div>
+          <h2>Informar d'un problema</h2>
+          <p>
+            Crea un av&iacute;s local per provar el flux de Live Conditions.
+          </p>
+        </div>
+
+        <button
+          id="closeReportModal"
+          class="lc-close"
+          type="button"
+          aria-label="Tancar"
+        >
+          &times;
+        </button>
+      </div>
+
+      <form
+        id="reportForm"
+        class="lc-form"
+      >
+        <div class="lc-field lc-field-full">
+          <label for="reportTitle">
+            T&iacute;tol
+          </label>
+          <input
+            id="reportTitle"
+            name="title"
+            required
+            placeholder="Ex.: Arbre caigut al cami"
+          >
+        </div>
+
+        <div class="lc-field">
+          <label for="reportType">
+            Tipus
+          </label>
+          <select
+            id="reportType"
+            name="type"
+          >
+            <option value="works">Obres</option>
+            <option value="closed">Tancament</option>
+            <option value="mud">Fang</option>
+            <option value="obstacle">Obstacle</option>
+            <option value="traffic">Transit</option>
+            <option value="danger">Perill</option>
+            <option value="maintenance">Manteniment</option>
+            <option value="other">Altres</option>
+          </select>
+        </div>
+
+        <div class="lc-field">
+          <label for="reportStatus">
+            Estat
+          </label>
+          <select
+            id="reportStatus"
+            name="status"
+          >
+            <option value="open">Transitable</option>
+            <option value="caution" selected>Precaucio</option>
+            <option value="closed">Tancat</option>
+          </select>
+        </div>
+
+        <div class="lc-field lc-field-full">
+          <label for="reportDescription">
+            Descripci&oacute;
+          </label>
+          <textarea
+            id="reportDescription"
+            name="description"
+            placeholder="Que esta passant?"
+          ></textarea>
+        </div>
+
+        <div class="lc-field lc-field-full">
+          <label for="reportRegion">
+            Lloc / territori
+          </label>
+          <input
+            id="reportRegion"
+            name="region"
+            placeholder="Ex.: Girona"
+          >
+        </div>
+
+        <div class="lc-coordinate-actions">
+          <button
+            id="useLocationButton"
+            class="lc-btn"
+            type="button"
+          >
+            &#9673; Utilitzar la meva ubicacio
+          </button>
+
+          <button
+            id="useMapCenterButton"
+            class="lc-btn"
+            type="button"
+          >
+            Utilitzar centre del mapa
+          </button>
+        </div>
+
+        <div class="lc-field">
+          <label for="reportLat">
+            Latitud
+          </label>
+          <input
+            id="reportLat"
+            name="lat"
+            type="number"
+            step="any"
+            required
+          >
+        </div>
+
+        <div class="lc-field">
+          <label for="reportLng">
+            Longitud
+          </label>
+          <input
+            id="reportLng"
+            name="lng"
+            type="number"
+            step="any"
+            required
+          >
+        </div>
+
+        <div class="lc-form-actions">
+          <button
+            id="cancelReportButton"
+            class="lc-btn"
+            type="button"
+          >
+            Cancel.lar
+          </button>
+
+          <button
+            class="lc-btn lc-btn-primary"
+            type="submit"
+          >
+            Publicar av&iacute;s local
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  ></script>
+
+  <script
+    src="../../js/core/bicipark-core.js"
+  ></script>
+
+  <script
+    src="./live-conditions.js"
+  ></script>
+
+  <script
+    src="../../js/bicipark-global-nav.js"
+  ></script>
+</body>
+</html>

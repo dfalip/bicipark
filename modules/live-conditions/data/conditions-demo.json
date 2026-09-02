@@ -1,0 +1,54 @@
+[
+  {
+    "id": "demo-bcn-001",
+    "title": "Obres al carril bici",
+    "type": "works",
+    "status": "caution",
+    "lat": 41.38952,
+    "lng": 2.16961,
+    "region": "Barcelona",
+    "description": "Exemple de demostracio: pas estret per treballs temporals.",
+    "updatedAt": "2026-08-28T09:30:00+02:00",
+    "sourceType": "demo",
+    "verified": false
+  },
+  {
+    "id": "demo-bcn-002",
+    "title": "Tram temporalment tancat",
+    "type": "closed",
+    "status": "closed",
+    "lat": 41.41466,
+    "lng": 2.10719,
+    "region": "Barcelona",
+    "description": "Exemple de demostracio: tancament fictici per provar la interfície.",
+    "updatedAt": "2026-08-28T08:20:00+02:00",
+    "sourceType": "demo",
+    "verified": false
+  },
+  {
+    "id": "demo-girona-001",
+    "title": "Fang en un tram",
+    "type": "mud",
+    "status": "caution",
+    "lat": 41.99762,
+    "lng": 2.83314,
+    "region": "Girona",
+    "description": "Exemple de demostracio per provar avisos de terreny.",
+    "updatedAt": "2026-08-27T18:10:00+02:00",
+    "sourceType": "demo",
+    "verified": false
+  },
+  {
+    "id": "demo-roses-001",
+    "title": "Ruta transitable",
+    "type": "ok",
+    "status": "open",
+    "lat": 42.26741,
+    "lng": 3.18132,
+    "region": "Roses",
+    "description": "Exemple de demostracio d'un tram sense incidencies rellevants.",
+    "updatedAt": "2026-08-28T07:45:00+02:00",
+    "sourceType": "demo",
+    "verified": false
+  }
+]
