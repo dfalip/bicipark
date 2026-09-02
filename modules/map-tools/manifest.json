@@ -1,0 +1,11 @@
+{
+  "id": "map-tools",
+  "name": "BiciPark Map Tools",
+  "version": "1.0.0",
+  "description": "Gestor visual de capes modulars del mapa principal.",
+  "entry": "./map-tools.js",
+  "style": "./map-tools.css",
+  "dependencies": [
+    "Leaflet"
+  ]
+}

@@ -1,0 +1,218 @@
+.bp-map-tools {
+  min-width: 236px;
+  overflow: hidden;
+  border: 1px solid rgba(24,68,45,.16);
+  border-radius: 15px;
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 8px 24px rgba(26,61,42,.15);
+  color: #173328;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.bp-map-tools-head {
+  min-height: 48px;
+  display: grid;
+  grid-template-columns: 31px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 7px 9px;
+  border: 0;
+  background: #fff;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bp-map-tools-head:hover {
+  background: #f5f9f7;
+}
+
+.bp-map-tools-icon {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #e9f5ed;
+  color: #0c643b;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.bp-map-tools-title {
+  display: grid;
+  gap: 1px;
+}
+
+.bp-map-tools-title strong {
+  color: #153b29;
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.bp-map-tools-title small {
+  color: #74827a;
+  font-size: 8px;
+  line-height: 1.1;
+}
+
+.bp-map-tools-chevron {
+  color: #53655b;
+  font-size: 11px;
+  transition: transform .15s ease;
+}
+
+.bp-map-tools.is-expanded .bp-map-tools-chevron {
+  transform: rotate(180deg);
+}
+
+.bp-map-tools-panel {
+  display: none;
+  padding: 7px;
+  border-top: 1px solid #e4ebe7;
+  background: #fbfdfc;
+}
+
+.bp-map-tools.is-expanded .bp-map-tools-panel {
+  display: block;
+}
+
+.bp-map-tools-row {
+  min-height: 43px;
+  display: grid;
+  grid-template-columns: 28px minmax(0,1fr) auto;
+  gap: 7px;
+  align-items: center;
+  padding: 5px 6px;
+  border-radius: 10px;
+}
+
+.bp-map-tools-row + .bp-map-tools-row {
+  margin-top: 3px;
+}
+
+.bp-map-tools-row:hover {
+  background: #f1f7f4;
+}
+
+.bp-map-tools-row-icon {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #edf4f0;
+  font-size: 13px;
+}
+
+.bp-map-tools-row-copy {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+
+.bp-map-tools-row-copy strong {
+  color: #264337;
+  font-size: 9px;
+  line-height: 1.15;
+}
+
+.bp-map-tools-row-copy small {
+  overflow: hidden;
+  color: #7a8880;
+  font-size: 7px;
+  line-height: 1.15;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.bp-map-tools-count {
+  color: #607168;
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.bp-map-tools-toggle {
+  position: relative;
+  width: 31px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #d6dfda;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.bp-map-tools-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.18);
+  transition: transform .15s ease;
+}
+
+.bp-map-tools-toggle.is-on {
+  background: #117446;
+}
+
+.bp-map-tools-toggle.is-on::after {
+  transform: translateX(13px);
+}
+
+.bp-map-tools-toggle:disabled {
+  cursor: default;
+  opacity: .45;
+}
+
+.bp-map-tools-future {
+  opacity: .55;
+}
+
+.bp-map-tools-separator {
+  height: 1px;
+  margin: 6px 5px;
+  background: #e6ece8;
+}
+
+.bp-map-tools-open {
+  width: 100%;
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  border: 1px solid #d2ded7;
+  border-radius: 9px;
+  background: #fff;
+  color: #0c643b !important;
+  text-decoration: none !important;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+/*
+ * Once Map Tools is mounted, the individual modular controls
+ * are hidden. Their JS APIs and Leaflet layers remain active.
+ */
+body.bp-map-tools-ready .bp-hl-map-control,
+body.bp-map-tools-ready .bp-lc-map-control {
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+  .bp-map-tools {
+    min-width: 218px;
+  }
+}
