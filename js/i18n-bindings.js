@@ -8,6 +8,12 @@
   const i18n = () => window.BiciParkI18n;
   const set = (selector, key) => { const el = q(selector); if (el) el.textContent = i18n().t(key); };
   const byHref = (root, part, key) => { const el = q(`${root} a[href*="${part}"]`); if (el) el.textContent = i18n().t(key); };
+  const marketLabels = {
+    ca:{title:"Mercat",desc:"Compra, ven o intercanvia bicicletes, components i accessoris.",menu:"Compra, ven o intercanvia material"},
+    es:{title:"Mercado",desc:"Compra, vende o intercambia bicicletas, componentes y accesorios.",menu:"Compra, vende o intercambia material"},
+    en:{title:"Market",desc:"Buy, sell or swap bikes, components and accessories.",menu:"Buy, sell or swap cycling gear"},
+    fr:{title:"Marché",desc:"Achetez, vendez ou échangez vélos, composants et accessoires.",menu:"Achetez, vendez ou échangez du matériel"}
+  };
   const label = (name, key) => {
     const input = document.querySelector(`[name="${name}"]`);
     const el = input?.closest("label");
@@ -23,6 +29,8 @@
     const more=q("#moreMenuBtn"); if(more?.firstChild)more.firstChild.textContent=`${i18n().t("nav.more")} `;
     const myBike=q('#moreMenu [data-bicipark-entry="my-bike"] strong'); if(myBike)myBike.textContent=i18n().t("nav.myBike");
     const planner=q('#moreMenu [data-bicipark-entry="planner"] strong'); if(planner)planner.textContent=i18n().t("nav.plan");
+    const marketCopy=marketLabels[i18n().getLanguage?.()]||marketLabels.ca;
+    const marketMenu=q('#moreMenu [data-bicipark-entry="market"]'); if(marketMenu){const strong=marketMenu.querySelector("strong"),small=marketMenu.querySelector("small");if(strong)strong.textContent=marketCopy.title;if(small)small.textContent=marketCopy.menu;}
     set(".hero-copy h2","home.hero.title"); set(".hero-copy p","home.hero.desc");
     const todayHero=q('.hero-actions [data-bicipark-entry="today"]'); if(todayHero)todayHero.textContent=i18n().t("home.hero.today");
     byHref(".hero-actions","mapa-ciclista","home.hero.explore"); byHref(".hero-actions","route-explorer","home.hero.route"); byHref(".hero-actions","aparcaments","home.hero.parking");
@@ -31,6 +39,7 @@
       ["mapa-ciclista","home.map.title","home.map.desc"],["route-explorer","home.routes.title","home.routes.desc"],["bike-bases","home.bases.title","home.bases.desc"],["drag-map-game","home.game","home.game.desc"],["tour-2026","home.tour","home.tour.desc"],["bike-jump","home.jump","home.jump.desc"]
     ];
     cardMap.forEach(([href,title,desc])=>{const c=q(`.content-card[href*="${href}"]`);if(!c)return;const h=c.querySelector("h4"),p=c.querySelector("p");if(h)h.textContent=i18n().t(title);if(p)p.textContent=i18n().t(desc)});
+    const marketCard=q('[data-bicipark-entry="market-card"]'); if(marketCard){const h=marketCard.querySelector("h4"),p=marketCard.querySelector("p");if(h)h.textContent=marketCopy.title;if(p)p.textContent=marketCopy.desc;}
     const challenges=qa(".challenge-card"); const cKeys=[["nav.missions","home.missions.desc"],["home.surprise","home.surprise.desc"],["home.rewards","home.rewards.desc"]]; challenges.forEach((c,i)=>{const [a,b]=cKeys[i]||[];if(!a)return;const strong=c.querySelector("strong"),small=c.querySelector("small");if(strong)strong.textContent=i18n().t(a);if(small)small.textContent=i18n().t(b)});
     set(".partner-kicker","home.partner.kicker"); set(".partner-copy h3","home.partner.title"); set(".partner-copy p","home.partner.desc"); set(".partner-banner > a","home.partner.cta");
   }
