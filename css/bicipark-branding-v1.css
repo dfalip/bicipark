@@ -42,7 +42,7 @@ body .topbar .avatar-pill {
   border-radius: 50% !important;
   background:
     url("../assets/branding/bicipark-avatar-route-match.png")
-    center / cover no-repeat !important;
+    62% 50% / cover no-repeat !important;
   box-shadow:
     0 0 0 1px #dce8e1,
     0 4px 12px rgba(29, 69, 47, .13) !important;
