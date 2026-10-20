@@ -23,13 +23,13 @@ test('exchange listings require a requested exchange', () => {
 });
 
 test('filters support category, mode, favorites and free text', () => {
-  const items = Store.demo();
-  assert.equal(Store.filter(items, { category: 'bike' }).length, 1);
-  assert.equal(Store.filter(items, { mode: 'exchange' }).length, 2);
-  assert.equal(Store.filter(items, { query: 'Badalona' }).length, 1);
+  const state = { items: Store.demo() };
+  assert.equal(Store.filter(state.items, { category: 'bike' }).length, 1);
+  assert.equal(Store.filter(state.items, { mode: 'exchange' }).length, 2);
+  assert.equal(Store.filter(state.items, { query: 'Badalona' }).length, 1);
 
-  Store.toggleFavorite({ items }, items[0].id);
-  assert.equal(Store.filter(items, { favorites: true }).length, 1);
+  Store.toggleFavorite(state, state.items[0].id);
+  assert.equal(Store.filter(state.items, { favorites: true }).length, 1);
 });
 
 test('remove only deletes listings owned by the local user', () => {
