@@ -25,11 +25,19 @@ test('exchange listings require a requested exchange', () => {
 test('filters support category, mode, favorites and free text', () => {
   const state = { items: Store.demo() };
   assert.equal(Store.filter(state.items, { category: 'bike' }).length, 1);
-  assert.equal(Store.filter(state.items, { mode: 'exchange' }).length, 2);
-  assert.equal(Store.filter(state.items, { query: 'Badalona' }).length, 1);
+  assert.equal(Store.filter(state.items, { mode: 'exchange' }).length, 1);
+  assert.equal(Store.filter(state.items, { query: 'Barcelona' }).length, 3);
 
   Store.toggleFavorite(state, state.items[0].id);
   assert.equal(Store.filter(state.items, { favorites: true }).length, 1);
+});
+
+test('verified Bike Passport metadata is normalized and preserved', () => {
+  const item = Store.normalize({ title: 'Orbea', mode: 'sale', price: 1000, category: 'bike', bikeId: 'BP-1234', verificationLevel: 'verified', proofDigest: 'abc123', transferReady: true });
+  assert.equal(item.bikeId, 'BP-1234');
+  assert.equal(item.verificationLevel, 'verified');
+  assert.equal(item.proofDigest, 'abc123');
+  assert.equal(item.transferReady, true);
 });
 
 test('remove only deletes listings owned by the local user', () => {
