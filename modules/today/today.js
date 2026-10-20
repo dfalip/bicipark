@@ -121,6 +121,9 @@
       ? `${bike.nickname || bike.model || "Bici"}${bike.modality ? ` · ${bike.modality}` : ""}`
       : "Encara no has configurat cap bicicleta";
 
+    const bikeActionLink = document.getElementById("bikeActionLink");
+    if (bikeActionLink) bikeActionLink.textContent = bike ? "Edita la bici" : "Configura la bici";
+
     const historyText = !history.available
       ? "Sense dades d'historial"
       : history.count7d
