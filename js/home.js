@@ -29,11 +29,17 @@
       planner.innerHTML = "<strong>Planifica</strong><small>Origen, destí i GPX</small>";
       moreMenu.insertBefore(planner, myBike.nextSibling);
 
+      const passport = document.createElement("a");
+      passport.href = "./modules/bike-passport/";
+      passport.dataset.biciparkEntry = "passport";
+      passport.innerHTML = "<strong>Bike Passport</strong><small>Identitat, proves i transferència</small>";
+      moreMenu.insertBefore(passport, planner.nextSibling);
+
       const market = document.createElement("a");
       market.href = "./modules/marketplace/";
       market.dataset.biciparkEntry = "market";
       market.innerHTML = "<strong>Mercat</strong><small>Compra, ven o intercanvia material</small>";
-      moreMenu.insertBefore(market, planner.nextSibling);
+      moreMenu.insertBefore(market, passport.nextSibling);
     }
 
     const heroActions = document.querySelector(".hero-actions");
@@ -50,23 +56,14 @@
       todayButton.textContent = "Què faig avui?";
       heroActions.insertBefore(todayButton, heroActions.firstChild);
     }
+  }
 
-    if (!document.querySelector('[data-bicipark-entry="market-card"]')) {
-      const discoverCards = document.querySelector('.content-card[href*="bike-jump"]')?.parentElement;
-      if (discoverCards) {
-        const card = document.createElement("a");
-        card.className = "content-card";
-        card.href = "./modules/marketplace/";
-        card.dataset.biciparkEntry = "market-card";
-        card.innerHTML = `
-          <div class="content-media media-market"></div>
-          <div class="content-body">
-            <h4>Mercat</h4>
-            <p>Compra, ven o intercanvia bicicletes, components i accessoris.</p>
-          </div>`;
-        discoverCards.appendChild(card);
-      }
-    }
+  function loadMarketShowcase() {
+    if (document.querySelector('script[data-bicipark-home-market]')) return;
+    const script = document.createElement("script");
+    script.src = "/js/home-market.js?v=1";
+    script.dataset.biciparkHomeMarket = "1";
+    document.head.appendChild(script);
   }
 
   function closeMoreMenu() {
@@ -82,6 +79,7 @@
   }
 
   installPersonalCyclingEntries();
+  loadMarketShowcase();
 
   if (mobileMenuBtn && boardNav) {
     mobileMenuBtn.addEventListener("click", () => {
