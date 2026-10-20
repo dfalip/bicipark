@@ -26,17 +26,29 @@
     return clamp(Math.round(score), 0, 100);
   }
 
-  function iconForCode(code) {
+  function iconForCode(code, rainProbability = NaN) {
     const c = Number(code);
-    if (c === 0) return "☀️";
-    if (c <= 2) return "🌤️";
-    if (c === 3) return "☁️";
-    if (c === 45 || c === 48) return "🌫️";
-    if (c >= 51 && c <= 67) return "🌧️";
-    if (c >= 71 && c <= 77) return "🌨️";
-    if (c >= 80 && c <= 82) return "🌦️";
-    if (c >= 85 && c <= 86) return "🌨️";
+    const rain = Number(rainProbability);
+
     if (c >= 95) return "⛈️";
+    if ((c >= 71 && c <= 77) || (c >= 85 && c <= 86)) return "🌨️";
+    if (c === 45 || c === 48) return "🌫️";
+    if (c === 3) return "☁️";
+    if (c === 0) return "☀️";
+    if (c === 1 || c === 2) return "🌤️";
+
+    if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82)) {
+      if (Number.isFinite(rain) && rain <= 10) return "🌤️";
+      if (Number.isFinite(rain) && rain < 45) return "🌦️";
+      return "🌧️";
+    }
+
+    if (Number.isFinite(rain)) {
+      if (rain <= 10) return "🌤️";
+      if (rain < 45) return "🌦️";
+      return "🌧️";
+    }
+
     return "🌤️";
   }
 
@@ -120,7 +132,7 @@
     return {
       score: window.score,
       label: labelForScore(window.score),
-      icon: iconForCode(window.code),
+      icon: iconForCode(window.code, window.rain),
       bestWindow: window,
       current: {
         time: current.time,
@@ -128,7 +140,7 @@
         rain: current.rain,
         wind: current.wind,
         code: current.code,
-        icon: iconForCode(current.code),
+        icon: iconForCode(current.code, current.rain),
         score: current.score
       },
       source: "Open-Meteo",
