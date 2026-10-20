@@ -83,3 +83,5 @@ test('track compression keeps endpoints while reducing dense samples',()=>{
   assert.equal(compact[0].t,0);
   assert.equal(compact.at(-1).t,19000);
 });
+
+test('missing native GPS speed falls back to displacement and missing altitude stays unknown',()=>{const tracker=new Engine.RideTracker();tracker.ingest({lat:41,lng:2,accuracy:5,speed:null,altitude:null,timestamp:1000});tracker.ingest({lat:41.00009,lng:2,accuracy:5,speed:null,altitude:null,timestamp:2000});const s=tracker.snapshot(2000);assert.ok(s.currentSpeedKmh>30);assert.equal(s.points[0].altitude,null);assert.equal(s.ascentM,0);});
