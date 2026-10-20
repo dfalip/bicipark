@@ -24,10 +24,8 @@
   }
 
   function routeKey(route) {
-    const lat = number(route?.center?.lat).toFixed(3);
-    const lng = number(route?.center?.lng).toFixed(3);
     const km = number(route?.distanceKm).toFixed(1);
-    return `${normalize(route?.name)}|${lat}|${lng}|${km}`;
+    return `${normalize(route?.region)}|${normalize(route?.name)}|${km}`;
   }
 
   function dedupeRoutes(routes) {

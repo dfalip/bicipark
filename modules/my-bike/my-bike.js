@@ -18,7 +18,7 @@
   }
 
   function id() {
-    if (crypto?.randomUUID) return `BP-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+    if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") return `BP-${globalThis.crypto.randomUUID().slice(0, 8).toUpperCase()}`;
     return `BP-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
   }
 
@@ -27,6 +27,7 @@
   }
 
   function num(value) {
+    if (value == null || String(value).trim() === "") return null;
     const n = Number(value);
     return Number.isFinite(n) ? n : null;
   }

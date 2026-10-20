@@ -50,7 +50,7 @@
   }
 
   function activityDistance(item) {
-    const candidates = [item?.distanceKm, item?.km, item?.distance, item?.stats?.distanceKm, item?.metrics?.distanceKm];
+    const candidates = [item?.distanceKm, item?.km, item?.stats?.distanceKm, item?.metrics?.distanceKm];
     const value = candidates.map(Number).find(Number.isFinite);
     return value == null ? 0 : value;
   }
@@ -197,7 +197,7 @@
       document.getElementById("status").textContent = weatherCount
         ? `Recomanació actualitzada amb meteorologia d'Open-Meteo · ${new Date().toLocaleTimeString("ca-ES", { hour: "2-digit", minute: "2-digit" })}`
         : "Recomanació actualitzada sense meteorologia; es reintentarà en la propera actualització.";
-      cacheResult({ recommendations, location: state.location, mood: state.mood, updatedAt: new Date().toISOString() });
+      cacheResult({ recommendations, mood: state.mood, updatedAt: new Date().toISOString() });
       window.BiciParkCore?.emit("today:recommendations", { count: recommendations.length, mood: state.mood, region: recommendations[0]?.region || null });
     } catch (error) {
       console.error("[BiciPark Today]", error);
