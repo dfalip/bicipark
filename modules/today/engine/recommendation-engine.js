@@ -95,6 +95,7 @@
   }
 
   function historyScore(route, profile, history, mood) {
+    if (!history || history.available === false) return null;
     const recent = number(history?.recentDistanceKm, NaN);
     if (!Number.isFinite(recent) || recent < 0) return null;
     const mid = (number(profile?.usualDistanceMin, 20) + number(profile?.usualDistanceMax, 40)) / 2;
@@ -145,8 +146,14 @@
       reasons.push(`${weather.icon || "🌤️"} ${weather.label || "Meteorologia analitzada"}${weather.bestWindow?.label ? ` · millor franja ${weather.bestWindow.label}` : ""}`);
     }
     if (distance >= 85) reasons.push("Distància ben alineada amb el teu perfil i el pla d'avui.");
-    if (modality >= 85) reasons.push("Modalitat compatible amb el teu perfil i la bici activa.");
-    if (historyFit >= 90 && history?.recentDistanceKm > 0) reasons.push("La càrrega recent encaixa amb la intensitat d'aquesta proposta.");
+    if (modality >= 85) {
+      reasons.push(bike
+        ? "Modalitat compatible amb el teu perfil i la bici activa."
+        : "Modalitat compatible amb el teu perfil.");
+    }
+    if (historyFit >= 90 && history?.available !== false && history?.recentDistanceKm > 0) {
+      reasons.push("La càrrega recent encaixa amb la intensitat d'aquesta proposta.");
+    }
     if (mood === "climb" && elevation === null) warnings.push("El desnivell del catàleg no està prou validat per puntuar-lo.");
     if (route.needsReview) warnings.push("Algunes metadades de la ruta estan pendents de revisió editorial.");
     if (!weather) warnings.push("Sense meteorologia disponible: puntuació basada només en perfil i ruta.");
