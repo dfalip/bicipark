@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#185b3e">
+  <title>Bike Passport · BiciPark</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="./passport.css">
+</head>
+<body>
+  <main class="passport-shell">
+    <header class="passport-topbar">
+      <a href="/" class="passport-brand">🚲 BiciPark</a>
+      <nav>
+        <a href="/modules/my-bike/">La meva bici</a>
+        <a href="/modules/marketplace/">Mercat</a>
+        <span data-bp-language-switcher></span>
+      </nav>
+    </header>
+
+    <section class="passport-hero">
+      <span class="passport-kicker">BIKE PASSPORT</span>
+      <h1 id="passportTitle">Identitat i historial verificable per a la teva bicicleta.</h1>
+      <p id="passportIntro">BiciPark crea proves criptogràfiques del passaport sense publicar dades personals. Més endavant aquests hashes es podran ancorar a blockchain.</p>
+    </section>
+
+    <section class="passport-explain">
+      <div><strong>1</strong><span id="step1">Registra la bici</span></div>
+      <div><strong>2</strong><span id="step2">Crea una prova criptogràfica</span></div>
+      <div><strong>3</strong><span id="step3">Tallers i transferències podran afegir verificacions</span></div>
+      <div><strong>4</strong><span id="step4">Blockchain podrà ancorar els hashes</span></div>
+    </section>
+
+    <section class="passport-panel">
+      <div class="passport-panel-head">
+        <div><span class="passport-kicker" id="myPassportsLabel">ELS MEUS PASSAPORTS</span><h2 id="passportListTitle">Bicicletes registrades</h2></div>
+        <a class="secondary" href="/modules/my-bike/" id="addBikeLink">Afegeix o edita una bici</a>
+      </div>
+      <div id="passportList" class="passport-list"></div>
+      <div id="passportEmpty" class="passport-empty" hidden>No hi ha cap bicicleta registrada.</div>
+    </section>
+  </main>
+
+  <script src="./proof-model.js"></script>
+  <script src="./passport.js"></script>
+  <script src="/js/pwa.js"></script>
+</body>
+</html>
