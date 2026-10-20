@@ -40,9 +40,17 @@ body .topbar .avatar-pill {
   flex: 0 0 38px !important;
   border: 2px solid #ffffff !important;
   border-radius: 50% !important;
-  background:
-    url("../assets/branding/bicipark-avatar-route-match.png")
-    82% 50% / cover no-repeat !important;
+  /*
+   * The source avatar is 48x48 (square), so with `cover` there was no
+   * horizontal overflow and background-position could not visibly move it.
+   * We zoom the source enough to create a crop and anchor it to the right,
+   * which moves the face toward the visual centre of the circular avatar.
+   */
+  background-image:
+    url("../assets/branding/bicipark-avatar-route-match.png") !important;
+  background-repeat: no-repeat !important;
+  background-size: 155% 155% !important;
+  background-position: 100% 50% !important;
   box-shadow:
     0 0 0 1px #dce8e1,
     0 4px 12px rgba(29, 69, 47, .13) !important;
