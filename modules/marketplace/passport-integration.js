@@ -7,10 +7,10 @@
 
   const BIKE_KEY="bicipark.myBike.v1";
   const copy={
-    ca:{label:"Bike Passport vinculat",none:"Sense vincular",passport:"Bike Passport",verified:"✓ BiciPark Verified",transfer:"Transferència preparada"},
-    es:{label:"Bike Passport vinculado",none:"Sin vincular",passport:"Bike Passport",verified:"✓ BiciPark Verified",transfer:"Transferencia preparada"},
-    en:{label:"Linked Bike Passport",none:"Not linked",passport:"Bike Passport",verified:"✓ BiciPark Verified",transfer:"Transfer ready"},
-    fr:{label:"Bike Passport lié",none:"Non lié",passport:"Bike Passport",verified:"✓ BiciPark Verified",transfer:"Transfert prêt"}
+    ca:{label:"Bike Passport vinculat",none:"Sense vincular",passport:"Bike Passport",verified:"✓ BiciPark Verified",transfer:"Transferència preparada",routes:"Rutes"},
+    es:{label:"Bike Passport vinculado",none:"Sin vincular",passport:"Bike Passport",verified:"✓ BiciPark Verified",transfer:"Transferencia preparada",routes:"Rutas"},
+    en:{label:"Linked Bike Passport",none:"Not linked",passport:"Bike Passport",verified:"✓ BiciPark Verified",transfer:"Transfer ready",routes:"Routes"},
+    fr:{label:"Bike Passport lié",none:"Non lié",passport:"Bike Passport",verified:"✓ BiciPark Verified",transfer:"Transfert prêt",routes:"Itinéraires"}
   };
   const lang=()=>window.BiciParkI18n?.getLanguage?.()||localStorage.getItem("bicipark.language.v1")||"ca";
   const tr=k=>(copy[lang()]||copy.ca)[k];
@@ -19,6 +19,10 @@
   function selectedMeta(id){
     const state=Proof.read(localStorage),latest=Proof.latest(state,id),level=Proof.verificationLevel(state,id),proofs=Proof.forBike(state,id);
     return {level,digest:latest?.digest||"",transferReady:proofs.some(p=>p.type==="transfer-intent")};
+  }
+  function fixNav(){
+    const passport=document.querySelector('.market-topbar nav a[href*="bike-passport"]');if(passport)passport.textContent="Bike Passport";
+    const routes=document.querySelector('.market-topbar nav a[href*="route-explorer"]');if(routes)routes.textContent=tr("routes");
   }
   function installField(){
     const form=document.getElementById("listingForm");if(!form||form.querySelector('[name="bikeId"]'))return;
@@ -50,7 +54,7 @@
     });
   }
   const observer=new MutationObserver(()=>{clearTimeout(observer._t);observer._t=setTimeout(decorate,25)});
-  function init(){installField();decorate();const grid=document.getElementById("listingGrid");if(grid)observer.observe(grid,{childList:true,subtree:true});}
-  window.addEventListener("bicipark:language-changed",()=>{refreshOptions();decorate()});
+  function init(){installField();fixNav();decorate();const grid=document.getElementById("listingGrid");if(grid)observer.observe(grid,{childList:true,subtree:true});}
+  window.addEventListener("bicipark:language-changed",()=>{refreshOptions();fixNav();decorate()});
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
