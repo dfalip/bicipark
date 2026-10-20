@@ -37,7 +37,17 @@
             <label>Amplada pneumàtic (mm)<input name="tireWidthMm" type="number" min="18" max="100" step="1"></label>
             <label>Tipus<select name="tireType"><option value="">No indicat</option><option>Tubeless</option><option>Cambra</option><option>Tubular</option></select></label>
             <label>Pressió dav./darr. (bar)<span style="display:flex;gap:6px"><input name="frontBar" type="number" min="0.5" max="12" step="0.1" placeholder="dav."><input name="rearBar" type="number" min="0.5" max="12" step="0.1" placeholder="darr."></span></label>
-            <p class="form-note">Aquí registrem la pressió que tu utilitzes. Encara no donem una pressió “recomanada”: aquesta funció s'activarà quan tinguem una fórmula o taula validada per pes total, amplada real, carcassa i superfície.</p>
+            <p class="form-note">Aquí registrem la pressió que tu utilitzes. Encara no donem una pressió “recomanada” sense un model validat i els límits reals del teu equip.</p>
+          </fieldset>
+
+          <fieldset class="pressure-fieldset"><legend id="pressureAdvisorTitle">Pressure Advisor · Beta</legend>
+            <p id="pressureAdvisorIntro" class="form-note">Prepara totes les dades que afecten la pressió abans de calcular-la. BiciPark no inventa una xifra: valida que el setup sigui complet i et permet contrastar-lo amb un calculador especialitzat.</p>
+            <label>Superfície habitual<select name="pressureSurface"><option value="">No indicat</option><option value="smooth">Asfalt llis</option><option value="mixed">Asfalt irregular / mixt</option><option value="gravel">Gravel</option><option value="trail">Pista / MTB</option></select></label>
+            <label>Velocitat mitjana<select name="pressureSpeed"><option value="">No indicat</option><option value="slow">&lt; 20 km/h</option><option value="medium">20–30 km/h</option><option value="fast">30–40 km/h</option><option value="veryFast">&gt; 40 km/h</option></select></label>
+            <label>% pes davant<input name="frontWeightPct" type="number" min="35" max="60" step="1" placeholder="45"></label>
+            <label>Tipus de llanta<select name="rimType"><option value="">No indicat</option><option value="hooked">Hooked / convencional</option><option value="hookless">Hookless</option></select></label>
+            <label>Màxim fabricant (bar)<input name="manufacturerMaxBar" type="number" min="1" max="12" step="0.1"></label>
+            <p id="pressureDisclaimer" class="form-note">Respecta sempre els límits de pneumàtic i llanta del fabricant. En hookless/tubeless, superar el màxim admès pot ser perillós.</p>
           </fieldset>
 
           <fieldset><legend>Passaport i manteniment</legend>
@@ -60,6 +70,7 @@
     </div>
     <p class="bike-safety-note">El manteniment i les pressions registrades són dades personals de configuració. BiciPark no determina si una bicicleta és segura per circular; segueix les especificacions del fabricant i consulta un taller qualificat quan calgui.</p>
   </main>
+  <script src="./pressure-advisor.js"></script>
   <script src="./my-bike.js"></script>
   <script src="/js/pwa.js"></script>
 </body>
