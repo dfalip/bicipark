@@ -64,10 +64,11 @@
     const nextIcon = button.querySelector(".bp360-compact-icon");
     const nextLabel = button.querySelector(".bp360-compact-label");
 
-    if (nextIcon) {
+    if (nextIcon && nextIcon.dataset.iconMarkup !== iconMarkup) {
+      nextIcon.dataset.iconMarkup = iconMarkup;
       nextIcon.innerHTML = iconMarkup;
     }
-    if (nextLabel) {
+    if (nextLabel && nextLabel.textContent !== label) {
       nextLabel.textContent = label;
     }
 
@@ -229,7 +230,7 @@
       const manage = ensureManageAction(actions);
 
       setStatusCopy(status);
-      setPrimaryCopy(primary);
+      // Registration copy belongs to the registration module.
 
       ensureWrapper(favorite, "Afegir a favorits", ICONS.favorite);
       ensureWrapper(plan, "Al meu pla", ICONS.plan);
@@ -272,9 +273,7 @@
       observer.observe(root, {
         childList: true,
         subtree: true,
-        characterData: true,
-        attributes: true,
-        attributeFilter: ["hidden", "disabled", "class", "style"]
+        characterData: true
       });
     }
 

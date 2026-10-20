@@ -25,6 +25,7 @@
 
   function currentSection() {
     const path = normalizedPath();
+    if (path.endsWith("/aparcaments.html")) return "parkings";
 
     if (
       path.includes("/bike-bases/") ||
@@ -108,7 +109,7 @@
   nav.id = "bp-global-nav";
 
   const activeMore =
-    ["surprise", "games", "tour", "bike-jump"].includes(section);
+    ["parkings", "surprise", "games", "tour", "bike-jump"].includes(section);
 
   nav.innerHTML = `
     <div class="bp-nav-inner">
@@ -185,7 +186,7 @@
           </button>
 
           <div class="bp-nav-menu">
-            <a href="${url("mapa-ciclista.html")}">
+            <a href="${url("aparcaments.html")}" ${section === "parkings" ? 'aria-current="page"' : ""}>
               <span class="bp-nav-menu-icon" aria-hidden="true">\uD83C\uDD7F\uFE0F</span>
               <span class="bp-nav-menu-copy">
                 <strong>Aparcaments</strong>

@@ -12,126 +12,19 @@
 
   <link
     rel="stylesheet"
-    href="./route-match.css?v=1"
+    href="./route-match.css?v=2"
   >
+<link rel="stylesheet" href="./dashboard.css?v=1">
 </head>
 
 <body>
-  <main class="rm-page">
-    <section
-      class="rm-stage"
-      aria-label="BiciPark Pla ciclista personal"
-    >
-      <img
-        class="rm-stage-image"
-        src="./assets/route-match-approved-mockup.png"
-        alt="Mockup aprovat del pla ciclista personal BiciPark"
-      >
-
-      <a
-        class="rm-hotspot hs-nav-map"
-        href="../../mapa-ciclista.html"
-        aria-label="Mapa"
-      >Mapa</a>
-
-      <a
-        class="rm-hotspot hs-nav-routes"
-        href="../../route-explorer/"
-        aria-label="Rutes"
-      >Rutes</a>
-
-      <a
-        class="rm-hotspot hs-nav-bases"
-        href="../../bike-bases/explore.html"
-        aria-label="Bike Bases"
-      >Bike Bases</a>
-
-      <a
-        class="rm-hotspot hs-nav-missions"
-        href="../../missions.html"
-        aria-label="Missions"
-      >Missions</a>
-
-      <button
-        class="rm-hotspot hs-profile-top"
-        type="button"
-        data-action="profile"
-        aria-label="Obrir el perfil ciclista"
-      >Perfil</button>
-
-      <button
-        class="rm-hotspot hs-edit-profile"
-        type="button"
-        data-action="profile"
-        aria-label="Editar perfil"
-      >Editar perfil</button>
-
-      <button
-        class="rm-hotspot hs-goal-improve"
-        type="button"
-        data-goal="millorar"
-        aria-label="Objectiu: millorar"
-      >Millorar</button>
-
-      <button
-        class="rm-hotspot hs-goal-hard"
-        type="button"
-        data-goal="dificultat"
-        aria-label="Objectiu: incrementar dificultat"
-      >Incrementar dificultat</button>
-
-      <button
-        class="rm-hotspot hs-goal-walk"
-        type="button"
-        data-goal="passejar"
-        aria-label="Objectiu: passejar"
-      >Passejar</button>
-
-      <button
-        class="rm-hotspot hs-goal-challenge"
-        type="button"
-        data-goal="repte"
-        aria-label="Objectiu: preparar repte"
-      >Preparar repte</button>
-
-      <a
-        class="rm-hotspot hs-all-routes"
-        href="../../route-explorer/"
-        aria-label="Veure totes les rutes"
-      >Veure totes les rutes</a>
-
-      <a
-        class="rm-hotspot hs-route-1"
-        href="../../modules/weather-route/?route=carretera-aigues"
-        aria-label="Veure Carretera de les Aigues"
-      >Carretera de les Aigues</a>
-
-      <a
-        class="rm-hotspot hs-route-2"
-        href="../../modules/weather-route/?route=riu-besos"
-        aria-label="Veure Ruta del riu Besos"
-      >Ruta del riu Besos</a>
-
-      <a
-        class="rm-hotspot hs-route-3"
-        href="../../route-explorer/"
-        aria-label="Veure Volta suau al Pla de l'Estany"
-      >Volta suau al Pla de l'Estany</a>
-
-      <button
-        class="rm-hotspot hs-activate-plan"
-        type="button"
-        data-action="activate-plan"
-        aria-label="Activar pla basic d'exercicis"
-      >Activar pla</button>
-
-      <button
-        class="rm-hotspot hs-adjust-goals"
-        type="button"
-        data-action="profile"
-        aria-label="Ajustar objectius"
-      >Ajustar objectius</button>
-    </section>
+  <header class="rm-header"><a href="../../index.html">🚲 BiciPark</a><nav aria-label="Navegació principal"><a href="../../mapa-ciclista.html">Mapa</a><a href="../../aparcaments.html">Aparcaments</a><a href="../../route-explorer/">Rutes</a><a href="../my-plan/">El meu pla</a><a href="../activity-history/">Historial</a></nav></header>
+  <main class="rm-dashboard">
+    <section class="rm-intro"><div><p class="rm-eyebrow">EL TEU PROPER RECORREGUT</p><h1>Pla ciclista personal</h1><p>Tria un objectiu i troba rutes que encaixin amb la distància i el desnivell del teu perfil.</p></div><button type="button" data-action="profile">Ajustar perfil</button></section>
+    <section class="rm-summary" aria-label="El teu perfil"><h2>El teu punt de partida</h2><p id="rmProfileSummary"></p><small>Perfil i pla desats en aquest navegador. L’encaix és una puntuació orientativa, no una probabilitat ni una garantia de seguretat.</small></section>
+    <section><h2>Què et ve de gust?</h2><div class="rm-goals"><button data-goal="millorar" type="button">Millorar</button><button data-goal="dificultat" type="button">Incrementar dificultat</button><button data-goal="passejar" type="button">Passejar</button><button data-goal="repte" type="button">Preparar un repte</button></div></section>
+    <section aria-labelledby="rmRoutesTitle"><h2 id="rmRoutesTitle">Rutes per a tu</h2><div id="rmRecommendations" class="rm-route-grid" aria-live="polite">Carregant rutes…</div></section>
+    <section class="rm-summary"><h2>La teva setmana</h2><div id="rmDashboardPlan"></div><p id="rmPlanStatus" role="status"></p><button type="button" data-action="activate-plan">Activar pla</button> <a href="../my-plan/">Veure el meu pla →</a></section>
   </main>
 
   <div
@@ -340,6 +233,6 @@
   <script src="./engine/profile-store.js?v=1"></script>
   <script src="./engine/match-engine.js?v=1"></script>
   <script src="./engine/training-plan-engine.js?v=2"></script>
-  <script src="./route-match.js?v=1"></script>
+  <script src="./route-match.js?v=2"></script>
 </body>
 </html>

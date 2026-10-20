@@ -157,13 +157,8 @@
               activity.name
             );
 
-          if (
-            wantedId &&
-            activityId &&
-            wantedId ===
-              activityId
-          ) {
-            return true;
+          if (wantedId && activityId) {
+            return wantedId === activityId;
           }
 
           if (
@@ -200,6 +195,10 @@
       registered
         ? "registered"
         : "pending";
+
+    // Other adapters may decorate this button. Render only on a real state change.
+    if (button.dataset.routeRegistrationState === state &&
+        button.dataset.routeRegistrationRoute === routeId) return true;
 
     button.dataset
       .routeRegistrationState =
