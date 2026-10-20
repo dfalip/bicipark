@@ -23,7 +23,16 @@ let bikeLanesVisible = false;
 
 let securityLegend;
 
-let favorites = JSON.parse(localStorage.getItem("biciparkFavorites") || "[]");
+let favorites = [];
+try {
+  const saved = JSON.parse(localStorage.getItem("biciparkFavorites") || "[]");
+  if (Array.isArray(saved)) favorites = saved.filter(id => typeof id === "string");
+} catch (_) { /* A damaged local entry must not prevent the map from opening. */ }
+function escapeParkingText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[char]));
+}
 
 const map = L.map("map").setView([41.3874, 2.1686], 13);
 
@@ -304,7 +313,8 @@ function toggleFavorite(parking) {
     favorites.push(id);
   }
 
-  localStorage.setItem("biciparkFavorites", JSON.stringify(favorites));
+  try { localStorage.setItem("biciparkFavorites", JSON.stringify(favorites)); }
+  catch (_) { alert("No s’han pogut desar els favorits en aquest navegador."); }
 
   renderParkings();
 
@@ -384,12 +394,12 @@ function getFilteredParkings() {
 
 function buildPopup(parking, nearest = false) {
   return `
-    <strong>${parking.nom}</strong><br>
+    <strong>${escapeParkingText(parking.nom)}</strong><br>
     ${nearest ? "⭐ Parking recomanat<br>" : ""}
-    📍 ${parking.address}<br>
-    🚲 Places: ${parking.places}<br>
-    🏷️ Tipus: ${parking.type}<br>
-    📄 ${parking.source}<br><br>
+    📍 ${escapeParkingText(parking.address)}<br>
+    🚲 Places: ${escapeParkingText(parking.places)}<br>
+    🏷️ Tipus: ${escapeParkingText(parking.type)}<br>
+    📄 ${escapeParkingText(parking.source)}<br><br>
     <a href="https://www.google.com/maps/dir/?api=1&destination=${parking.lat},${parking.lng}" target="_blank">
       Com arribar
     </a>
@@ -399,22 +409,24 @@ function buildPopup(parking, nearest = false) {
 function createParkingCard(parking, distance = null, recommended = false) {
   const card = document.createElement("div");
   card.className = `parkingCard ${recommended ? "recommended" : ""}`;
+  card.tabIndex = 0;
+  card.addEventListener("keydown", event => { if (event.target === card && event.key === "Enter") card.click(); });
 
   card.innerHTML = `
     <div class="cardTop">
       <div>
         <div class="cardTitle">
-          ${recommended ? "⭐ " : ""}${parking.nom}
-          <span class="favoriteIcon">${isFavorite(parking) ? "❤️" : "🤍"}</span>
+          ${recommended ? "⭐ " : ""}${escapeParkingText(parking.nom)}
+          <button type="button" class="favoriteIcon" aria-label="${isFavorite(parking) ? "Treure de favorits" : "Afegir a favorits"}" aria-pressed="${isFavorite(parking)}">${isFavorite(parking) ? "❤️" : "🤍"}</button>
         </div>
-        <div class="cardAddress">${parking.address}</div>
+        <div class="cardAddress">${escapeParkingText(parking.address)}</div>
       </div>
       ${distance !== null ? `<div class="cardDistance">${formatDistance(distance)}</div>` : ""}
     </div>
 
     <div class="cardFooter">
       ${getSecurityBadge(parking.seguretat)}
-      <span class="badge badge-dark">🚲 ${parking.places}</span>
+      <span class="badge badge-dark">🚲 ${escapeParkingText(parking.places)}</span>
       ${getDataStatusBadge(parking)}
     </div>
   `;
@@ -459,10 +471,15 @@ function renderSidebar() {
       return;
     }
 
-    alphabetical.forEach(parking => {
+    alphabetical.slice(0, 100).forEach(parking => {
       container.appendChild(createParkingCard(parking, null, false));
     });
 
+    if (alphabetical.length > 100) {
+      const note = document.createElement("p");
+      note.textContent = "Es mostren els primers 100 resultats. Busca una ubicació per ordenar per proximitat; el mapa mostra tots els resultats filtrats.";
+      container.appendChild(note);
+    }
     return;
   }
 
@@ -1072,6 +1089,7 @@ async function loadParkings() {
 
 async function loadCity(cityKey) {
   showLoading();
+  document.getElementById("citySelect").disabled = true;
 
   currentCityKey = cityKey;
   currentCity = cities[cityKey];
@@ -1087,11 +1105,14 @@ async function loadCity(cityKey) {
     await loadParkings();
     await loadBikeLanes();
     await loadRoadRoutes();
+    document.getElementById("bikeLaneBtn").disabled = !bikeLaneLayer;
     renderParkings();
   } catch (error) {
     console.error(error);
-    alert("No s'han pogut carregar les dades d'aquesta ciutat.");
+    document.getElementById("parkingCounter").textContent = "Dades no disponibles";
+    document.getElementById("parkingList").textContent = "No s’han pogut carregar les dades. Torna a seleccionar la ciutat per reintentar-ho.";
   } finally {
+    document.getElementById("citySelect").disabled = false;
     hideLoading();
   }
 }
@@ -1106,7 +1127,7 @@ async function loadCities() {
 
     cities = await response.json();
 
-    const enabledCities = Object.entries(cities).filter(([key, city]) => city.enabled === true);
+    const enabledCities = Object.entries(cities).filter(([key, city]) => city.enabled === true && !String(city.dataStatus).startsWith("pending"));
 
     const select = document.getElementById("citySelect");
     select.innerHTML = "";
@@ -1118,11 +1139,10 @@ async function loadCities() {
       select.appendChild(option);
     });
 
-    select.addEventListener("change", () => {
-      loadCity(select.value);
-    }, { once: true });
+    select.onchange = () => loadCity(select.value);
 
-    const firstCity = enabledCities[0]?.[0];
+    const requestedCity = new URLSearchParams(location.search).get("city");
+    const firstCity = enabledCities.find(([key]) => key === requestedCity)?.[0] || enabledCities[0]?.[0];
 
     if (!firstCity) {
       alert("No hi ha cap ciutat activa a cities.json.");
@@ -1174,7 +1194,7 @@ async function searchLocation() {
 
     searchMarker = L.marker([lat, lon], { icon: searchIcon })
       .addTo(map)
-      .bindPopup(data[0].display_name)
+      .bindPopup(escapeParkingText(data[0].display_name))
       .openPopup();
 
     if (currentMode === "parking") {
@@ -1392,5 +1412,10 @@ function setupHomeNavigation() {
 setupLegend();
 setupEvents();
 setupModeSwitch();
-setupHomeNavigation();
-showHome();
+if (document.body.dataset.page === "parkings") {
+  updateAppUiForMode();
+  loadCities();
+} else {
+  setupHomeNavigation();
+  showHome();
+}

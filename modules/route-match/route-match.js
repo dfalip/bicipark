@@ -238,6 +238,8 @@
           profile
         );
 
+    renderDashboard(profile, plan);
+
     nodes.planRows.innerHTML =
       plan
         .map(item =>
@@ -246,7 +248,7 @@
               item.day +
             "</strong>" +
             "<span>" +
-              item.type +
+              escapeHtml(item.type) +
             "</span>" +
             "<span>" +
               item.duration +
@@ -254,6 +256,34 @@
           "</div>"
         )
         .join("");
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+
+  function renderDashboard(profile, plan) {
+    document.getElementById("rmProfileSummary").textContent =
+      `${profile.level} · ${profile.usualDistanceMin}–${profile.usualDistanceMax} km · ${profile.usualElevationMin}–${profile.usualElevationMax} m de desnivell · ${profile.daysPerWeek} dies/setmana`;
+    document.querySelectorAll("[data-goal]").forEach(button => {
+      button.setAttribute("aria-pressed", String(button.dataset.goal === profile.goal));
+    });
+    const ranked = window.BiciParkRouteMatchEngine.rank(state.routes, profile);
+    document.getElementById("rmRecommendations").innerHTML = ranked.length ? ranked.map(route => `
+      <article class="rm-route-card"><span class="rm-score">Encaix ${route.matchScore}/100</span>
+      <h3>${escapeHtml(route.name)}</h3><p>${escapeHtml(route.mode)} · ${escapeHtml(route.difficulty)}</p>
+      <p><strong>${route.distanceKm} km</strong> · ${route.elevationM} m de desnivell</p>
+      <a href="../route-detail/?route=${encodeURIComponent(route.id)}">Veure ruta →</a></article>`).join("") :
+      '<p>No s’han pogut carregar les rutes. <button type="button" id="rmRetry">Torna-ho a provar</button></p>';
+    document.getElementById("rmRetry")?.addEventListener("click", async () => { await loadRoutes(); renderPlan(); });
+    const list = document.getElementById("rmDashboardPlan");
+    list.replaceChildren(...plan.map(item => {
+      const row = document.createElement("p");
+      row.textContent = `${item.day} · ${item.type} · ${item.duration}`;
+      return row;
+    }));
+    document.getElementById("rmPlanStatus").textContent = state.planActive ? "Pla activat en aquest navegador." : "Pots activar aquest pla i ajustar-lo des del teu perfil.";
+    document.querySelectorAll('[data-action="activate-plan"]').forEach(b => { b.textContent = state.planActive ? "Pla activat" : "Activar pla"; b.disabled = state.planActive; });
   }
 
   function bestMatchMessage() {
@@ -326,7 +356,15 @@
       "bicipark.routeMatch.planActive.v1",
       "true"
     );
+    const key = "bicipark.routeMatch.trainingPlan.v2";
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(key) || "{}"); } catch (_) {}
+    if (!saved || typeof saved !== "object" || Array.isArray(saved)) saved = {};
+    const plan = { ...saved, active: true, routes: Array.isArray(saved.routes) ? saved.routes : [], focusRouteId: saved.focusRouteId || null };
+    localStorage.setItem(key, JSON.stringify(plan));
+    window.dispatchEvent(new CustomEvent("bicipark:training-plan:updated", { detail: plan }));
 
+    renderPlan();
     showToast(
       "Pla bàsic activat. El podràs ajustar des del teu perfil."
     );
@@ -408,9 +446,12 @@
       event => {
         event.preventDefault();
 
-        window.BiciParkRiderProfile.set(
-          profileFromForm()
-        );
+        const next = profileFromForm();
+        if (next.usualDistanceMin > next.usualDistanceMax || next.usualElevationMin > next.usualElevationMax) {
+          showToast("El mínim no pot superar el màxim.");
+          return;
+        }
+        window.BiciParkRiderProfile.set(next);
 
         renderPlan();
 
@@ -465,6 +506,11 @@
         "bicipark.routeMatch.planActive.v1"
       ) === "true";
 
+    try {
+      const sharedPlan = JSON.parse(localStorage.getItem("bicipark.routeMatch.trainingPlan.v2") || "null");
+      if (sharedPlan && typeof sharedPlan.active === "boolean") state.planActive = sharedPlan.active;
+    } catch (_) {}
+
     await loadRoutes();
 
     bindHotspots();
@@ -491,7 +537,7 @@
     };
 
     console.info(
-      "[BiciPark Route Match] visual-first v1 ready."
+      "[BiciPark Route Match] dashboard v2 ready."
     );
   }
 

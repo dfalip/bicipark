@@ -1,56 +1,11 @@
-# BiciPark Route Match / Pla ciclista personal
+# Route Match
 
-## Objectiu
+Pantalla HTML adaptable amb perfil editable, objectius, recomanacions calculades i proposta setmanal. Reutilitza els motors de perfil, encaix i entrenament existents.
 
-Implementar el mockup aprovat sense perdre fidelitat visual.
+`data/routes.json` conté el petit catàleg de recomanació. Els valors de distància i desnivell s'han alineat amb les fitxes de detall de les tres rutes incloses. Cal mantenir-los coherents quan canviï el catàleg; l'encaix és orientatiu i no és una probabilitat ni una garantia de seguretat.
 
-## Estrategia visual
+Les preferències conserven `bicipark.routeMatch.profile.v1`. L'activació conserva el marcador antic i actualitza `bicipark.routeMatch.trainingPlan.v2`, respectant les rutes ja afegides al pla. Les dades viuen al navegador.
 
-La pantalla utilitza exactament el PNG del mockup aprovat com a capa visual.
-Per sobre s'afegeix una capa transparent d'interaccio.
+URL local: `http://localhost:8000/modules/route-match/`.
 
-Aixo permet:
-- conservar el disseny al 100%
-- canviar la logica sense tocar la imatge
-- evolucionar posteriorment cap a components HTML reals sense perdre la referencia
-
-## Arquitectura
-
-modules/route-match/
-  index.html
-  route-match.css
-  route-match.js
-  manifest.json
-  assets/
-    route-match-approved-mockup.png
-  data/
-    routes.json
-  engine/
-    profile-store.js
-    match-engine.js
-    training-plan-engine.js
-
-## Funcions v1
-
-- Perfil ciclista persistent en localStorage
-- Objectius:
-  - Millorar
-  - Incrementar dificultat
-  - Passejar
-  - Preparar repte
-- Match engine inicial
-- Pla basic d'exercicis
-- Activar pla
-- Ajustar perfil / objectius
-- Acces a Mapa, Rutes, Bike Bases i Missions
-- Hotspots transparents sobre el mockup aprovat
-
-## URL
-
-http://localhost:8000/modules/route-match/
-
-## Important
-
-Aquesta v1 es "visual-first".
-La imatge aprovada es considera la font visual de veritat.
-La logica ja esta separada per moduls per poder-la ampliar sense afectar la presentacio.
+La imatge de maqueta anterior es conserva com a referència visual, però ja no forma part de la interfície.

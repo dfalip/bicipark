@@ -1,35 +1,44 @@
 [
   {
     "id": "carretera-aigues",
-    "name": "Carretera de les Aigues",
-    "mode": "Carretera",
-    "difficulty": "Moderada",
-    "distanceKm": 38,
-    "elevationM": 620,
-    "durationMin": 130,
-    "baseMatch": 92,
-    "tags": ["progressio", "resistencia", "paisatge"]
+    "name": "Carretera de les Aigües",
+    "mode": "Gravel",
+    "difficulty": "Mitjana",
+    "distanceKm": 18.4,
+    "elevationM": 270,
+    "durationMin": 90,
+    "baseMatch": 75,
+    "tags": [
+      "progressio",
+      "resistencia"
+    ]
+  },
+  {
+    "id": "front-maritim",
+    "name": "Front Marítim de Barcelona",
+    "mode": "Urbana",
+    "difficulty": "Fàcil",
+    "distanceKm": 19.4,
+    "elevationM": 40,
+    "durationMin": 60,
+    "baseMatch": 75,
+    "tags": [
+      "paisatge",
+      "passeig"
+    ]
   },
   {
     "id": "riu-besos",
-    "name": "Ruta del riu Besos",
-    "mode": "Gravel",
-    "difficulty": "Moderada",
-    "distanceKm": 42,
-    "elevationM": 350,
-    "durationMin": 140,
-    "baseMatch": 88,
-    "tags": ["resistencia", "suau", "progressio"]
-  },
-  {
-    "id": "pla-estany",
-    "name": "Volta suau al Pla de l'Estany",
-    "mode": "Carretera",
-    "difficulty": "Facil",
-    "distanceKm": 55,
-    "elevationM": 480,
-    "durationMin": 165,
-    "baseMatch": 85,
-    "tags": ["paisatge", "resistencia", "passeig"]
+    "name": "Ruta del riu Besòs",
+    "mode": "Familiar",
+    "difficulty": "Fàcil",
+    "distanceKm": 20.1,
+    "elevationM": 65,
+    "durationMin": 85,
+    "baseMatch": 75,
+    "tags": [
+      "paisatge",
+      "passeig"
+    ]
   }
 ]

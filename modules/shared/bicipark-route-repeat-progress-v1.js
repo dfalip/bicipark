@@ -727,18 +727,11 @@
     manage.hidden =
       false;
 
-    if (
-      count === 1 &&
-      freeCount === 1
-    ) {
-      manage.textContent =
-        "Desfer registre";
-    }
-    else {
-      manage.textContent =
-        "Gestionar " +
-        count +
-        " sortides";
+    const label = count === 1 && freeCount === 1
+      ? "Desfer registre"
+      : "Gestionar " + count + " sortides";
+    if (manage.textContent !== label) {
+      manage.textContent = label;
     }
   }
 

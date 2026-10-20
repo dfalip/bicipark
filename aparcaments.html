@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aparcaments de bicicletes | BiciPark</title>
+<meta name="description" content="Troba aparcaments de bicicletes per ciutat, guarda favorits i consulta els més propers.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+<link rel="stylesheet" href="./styles.css"><link rel="stylesheet" href="./css/bicipark-nav.css">
+<link rel="stylesheet" href="./css/aparcaments.css">
+</head>
+<body data-page="parkings">
+<header><a href="./index.html">BiciPark</a> · <a href="./mapa-ciclista.html">Mapa de rutes</a> · <a href="./aparcaments.html">Aparcaments</a></header>
+<main class="parking-page">
+<section class="parking-heading"><div><h1 id="appModeTitle">Aparcaments</h1><p id="citySubtitle">Tria una ciutat i troba on deixar la bicicleta.</p></div><a href="./mapa-ciclista.html">Explora les rutes →</a></section>
+<section class="parking-search" aria-label="Cerca d’aparcaments">
+<label>Ciutat<select id="citySelect" disabled><option>Carregant ciutats…</option></select></label>
+<label class="address-field">Adreça o lloc<input id="searchInput" type="search" placeholder="Carrer, plaça o punt d’interès"></label>
+<button id="searchBtn" type="button">Buscar</button><button id="nearBtn" type="button">📍 A prop meu</button>
+</section>
+<section id="parkingControls" aria-label="Filtres">
+<div class="parking-filters">
+<label>Seguretat estimada<select id="securityFilterSelect"><option value="tots">Totes</option><option value="alta">Alta</option><option value="mitjana">Mitjana</option><option value="baixa">Baixa</option></select></label>
+<label>Distància<select id="radiusSelect"><option value="all">Tota la ciutat</option><option value="500">500 m</option><option value="1000">1 km</option><option value="2000">2 km</option></select></label>
+<button type="button" class="filter-btn" data-filter="favorites">♡ Favorits</button><button type="button" id="bikeLaneBtn" disabled>Carrils bici</button>
+</div>
+<p class="parking-note">La seguretat és una estimació orientativa a partir de les dades disponibles. No indica places lliures ni vigilància en temps real. Els favorits es desen en aquest navegador.</p>
+</section>
+<p id="parkingCounter" role="status">Carregant aparcaments…</p><p id="nearestInfo">Busca una ubicació o prem «A prop meu».</p>
+<div class="parking-layout"><section id="map" aria-label="Mapa d’aparcaments"></section><aside class="parking-results"><div id="sidebarHeader"><h2>Aparcaments</h2></div><div id="parkingList"></div></aside></div>
+<div id="loadingOverlay" class="hidden" role="status">Carregant dades…</div>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="./app.js?v=parking-restored-1"></script><script src="./js/bicipark-global-nav.js?v=parking-restored-1"></script>
+</body></html>
