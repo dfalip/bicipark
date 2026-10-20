@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#185b3e">
+  <title>Mercat · BiciPark</title>
+  <meta name="description" content="Compra, venda i intercanvi de material ciclista a BiciPark.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="./marketplace.css">
+</head>
+<body>
+  <main class="market-shell">
+    <header class="market-topbar">
+      <a class="market-brand" href="/">🚲 BiciPark</a>
+      <nav>
+        <a href="/modules/today/">Avui</a>
+        <a href="/modules/my-bike/">La meva bici</a>
+        <a href="/route-explorer/">Rutes</a>
+      </nav>
+    </header>
+
+    <section class="market-hero">
+      <div>
+        <span class="market-kicker">MERCAT BICIPARK</span>
+        <h1 id="marketTitle">Ven, compra o intercanvia material ciclista.</h1>
+        <p id="marketIntro">Publica bicicletes, components i accessoris. En aquesta primera versió els anuncis que crees es guarden només en aquest navegador.</p>
+      </div>
+      <button id="openPublishBtn" class="primary">Publica un anunci</button>
+    </section>
+
+    <section class="market-notice">
+      <strong id="marketBetaTitle">MVP local</strong>
+      <p id="marketBetaText">Encara no hi ha compte d’usuari, missatgeria ni pagament. No publiquis telèfons, adreces exactes ni dades sensibles. Quan afegim backend, els anuncis podran ser reals i compartits.</p>
+    </section>
+
+    <section class="market-controls">
+      <input id="searchInput" type="search" placeholder="Busca bici, rodes, casc...">
+      <select id="categoryFilter">
+        <option value="all">Totes les categories</option>
+        <option value="bike">Bicicletes</option>
+        <option value="components">Components</option>
+        <option value="accessories">Accessoris</option>
+        <option value="clothing">Roba</option>
+        <option value="tools">Eines</option>
+        <option value="other">Altres</option>
+      </select>
+      <select id="modeFilter">
+        <option value="all">Venda + intercanvi</option>
+        <option value="sale">Venda</option>
+        <option value="exchange">Intercanvi</option>
+      </select>
+      <label class="fav-filter"><input id="favoritesOnly" type="checkbox"> Favorits</label>
+    </section>
+
+    <div class="market-layout">
+      <section>
+        <div class="market-results-head"><h2 id="resultsTitle">Anuncis</h2><span id="resultsCount"></span></div>
+        <div id="listingGrid" class="listing-grid"></div>
+        <div id="emptyResults" class="empty-results" hidden>No hi ha anuncis que coincideixin amb els filtres.</div>
+      </section>
+
+      <aside id="publishPanel" class="publish-panel" hidden>
+        <div class="publish-head"><div><span>PUBLICA</span><h2 id="publishTitle">Nou anunci</h2></div><button id="closePublishBtn" type="button" aria-label="Tancar">×</button></div>
+        <form id="listingForm" class="listing-form">
+          <label>Títol<input name="title" maxlength="90" required placeholder="Rodes gravel 700C"></label>
+          <label>Categoria<select name="category"><option value="bike">Bicicleta</option><option value="components">Components</option><option value="accessories">Accessoris</option><option value="clothing">Roba</option><option value="tools">Eines</option><option value="other">Altres</option></select></label>
+          <label>Modalitat<select name="mode"><option value="sale">Venda</option><option value="exchange">Intercanvi</option><option value="both">Venda o intercanvi</option></select></label>
+          <label>Estat<select name="condition"><option value="new">Nou / gairebé nou</option><option value="excellent">Excel·lent</option><option value="good">Bon estat</option><option value="used">Usat</option></select></label>
+          <label>Preu (€)<input name="price" type="number" min="0" step="1" placeholder="180"></label>
+          <label>Zona aproximada<input name="city" maxlength="70" placeholder="Barcelona"></label>
+          <label class="full">Què acceptaries a canvi?<input name="exchangeFor" maxlength="180" placeholder="Ex. llum davantera, bici plegable..."></label>
+          <label class="full">Descripció<textarea name="description" maxlength="800" rows="5" placeholder="Estat, ús, compatibilitat, mesures..."></textarea></label>
+          <p id="formError" class="form-error" hidden></p>
+          <button class="primary full" type="submit">Desa l’anunci</button>
+        </form>
+      </aside>
+    </div>
+  </main>
+
+  <script src="./store.js"></script>
+  <script src="./marketplace.js"></script>
+  <script src="/js/pwa.js"></script>
+</body>
+</html>
