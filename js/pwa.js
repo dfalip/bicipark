@@ -5,7 +5,7 @@
  function mountLanguageHost(){
    if(document.querySelector('[data-bp-language-switcher]'))return;
    const host=document.createElement('span');host.setAttribute('data-bp-language-switcher','');
-   const target=document.querySelector('.topbar-actions')||document.querySelector('.today-nav-links')||document.querySelector('.bike-nav > div')||document.querySelector('#bp-global-nav .bp-nav-actions')||document.querySelector('header nav');
+   const target=document.querySelector('.topbar-actions')||document.querySelector('.today-nav-links')||document.querySelector('.bike-nav > div')||document.querySelector('.ride-nav > div')||document.querySelector('#bp-global-nav .bp-nav-actions')||document.querySelector('header nav');
    if(target)target.prepend(host);
  }
  function ensureI18n(){
@@ -16,6 +16,7 @@
      .then(()=>load('/js/i18n-fr.js?v=1','data-bp-i18n-fr'))
      .then(()=>load('/js/i18n-bindings.js?v=2','data-bp-i18n-bindings'))
      .then(()=>load('/js/marketplace-nav.js?v=1','data-bp-market-nav'))
+     .then(()=>load('/js/ride-nav.js?v=1','data-bp-ride-nav'))
      .then(()=>{
        if(!window.BiciParkI18n)return;
        window.BiciParkI18n.mountSwitchers();

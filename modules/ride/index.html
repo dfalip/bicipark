@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#185b3e">
+  <title>BiciPark Ride · Seguiment de sortida</title>
+  <meta name="description" content="Registra velocitat, distància, temps i traçat GPS de les teves sortides amb BiciPark Ride.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="./ride.css">
+</head>
+<body>
+  <main class="ride-shell">
+    <nav class="ride-nav" aria-label="Navegació BiciPark">
+      <a class="ride-brand" href="/">🚲 BiciPark</a>
+      <div>
+        <a href="/modules/today/">Avui</a>
+        <a href="/modules/my-bike/">La meva bici</a>
+        <a href="/modules/activity-history/">Historial</a>
+      </div>
+    </nav>
+
+    <section class="ride-hero">
+      <div>
+        <span id="rideEyebrow" class="ride-eyebrow">BICIPARK RIDE</span>
+        <h1 id="rideTitle">La teva sortida, en temps real.</h1>
+        <p id="rideIntro">Utilitza el GPS del mòbil per calcular distància, velocitat i temps en moviment. La velocitat mostrada és una estimació GPS suavitzada, no una lectura d’un sensor de roda.</p>
+      </div>
+      <div class="ride-bike">
+        <span id="bikeLabelTitle">Bici activa</span>
+        <strong id="bikeLabel">Cap bici configurada</strong>
+        <a id="configureBikeLink" href="/modules/my-bike/">Configura-la</a>
+      </div>
+    </section>
+
+    <section class="ride-dashboard">
+      <article class="speed-card">
+        <span id="speedLabel">VELOCITAT GPS</span>
+        <strong><span id="speedNow">0,0</span><small> km/h</small></strong>
+        <p id="gpsStatus">Preparat per començar.</p>
+        <div class="accuracy"><span id="accuracyLabel">Precisió GPS</span><strong id="accuracyValue">—</strong></div>
+      </article>
+
+      <div class="metric-grid">
+        <article><span id="distanceLabel">Distància</span><strong id="distanceValue">0,00 km</strong></article>
+        <article><span id="avgLabel">Mitjana en moviment</span><strong id="avgValue">0,0 km/h</strong></article>
+        <article><span id="maxLabel">Velocitat màxima</span><strong id="maxValue">0,0 km/h</strong></article>
+        <article><span id="movingLabel">Temps en moviment</span><strong id="movingValue">00:00:00</strong></article>
+        <article><span id="stoppedLabel">Temps aturat</span><strong id="stoppedValue">00:00:00</strong></article>
+        <article><span id="totalLabel">Temps total</span><strong id="totalValue">00:00:00</strong></article>
+      </div>
+    </section>
+
+    <section class="ride-map-card">
+      <div class="ride-section-head">
+        <div><span id="trackEyebrow">TRAÇAT</span><h2 id="trackTitle">Ruta GPS</h2></div>
+        <span id="pointCount">0 punts</span>
+      </div>
+      <div id="rideMap" class="ride-map" aria-label="Mapa de la sortida"></div>
+      <p id="mapNote" class="ride-note">El mapa base necessita connexió. El seguiment GPS i les mètriques poden continuar sense mapa base mentre la pàgina segueixi activa.</p>
+    </section>
+
+    <section class="ride-controls" aria-label="Controls de la sortida">
+      <button id="startBtn" class="primary" type="button">▶ Comença Ride</button>
+      <button id="pauseBtn" type="button" disabled>⏸ Pausa</button>
+      <button id="finishBtn" class="danger" type="button" disabled>■ Finalitza</button>
+    </section>
+
+    <section id="summaryPanel" class="ride-summary" hidden>
+      <span id="summaryEyebrow">SORTIDA FINALITZADA</span>
+      <h2 id="summaryTitle">Resum de la sortida</h2>
+      <div id="summaryMetrics" class="summary-grid"></div>
+      <label class="ride-name"><span id="rideNameLabel">Nom de la sortida</span><input id="rideNameInput" maxlength="90" value="BiciPark Ride"></label>
+      <div class="summary-actions">
+        <button id="saveBtn" class="primary" type="button">Desa activitat</button>
+        <button id="discardBtn" type="button">Descarta i reinicia</button>
+      </div>
+      <p id="saveStatus" role="status"></p>
+    </section>
+
+    <section class="ride-info">
+      <strong id="importantTitle">Important</strong>
+      <p id="backgroundNote">En una PWA, iOS o Android poden suspendre el GPS si bloqueges la pantalla o deixes l’app en segon pla. Per aquesta V1, mantén BiciPark Ride visible durant la sortida. Si el navegador ho permet, BiciPark intentarà mantenir la pantalla activa.</p>
+    </section>
+  </main>
+
+  <script src="/vendor/leaflet/leaflet.js"></script>
+  <script src="./engine.js"></script>
+  <script src="./store.js"></script>
+  <script src="./ride.js"></script>
+  <script src="/js/pwa.js"></script>
+</body>
+</html>
