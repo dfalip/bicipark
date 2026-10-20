@@ -14,7 +14,7 @@ test('creates and verifies a deterministic cryptographic Bike Passport proof', a
   assert.equal(await Proof.verifyProof(tampered), false);
 });
 
-test('proof chain exposes passport then verified levels only with external-style attestations', async () => {
+test('local workshop claims never become external verification', async () => {
   const state = { version: 1, proofs: [] };
   const registration = await Proof.createProof({ bike, type: 'registration', actorRole: 'owner' });
   state.proofs.push(registration);
@@ -22,7 +22,10 @@ test('proof chain exposes passport then verified levels only with external-style
 
   const workshop = await Proof.createProof({ bike, type: 'maintenance', actorRole: 'workshop', previousDigest: registration.digest });
   state.proofs.push(workshop);
-  assert.equal(Proof.verificationLevel(state, bike.id), 'verified');
+  assert.equal(Proof.verificationLevel(state, bike.id), 'passport');
+  assert.equal(await Proof.verifyChain(state,bike.id),true);
+  state.proofs.shift();
+  assert.equal(await Proof.verifyChain(state,bike.id),false);
 });
 
 test('transfer package never contains a full serial number', async () => {

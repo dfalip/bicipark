@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bike Base · Bicipark</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="./styles.css">
 <style>
 body{background:#f6f8f7}
@@ -120,7 +120,7 @@ body{background:#f6f8f7}
   </p>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/vendor/leaflet/leaflet.js"></script>
 <script src="./bike-base-data.js"></script>
 <script src="./bike-friendly-engine.js"></script>
 <script>
@@ -180,6 +180,8 @@ function getTypeVisual(base){
 
   routesNote.textContent = base.routes.notes || "";
 
+  if(base.bikeFriendly.partial){score.textContent="Puntuació pendent de revisió completa";}
+  if(base.location.lat==null||base.location.lng==null){document.getElementById("map").textContent="Ubicació exacta pendent de contrastar. Consulta la web oficial.";return;}
   const lat = Number(base.location.lat);
   const lng = Number(base.location.lng);
   const map = L.map("map").setView([lat, lng], 13);

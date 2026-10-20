@@ -1,0 +1,261 @@
+[
+  {
+    "id": "carretera-aigues",
+    "name": "Carretera de les Aigües",
+    "distanceKm": 17.31,
+    "elevationGain": null,
+    "modality": "road",
+    "needsReview": true,
+    "url": "/modules/route-planner/?catalog=carretera-aigues",
+    "kind": "local"
+  },
+  {
+    "id": "front-maritim",
+    "name": "Front Marítim",
+    "distanceKm": 19.41,
+    "elevationGain": null,
+    "modality": "road",
+    "needsReview": true,
+    "url": "/modules/route-planner/?catalog=front-maritim",
+    "kind": "local"
+  },
+  {
+    "id": "riu-besos",
+    "name": "Riu Besòs",
+    "distanceKm": 67.07,
+    "elevationGain": null,
+    "modality": "road",
+    "needsReview": true,
+    "url": "/modules/route-planner/?catalog=riu-besos",
+    "kind": "local"
+  },
+  {
+    "id": "izarpe-1",
+    "name": "Ultzama y Basaburua",
+    "distanceKm": 50.6,
+    "elevationGain": 451,
+    "modality": "road",
+    "url": "/modules/route-planner/?catalog=izarpe-1",
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-1-izarpe-ultzama-basaburua/",
+    "kind": "local",
+    "needsReview": true
+  },
+  {
+    "id": "izarpe-2",
+    "name": "Ultzama y Esteribar",
+    "distanceKm": 72.1,
+    "elevationGain": 873,
+    "modality": "road",
+    "url": "/modules/route-planner/?catalog=izarpe-2",
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-2-izarpe-ultzama-esteribar/",
+    "kind": "local",
+    "needsReview": true
+  },
+  {
+    "id": "izarpe-3",
+    "name": "Irurtzun y Lekunberri",
+    "distanceKm": 59.1,
+    "elevationGain": 869,
+    "modality": "road",
+    "url": "/modules/route-planner/?catalog=izarpe-3",
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-3-izarpe-irurtzun-lekunberri/",
+    "kind": "local",
+    "needsReview": true
+  },
+  {
+    "id": "izarpe-4",
+    "name": "Ezkabarte y Ultzama",
+    "distanceKm": 59.4,
+    "elevationGain": 1268,
+    "modality": "gravel",
+    "url": "/modules/route-planner/?catalog=izarpe-4",
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-4-izarpe-ezkabarte-ultzama/",
+    "kind": "local",
+    "needsReview": true
+  },
+  {
+    "id": "izarpe-5",
+    "name": "Camino del Plazaola",
+    "distanceKm": 53.1,
+    "elevationGain": 791,
+    "modality": "gravel",
+    "url": "/modules/route-planner/?catalog=izarpe-5",
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-5-izarpe-camino-del-plazaola/",
+    "kind": "local",
+    "needsReview": true
+  },
+  {
+    "id": "izarpe-6",
+    "name": "Ruta integral a la zona",
+    "distanceKm": 94.26,
+    "elevationGain": 1839,
+    "modality": "gravel",
+    "url": "/modules/route-planner/?catalog=izarpe-6",
+    "sourceUrl": "https://www.campingsnavarra.com/rutas-cicloturistas-izarpe/",
+    "kind": "local",
+    "needsReview": true
+  },
+  {
+    "id": "izarpe-7",
+    "name": "Senderos de Atetz",
+    "distanceKm": 21.2,
+    "elevationGain": 407,
+    "modality": "mtb",
+    "url": "/modules/route-planner/?catalog=izarpe-7",
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-7-izarpe-senderos-de-atetz/",
+    "kind": "local",
+    "needsReview": true
+  },
+  {
+    "id": "izarpe-8",
+    "name": "Espaltza",
+    "distanceKm": 22.4,
+    "elevationGain": 558,
+    "modality": "mtb",
+    "url": "/modules/route-planner/?catalog=izarpe-8",
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-8-izarpe-espaltza/",
+    "kind": "local",
+    "needsReview": true
+  },
+  {
+    "id": "izarpe-9",
+    "name": "Atetz y Ultzama",
+    "distanceKm": 34.5,
+    "elevationGain": 621,
+    "modality": "mtb",
+    "url": "/modules/route-planner/?catalog=izarpe-9",
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-9-izarpe-atetz-ultzama/",
+    "kind": "local",
+    "needsReview": true
+  },
+  {
+    "id": "mas-pla-martis",
+    "name": "Volta pel Pla de Martís",
+    "distanceKm": 11.81,
+    "elevationGain": 37,
+    "modality": "gravel",
+    "url": "https://turisme.plaestany.cat/item-turistic/btt-ruta-9-volta-pel-pla-de-martis/",
+    "kind": "external",
+    "sourceUrl": "https://turisme.plaestany.cat/item-turistic/btt-ruta-9-volta-pel-pla-de-martis/"
+  },
+  {
+    "id": "mas-serinya-banyoles",
+    "name": "Serinyà i Estany de Banyoles",
+    "distanceKm": 24.41,
+    "elevationGain": 116,
+    "modality": "gravel",
+    "url": "https://turisme.plaestany.cat/item-turistic/btt-ruta-10-ruta-de-serinya-i-lestany-de-banyoles/",
+    "kind": "external",
+    "sourceUrl": "https://turisme.plaestany.cat/item-turistic/btt-ruta-10-ruta-de-serinya-i-lestany-de-banyoles/"
+  },
+  {
+    "id": "mas-briolf-guixeres",
+    "name": "Briolf i Guixeres",
+    "distanceKm": 43.98,
+    "elevationGain": 787,
+    "modality": "mtb",
+    "url": "https://turisme.plaestany.cat/item-turistic/btt-ruta-5-de-briolf-i-guixeres/",
+    "kind": "external",
+    "sourceUrl": "https://turisme.plaestany.cat/item-turistic/btt-ruta-5-de-briolf-i-guixeres/"
+  },
+  {
+    "id": "carlemany-angels-monells",
+    "name": "Els Àngels · Monells · Santa Pellaia",
+    "distanceKm": 60.55,
+    "elevationGain": 1021,
+    "modality": "road",
+    "url": "https://www.hotelcarlemanygirona.com/ca/girona/ciclisme-girona",
+    "kind": "external",
+    "sourceUrl": "https://www.hotelcarlemanygirona.com/ca/girona/ciclisme-girona"
+  },
+  {
+    "id": "carlemany-rocacorba",
+    "name": "Girona · Rocacorba",
+    "distanceKm": 65.29,
+    "elevationGain": 1182,
+    "modality": "road",
+    "url": "https://www.hotelcarlemanygirona.com/ca/girona/ciclisme-girona",
+    "kind": "external",
+    "sourceUrl": "https://www.hotelcarlemanygirona.com/ca/girona/ciclisme-girona"
+  },
+  {
+    "id": "carlemany-tossa-sant-grau",
+    "name": "Tossa de Mar · Sant Grau d’Ardenya",
+    "distanceKm": 104.26,
+    "elevationGain": 1194,
+    "modality": "road",
+    "url": "https://www.hotelcarlemanygirona.com/ca/girona/ciclisme-girona",
+    "kind": "external",
+    "sourceUrl": "https://www.hotelcarlemanygirona.com/ca/girona/ciclisme-girona"
+  },
+  {
+    "id": "salata-road-cap-creus",
+    "name": "Roses · Cap de Creus · Sant Pere de Rodes",
+    "distanceKm": 47,
+    "elevationGain": 829,
+    "modality": "road",
+    "url": "https://visitroses.cat/ca/descobreix/rutes/bicicleta/roses-cap-de-creus.html",
+    "kind": "external",
+    "sourceUrl": "https://visitroses.cat/ca/descobreix/rutes/bicicleta/roses-cap-de-creus.html"
+  },
+  {
+    "id": "salata-gravel-aiguamolls",
+    "name": "Roses · Aiguamolls de l’Empordà",
+    "distanceKm": 43,
+    "elevationGain": 70,
+    "modality": "gravel",
+    "url": "https://visitroses.cat/ca/descobreix/rutes/bicicleta/test-gravel-roses-aiguamolls-de-lemporda.html",
+    "kind": "external",
+    "sourceUrl": "https://visitroses.cat/ca/descobreix/rutes/bicicleta/test-gravel-roses-aiguamolls-de-lemporda.html"
+  },
+  {
+    "id": "salata-mtb-serra-rodes",
+    "name": "Roses · Serra de Rodes",
+    "distanceKm": 47,
+    "elevationGain": 907,
+    "modality": "mtb",
+    "url": "https://visitroses.cat/es/descubre-pGX29/rutas/bicicleta/mtb-roses-serra-de-rodes.html",
+    "kind": "external",
+    "sourceUrl": "https://visitroses.cat/es/descubre-pGX29/rutas/bicicleta/mtb-roses-serra-de-rodes.html"
+  },
+  {
+    "id": "ferro-carbo",
+    "name": "Via verda del Ferro i del Carbó",
+    "distanceKm": 18,
+    "elevationGain": null,
+    "modality": "gravel",
+    "url": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-ferro-i-del-carbo/",
+    "kind": "external",
+    "metricNote": "Distància publicada per la font; desnivell no importat"
+  },
+  {
+    "id": "carrilet-i",
+    "name": "Carrilet I",
+    "distanceKm": null,
+    "elevationGain": null,
+    "modality": "gravel",
+    "url": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-carrilet-i/",
+    "kind": "external",
+    "metricNote": "55,5–58,5 km segons entrada a Girona"
+  },
+  {
+    "id": "carrilet-ii",
+    "name": "Carrilet II",
+    "distanceKm": 41.9,
+    "elevationGain": null,
+    "modality": "gravel",
+    "url": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-carrilet-tram-2/",
+    "kind": "external",
+    "metricNote": "Distància publicada per la font; desnivell no importat"
+  },
+  {
+    "id": "tren-petit",
+    "name": "Tren Petit",
+    "distanceKm": null,
+    "elevationGain": null,
+    "modality": "gravel",
+    "url": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-tren-petit/",
+    "kind": "external",
+    "metricNote": "La font indica 6 km de via principal i 6,5 km al text; consulta la variant"
+  }
+]

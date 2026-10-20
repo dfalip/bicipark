@@ -1,176 +1,350 @@
-﻿[
-    {
-        "id":  "carretera-aigues",
-        "name":  "Carretera Aigues",
-        "region":  "barcelona",
-        "area":  "",
-        "modality":  "road",
-        "difficulty":  "moderada",
-        "featured":  true,
-        "priority":  101,
-        "minimumZoom":  8,
-        "distanceKm":  17.31,
-        "elevationGain":  0,
-        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
-        "center":  {
-                       "lat":  41.404252,
-                       "lng":  2.111981
-                   },
-        "bounds":  {
-                       "south":  41.389228,
-                       "west":  2.095005,
-                       "north":  41.419276,
-                       "east":  2.128958
-                   },
-        "geometryFile":  "./data/routes/auto/barcelona/carretera-aigues.gpx",
-        "enabled":  true,
-        "autoImported":  true,
-        "needsReview":  true,
-        "sourceFile":  "data/gpx/carretera-aigues.gpx"
+[
+  {
+    "id": "carretera-aigues",
+    "name": "Carretera de les Aigües",
+    "region": "barcelona",
+    "area": "",
+    "modality": "road",
+    "difficulty": "moderada",
+    "featured": true,
+    "priority": 101,
+    "minimumZoom": 8,
+    "distanceKm": 17.31,
+    "elevationGain": null,
+    "description": "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
+    "center": {
+      "lat": 41.404252,
+      "lng": 2.111981
     },
-    {
-        "id":  "front-maritim",
-        "name":  "Front Maritim",
-        "region":  "barcelona",
-        "area":  "",
-        "modality":  "road",
-        "difficulty":  "moderada",
-        "featured":  true,
-        "priority":  102,
-        "minimumZoom":  8,
-        "distanceKm":  19.41,
-        "elevationGain":  0,
-        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
-        "center":  {
-                       "lat":  41.378282,
-                       "lng":  2.195456
-                   },
-        "bounds":  {
-                       "south":  41.351782,
-                       "west":  2.17501,
-                       "north":  41.404781,
-                       "east":  2.215901
-                   },
-        "geometryFile":  "./data/routes/auto/barcelona/front-maritim.gpx",
-        "enabled":  true,
-        "autoImported":  true,
-        "needsReview":  true,
-        "sourceFile":  "data/gpx/front-maritim.gpx"
+    "bounds": {
+      "south": 41.389228,
+      "west": 2.095005,
+      "north": 41.419276,
+      "east": 2.128958
     },
-    {
-        "id":  "riu-besos",
-        "name":  "Riu Besos",
-        "region":  "barcelona",
-        "area":  "",
-        "modality":  "road",
-        "difficulty":  "moderada",
-        "featured":  true,
-        "priority":  103,
-        "minimumZoom":  8,
-        "distanceKm":  67.07,
-        "elevationGain":  0,
-        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
-        "center":  {
-                       "lat":  41.528852,
-                       "lng":  2.196434
-                   },
-        "bounds":  {
-                       "south":  41.421025,
-                       "west":  2.158016,
-                       "north":  41.63668,
-                       "east":  2.234851
-                   },
-        "geometryFile":  "./data/routes/auto/barcelona/riu-besos.gpx",
-        "enabled":  true,
-        "autoImported":  true,
-        "needsReview":  true,
-        "sourceFile":  "data/gpx/riu-besos.gpx"
+    "geometryFile": "./data/routes/auto/barcelona/carretera-aigues.gpx",
+    "enabled": true,
+    "autoImported": true,
+    "needsReview": true,
+    "sourceFile": "data/gpx/carretera-aigues.gpx",
+    "aliases": [
+      "carretera-aigues-2"
+    ]
+  },
+  {
+    "id": "front-maritim",
+    "name": "Front Marítim",
+    "region": "barcelona",
+    "area": "",
+    "modality": "road",
+    "difficulty": "moderada",
+    "featured": true,
+    "priority": 102,
+    "minimumZoom": 8,
+    "distanceKm": 19.41,
+    "elevationGain": null,
+    "description": "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
+    "center": {
+      "lat": 41.378282,
+      "lng": 2.195456
     },
-    {
-        "id":  "besos",
-        "name":  "Besos",
-        "region":  "barcelona",
-        "area":  "",
-        "modality":  "road",
-        "difficulty":  "moderada",
-        "featured":  true,
-        "priority":  104,
-        "minimumZoom":  8,
-        "distanceKm":  67.07,
-        "elevationGain":  0,
-        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
-        "center":  {
-                       "lat":  41.528852,
-                       "lng":  2.196434
-                   },
-        "bounds":  {
-                       "south":  41.421025,
-                       "west":  2.158016,
-                       "north":  41.63668,
-                       "east":  2.234851
-                   },
-        "geometryFile":  "./data/routes/auto/barcelona/besos.geojson",
-        "enabled":  true,
-        "autoImported":  true,
-        "needsReview":  true,
-        "sourceFile":  "data/rutes/besos.geojson"
+    "bounds": {
+      "south": 41.351782,
+      "west": 2.17501,
+      "north": 41.404781,
+      "east": 2.215901
     },
-    {
-        "id":  "carretera-aigues-2",
-        "name":  "Carretera Aigues",
-        "region":  "barcelona",
-        "area":  "",
-        "modality":  "road",
-        "difficulty":  "moderada",
-        "featured":  true,
-        "priority":  105,
-        "minimumZoom":  8,
-        "distanceKm":  17.31,
-        "elevationGain":  0,
-        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
-        "center":  {
-                       "lat":  41.404252,
-                       "lng":  2.111981
-                   },
-        "bounds":  {
-                       "south":  41.389228,
-                       "west":  2.095005,
-                       "north":  41.419276,
-                       "east":  2.128958
-                   },
-        "geometryFile":  "./data/routes/auto/barcelona/carretera-aigues-2.geojson",
-        "enabled":  true,
-        "autoImported":  true,
-        "needsReview":  true,
-        "sourceFile":  "data/rutes/carretera-aigues.geojson"
+    "geometryFile": "./data/routes/auto/barcelona/front-maritim.gpx",
+    "enabled": true,
+    "autoImported": true,
+    "needsReview": true,
+    "sourceFile": "data/gpx/front-maritim.gpx",
+    "aliases": [
+      "front-maritim-2"
+    ]
+  },
+  {
+    "id": "riu-besos",
+    "name": "Riu Besòs",
+    "region": "barcelona",
+    "area": "",
+    "modality": "road",
+    "difficulty": "moderada",
+    "featured": true,
+    "priority": 103,
+    "minimumZoom": 8,
+    "distanceKm": 67.07,
+    "elevationGain": null,
+    "description": "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
+    "center": {
+      "lat": 41.528852,
+      "lng": 2.196434
     },
-    {
-        "id":  "front-maritim-2",
-        "name":  "Front Maritim",
-        "region":  "barcelona",
-        "area":  "",
-        "modality":  "road",
-        "difficulty":  "moderada",
-        "featured":  false,
-        "priority":  105,
-        "minimumZoom":  8,
-        "distanceKm":  19.41,
-        "elevationGain":  0,
-        "description":  "Ruta importada automàticament. Revisa la modalitat, la dificultat i el desnivell.",
-        "center":  {
-                       "lat":  41.378282,
-                       "lng":  2.195456
-                   },
-        "bounds":  {
-                       "south":  41.351782,
-                       "west":  2.17501,
-                       "north":  41.404781,
-                       "east":  2.215901
-                   },
-        "geometryFile":  "./data/routes/auto/barcelona/front-maritim-2.geojson",
-        "enabled":  true,
-        "autoImported":  true,
-        "needsReview":  true,
-        "sourceFile":  "data/rutes/front-maritim.geojson"
-    }
+    "bounds": {
+      "south": 41.421025,
+      "west": 2.158016,
+      "north": 41.63668,
+      "east": 2.234851
+    },
+    "geometryFile": "./data/routes/auto/barcelona/riu-besos.gpx",
+    "enabled": true,
+    "autoImported": true,
+    "needsReview": true,
+    "sourceFile": "data/gpx/riu-besos.gpx",
+    "aliases": [
+      "besos"
+    ]
+  },
+  {
+    "id": "izarpe-1",
+    "name": "Ultzama y Basaburua",
+    "region": "navarra",
+    "modality": "road",
+    "difficulty": "facil",
+    "featured": true,
+    "priority": 111,
+    "minimumZoom": 8,
+    "distanceKm": 50.6,
+    "elevationGain": 451,
+    "description": "Ruta de carretera pels valls d'Ultzama i Basaburua, amb paisatge ondulat, boscos, prats i petites zones de cultiu. No presenta grans dificultats muntanyoses, tot i que hi ha alguns repechos com Ihaben o Cia.",
+    "center": {
+      "lat": 42.95823812484741,
+      "lng": -1.748596429824829
+    },
+    "bounds": {
+      "south": 42.91030168533325,
+      "west": -1.83147668838501,
+      "north": 43.00617456436157,
+      "east": -1.665716171264648
+    },
+    "geometryFile": "/bike-bases/data/gpx/izarpe-route-1.gpx",
+    "enabled": true,
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-1-izarpe-ultzama-basaburua/",
+    "needsReview": true,
+    "metricsSource": "Font editorial original; no validat sobre el terreny"
+  },
+  {
+    "id": "izarpe-2",
+    "name": "Ultzama y Esteribar",
+    "region": "navarra",
+    "modality": "road",
+    "difficulty": "moderada",
+    "featured": true,
+    "priority": 112,
+    "minimumZoom": 8,
+    "distanceKm": 72.1,
+    "elevationGain": 873,
+    "description": "Ruta circular per Ultzama i Esteribar. Inclou trams curts de la N-121-A i la PA-30 que requereixen maxima atencio, el port d'Egozkue i el retorn per Ezkabarte amb la pujada a Markalain.",
+    "center": {
+      "lat": 42.921041711233556,
+      "lng": -1.602083444595337
+    },
+    "bounds": {
+      "south": 42.838526694104075,
+      "west": -1.701829433441162,
+      "north": 43.00355672836304,
+      "east": -1.502337455749512
+    },
+    "geometryFile": "/bike-bases/data/gpx/izarpe-route-2.gpx",
+    "enabled": true,
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-2-izarpe-ultzama-esteribar/",
+    "needsReview": true,
+    "metricsSource": "Font editorial original; no validat sobre el terreny"
+  },
+  {
+    "id": "izarpe-3",
+    "name": "Irurtzun y Lekunberri",
+    "region": "navarra",
+    "modality": "road",
+    "difficulty": "facil",
+    "featured": true,
+    "priority": 113,
+    "minimumZoom": 8,
+    "distanceKm": 59.1,
+    "elevationGain": 869,
+    "description": "Ruta de carretera en forma de raqueta cap a Irurtzun i Lekunberri. La pujada a Madotz permet entrar al Valle de Larraun; el retorn combina carreteres tranquil.les amb un perfil de continus tobogans.",
+    "center": {
+      "lat": 42.95522650703788,
+      "lng": -1.7947290418669557
+    },
+    "bounds": {
+      "south": 42.91030202060937,
+      "west": -1.8965550418943096,
+      "north": 43.00015099346639,
+      "east": -1.6929030418396018
+    },
+    "geometryFile": "/bike-bases/data/gpx/izarpe-route-3.gpx",
+    "enabled": true,
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-3-izarpe-irurtzun-lekunberri/",
+    "needsReview": true,
+    "metricsSource": "Font editorial original; no validat sobre el terreny"
+  },
+  {
+    "id": "izarpe-4",
+    "name": "Ezkabarte y Ultzama",
+    "region": "navarra",
+    "modality": "gravel",
+    "difficulty": "dificil",
+    "featured": true,
+    "priority": 114,
+    "minimumZoom": 8,
+    "distanceKm": 59.4,
+    "elevationGain": 1268,
+    "description": "Ruta gravel curta pero intensa que combina Ezkabarte i Ultzama. La pujada al Monte de Oteiza i un encadenat de pujades abans d'Ultzama concentren bona part de la duresa.",
+    "center": {
+      "lat": 42.93170818593353,
+      "lng": -1.6729152202606206
+    },
+    "bounds": {
+      "south": 42.867348371073604,
+      "west": -1.717300415039063,
+      "north": 42.99606800079346,
+      "east": -1.628530025482178
+    },
+    "geometryFile": "/bike-bases/data/gpx/izarpe-route-4.gpx",
+    "enabled": true,
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-4-izarpe-ezkabarte-ultzama/",
+    "needsReview": true,
+    "metricsSource": "Font editorial original; no validat sobre el terreny"
+  },
+  {
+    "id": "izarpe-5",
+    "name": "Camino del Plazaola",
+    "region": "navarra",
+    "modality": "gravel",
+    "difficulty": "facil",
+    "featured": true,
+    "priority": 115,
+    "minimumZoom": 8,
+    "distanceKm": 53.1,
+    "elevationGain": 791,
+    "description": "Ruta gravel que connecta Izarpe amb EuroVelo 1 i la Via Verde del Plazaola. Passa per Latasa i Irurtzun i acaba amb un sector mes trencacames i una ascensio per pista a la zona de San Bartolome.",
+    "center": {
+      "lat": 42.915698289871216,
+      "lng": -1.7528395168483255
+    },
+    "bounds": {
+      "south": 42.87493944168091,
+      "west": -1.829899214208126,
+      "north": 42.95645713806152,
+      "east": -1.675779819488525
+    },
+    "geometryFile": "/bike-bases/data/gpx/izarpe-route-5.gpx",
+    "enabled": true,
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-5-izarpe-camino-del-plazaola/",
+    "needsReview": true,
+    "metricsSource": "Font editorial original; no validat sobre el terreny"
+  },
+  {
+    "id": "izarpe-6",
+    "name": "Ruta integral a la zona",
+    "region": "navarra",
+    "modality": "gravel",
+    "difficulty": "dificil",
+    "featured": true,
+    "priority": 116,
+    "minimumZoom": 8,
+    "distanceKm": 94.26,
+    "elevationGain": 1839,
+    "description": "Ruta gravel llarga que recorre bona part del territori que envolta Izarpe. Combina EuroVelo, Via Verde del Plazaola, una zona trencacames a partir de Sarasa i el tram final per Ultzama.",
+    "center": {
+      "lat": 42.93170818593353,
+      "lng": -1.729214619845152
+    },
+    "bounds": {
+      "south": 42.867348371073604,
+      "west": -1.829899214208126,
+      "north": 42.99606800079346,
+      "east": -1.628530025482178
+    },
+    "geometryFile": "/bike-bases/data/gpx/izarpe-route-6.gpx",
+    "enabled": true,
+    "sourceUrl": "https://www.campingsnavarra.com/rutas-cicloturistas-izarpe/",
+    "needsReview": true,
+    "metricsSource": "Font editorial original; no validat sobre el terreny"
+  },
+  {
+    "id": "izarpe-7",
+    "name": "Senderos de Atetz",
+    "region": "navarra",
+    "modality": "mtb",
+    "difficulty": "moderada",
+    "featured": true,
+    "priority": 117,
+    "minimumZoom": 8,
+    "distanceKm": 21.2,
+    "elevationGain": 407,
+    "description": "Ruta MTB pels senders recuperats d'Atetz, amb rouredes, castanyedes, fagedes i prats. El punt alt d'Arraldegaina ofereix bones vistes i el nivell tecnic general es baix.",
+    "center": {
+      "lat": 42.95157551765442,
+      "lng": -1.7075629485771038
+    },
+    "bounds": {
+      "south": 42.92708158493041,
+      "west": -1.7386379744857525,
+      "north": 42.97606945037842,
+      "east": -1.6764879226684553
+    },
+    "geometryFile": "/bike-bases/data/gpx/izarpe-route-7.gpx",
+    "enabled": true,
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-7-izarpe-senderos-de-atetz/",
+    "needsReview": true,
+    "metricsSource": "Font editorial original; no validat sobre el terreny"
+  },
+  {
+    "id": "izarpe-8",
+    "name": "Espaltza",
+    "region": "navarra",
+    "modality": "mtb",
+    "difficulty": "moderada",
+    "featured": true,
+    "priority": 118,
+    "minimumZoom": 8,
+    "distanceKm": 22.4,
+    "elevationGain": 558,
+    "description": "Ruta MTB pels boscos situats a l'est del camping. No destaca per grans senders tecnics, sino per camins agradables, desnivell acumulat i algunes panoramiques de la zona.",
+    "center": {
+      "lat": 42.94778823852539,
+      "lng": -1.6603195667266846
+    },
+    "bounds": {
+      "south": 42.92849779129028,
+      "west": -1.694469451904297,
+      "north": 42.9670786857605,
+      "east": -1.626169681549072
+    },
+    "geometryFile": "/bike-bases/data/gpx/izarpe-route-8.gpx",
+    "enabled": true,
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-8-izarpe-espaltza/",
+    "needsReview": true,
+    "metricsSource": "Font editorial original; no validat sobre el terreny"
+  },
+  {
+    "id": "izarpe-9",
+    "name": "Atetz y Ultzama",
+    "region": "navarra",
+    "modality": "mtb",
+    "difficulty": "moderada",
+    "featured": true,
+    "priority": 119,
+    "minimumZoom": 8,
+    "distanceKm": 34.5,
+    "elevationGain": 621,
+    "description": "Prolongacio de la Ruta 7 que continua per la part alta de la serra fins a Ilarregi, travessa Ultzama i acaba amb la pujada mes dura del recorregut cap a Arraldegaina.",
+    "center": {
+      "lat": 42.96895623207092,
+      "lng": -1.7146929306909406
+    },
+    "bounds": {
+      "south": 42.92708158493041,
+      "west": -1.7528979387134263,
+      "north": 43.01083087921143,
+      "east": -1.6764879226684553
+    },
+    "geometryFile": "/bike-bases/data/gpx/izarpe-route-9.gpx",
+    "enabled": true,
+    "sourceUrl": "https://www.campingsnavarra.com/ruta-9-izarpe-atetz-ultzama/",
+    "needsReview": true,
+    "metricsSource": "Font editorial original; no validat sobre el terreny"
+  }
 ]

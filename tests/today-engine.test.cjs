@@ -64,10 +64,12 @@ test('sense bici activa la raó de modalitat no diu que hi ha bici activa', () =
   assert.equal(result.reasons.some(text => /bici activa/i.test(text)), false);
 });
 
-test('un codi de ruixat amb pluja 0% no mostra una icona de pluja', () => {
-  assert.equal(weather.iconForCode(80, 0), '🌤️');
+test('un codi de ruixat conserva la icona encara que la probabilitat sigui zero', () => {
+  assert.equal(weather.iconForCode(80, 0), '🌧️');
 });
 
 test('una probabilitat alta de pluja manté una icona de pluja', () => {
   assert.equal(weather.iconForCode(80, 70), '🌧️');
 });
+
+test("missing WMO never means sunshine",()=>{for(const value of [null,undefined,"",999])assert.equal(weather.iconForCode(value),"❔")});

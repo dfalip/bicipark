@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "hotels-ultonia-girona",
+  "slug": "hotels-ultonia-girona",
+  "name": "Hotels Ultònia Girona",
+  "type": "hotel",
+  "categoryLabel": "Allotjament · Serveis per a ciclistes",
+  "description": "Serveis publicats per l’establiment. Consulta disponibilitat i condicions directament amb la base. Ubicació exacta al mapa pendent de contrastar.",
+  "location": {
+    "country": "ES",
+    "region": "Girona",
+    "locality": "Girona",
+    "address": "Gran Via Jaume I, 22, Girona"
+  },
+  "status": {
+    "code": "public-unverified",
+    "label": "Informació pública · No verificada",
+    "affiliated": false,
+    "verified": false,
+    "partner": false
+  },
+  "links": {
+    "official": "https://hotelsultoniagirona.com/en/bike-room-and-cycling-friendly-facilities/",
+    "bikeFriendly": "https://hotelsultoniagirona.com/en/bike-room-and-cycling-friendly-facilities/"
+  },
+  "sources": [
+    "https://hotelsultoniagirona.com/en/bike-room-and-cycling-friendly-facilities/"
+  ],
+  "reviewedAt": "2026-10-20",
+  "routes": {
+    "count": 0,
+    "countLabel": "Sense tracks integrats",
+    "modes": [],
+    "modeLabels": [],
+    "notes": "Rutes locals pendents de seleccionar i validar."
+  },
+  "services": {
+    "bikeStorage": true,
+    "repair": true,
+    "bikeWash": true
+  },
+  "serviceLabels": [
+    {
+      "key": "bikeStorage",
+      "label": "Sala de bicicletes amb accés restringit",
+      "icon": "🚲"
+    },
+    {
+      "key": "repair",
+      "label": "Estació d’eines",
+      "icon": "🚲"
+    },
+    {
+      "key": "bikeWash",
+      "label": "Zona de rentat",
+      "icon": "🚲"
+    }
+  ],
+  "bikeFriendly": {
+    "methodologyVersion": "1.0",
+    "partial": true,
+    "criteria": {}
+  }
+}

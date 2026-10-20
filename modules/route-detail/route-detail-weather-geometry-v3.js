@@ -603,6 +603,7 @@
 
         current:
           [
+            "weather_code",
             "temperature_2m",
             "wind_speed_10m",
             "precipitation"
@@ -610,6 +611,7 @@
 
         hourly:
           [
+            "weather_code",
             "temperature_2m",
             "precipitation_probability",
             "wind_speed_10m"
@@ -1008,6 +1010,7 @@
         );
 
     return {
+      weatherCode: primary.current?.weather_code,
       temp:
         average(
           currentTemps
@@ -1171,7 +1174,7 @@
     wrapper.innerHTML =
       '<div class="bp360-weather-v3-main">' +
         '<div class="bp360-weather-v3-stat">' +
-          '<span class="bp360-weather-v3-stat-icon">\u2600</span>' +
+          window.BiciParkWeatherIcons.html(weather.weatherCode, weather.wind) +
           "<strong>" +
             (
               Number.isFinite(
@@ -1199,7 +1202,7 @@
           "<small>Pluja properes 6 h</small>" +
         "</div>" +
         '<div class="bp360-weather-v3-stat">' +
-          '<span class="bp360-weather-v3-stat-icon">\u2192</span>' +
+          window.BiciParkWeatherIcons.icon('wind','Vent') +
           "<strong>" +
             (
               Number.isFinite(
@@ -1241,7 +1244,7 @@
         weather.best
           ? (
               '<div class="bp360-weather-v3-window">' +
-                '<span class="bp360-weather-v3-window-icon">\u2600</span>' +
+                '<span class="bp360-weather-v3-window-icon">\u23F1</span>' +
                 "<div>" +
                   "<strong>Millor hora per sortir</strong>" +
                   "<small>" +

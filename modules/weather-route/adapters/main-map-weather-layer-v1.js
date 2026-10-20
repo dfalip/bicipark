@@ -277,61 +277,8 @@
   }
 
   function weatherIcon(code) {
-    const value =
-      Number(code);
-
-    if (value === 0) {
-      return "\u2600\uFE0F";
-    }
-
-    if (
-      value === 1 ||
-      value === 2
-    ) {
-      return "\u26C5";
-    }
-
-    if (
-      value === 3 ||
-      value === 45 ||
-      value === 48
-    ) {
-      return "\u2601\uFE0F";
-    }
-
-    if (
-      value >= 51 &&
-      value <= 67
-    ) {
-      return "\u2614";
-    }
-
-    if (
-      value >= 71 &&
-      value <= 77
-    ) {
-      return "\u2744\uFE0F";
-    }
-
-    if (
-      value >= 80 &&
-      value <= 82
-    ) {
-      return "\u2614";
-    }
-
-    if (
-      value === 85 ||
-      value === 86
-    ) {
-      return "\u2744\uFE0F";
-    }
-
-    if (value >= 95) {
-      return "\u26C8\uFE0F";
-    }
-
-    return "\u26C5";
+    const c = window.BiciParkWeatherIcons.condition(code);
+    return window.BiciParkWeatherIcons.icon(c.key,c.label);
   }
 
   function alertHtml(item) {

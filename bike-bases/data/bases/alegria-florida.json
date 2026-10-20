@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "alegria-florida",
+  "slug": "alegria-florida",
+  "name": "ALEGRIA Florida",
+  "type": "hotel",
+  "categoryLabel": "Allotjament · Serveis per a ciclistes",
+  "description": "Serveis publicats per l’establiment. Consulta disponibilitat i condicions directament amb la base. Ubicació exacta al mapa pendent de contrastar.",
+  "location": {
+    "country": "ES",
+    "region": "Barcelona · Maresme",
+    "locality": "Santa Susanna",
+    "address": "Avinguda del Mar, 17, Santa Susanna"
+  },
+  "status": {
+    "code": "public-unverified",
+    "label": "Informació pública · No verificada",
+    "affiliated": false,
+    "verified": false,
+    "partner": false
+  },
+  "links": {
+    "official": "https://www.alegria-hotels.com/en/hotels-apartments/alegria-florida",
+    "bikeFriendly": "https://www.alegria-hotels.com/en/hotels-apartments/alegria-florida"
+  },
+  "sources": [
+    "https://www.alegria-hotels.com/en/hotels-apartments/alegria-florida"
+  ],
+  "reviewedAt": "2026-10-20",
+  "routes": {
+    "count": 0,
+    "countLabel": "Sense tracks integrats",
+    "modes": [],
+    "modeLabels": [],
+    "notes": "Rutes locals pendents de seleccionar i validar."
+  },
+  "services": {
+    "bikeStorage": true,
+    "bikeWash": true
+  },
+  "serviceLabels": [
+    {
+      "key": "bikeStorage",
+      "label": "Sala per guardar bicicletes",
+      "icon": "🚲"
+    },
+    {
+      "key": "bikeWash",
+      "label": "Rentat de bicicletes",
+      "icon": "🚲"
+    }
+  ],
+  "bikeFriendly": {
+    "methodologyVersion": "1.0",
+    "partial": true,
+    "criteria": {}
+  }
+}

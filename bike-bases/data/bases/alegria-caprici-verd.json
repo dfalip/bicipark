@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "alegria-caprici-verd",
+  "slug": "alegria-caprici-verd",
+  "name": "ALEGRIA Caprici Verd",
+  "type": "hotel",
+  "categoryLabel": "Allotjament · Serveis per a ciclistes",
+  "description": "Serveis publicats per l’establiment. Consulta disponibilitat i condicions directament amb la base. Ubicació exacta al mapa pendent de contrastar.",
+  "location": {
+    "country": "ES",
+    "region": "Barcelona · Maresme",
+    "locality": "Santa Susanna",
+    "address": "Santa Susanna"
+  },
+  "status": {
+    "code": "public-unverified",
+    "label": "Informació pública · No verificada",
+    "affiliated": false,
+    "verified": false,
+    "partner": false
+  },
+  "links": {
+    "official": "https://www.alegria-hotels.com/ca/hotels-apartaments/alegria-caprici-verd/hotel",
+    "bikeFriendly": "https://www.alegria-hotels.com/ca/hotels-apartaments/alegria-caprici-verd/hotel"
+  },
+  "sources": [
+    "https://www.alegria-hotels.com/ca/hotels-apartaments/alegria-caprici-verd/hotel"
+  ],
+  "reviewedAt": "2026-10-20",
+  "routes": {
+    "count": 0,
+    "countLabel": "Sense tracks integrats",
+    "modes": [],
+    "modeLabels": [],
+    "notes": "Rutes locals pendents de seleccionar i validar."
+  },
+  "services": {
+    "cyclingArea": true
+  },
+  "serviceLabels": [
+    {
+      "key": "cyclingArea",
+      "label": "Zona per a ciclistes / Bike station",
+      "icon": "🚲"
+    }
+  ],
+  "bikeFriendly": {
+    "methodologyVersion": "1.0",
+    "partial": true,
+    "criteria": {}
+  }
+}

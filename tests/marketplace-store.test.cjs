@@ -32,10 +32,10 @@ test('filters support category, mode, favorites and free text', () => {
   assert.equal(Store.filter(state.items, { favorites: true }).length, 1);
 });
 
-test('verified Bike Passport metadata is normalized and preserved', () => {
+test('untrusted verified claims are downgraded to passport', () => {
   const item = Store.normalize({ title: 'Orbea', mode: 'sale', price: 1000, category: 'bike', bikeId: 'BP-1234', verificationLevel: 'verified', proofDigest: 'abc123', transferReady: true });
   assert.equal(item.bikeId, 'BP-1234');
-  assert.equal(item.verificationLevel, 'verified');
+  assert.equal(item.verificationLevel, 'passport');
   assert.equal(item.proofDigest, 'abc123');
   assert.equal(item.transferReady, true);
 });

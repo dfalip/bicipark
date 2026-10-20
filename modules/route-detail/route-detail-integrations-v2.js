@@ -920,6 +920,7 @@
 
         current:
           [
+            "weather_code",
             "temperature_2m",
             "wind_speed_10m",
             "precipitation"
@@ -927,6 +928,7 @@
 
         hourly:
           [
+            "weather_code",
             "temperature_2m",
             "precipitation_probability",
             "wind_speed_10m"
@@ -1190,6 +1192,7 @@
         : 0;
 
     return {
+      weatherCode: primary.current?.weather_code,
       temp:
         average(currentTemps),
 
@@ -1254,7 +1257,7 @@
         weather.wind
       );
 
-    summary.innerHTML =
+    summary.innerHTML = window.BiciParkWeatherIcons.html(weather.weatherCode,weather.wind) +
       '<div class="bp360-live-stat">' +
         "<strong>" +
           (

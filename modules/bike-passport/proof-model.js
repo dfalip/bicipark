@@ -41,6 +41,14 @@
     const {digest,...body}=proof;
     return (await sha256Hex(canonical(body)))===digest;
   }
+  async function verifyChain(state,bikeId){
+    const proofs=forBike(state,bikeId),seen=new Set();let previous="";
+    for(const proof of proofs){
+      if(proof.schema!=="bicipark-bike-passport-proof-v1"||proof.previousDigest!==previous||seen.has(proof.digest)||!await verifyProof(proof))return false;
+      seen.add(proof.digest);previous=proof.digest;
+    }
+    return true;
+  }
   function read(storage){
     try{const parsed=JSON.parse(storage.getItem(STORE_KEY)||"null");if(parsed&&Array.isArray(parsed.proofs))return {version:1,proofs:parsed.proofs}}catch(_){ }
     return {version:1,proofs:[]};
@@ -50,9 +58,9 @@
   function latest(state,bikeId){const list=forBike(state,bikeId);return list[list.length-1]||null}
   function verificationLevel(state,bikeId){
     const list=forBike(state,bikeId);if(!list.length)return "none";
-    if(list.some(p=>p.actorRole==="workshop"||p.actorRole==="registry"||p.type==="ownership-transfer-accepted"))return "verified";
+    // Local role/type claims are not authenticated external attestations.
     return "passport";
   }
   function transferPackage(bike,proof){return {schema:"bicipark-bike-transfer-v1",createdAt:new Date().toISOString(),bike:safeBikeSnapshot(bike),latestDigest:proof?.digest||null,status:"pending-recipient"}}
-  return {STORE_KEY,canonical,sha256Hex,safeBikeSnapshot,createProof,verifyProof,read,write,forBike,latest,verificationLevel,transferPackage};
+  return {STORE_KEY,canonical,sha256Hex,safeBikeSnapshot,createProof,verifyProof,verifyChain,read,write,forBike,latest,verificationLevel,transferPackage};
 });

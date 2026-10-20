@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "hotel-peralada",
+  "slug": "hotel-peralada",
+  "name": "Hotel Peralada",
+  "type": "hotel",
+  "categoryLabel": "Allotjament · Serveis per a ciclistes",
+  "description": "Serveis publicats per l’establiment. Consulta disponibilitat i condicions directament amb la base. Ubicació exacta al mapa pendent de contrastar.",
+  "location": {
+    "country": "ES",
+    "region": "Girona · Alt Empordà",
+    "locality": "Peralada",
+    "address": "Peralada"
+  },
+  "status": {
+    "code": "public-unverified",
+    "label": "Informació pública · No verificada",
+    "affiliated": false,
+    "verified": false,
+    "partner": false
+  },
+  "links": {
+    "official": "https://www.hotelperalada.com/es/espacios",
+    "bikeFriendly": "https://www.hotelperalada.com/es/espacios"
+  },
+  "sources": [
+    "https://www.hotelperalada.com/es/espacios"
+  ],
+  "reviewedAt": "2026-10-20",
+  "routes": {
+    "count": 0,
+    "countLabel": "Sense tracks integrats",
+    "modes": [],
+    "modeLabels": [],
+    "notes": "Rutes locals pendents de seleccionar i validar."
+  },
+  "services": {
+    "bikeStorage": true,
+    "rental": true
+  },
+  "serviceLabels": [
+    {
+      "key": "bikeStorage",
+      "label": "Bike room en aparcament tancat",
+      "icon": "🚲"
+    },
+    {
+      "key": "rental",
+      "label": "Lloguer de bicicletes elèctriques",
+      "icon": "🚲"
+    }
+  ],
+  "bikeFriendly": {
+    "methodologyVersion": "1.0",
+    "partial": true,
+    "criteria": {}
+  }
+}
