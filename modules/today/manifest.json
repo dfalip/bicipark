@@ -1,0 +1,10 @@
+{
+  "id": "today",
+  "name": "BiciPark Today",
+  "version": "1.0.0",
+  "description": "Recomanacions contextuals de ruta segons perfil, bici, historial i meteorologia.",
+  "entry": "./today.js",
+  "style": "./today.css",
+  "engines": ["./engine/recommendation-engine.js"],
+  "providers": ["./providers/open-meteo.js"]
+}
