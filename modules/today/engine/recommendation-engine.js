@@ -142,9 +142,6 @@
     const reasons = [];
     const warnings = [];
 
-    if (weather && Number.isFinite(weather.score)) {
-      reasons.push(`${weather.icon || "🌤️"} ${weather.label || "Meteorologia analitzada"}${weather.bestWindow?.label ? ` · millor franja ${weather.bestWindow.label}` : ""}`);
-    }
     if (distance >= 85) reasons.push("Distància ben alineada amb el teu perfil i el pla d'avui.");
     if (modality >= 85) {
       reasons.push(bike
