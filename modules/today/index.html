@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#185b3e">
+  <title>BiciPark Today · La millor ruta per avui</title>
+  <meta name="description" content="Recomanacions de ruta segons el teu perfil, la bici, l'activitat recent i la meteorologia.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="./today.css">
+</head>
+<body>
+  <main class="today-shell">
+    <nav class="today-nav" aria-label="Navegació BiciPark">
+      <a class="today-brand" href="/">🚲 BiciPark</a>
+      <div class="today-nav-links">
+        <a href="/modules/route-match/">Perfil</a>
+        <a href="/modules/my-bike/">La meva bici</a>
+        <a href="/modules/route-planner/">Planifica</a>
+      </div>
+    </nav>
+
+    <section class="today-hero">
+      <div>
+        <span class="today-eyebrow">BICIPARK TODAY</span>
+        <h1>Quina ruta et convé avui?</h1>
+        <p>Creuem el teu perfil, la bici activa, l'activitat recent i la previsió meteorològica per ordenar rutes reals del catàleg BiciPark. L'encaix és una puntuació de producte, no una probabilitat ni una indicació de seguretat.</p>
+      </div>
+      <div class="today-location">
+        <span>Zona de sortida</span>
+        <strong id="locationLabel">Barcelona</strong>
+        <button id="locationBtn" type="button">Utilitza la meva ubicació</button>
+      </div>
+    </section>
+
+    <section class="today-context" aria-label="Context de recomanació">
+      <div class="context-card"><span>Perfil</span><strong id="profileSummary">Carregant...</strong><a href="/modules/route-match/">Editar perfil</a></div>
+      <div class="context-card"><span>Bici activa</span><strong id="bikeSummary">Carregant...</strong><a id="bikeActionLink" href="/modules/my-bike/">Configura la bici</a></div>
+      <div class="context-card"><span>Últims 7 dies</span><strong id="historySummary">Carregant...</strong><a href="/modules/activity-history/">Veure historial</a></div>
+    </section>
+
+    <section class="today-choice">
+      <div class="today-choice-head">
+        <h2>Què et ve de gust?</h2>
+        <button id="refreshBtn" class="today-refresh" type="button">Actualitza previsió</button>
+      </div>
+      <div class="mood-row" role="group" aria-label="Tipus de sortida">
+        <button class="mood is-active" type="button" data-mood="normal">🚲 Recomana'm</button>
+        <button class="mood" type="button" data-mood="easy">😌 Suau</button>
+        <button class="mood" type="button" data-mood="train">🔥 Entrenar</button>
+        <button class="mood" type="button" data-mood="nature">🌳 Natura</button>
+        <button class="mood" type="button" data-mood="climb">⛰️ Pujar</button>
+        <button class="mood" type="button" data-mood="coffee">☕ Ruta + cafè</button>
+        <button class="mood" type="button" data-mood="quick">⚡ Ràpida</button>
+      </div>
+    </section>
+
+    <p id="status" class="today-status" role="status">Preparant recomanacions...</p>
+    <section id="recommendations" class="recommendations" aria-live="polite"></section>
+    <p class="today-footnote">Meteorologia: Open-Meteo. Les rutes poden contenir metadades editorials pendents de validació; abans de sortir comprova l'estat real de la via i adapta la ruta a les teves capacitats.</p>
+  </main>
+  <script src="/js/core/bicipark-core.js"></script>
+  <script src="/modules/route-match/engine/profile-store.js"></script>
+  <script src="./engine/recommendation-engine.js"></script>
+  <script src="./providers/open-meteo.js"></script>
+  <script src="./today.js"></script>
+  <script src="/js/pwa.js"></script>
+</body>
+</html>

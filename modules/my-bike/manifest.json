@@ -1,0 +1,8 @@
+{
+  "id": "my-bike",
+  "name": "BiciPark My Bike",
+  "version": "1.0.0",
+  "description": "Perfil local de bicicletes, configuració, manteniment i passaport exportable.",
+  "entry": "./my-bike.js",
+  "style": "./my-bike.css"
+}

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#185b3e">
+  <title>La meva bici · BiciPark</title>
+  <meta name="description" content="Perfil, configuració, manteniment i passaport local de les teves bicicletes.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="./my-bike.css">
+</head>
+<body>
+  <main class="bike-shell">
+    <nav class="bike-nav"><a class="bike-brand" href="/">🚲 BiciPark</a><div><a href="/modules/today/">Avui</a><a href="/modules/route-match/">Perfil</a></div></nav>
+    <section class="bike-hero">
+      <span>MY BIKE</span><h1>La teva bici també forma part del perfil.</h1>
+      <p>Guarda la configuració bàsica, el quilometratge i els últims registres de manteniment. BiciPark Today pot utilitzar la modalitat de la bici activa per ordenar millor les rutes.</p>
+      <div class="bike-active">Bici activa: <strong id="activeBikeLabel">Cap bici configurada</strong></div>
+    </section>
+
+    <div class="bike-layout">
+      <section class="bike-panel">
+        <h2 id="formTitle">Afegeix una bicicleta</h2>
+        <p>Les dades es guarden només en aquest navegador en aquesta versió.</p>
+        <form id="bikeForm" class="bike-form">
+          <label>Nom curt<input name="nickname" placeholder="La gravel, Orca..."></label>
+          <label>Modalitat<select name="modality"><option value="Road">Road</option><option value="Gravel">Gravel</option><option value="MTB">MTB / BTT</option><option value="Urban">Urbana</option><option value="E-bike">E-bike</option><option value="">Altres / no indicat</option></select></label>
+          <label>Marca<input name="brand" placeholder="Orbea"></label>
+          <label>Model<input name="model" placeholder="Orca M30"></label>
+          <label>Any<input name="year" inputmode="numeric" placeholder="2025"></label>
+          <label>Pes bici (kg)<input name="bikeWeightKg" type="number" min="1" max="60" step="0.1"></label>
+          <label>Pes ciclista (kg)<input name="riderWeightKg" type="number" min="20" max="250" step="0.1"></label>
+          <label>Càrrega habitual (kg)<input name="cargoKg" type="number" min="0" max="80" step="0.1"></label>
+
+          <fieldset><legend>Rodes i pressió habitual</legend>
+            <label>Mida roda<input name="wheelSize" placeholder="700C / 29\" / 27.5\""></label>
+            <label>Amplada pneumàtic (mm)<input name="tireWidthMm" type="number" min="18" max="100" step="1"></label>
+            <label>Tipus<select name="tireType"><option value="">No indicat</option><option>Tubeless</option><option>Cambra</option><option>Tubular</option></select></label>
+            <label>Pressió dav./darr. (bar)<span style="display:flex;gap:6px"><input name="frontBar" type="number" min="0.5" max="12" step="0.1" placeholder="dav."><input name="rearBar" type="number" min="0.5" max="12" step="0.1" placeholder="darr."></span></label>
+            <p class="form-note">Aquí registrem la pressió que tu utilitzes. Encara no donem una pressió “recomanada”: aquesta funció s'activarà quan tinguem una fórmula o taula validada per pes total, amplada real, carcassa i superfície.</p>
+          </fieldset>
+
+          <fieldset><legend>Passaport i manteniment</legend>
+            <label>Últims 4 del número de sèrie<input name="serialHint" maxlength="4" placeholder="A7K2"></label>
+            <label>Quilometratge total<input name="odometerKm" type="number" min="0" step="1"></label>
+            <label>Cadena revisada/canviada al km<input name="chainServiceKm" type="number" min="0" step="1"></label>
+            <label>Cobertes revisades/canviades al km<input name="tiresServiceKm" type="number" min="0" step="1"></label>
+            <label>Frens revisats al km<input name="brakesServiceKm" type="number" min="0" step="1"></label>
+            <label>Última visita al taller<input name="lastWorkshopDate" type="date"></label>
+          </fieldset>
+          <p class="form-note">Per privacitat, BiciPark només desa els últims 4 caràcters del número de sèrie en aquest perfil. Factures, propietat verificada, QR públic i transferència de titular requeriran backend i permisos específics.</p>
+          <div class="form-actions"><button id="saveBikeBtn" type="submit">Desa la bicicleta</button><button id="cancelEditBtn" type="button">Neteja / cancel·la</button></div>
+        </form>
+      </section>
+
+      <section>
+        <div id="bikeEmpty" class="bike-empty"><h2>Encara no hi ha bicicletes</h2><p>Afegeix-ne una per començar a construir el teu Bike Passport local.</p></div>
+        <div id="bikeList" class="bike-list"></div>
+      </section>
+    </div>
+    <p class="bike-safety-note">El manteniment i les pressions registrades són dades personals de configuració. BiciPark no determina si una bicicleta és segura per circular; segueix les especificacions del fabricant i consulta un taller qualificat quan calgui.</p>
+  </main>
+  <script src="./my-bike.js"></script>
+  <script src="/js/pwa.js"></script>
+</body>
+</html>

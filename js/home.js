@@ -6,6 +6,46 @@
   const moreMenuBtn = document.getElementById("moreMenuBtn");
   const navMore = moreMenuBtn ? moreMenuBtn.closest(".nav-more") : null;
 
+  function installPersonalCyclingEntries() {
+    if (boardNav && !boardNav.querySelector('[data-bicipark-entry="today"]')) {
+      const todayLink = document.createElement("a");
+      todayLink.href = "./modules/today/";
+      todayLink.textContent = "Avui";
+      todayLink.dataset.biciparkEntry = "today";
+      boardNav.insertBefore(todayLink, boardNav.firstElementChild);
+    }
+
+    const moreMenu = document.getElementById("moreMenu");
+    if (moreMenu && !moreMenu.querySelector('[data-bicipark-entry="my-bike"]')) {
+      const myBike = document.createElement("a");
+      myBike.href = "./modules/my-bike/";
+      myBike.dataset.biciparkEntry = "my-bike";
+      myBike.innerHTML = "<strong>La meva bici</strong><small>Setup, manteniment i passaport</small>";
+      moreMenu.insertBefore(myBike, moreMenu.firstElementChild);
+
+      const planner = document.createElement("a");
+      planner.href = "./modules/route-planner/";
+      planner.dataset.biciparkEntry = "planner";
+      planner.innerHTML = "<strong>Planifica</strong><small>Origen, destí i GPX</small>";
+      moreMenu.insertBefore(planner, myBike.nextSibling);
+    }
+
+    const heroActions = document.querySelector(".hero-actions");
+    if (heroActions && !heroActions.querySelector('[data-bicipark-entry="today"]')) {
+      const existingPrimary = heroActions.querySelector(".btn-primary");
+      if (existingPrimary) {
+        existingPrimary.classList.remove("btn-primary");
+        existingPrimary.classList.add("btn-secondary");
+      }
+      const todayButton = document.createElement("a");
+      todayButton.className = "btn btn-primary";
+      todayButton.href = "./modules/today/";
+      todayButton.dataset.biciparkEntry = "today";
+      todayButton.textContent = "Què faig avui?";
+      heroActions.insertBefore(todayButton, heroActions.firstChild);
+    }
+  }
+
   function closeMoreMenu() {
     if (!navMore || !moreMenuBtn) return;
     navMore.classList.remove("is-open");
@@ -17,6 +57,8 @@
     boardNav.classList.remove("is-open");
     mobileMenuBtn.setAttribute("aria-expanded", "false");
   }
+
+  installPersonalCyclingEntries();
 
   if (mobileMenuBtn && boardNav) {
     mobileMenuBtn.addEventListener("click", () => {
@@ -37,23 +79,17 @@
   }
 
   document.addEventListener("click", e => {
-    if (navMore && !navMore.contains(e.target)) {
-      closeMoreMenu();
-    }
+    if (navMore && !navMore.contains(e.target)) closeMoreMenu();
   });
 
   document.querySelectorAll(".board-nav a, .more-menu a").forEach(link => {
     link.addEventListener("click", () => {
       closeMoreMenu();
-      if (window.matchMedia("(max-width: 760px)").matches) {
-        closeMobileMenu();
-      }
+      if (window.matchMedia("(max-width: 760px)").matches) closeMobileMenu();
     });
   });
 
   window.addEventListener("resize", () => {
-    if (!window.matchMedia("(max-width: 760px)").matches) {
-      closeMobileMenu();
-    }
+    if (!window.matchMedia("(max-width: 760px)").matches) closeMobileMenu();
   });
 })();
