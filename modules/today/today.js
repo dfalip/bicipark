@@ -58,14 +58,18 @@
   function historySummary() {
     const raw = readJson(ACTIVITY_KEY, []);
     const items = Array.isArray(raw) ? raw : (Array.isArray(raw?.activities) ? raw.activities : (Array.isArray(raw?.items) ? raw.items : []));
+    const available = items.length > 0;
     const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
     const recent = items.filter(item => {
       const date = new Date(activityDate(item));
       return Number.isFinite(date.getTime()) && date.getTime() >= cutoff;
     });
     return {
+      available,
       count7d: recent.length,
-      recentDistanceKm: Math.round(recent.reduce((sum, item) => sum + activityDistance(item), 0) * 10) / 10
+      recentDistanceKm: available
+        ? Math.round(recent.reduce((sum, item) => sum + activityDistance(item), 0) * 10) / 10
+        : null
     };
   }
 
@@ -116,16 +120,21 @@
     document.getElementById("bikeSummary").textContent = bike
       ? `${bike.nickname || bike.model || "Bici"}${bike.modality ? ` · ${bike.modality}` : ""}`
       : "Encara no has configurat cap bicicleta";
-    document.getElementById("historySummary").textContent = history.count7d
-      ? `${history.recentDistanceKm} km en ${history.count7d} activitats els últims 7 dies`
-      : "Sense activitats recents registrades";
+
+    const historyText = !history.available
+      ? "Sense dades d'historial"
+      : history.count7d
+        ? `${history.recentDistanceKm} km en ${history.count7d} activitats els últims 7 dies`
+        : "Cap activitat registrada els últims 7 dies";
+
+    document.getElementById("historySummary").textContent = historyText;
     document.getElementById("locationLabel").textContent = state.location.label;
   }
 
   function routeCard(route, index) {
     const weather = route.weather;
     const reasons = route.reasons.map(reason => `<li>${escapeHtml(reason)}</li>`).join("");
-    const warnings = route.warnings.map(warning => `<p class="today-warning">⚠️ ${escapeHtml(warning)}</p>`).join("");
+    const warnings = route.warnings.map(warning => `<p class="today-warning"><span aria-hidden="true">⚠️</span><span>${escapeHtml(warning)}</span></p>`).join("");
     const meta = [
       `${Number(route.distanceKm || 0).toFixed(1).replace(".0", "")} km`,
       route.elevationGain > 0 && !route.needsReview ? `+${Math.round(route.elevationGain)} m` : "desnivell per validar",
@@ -145,11 +154,11 @@
         </div>
         ${weather ? `
           <div class="today-weather">
-            <span class="today-weather-icon">${weather.icon}</span>
+            <span class="today-weather-icon" aria-hidden="true">${weather.icon}</span>
             <div><strong>${escapeHtml(weather.label)}</strong><small>${weather.bestWindow ? `Millor franja ${escapeHtml(weather.bestWindow.label)} · ${Math.round(weather.bestWindow.temp)} °C · pluja ${Math.round(weather.bestWindow.rain)}% · vent ${Math.round(weather.bestWindow.wind)} km/h` : ""}</small></div>
           </div>` : `<div class="today-weather is-offline">Meteorologia no disponible ara mateix.</div>`}
         <ul class="today-reasons">${reasons || "<li>Proposta ordenada segons les dades disponibles.</li>"}</ul>
-        ${warnings}
+        ${warnings ? `<div class="today-warnings">${warnings}</div>` : ""}
         <div class="today-actions">
           <a class="today-primary" href="/modules/route-detail/?route=${encodeURIComponent(route.id)}">Veure ruta</a>
           <a class="today-secondary" href="/modules/route-planner/">Planifica una altra</a>
