@@ -179,28 +179,6 @@
             includeDemo: true
           });
 
-      /*
-       * Keep first-install demo behaviour only while the store has
-       * never been created. Once [] is explicitly stored, do not seed
-       * demo rows again.
-       */
-      if (
-        stored.length === 0 &&
-        localStorage.getItem(
-          ACTIVITY_KEY
-        ) === null
-      ) {
-        const demo =
-          demoActivities();
-
-        window
-          .BiciParkActivitySync
-          .writeActivities(
-            demo
-          );
-
-        return demo;
-      }
 
       return stored;
     }
@@ -211,16 +189,7 @@
           ACTIVITY_KEY
         );
 
-      if (!raw) {
-        const demo = demoActivities();
-
-        localStorage.setItem(
-          ACTIVITY_KEY,
-          JSON.stringify(demo)
-        );
-
-        return demo;
-      }
+      if (!raw) return [];
 
       const data = JSON.parse(raw);
 

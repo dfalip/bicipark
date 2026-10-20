@@ -35,3 +35,13 @@ Abans de publicar, comprova també en escriptori i mòbil: mapa, cerca, registre
 ## Desenvolupament i publicació
 
 Segueix les regles de `modules/README.md`: mòduls independents i integracions explícites. Treballa en una branca i revisa la pull request abans d'integrar a `main`. La configuració del desplegament de bicipark.com es gestiona fora d'aquest repositori; un merge pot activar el desplegament segons la configuració del proveïdor.
+
+## Evolució de mobilitat
+
+- `modules/route-planner/`: càlcul ciclista BRouter per punts al mapa/coordenades; GPX import/export, guardat local i compartició.
+- `modules/parking/details.js`: fitxa de dades conegudes i destí «Com arribar»; no inventa cobert, vigilància, valoracions ni ocupació.
+- `manifest.webmanifest`, `sw.js`, `js/pwa.js`: PWA instal·lable. En HTTPS o localhost, cache del shell i dades de ciutats visitades; mapes de fons i routing sempre en línia. Cal una visita en línia i activació del worker abans de provar offline. Actualitzacions de worker s'activen en tancar les pestanyes anteriors; no es força una recàrrega que perdi canvis.
+- [Backlog prioritzat i decisions de producte](docs/PRODUCT-BACKLOG.md): P0/P1/P2, valor, esforç, risc, estats i dependències dels deu àmbits.
+- [Guia de validació](docs/VALIDATION-MOBILITY.md).
+
+El site i la PWA es despleguen a l'arrel del domini (rutes absolutes). Per una nova versió de continguts precachejats cal incrementar VERSION a sw.js. Els serveis de producció no s'han desplegat des d'aquesta branca.

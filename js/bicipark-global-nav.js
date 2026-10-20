@@ -133,6 +133,7 @@
       </button>
 
       <nav class="bp-nav-links" aria-label="Navegaci\u00F3 principal">
+        <a class="bp-nav-link" href="${url("modules/route-planner/")}">Planifica</a>
         <a
           class="bp-nav-link ${section === "map" ? "is-active" : ""}"
           href="${url("mapa-ciclista.html")}"

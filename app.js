@@ -36,8 +36,9 @@ function escapeParkingText(value) {
 
 const map = L.map("map").setView([41.3874, 2.1686], 13);
 
-L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-  attribution: "© OpenStreetMap © CartoDB"
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
 const markers = L.markerClusterGroup({
@@ -263,7 +264,7 @@ function getSource(rawItem) {
 function getVerified(rawItem) {
   const item = rawItem.properties || rawItem;
   if (typeof item.verified === "boolean") return item.verified;
-  return currentCity?.dataStatus === "official";
+  return false;
 }
 
 function estimateSecurity(rawItem) {
@@ -272,28 +273,7 @@ function estimateSecurity(rawItem) {
   if (item.security) return item.security;
   if (item.seguretat) return item.seguretat;
 
-  if (currentCityKey === "new-york") {
-    const text = JSON.stringify(rawItem).toLowerCase();
-
-    if (text.includes("secure")) return "alta";
-    if (text.includes("bike corral")) return "mitjana";
-    if (text.includes("rack")) return "mitjana";
-
-    return "mitjana";
-  }
-
-  const text = JSON.stringify(rawItem).toLowerCase();
-
-  if (
-    text.includes("bicipark") ||
-    text.includes("cobert") ||
-    text.includes("vigilat") ||
-    text.includes("parking")
-  ) {
-    return "alta";
-  }
-
-  return "mitjana";
+  return "desconeguda";
 }
 
 function getParkingId(parking) {
@@ -324,18 +304,21 @@ function toggleFavorite(parking) {
 }
 
 function getSecurityClass(seguretat) {
+  if (seguretat === "desconeguda") return "desconeguda";
   if (seguretat === "alta") return "alta";
   if (seguretat === "baixa") return "baixa";
   return "mitjana";
 }
 
 function getSecurityBadge(seguretat) {
+  if (seguretat === "desconeguda") return `<span class="badge badge-dark">Seguretat: sense dades</span>`;
   if (seguretat === "alta") return `<span class="badge badge-green">🟢 Alta seguretat</span>`;
   if (seguretat === "baixa") return `<span class="badge badge-red">🔴 Baixa</span>`;
   return `<span class="badge badge-yellow">🟡 Mitjana</span>`;
 }
 
 function getDataStatusBadge(parking) {
+  if (/manual|provisional/i.test(parking.source || "")) return `<span class="badge badge-yellow">Dades provisionals</span>`;
   if (parking.verified === true) return `<span class="badge badge-green">✓ Verificat</span>`;
   if (parking.dataStatus === "official") return `<span class="badge badge-green">Dades oficials</span>`;
   if (parking.dataStatus === "provisional") return `<span class="badge badge-yellow">Dades provisionals</span>`;
@@ -431,7 +414,9 @@ function createParkingCard(parking, distance = null, recommended = false) {
     </div>
   `;
 
+  window.BiciParkParkingDetails?.append(card, parking);
   const favoriteBtn = card.querySelector(".favoriteIcon");
+  favoriteBtn.textContent = isFavorite(parking) ? "♥ Guardat" : "♡ Guarda";
 
   favoriteBtn.addEventListener("click", e => {
     e.stopPropagation();
@@ -990,6 +975,7 @@ function setupLegend() {
       <div><span class="legend-dot dot-alta"></span>Alta</div>
       <div><span class="legend-dot dot-mitjana"></span>Mitjana</div>
       <div><span class="legend-dot dot-baixa"></span>Baixa</div>
+      <div><span class="legend-dot dot-desconeguda"></span>Sense dades</div>
     `;
 
     return div;
@@ -1107,6 +1093,7 @@ async function loadCity(cityKey) {
     await loadRoadRoutes();
     document.getElementById("bikeLaneBtn").disabled = !bikeLaneLayer;
     renderParkings();
+    try { localStorage.setItem("bicipark.parking.lastCity.v1", cityKey); } catch (_) {}
   } catch (error) {
     console.error(error);
     document.getElementById("parkingCounter").textContent = "Dades no disponibles";
@@ -1141,7 +1128,9 @@ async function loadCities() {
 
     select.onchange = () => loadCity(select.value);
 
-    const requestedCity = new URLSearchParams(location.search).get("city");
+    let savedCity = null;
+    try { savedCity = localStorage.getItem("bicipark.parking.lastCity.v1"); } catch (_) {}
+    const requestedCity = new URLSearchParams(location.search).get("city") || savedCity;
     const firstCity = enabledCities.find(([key]) => key === requestedCity)?.[0] || enabledCities[0]?.[0];
 
     if (!firstCity) {
