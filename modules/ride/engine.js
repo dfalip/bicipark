@@ -16,7 +16,7 @@
   };
 
   const rad=deg=>deg*Math.PI/180;
-  const finite=value=>Number.isFinite(Number(value));
+  const finite=value=>value!==null&&value!==undefined&&value!==""&&Number.isFinite(Number(value));
 
   function haversineMeters(a,b){
     const R=6371000;

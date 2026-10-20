@@ -9,7 +9,7 @@
   const ACTIVITY_KEY="bicipark.activityHistory.v1";
   const BIKE_KEY="bicipark.myBike.v1";
 
-  const finite=value=>Number.isFinite(Number(value));
+  const finite=value=>value!==null&&value!==undefined&&value!==""&&Number.isFinite(Number(value));
   const round=(value,digits=1)=>{const p=10**digits;return Math.round(Number(value||0)*p)/p};
   const pad=value=>String(value).padStart(2,"0");
 
