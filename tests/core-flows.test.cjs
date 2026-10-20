@@ -55,6 +55,8 @@ test('parking restores city data, favorites, proximity and one request per city 
  assert.equal(select.querySelector('option[value="amsterdam"]'),null);
  assert.equal(w.document.querySelectorAll('.parkingCard').length,100);
  const sample={nom:'<img src=x onerror=alert(1)>',address:'<b>address</b>',places:2,type:'rack',source:'test',lat:48.85,lng:2.35,seguretat:'mitjana'};
+ assert.equal(w.estimateSecurity({name:'parking secure'}),'desconeguda');
+ assert.match(w.getDataStatusBadge({source:'Manual provisional',dataStatus:'partial_official'}),/Dades provisionals/);
  const card=w.createParkingCard(sample);assert.equal(card.querySelector('img'),null);assert.match(card.textContent,/<img/);
  }finally{w.close()}
 });

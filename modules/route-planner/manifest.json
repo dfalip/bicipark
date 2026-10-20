@@ -1,0 +1,1 @@
+{"id":"route-planner","version":"1.0.0","entry":"index.html","dependencies":["BiciParkCore","Leaflet 1.9.4"],"events":["route-planner:displayed"]}

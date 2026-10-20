@@ -4,11 +4,12 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Aparcaments de bicicletes | BiciPark</title>
 <meta name="description" content="Troba aparcaments de bicicletes per ciutat, guarda favorits i consulta els més propers.">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="/vendor/markercluster/MarkerCluster.css">
+<link rel="stylesheet" href="/vendor/markercluster/MarkerCluster.Default.css">
 <link rel="stylesheet" href="./styles.css"><link rel="stylesheet" href="./css/bicipark-nav.css">
 <link rel="stylesheet" href="./css/aparcaments.css">
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#185b3e"><link rel="apple-touch-icon" href="/assets/pwa/icon-192.png">
 </head>
 <body data-page="parkings">
 <header><a href="./index.html">BiciPark</a> · <a href="./mapa-ciclista.html">Mapa de rutes</a> · <a href="./aparcaments.html">Aparcaments</a></header>
@@ -21,7 +22,7 @@
 </section>
 <section id="parkingControls" aria-label="Filtres">
 <div class="parking-filters">
-<label>Seguretat estimada<select id="securityFilterSelect"><option value="tots">Totes</option><option value="alta">Alta</option><option value="mitjana">Mitjana</option><option value="baixa">Baixa</option></select></label>
+<label>Seguretat estimada<select id="securityFilterSelect"><option value="tots">Totes</option><option value="alta">Alta</option><option value="mitjana">Mitjana</option><option value="baixa">Baixa</option><option value="desconeguda">Sense dades</option></select></label>
 <label>Distància<select id="radiusSelect"><option value="all">Tota la ciutat</option><option value="500">500 m</option><option value="1000">1 km</option><option value="2000">2 km</option></select></label>
 <button type="button" class="filter-btn" data-filter="favorites">♡ Favorits</button><button type="button" id="bikeLaneBtn" disabled>Carrils bici</button>
 </div>
@@ -31,7 +32,8 @@
 <div class="parking-layout"><section id="map" aria-label="Mapa d’aparcaments"></section><aside class="parking-results"><div id="sidebarHeader"><h2>Aparcaments</h2></div><div id="parkingList"></div></aside></div>
 <div id="loadingOverlay" class="hidden" role="status">Carregant dades…</div>
 </main>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-<script src="./app.js?v=parking-restored-1"></script><script src="./js/osm-basemap.js?v=1"></script><script src="./js/bicipark-global-nav.js?v=parking-restored-1"></script>
+<script src="/vendor/leaflet/leaflet.js"></script>
+<script src="/vendor/markercluster/leaflet.markercluster.js"></script>
+<script src="/js/core/bicipark-core.js"></script><script src="/modules/parking/details.js"></script><script src="./app.js?v=mobility-1"></script><script src="./js/bicipark-global-nav.js?v=parking-restored-1"></script>
+<script src="/js/pwa.js"></script>
 </body></html>
