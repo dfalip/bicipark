@@ -11,7 +11,7 @@
 </head>
 <body>
   <main class="bike-shell">
-    <nav class="bike-nav"><a class="bike-brand" href="/">🚲 BiciPark</a><div><a href="/modules/today/">Avui</a><a href="/modules/route-match/">Perfil</a></div></nav>
+    <nav class="bike-nav"><a class="bike-brand" href="/">🚲 BiciPark</a><div><a href="/modules/today/">Avui</a><a href="/modules/route-match/">Perfil</a><a href="/modules/bike-passport/">Bike Passport</a></div></nav>
     <section class="bike-hero">
       <span>MY BIKE</span><h1>La teva bici també forma part del perfil.</h1>
       <p>Guarda la configuració bàsica, el quilometratge i els últims registres de manteniment. BiciPark Today pot utilitzar la modalitat de la bici activa per ordenar millor les rutes.</p>
@@ -54,11 +54,11 @@
             <label>Últims 4 del número de sèrie<input name="serialHint" maxlength="4" placeholder="A7K2"></label>
             <label>Quilometratge total<input name="odometerKm" type="number" min="0" step="1"></label>
             <label>Cadena revisada/canviada al km<input name="chainServiceKm" type="number" min="0" step="1"></label>
-            <label>Cobertes revisades/canviades al km<input name="tiresServiceKm" type="number" min="0" step="1"></label>
+            <label>Cobertes revisades/canviades als km<input name="tiresServiceKm" type="number" min="0" step="1"></label>
             <label>Frens revisats al km<input name="brakesServiceKm" type="number" min="0" step="1"></label>
             <label>Última visita al taller<input name="lastWorkshopDate" type="date"></label>
           </fieldset>
-          <p class="form-note">Per privacitat, BiciPark només desa els últims 4 caràcters del número de sèrie en aquest perfil. Factures, propietat verificada, QR públic i transferència de titular requeriran backend i permisos específics.</p>
+          <p class="form-note">Per privacitat, BiciPark només desa els últims 4 caràcters del número de sèrie en aquest perfil. Les proves criptogràfiques, transferències i futures verificacions externes es gestionen des de Bike Passport.</p>
           <div class="form-actions"><button id="saveBikeBtn" type="submit">Desa la bicicleta</button><button id="cancelEditBtn" type="button">Neteja / cancel·la</button></div>
         </form>
       </section>
