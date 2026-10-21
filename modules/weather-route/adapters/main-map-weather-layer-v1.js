@@ -513,28 +513,15 @@
       data.current ||
       {};
 
-    const temp =
-      Number(
-        current.temperature_2m
-      );
-
-    const rain =
-      Number(
-        current.precipitation
-      );
-
-    const wind =
-      Number(
-        current.wind_speed_10m
-      );
-
-    const weatherCode =
-      Number(
-        current.weather_code
-      );
+    const number = value => value == null || value === "" ? NaN : Number(value);
+    const temp = number(current.temperature_2m);
+    const rain = number(current.precipitation);
+    const wind = number(current.wind_speed_10m);
+    const weatherCode = number(current.weather_code);
 
     if (
       !Number.isFinite(temp) ||
+      !Number.isFinite(rain) ||
       !Number.isFinite(wind)
     ) {
       return null;
@@ -565,7 +552,7 @@
       weatherCode:
         Number.isFinite(weatherCode)
           ? weatherCode
-          : 2,
+          : null,
 
       score:
         weatherScore(
