@@ -119,6 +119,7 @@
     const positions = [];
 
     state.filtered.forEach(item => {
+      if(item.summary.lat==null||item.summary.lng==null)return;
       const lat = Number(item.summary.lat);
       const lng = Number(item.summary.lng);
 
@@ -139,7 +140,7 @@
       marker.bindPopup(
         '<div class="bb-explore-popup">' +
           '<strong>' + item.summary.name + '</strong>' +
-          '<span>Bike Friendly ' + item.rating.score + '/100</span>' +
+          '<span>Bike Friendly ' + (item.rating.score ?? "—") + '/100</span>' +
           '<span>' + modes + '</span>' +
           '<a href="' + typeProfileUrl(item) + '">Veure Bike Base →</a>' +
         '</div>'
@@ -210,7 +211,7 @@
               </div>
 
               <div class="bb-result-score">
-                <strong>${item.rating.score}</strong>
+                <strong>${item.rating.score ?? "—"}</strong>
                 <span>/100</span>
               </div>
             </div>
@@ -359,7 +360,7 @@
         };
 
         state.items.forEach(item => {
-          item.distanceKm = haversineKm(
+          item.distanceKm = item.summary.lat==null||item.summary.lng==null ? NaN : haversineKm(
             state.userLocation,
             {
               lat: Number(item.summary.lat),

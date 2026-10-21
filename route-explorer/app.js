@@ -460,6 +460,7 @@ async function renderRouteLayers(routes, token) {
 }
 
 function formatNumber(value, maximumFractionDigits = 0) {
+  if(value===null||value===undefined||value==="")return "—";
   if (value == null || Number.isNaN(Number(value))) {
     return "—";
   }
@@ -622,7 +623,7 @@ function findRouteById(routeId) {
   return [
     ...state.localRoutes,
     ...state.segmentedSections
-  ].find(route => route.id === routeId);
+  ].find(route => route.id === routeId || route.aliases?.includes(routeId));
 }
 
 async function selectRoute(routeId, options = {}) {

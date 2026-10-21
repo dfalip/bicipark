@@ -4,17 +4,17 @@
   "slug": "izarpe",
   "name": "Camping Izarpe",
   "type": "camping",
-  "categoryLabel": "C\u00e0mping \u00b7 Centre de cicloturisme",
+  "categoryLabel": "Càmping · Centre de cicloturisme",
   "location": {
     "country": "ES",
     "region": "Navarra",
-    "locality": "Ar\u00f3stegui",
+    "locality": "Aróstegui",
     "lat": 42.93854,
     "lng": -1.69241
   },
   "status": {
     "code": "public-unverified",
-    "label": "Informaci\u00f3 p\u00fablica \u00b7 No verificada",
+    "label": "Informació pública · No verificada",
     "affiliated": false,
     "verified": false,
     "partner": false
@@ -52,7 +52,7 @@
         "evidence": "Servei publicat"
       },
       "repair": {
-        "label": "Taller / reparaci\u00f3",
+        "label": "Taller / reparació",
         "weight": 15,
         "available": true,
         "evidence": "Servei publicat"
@@ -82,7 +82,7 @@
         "evidence": "Carretera, Gravel i MTB"
       },
       "services": {
-        "label": "Serveis b\u00e0sics",
+        "label": "Serveis bàsics",
         "weight": 10,
         "available": true,
         "evidence": "Restaurant i supermercat"
@@ -91,8 +91,11 @@
         "label": "Fitxa verificada",
         "weight": 10,
         "available": false,
-        "evidence": "Pendent de verificaci\u00f3"
+        "evidence": "Pendent de verificació"
       }
     }
-  }
+  },
+  "sources": [
+    "https://www.campingsnavarra.com/ruta-1-izarpe-ultzama-basaburua/"
+  ]
 }

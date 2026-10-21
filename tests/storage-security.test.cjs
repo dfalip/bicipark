@@ -1,0 +1,12 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),{PGlite}=require('@electric-sql/pglite');
+test('document bucket is private even if previously public and paths isolate accounts and bikes',async()=>{
+const db=new PGlite(),a='11111111-1111-4111-8111-111111111111',b='22222222-2222-4222-8222-222222222222';try{
+await db.exec(`create role anon;create role authenticated;create schema auth;create table auth.users(id uuid primary key);insert into auth.users values('${a}'),('${b}');create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;grant usage on schema auth to authenticated,anon;create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);create table storage.objects(id uuid default gen_random_uuid(),bucket_id text,name text);alter table storage.objects enable row level security;grant usage on schema storage to authenticated;grant select,insert,delete on storage.objects to authenticated;create function storage.foldername(text) returns text[] language sql immutable as $$select string_to_array($1,'/')$$;insert into storage.buckets(id,name,public)values('bike-documents','bike-documents',true);`);
+for(const file of ['20261020_connected.sql','20261021_private_documents.sql','20261022_my_bike_contact.sql'])await db.exec(fs.readFileSync('supabase/migrations/'+file,'utf8'));
+assert.equal((await db.query('select public from storage.buckets')).rows[0].public,false);
+async function user(id){await db.exec(`reset role;select set_config('request.jwt.claim.sub','${id}',false);set role authenticated;`)}
+await user(a);const bike=(await db.query(`insert into bp_bikes(user_id,brand,model,serial,local_bike_id)values('${a}','Brand','Model','hint','BP-1')returning id`)).rows[0].id;
+await db.query(`insert into storage.objects(bucket_id,name) values('bike-documents','${a}/${bike}/invoice.pdf')`);
+await assert.rejects(db.query(`insert into storage.objects(bucket_id,name) values('bike-documents','${a}/00000000-0000-0000-0000-000000000000/invoice.pdf')`));
+await user(b);assert.equal((await db.query('select * from storage.objects')).rows.length,0);await assert.rejects(db.query(`insert into storage.objects(bucket_id,name)values('bike-documents','${b}/${bike}/stolen.pdf')`));await db.query('delete from storage.objects');await user(a);assert.equal((await db.query('select * from storage.objects')).rows.length,1);
+}finally{await db.close()}});

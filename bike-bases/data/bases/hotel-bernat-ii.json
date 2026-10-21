@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "hotel-bernat-ii",
+  "slug": "hotel-bernat-ii",
+  "name": "Hotel Bernat II",
+  "type": "hotel",
+  "categoryLabel": "Allotjament · Serveis per a ciclistes",
+  "description": "Serveis publicats per l’establiment. Consulta disponibilitat i condicions directament amb la base. Ubicació exacta al mapa pendent de contrastar.",
+  "location": {
+    "country": "ES",
+    "region": "Barcelona · Maresme",
+    "locality": "Calella",
+    "address": "Carrer del Turisme, 42–44, Calella"
+  },
+  "status": {
+    "code": "public-unverified",
+    "label": "Informació pública · No verificada",
+    "affiliated": false,
+    "verified": false,
+    "partner": false
+  },
+  "links": {
+    "official": "https://www.hotelbernatcalella.com/en/faqs/",
+    "bikeFriendly": "https://www.hotelbernatcalella.com/en/faqs/"
+  },
+  "sources": [
+    "https://www.hotelbernatcalella.com/en/faqs/"
+  ],
+  "reviewedAt": "2026-10-20",
+  "routes": {
+    "count": 0,
+    "countLabel": "Sense tracks integrats",
+    "modes": [],
+    "modeLabels": [],
+    "notes": "Rutes locals pendents de seleccionar i validar."
+  },
+  "services": {
+    "bikeStorage": true
+  },
+  "serviceLabels": [
+    {
+      "key": "bikeStorage",
+      "label": "Guarda-bicis en paquets esportius: consulta condicions",
+      "icon": "🚲"
+    }
+  ],
+  "bikeFriendly": {
+    "methodologyVersion": "1.0",
+    "partial": true,
+    "criteria": {}
+  }
+}

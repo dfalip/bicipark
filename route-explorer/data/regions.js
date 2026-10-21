@@ -1,4 +1,5 @@
 ﻿export const regions = Object.freeze({
+  navarra: {id:"navarra",label:"Navarra",center:[42.94,-1.69],viewBounds:[[42.65,-2.1],[43.25,-1.2]]},
   barcelona: {
     id: "barcelona",
     label: "Barcelona",

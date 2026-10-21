@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "hotel-terradets",
+  "slug": "hotel-terradets",
+  "name": "Hotel Terradets",
+  "type": "hotel",
+  "categoryLabel": "Allotjament · Serveis per a ciclistes",
+  "description": "Serveis publicats per l’establiment. Consulta disponibilitat i condicions directament amb la base. Ubicació exacta al mapa pendent de contrastar.",
+  "location": {
+    "country": "ES",
+    "region": "Lleida · Pallars Jussà",
+    "locality": "Cellers",
+    "address": "Cellers"
+  },
+  "status": {
+    "code": "public-unverified",
+    "label": "Informació pública · No verificada",
+    "affiliated": false,
+    "verified": false,
+    "partner": false
+  },
+  "links": {
+    "official": "https://www.hotelterradets.com/assets/themes/www.hotelterradets.com/docs/activities/1714468310_bikefriendly_eng.pdf",
+    "bikeFriendly": "https://www.hotelterradets.com/assets/themes/www.hotelterradets.com/docs/activities/1714468310_bikefriendly_eng.pdf"
+  },
+  "sources": [
+    "https://www.hotelterradets.com/assets/themes/www.hotelterradets.com/docs/activities/1714468310_bikefriendly_eng.pdf"
+  ],
+  "reviewedAt": "2026-10-20",
+  "routes": {
+    "count": 0,
+    "countLabel": "Sense tracks integrats",
+    "modes": [],
+    "modeLabels": [],
+    "notes": "Rutes locals pendents de seleccionar i validar."
+  },
+  "services": {
+    "bikeStorage": true,
+    "repair": true,
+    "bikeWash": true
+  },
+  "serviceLabels": [
+    {
+      "key": "bikeStorage",
+      "label": "Suports individuals per a bicicletes",
+      "icon": "🚲"
+    },
+    {
+      "key": "repair",
+      "label": "Eines i bomba d’inflat",
+      "icon": "🚲"
+    },
+    {
+      "key": "bikeWash",
+      "label": "Zona de rentat",
+      "icon": "🚲"
+    }
+  ],
+  "bikeFriendly": {
+    "methodologyVersion": "1.0",
+    "partial": true,
+    "criteria": {}
+  }
+}

@@ -75,9 +75,9 @@
 
     return {
       baseId: base.id,
-      score,
+      score: base.bikeFriendly.partial ? null : score,
       maxScore,
-      level,
+      level: base.bikeFriendly.partial ? "Pendent de revisió completa" : level,
       status:
         base.status.code,
       statusLabel:

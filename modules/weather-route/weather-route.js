@@ -374,6 +374,7 @@
           String(point[1]),
         hourly:
           [
+            "weather_code",
             "temperature_2m",
             "precipitation_probability",
             "wind_speed_10m",
@@ -473,6 +474,7 @@
       ].hourly;
 
     return {
+      weatherCode: hourly.weather_code?.[hourlyIndex],
       temp:
         Number(
           hourly.temperature_2m[
@@ -501,6 +503,11 @@
   }
 
   function renderAnalysis(hourlyIndex) {
+    const first = pointWeather(0, hourlyIndex);
+    const status = document.getElementById("weatherStatus");
+    let visual = document.getElementById("weatherVisual");
+    if (!visual) { visual = document.createElement("div"); visual.id="weatherVisual"; status.after(visual); }
+    visual.innerHTML = window.BiciParkWeatherIcons.html(first.weatherCode, first.wind) + " · Punt inicial a l’hora seleccionada";
     const values =
       state.route.points
         .map((_, index) =>
@@ -803,6 +810,7 @@
         );
 
       candidates.push({
+        weatherCode: data.weather_code?.[i],
         hour,
         score,
         temp:
@@ -841,7 +849,7 @@
       best.length
         ? best
             .map(item =>
-              '<div class="wr-hour">' +
+              '<div class="wr-hour">' + window.BiciParkWeatherIcons.html(item.weatherCode,item.wind) +
                 "<strong>" +
                   pad(item.hour) +
                   ":00" +

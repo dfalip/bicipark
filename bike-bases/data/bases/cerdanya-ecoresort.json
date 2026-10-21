@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "cerdanya-ecoresort",
+  "slug": "cerdanya-ecoresort",
+  "name": "Cerdanya EcoResort / Cerdanya Viva",
+  "type": "hotel",
+  "categoryLabel": "Allotjament · Serveis per a ciclistes",
+  "description": "Serveis publicats per l’establiment. Consulta disponibilitat i condicions directament amb la base. Ubicació exacta al mapa pendent de contrastar.",
+  "location": {
+    "country": "ES",
+    "region": "Lleida · Cerdanya",
+    "locality": "Prullans",
+    "address": "Prullans de Cerdanya"
+  },
+  "status": {
+    "code": "public-unverified",
+    "label": "Informació pública · No verificada",
+    "affiliated": false,
+    "verified": false,
+    "partner": false
+  },
+  "links": {
+    "official": "https://www.cerdanyaecoresort.com/installacions-i-serveis/esports-muntanya/esports-daventura-i-senderisme/ciclisme/",
+    "bikeFriendly": "https://www.cerdanyaecoresort.com/installacions-i-serveis/esports-muntanya/esports-daventura-i-senderisme/ciclisme/"
+  },
+  "sources": [
+    "https://www.cerdanyaecoresort.com/installacions-i-serveis/esports-muntanya/esports-daventura-i-senderisme/ciclisme/"
+  ],
+  "reviewedAt": "2026-10-20",
+  "routes": {
+    "count": 0,
+    "countLabel": "Sense tracks integrats",
+    "modes": [],
+    "modeLabels": [],
+    "notes": "Rutes locals pendents de seleccionar i validar."
+  },
+  "services": {
+    "tourGuide": true
+  },
+  "serviceLabels": [
+    {
+      "key": "tourGuide",
+      "label": "Rutes guiades de BTT i carretera",
+      "icon": "🚲"
+    }
+  ],
+  "bikeFriendly": {
+    "methodologyVersion": "1.0",
+    "partial": true,
+    "criteria": {}
+  }
+}

@@ -1345,3 +1345,8 @@ button { font: inherit; }
 }
 
 /* BICIPARK FINAL HOMEPAGE REFINEMENT END */
+
+/* Header actions are real links with visible keyboard focus. */
+.topbar-actions .icon-pill { width:44px; height:44px; text-decoration:none; }
+.topbar-actions .icon-pill:hover { background:#e6efe8; border-color:#8cae99; }
+.topbar-actions .icon-pill:focus-visible { outline:3px solid #185b3e; outline-offset:3px; }

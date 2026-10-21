@@ -134,6 +134,10 @@
 
       <nav class="bp-nav-links" aria-label="Navegaci\u00F3 principal">
         <a class="bp-nav-link" href="${url("modules/route-planner/")}">Planifica</a>
+        <a class="bp-nav-link" href="${url("modules/route-watch/")}">Route Watch</a>
+        <a class="bp-nav-link" href="${url("modules/account/")}">Compte</a>
+        <a class="bp-nav-link" href="${url("modules/community/")}">Comunitat</a>
+        <a class="bp-nav-link" href="${url("modules/bike-registry/")}">QR / NFC</a>
         <a
           class="bp-nav-link ${section === "map" ? "is-active" : ""}"
           href="${url("mapa-ciclista.html")}"

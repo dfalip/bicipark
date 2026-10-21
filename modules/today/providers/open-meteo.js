@@ -26,30 +26,17 @@
     return clamp(Math.round(score), 0, 100);
   }
 
-  function iconForCode(code, rainProbability = NaN) {
-    const c = Number(code);
-    const rain = Number(rainProbability);
-
-    if (c >= 95) return "⛈️";
-    if ((c >= 71 && c <= 77) || (c >= 85 && c <= 86)) return "🌨️";
-    if (c === 45 || c === 48) return "🌫️";
-    if (c === 3) return "☁️";
-    if (c === 0) return "☀️";
-    if (c === 1 || c === 2) return "🌤️";
-
-    if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82)) {
-      if (Number.isFinite(rain) && rain <= 10) return "🌤️";
-      if (Number.isFinite(rain) && rain < 45) return "🌦️";
-      return "🌧️";
-    }
-
-    if (Number.isFinite(rain)) {
-      if (rain <= 10) return "🌤️";
-      if (rain < 45) return "🌦️";
-      return "🌧️";
-    }
-
-    return "🌤️";
+  function iconForCode(code) {
+    if(code===null||code===undefined||code==="")return "❔";
+    const c=Number(code);
+    if([95,96,99].includes(c))return "⛈️";
+    if([71,73,75,77,85,86].includes(c))return "🌨️";
+    if([45,48].includes(c))return "🌫️";
+    if(c===3)return "☁️";
+    if(c===0)return "☀️";
+    if(c===1||c===2)return "🌤️";
+    if([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(c))return "🌧️";
+    return "❔";
   }
 
   function labelForScore(score) {
@@ -68,12 +55,13 @@
     const h = data?.hourly || {};
     const times = Array.isArray(h.time) ? h.time : [];
     return times.map((time, index) => {
-      const temp = Number(h.temperature_2m?.[index]);
-      const rain = Number(h.precipitation_probability?.[index]);
-      const wind = Number(h.wind_speed_10m?.[index]);
-      const code = Number(h.weather_code?.[index]);
+      const number=v=>v==null||v===""?NaN:Number(v);
+      const temp = number(h.temperature_2m?.[index]);
+      const rain = number(h.precipitation_probability?.[index]);
+      const wind = number(h.wind_speed_10m?.[index]);
+      const code = number(h.weather_code?.[index]);
       return { time, temp, rain, wind, code, score: weatherScore(temp, rain, wind) };
-    });
+    }).filter(row=>[row.temp,row.rain,row.wind].every(Number.isFinite));
   }
 
   function formatHour(time) {
@@ -116,10 +104,10 @@
     const data = await response.json();
     const rows = buildRows(data);
     const now = new Date();
-    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-    const futureToday = rows.filter(row => row.time.startsWith(today) && hourNumber(row.time) >= now.getHours());
-    const usable = futureToday.length ? futureToday : rows.slice(0, 24);
-    const current = usable[0] || rows[0];
+    const parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:data.timezone||'UTC',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hourCycle:'h23'}).formatToParts(now).map(p=>[p.type,p.value]));
+    const today=`${parts.year}-${parts.month}-${parts.day}`,hour=Number(parts.hour);
+    const usable=rows.filter(row=>row.time.startsWith(today)&&hourNumber(row.time)>=hour);
+    const current = usable[0];
     if (!current) throw new Error("Open-Meteo sense dades horàries");
     const window = bestWindow(usable) || {
       score: current.score,

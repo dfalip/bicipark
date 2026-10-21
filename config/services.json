@@ -1,0 +1,8 @@
+{
+  "supabaseUrl": "",
+  "supabaseAnonKey": "",
+  "oauthProviders": [],
+  "geocoderUrl": "https://photon.komoot.io/api/",
+  "weatherUrl": "https://api.open-meteo.com/v1/forecast",
+  "analyticsEnabled": false
+}

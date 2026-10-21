@@ -1,6 +1,15 @@
 {
   "name": "bicipark",
   "private": true,
-  "scripts": { "test": "node --test tests/*.test.cjs" },
-  "devDependencies": { "jsdom": "26.1.0" }
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "build:connected": "esbuild tools/build/connected-entry.js --bundle --minify --format=iife --platform=browser --outfile=vendor/connected/client.js"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.10",
+    "@supabase/supabase-js": "2.118.0",
+    "esbuild": "0.28.2",
+    "jsdom": "26.1.0",
+    "qrcode": "1.5.4"
+  }
 }

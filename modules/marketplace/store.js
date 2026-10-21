@@ -20,7 +20,7 @@
     const category=CATEGORIES.includes(item.category)?item.category:"other";
     const condition=CONDITIONS.includes(item.condition)?item.condition:"good";
     const price=mode==="exchange"?null:num(item.price);
-    const verificationLevel=VERIFICATION.includes(item.verificationLevel)?item.verificationLevel:"none";
+    const verificationLevel=["passport","verified"].includes(item.verificationLevel)?"passport":"none";
     return {
       id:cleanText(item.id,80)||id(),
       title:cleanText(item.title,90),
