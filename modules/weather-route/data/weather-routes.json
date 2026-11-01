@@ -43,5 +43,23 @@
       [41.42520, 2.22070],
       [41.40820, 2.22450]
     ]
+  },
+  {
+    "id": "izarpe-2",
+    "name": "Ultzama y Esteribar",
+    "distanceKm": 72.1,
+    "elevationM": 873,
+    "difficulty": "Moderada",
+    "mode": "Carretera",
+    "points": [
+      [42.937445640563965, -1.692881584167481],
+      [42.995747225359082, -1.633059186860919],
+      [42.965319575741887, -1.556434594094753],
+      [42.91300225071609, -1.522391913458705],
+      [42.848128834739327, -1.621785527095199],
+      [42.904430497437716, -1.701708063483238]
+    ],
+    "samplingSource": "/bike-bases/data/gpx/izarpe-route-2.gpx",
+    "samplingNote": "Punts meteorologics mostrejats sobre la geometria GPX real; no substitueixen la geometria completa de la ruta."
   }
 ]
