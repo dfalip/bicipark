@@ -52,5 +52,24 @@
     "verified": true,
     "verifiedAt": "2026-11-01",
     "source": "Ajuntament de Roses"
+  },
+  {
+    "id": "roses-gravel-cadaques",
+    "name": "Roses · Cadaqués",
+    "distanceKm": 37.4,
+    "elevationGain": 1000,
+    "modality": "gravel",
+    "url": "https://visit.roses.cat/de/entdecken/routen/fahrrad/mtb-roses-cadaques.html",
+    "sourceUrl": "https://visit.roses.cat/de/entdecken/routen/fahrrad/mtb-roses-cadaques.html",
+    "kind": "external",
+    "region": "Alt Empordà · Roses",
+    "start": "Roses",
+    "duration": "4 h",
+    "difficulty": "moderada",
+    "difficultyLevel": 2,
+    "verified": true,
+    "verifiedAt": "2026-11-01",
+    "source": "Ajuntament de Roses",
+    "metricNote": "La fitxa oficial s'anomena MTB Roses - Cadaqués però publica explícitament el tipus gravel; BiciPark conserva la modalitat publicada per la font."
   }
 ]
