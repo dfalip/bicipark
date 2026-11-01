@@ -6,9 +6,11 @@ const num=v=>Number.isFinite(Number(v))?Number(v):null;
 const trust=r=>r.needsReview||r.kind==='external'&&r.verified!==true?'review':(r.kind==='local'?'track':'source');
 const trustCopy={track:'Track local',source:'Font verificada',review:'Revisió pendent'};
 try{
- const [catalogRes,metadataRes]=await Promise.all([fetch('./data/catalog.json'),fetch('./data/verified-metadata.json')]);if(!catalogRes.ok)throw Error();
- const baseRoutes=await catalogRes.json(),metadata=metadataRes.ok?await metadataRes.json():{};
- const routes=baseRoutes.map(r=>({...r,...(metadata[r.id]||{})}));
+ const [catalogRes,metadataRes,verifiedRoutesRes]=await Promise.all([fetch('./data/catalog.json'),fetch('./data/verified-metadata.json'),fetch('./data/verified-routes.json')]);if(!catalogRes.ok)throw Error();
+ const baseRoutes=await catalogRes.json(),metadata=metadataRes.ok?await metadataRes.json():{},verifiedRoutes=verifiedRoutesRes.ok?await verifiedRoutesRes.json():[];
+ const mergedBase=baseRoutes.map(r=>({...r,...(metadata[r.id]||{})}));
+ const knownIds=new Set(mergedBase.map(r=>r.id));
+ const routes=[...mergedBase,...verifiedRoutes.filter(r=>r&&r.id&&!knownIds.has(r.id))];
  [...new Set(routes.map(r=>r.region).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ca')).forEach(value=>{const option=node('option',value);option.value=value;region.append(option)});
  function render(){
   list.replaceChildren();
