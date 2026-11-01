@@ -1,0 +1,67 @@
+(() => {
+ 'use strict';
+ // Columns: Català, Español, English, Français. Page-specific copy, using the existing language preference.
+ const copy={
+ thresholds:['Llindars orientatius: pluja ≥60%, vent ≥30 km/h o ratxes ≥50 km/h, temperatura ≥32 °C o ≤3 °C, tempesta o neu/gel. La nit es mostra separadament.','Umbrales orientativos: lluvia ≥60%, viento ≥30 km/h o rachas ≥50 km/h, temperatura ≥32 °C o ≤3 °C, tormenta o nieve/hielo. La noche se muestra por separado.','Indicative thresholds: rain ≥60%, wind ≥30 km/h or gusts ≥50 km/h, temperature ≥32 °C or ≤3 °C, thunderstorm or snow/ice. Night is shown separately.','Seuils indicatifs : pluie ≥60 %, vent ≥30 km/h ou rafales ≥50 km/h, température ≥32 °C ou ≤3 °C, orage ou neige/verglas. La nuit est indiquée séparément.'],
+ catalogError:['No s’ha pogut carregar el catàleg. Torna-ho a provar.','No se ha podido cargar el catálogo. Inténtalo de nuevo.','Unable to load the catalogue. Try again.','Impossible de charger le catalogue. Réessayez.'],
+ before:['ABANS DE SORTIR','ANTES DE SALIR','BEFORE YOU RIDE','AVANT DE PARTIR'],
+ watchIntro:['Consulta el temps a l’hora estimada de pas i compara tres hores de sortida.','Consulta el tiempo a la hora estimada de paso y compara tres horas de salida.','Check weather at your estimated arrival times and compare three departure times.','Consultez la météo aux heures de passage estimées et comparez trois départs.'],
+ route:['Ruta guardada','Ruta guardada','Saved route','Itinéraire enregistré'],
+ plan:['Planifica o importa una ruta','Planifica o importa una ruta','Plan or import a route','Planifier ou importer un itinéraire'],
+ departure:['Sortida (hora del dispositiu)','Salida (hora del dispositivo)','Departure (device time)','Départ (heure de votre appareil)'],
+ speed:['Velocitat mitjana prevista (km/h)','Velocidad media prevista (km/h)','Expected average speed (km/h)','Vitesse moyenne prévue (km/h)'],
+ stops:['Temps total de parades (min)','Tiempo total de paradas (min)','Total stop time (min)','Durée totale des pauses (min)'],
+ assumptions:['Estimació amb velocitat constant i parades repartides proporcionalment. El terreny, el trànsit i les parades reals poden canviar les hores.','Estimación con velocidad constante y paradas repartidas proporcionalmente. El terreno, el tráfico y las paradas reales pueden cambiar las horas.','Estimates use constant speed and proportionally distributed stops. Terrain, traffic and actual stops can change arrival times.','Estimation à vitesse constante et pauses réparties proportionnellement. Le terrain, la circulation et les pauses réelles peuvent modifier les horaires.'],
+ check:['Compara la previsió','Compara la previsión','Compare forecasts','Comparer les prévisions'],
+ habit:['☆ Marca com a habitual','☆ Marca como habitual','☆ Mark as regular route','☆ Marquer comme habituel'],
+ unhabit:['★ Ruta habitual · Treu-la','★ Ruta habitual · Quitar','★ Regular route · Remove','★ Itinéraire habituel · Retirer'],
+ disclosure:['Consulta manual de cinc punts; s’envien al proveïdor només en consultar. No detecta obres ni envia notificacions.','Consulta manual de cinco puntos; se envían al proveedor solo al consultar. No detecta obras ni envía notificaciones.','Manual check at five points, sent to the provider only when requested. No roadworks detection or notifications.','Consultation manuelle de cinq points, envoyés au fournisseur uniquement à votre demande. Ni détection de travaux ni notifications.'],
+ limits:['Mostreig parcial, no una garantia de seguretat. Dades horàries aproximades; pot haver-hi canvis entre punts. Consulta també els avisos meteorològics oficials.','Muestreo parcial, no una garantía de seguridad. Datos horarios aproximados; puede haber cambios entre puntos. Consulta también los avisos meteorológicos oficiales.','Partial sampling, not a safety guarantee. Approximate hourly data; conditions can change between points. Also check official weather warnings.','Échantillonnage partiel, sans garantie de sécurité. Données horaires approximatives ; les conditions peuvent varier entre les points. Consultez aussi les alertes officielles.'],
+ empty:['Guarda primer una ruta al planificador.','Guarda primero una ruta en el planificador.','Save a route in the planner first.','Enregistrez d’abord un itinéraire dans le planificateur.'],
+ loading:['Consultant previsió…','Consultando previsión…','Checking forecasts…','Consultation des prévisions…'],
+ dateError:['Tria una sortida futura dins dels pròxims sis dies.','Elige una salida futura en los próximos seis días.','Choose a future departure within the next six days.','Choisissez un départ futur dans les six prochains jours.'],
+ invalidPace:['Velocitat: 5–50 km/h. Parades: 0–240 minuts.','Velocidad: 5–50 km/h. Paradas: 0–240 minutos.','Speed: 5–50 km/h. Stops: 0–240 minutes.','Vitesse : 5–50 km/h. Pauses : 0–240 minutes.'],
+ invalidTrack:['Traçat invàlid.','Trazado no válido.','Invalid track.','Tracé invalide.'],
+ disconnected:['El GPX té trams separats. No podem estimar els trasllats entre trams: importa un recorregut continu.','El GPX tiene tramos separados. No podemos estimar los traslados entre tramos: importa un recorrido continuo.','This GPX has disconnected sections. Transfer times cannot be estimated: import a continuous track.','Ce GPX comporte des sections séparées. Les transferts ne peuvent pas être estimés : importez un tracé continu.'],
+ shortTrack:['La ruta és massa curta per estimar el pas.','La ruta es demasiado corta para estimar el paso.','The route is too short to estimate arrival times.','Itinéraire trop court pour estimer les horaires.'],
+ unavailable:['Previsió no disponible.','Previsión no disponible.','Forecast unavailable.','Prévision indisponible.'],
+ partial:['Dades incompletes: no es comparen les opcions.','Datos incompletos: no se comparan las opciones.','Incomplete data: options cannot be compared.','Données incomplètes : comparaison indisponible.'],
+ complete:['Previsió calculada segons l’hora estimada de pas.','Previsión calculada según la hora estimada de paso.','Forecast based on estimated arrival at each point.','Prévision selon l’heure de passage estimée.'],
+ lessAlerts:['Menys punts amb avisos meteorològics entre les opcions completes','Menos puntos con avisos meteorológicos entre las opciones completas','Fewer points with weather alerts among complete options','Moins de points avec alertes météo parmi les options complètes'],
+ adverse:['punts amb avisos meteorològics','puntos con avisos meteorológicos','points with weather alerts','points avec alertes météo'],
+ selected:['Sortida triada','Salida elegida','Selected departure','Départ choisi'],
+ arrival:['Pas estimat','Paso estimado','Estimated arrival','Passage estimé'],
+ weatherHour:['Hora de la dada','Hora del dato','Forecast timestamp','Heure de la donnée'],
+ fetched:['Consultada','Consultada','Fetched','Consultée'],
+ start:['Inici','Inicio','Start','Départ'],end:['Final','Final','Finish','Arrivée'],
+ rain:['Pluja probable','Lluvia probable','Rain likely','Pluie probable'],wind:['Vent o ratxes fortes','Viento o rachas fuertes','Strong wind or gusts','Vent ou rafales fortes'],
+ storm:['Tempesta prevista','Tormenta prevista','Thunderstorm forecast','Orage prévu'],iceSnow:['Neu o precipitació gelant','Nieve o precipitación helada','Snow or freezing precipitation','Neige ou précipitations verglaçantes'],
+ heat:['Calor elevada','Calor elevado','High temperature','Forte chaleur'],cold:['Temperatura baixa','Temperatura baja','Low temperature','Température basse'],dark:['Fora d’hores de llum','Fuera de horas de luz','Outside daylight hours','Hors des heures de jour'],
+ headwind:['Vent de cara aprox.','Viento de cara aprox.','Approx. headwind','Vent de face approx.'],tailwind:['Vent a favor aprox.','Viento a favor aprox.','Approx. tailwind','Vent arrière approx.'],crosswind:['Vent lateral aprox.','Viento lateral aprox.','Approx. crosswind','Vent latéral approx.'],
+ gusts:['Ratxes','Rachas','Gusts','Rafales'],probRain:['Precipitació','Precipitación','Precipitation','Précipitations'],windSpeed:['Vent','Viento','Wind','Vent'],
+ noAlerts:['Sense avisos pels llindars aplicats als punts mostrejats.','Sin avisos según los umbrales aplicados a los puntos muestreados.','No alerts under the thresholds applied at sampled points.','Aucune alerte selon les seuils appliqués aux points échantillonnés.'],
+ saveError:['No s’ha pogut guardar.','No se ha podido guardar.','Could not save.','Enregistrement impossible.'],
+ catalogTitle:['Rutes per descobrir','Rutas por descubrir','Routes to discover','Itinéraires à découvrir'],
+ catalogIntro:['Filtra tracks locals i seleccions externes. La disponibilitat del track no significa que el recorregut estigui verificat.','Filtra tracks locales y selecciones externas. La disponibilidad del track no significa que el recorrido esté verificado.','Filter local tracks and external selections. Having a track does not mean the route is verified.','Filtrez les tracés locaux et les sélections externes. Un tracé disponible ne signifie pas que le parcours est vérifié.'],
+ map:['Explora el mapa','Explora el mapa','Explore the map','Explorer la carte'],
+ search:['Cerca per nom','Busca por nombre','Search by name','Rechercher par nom'],
+ modality:['Modalitat','Modalidad','Activity type','Discipline'],all:['Totes','Todas','All','Toutes'],road:['Carretera','Carretera','Road','Route'],gravel:['Gravel','Gravel','Gravel','Gravel'],mtb:['BTT','MTB','MTB','VTT'],
+ maxDistance:['Distància màxima (km)','Distancia máxima (km)','Maximum distance (km)','Distance maximale (km)'],
+ localOnly:['Només amb track local','Solo con track local','Local tracks only','Tracés locaux uniquement'],
+ favorites:['Només favorites','Solo favoritas','Favourites only','Favoris uniquement'],
+ sort:['Ordena','Ordena','Sort','Trier'],byName:['Nom','Nombre','Name','Nom'],byDistance:['Distància creixent','Distancia creciente','Distance: low to high','Distance croissante'],
+ results:['rutes','rutas','routes','itinéraires'],local:['amb track local','con track local','with local tracks','avec tracé local'],external:['Font externa','Fuente externa','External source','Source externe'],
+ review:['Metadades pendents de revisió','Metadatos pendientes de revisión','Metadata awaiting review','Métadonnées à vérifier'],
+ openTrack:['Obre al planificador','Abre en el planificador','Open in planner','Ouvrir dans le planificateur'],openSource:['Consulta la font externa','Consulta la fuente externa','Open external source','Consulter la source externe'],
+ source:['Font original','Fuente original','Original source','Source originale'],unknown:['Sense dades','Sin datos','Unknown','Donnée inconnue'],
+ favorite:['☆ Guarda favorita','☆ Guarda favorita','☆ Save favourite','☆ Ajouter aux favoris'],unfavorite:['★ Treu de favorites','★ Quita de favoritas','★ Remove favourite','★ Retirer des favoris'],
+ noResults:['Cap ruta coincideix amb els filtres.','Ninguna ruta coincide con los filtros.','No routes match these filters.','Aucun itinéraire ne correspond aux filtres.'],
+ clear:['Neteja filtres','Limpia filtros','Clear filters','Effacer les filtres'],
+ filterNote:['Les rutes sense distància es descarten quan fixes un màxim. Les favorites es guarden en aquest dispositiu i s’inclouen a la còpia local.','Las rutas sin distancia se excluyen al fijar un máximo. Las favoritas se guardan en este dispositivo y se incluyen en la copia local.','Routes with unknown distances are excluded when a maximum is set. Favourites are stored on this device and included in local backups.','Les distances inconnues sont exclues si un maximum est fixé. Les favoris sont enregistrés sur cet appareil et inclus dans la sauvegarde locale.']
+ };
+ const langs=['ca','es','en','fr'];
+ const lang=()=>window.BiciParkI18n?.getLanguage?.()||'ca';
+ const t=key=>copy[key]?.[Math.max(0,langs.indexOf(lang()))]||key;
+ function translate(){document.querySelectorAll('[data-ride-copy]').forEach(el=>el.textContent=t(el.dataset.rideCopy));}
+ window.BiciParkRideCopy={t,lang,translate};window.addEventListener('bicipark:language-changed',translate);translate();
+})();

@@ -1,3 +1,5 @@
+> Priorització actualitzada: [revisió de producte de l’1 de novembre de 2026](PRODUCT-REVIEW-2026-11-01.md). Aquest document es conserva com a historial.
+
 # BiciPark: backlog de producte i revisió funcional
 
 Data: 20/10/2026. Base revisada: main c5e82df (PR 1 i correcció OSM integrades).
