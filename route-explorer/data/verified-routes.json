@@ -41,15 +41,16 @@
     "distanceKm": 116,
     "elevationGain": 1415,
     "modality": "road",
-    "url": "https://visit.roses.cat/es/descubre-pGX29/rutas/bicicleta/roses-les-salines.html",
-    "sourceUrl": "https://visit.roses.cat/es/descubre-pGX29/rutas/bicicleta/roses-les-salines.html",
+    "url": "https://visit.roses.cat/en/discover/routes/bike/roses-les-salines.html",
+    "sourceUrl": "https://visit.roses.cat/en/discover/routes/bike/roses-les-salines.html",
     "kind": "external",
     "region": "Alt Empordà · Roses",
     "start": "Roses",
     "duration": "6 h 15 min",
+    "difficulty": "moderada",
+    "difficultyLevel": 2,
     "verified": true,
     "verifiedAt": "2026-11-01",
-    "source": "Ajuntament de Roses",
-    "metricNote": "La font oficial publica distància, durada i desnivell; no mostra un nivell numèric de dificultat, per això BiciPark no l'infereix."
+    "source": "Ajuntament de Roses"
   }
 ]
