@@ -6,6 +6,67 @@ if (!details) throw new Error("Route details container not found");
 let routes = [];
 let rendering = false;
 
+const copy = Object.freeze({
+  ca: {
+    adjusting: "Ajustant la vista per mostrar la ruta…",
+    unreliable: "No s’ha pogut obrir aquesta ruta de manera fiable.",
+    unavailable: "La ruta continua fora de la vista disponible. Revisa els filtres o el mapa.",
+    nearbyTitle: "Rutes properes",
+    nearbyHelp: "Proximitat geodèsica derivada de la metadata espacial disponible; no és distància per carretera ni entre tracks.",
+    nearbyMeta: distance => `${distance} km en línia recta entre punts de referència`,
+    similarTitle: "Rutes semblants",
+    similarHelp: "Similitud calculada amb metadata existent (modalitat, regió, distància, desnivell i dificultat).",
+    similarity: score => `similitud ${score}%`
+  },
+  es: {
+    adjusting: "Ajustando la vista para mostrar la ruta…",
+    unreliable: "No se ha podido abrir esta ruta de forma fiable.",
+    unavailable: "La ruta sigue fuera de la vista disponible. Revisa los filtros o el mapa.",
+    nearbyTitle: "Rutas cercanas",
+    nearbyHelp: "Proximidad geodésica derivada de los metadatos espaciales disponibles; no es distancia por carretera ni entre tracks.",
+    nearbyMeta: distance => `${distance} km en línea recta entre puntos de referencia`,
+    similarTitle: "Rutas similares",
+    similarHelp: "Similitud calculada con metadatos existentes (modalidad, región, distancia, desnivel y dificultad).",
+    similarity: score => `similitud ${score}%`
+  },
+  en: {
+    adjusting: "Adjusting the view to show the route…",
+    unreliable: "This route could not be opened reliably.",
+    unavailable: "The route is still outside the available view. Check the filters or map.",
+    nearbyTitle: "Nearby routes",
+    nearbyHelp: "Geodesic proximity derived from available spatial metadata; this is not road distance or track-to-track distance.",
+    nearbyMeta: distance => `${distance} km straight-line distance between reference points`,
+    similarTitle: "Similar routes",
+    similarHelp: "Similarity calculated from existing metadata (type, region, distance, elevation gain and difficulty).",
+    similarity: score => `${score}% similarity`
+  },
+  fr: {
+    adjusting: "Ajustement de la vue pour afficher l’itinéraire…",
+    unreliable: "Impossible d’ouvrir cet itinéraire de manière fiable.",
+    unavailable: "L’itinéraire reste hors de la vue disponible. Vérifiez les filtres ou la carte.",
+    nearbyTitle: "Itinéraires à proximité",
+    nearbyHelp: "Proximité géodésique dérivée des métadonnées spatiales disponibles ; il ne s’agit ni d’une distance routière ni d’une distance entre traces.",
+    nearbyMeta: distance => `${distance} km à vol d’oiseau entre les points de référence`,
+    similarTitle: "Itinéraires similaires",
+    similarHelp: "Similarité calculée à partir des métadonnées existantes (type, région, distance, dénivelé et difficulté).",
+    similarity: score => `${score} % de similarité`
+  }
+});
+
+function getLanguage() {
+  const language = (document.documentElement.lang || "ca").toLowerCase().split("-")[0];
+  return copy[language] ? language : "ca";
+}
+
+function t() {
+  return copy[getLanguage()];
+}
+
+function formatDistance(value) {
+  const locales = { ca: "ca-ES", es: "es-ES", en: "en-GB", fr: "fr-FR" };
+  return value.toLocaleString(locales[getLanguage()], { maximumFractionDigits: 1 });
+}
+
 function allEnabled(items) {
   return Array.isArray(items) ? items.filter(route => route && route.enabled !== false) : [];
 }
@@ -66,9 +127,6 @@ function revealRoute(item) {
   const regionExists = [...regionFilter.options].some(option => option.value === item.region);
   if (!regionExists) return false;
 
-  // A recommendation is an explicit navigation request. Relax only the catalogue
-  // filters that can hide that route; Route Explorer remains responsible for
-  // fitting the real region/geometry and for the final route selection.
   regionFilter.value = item.region;
   modalityFilter.value = "all";
   difficultyFilter.value = "all";
@@ -98,9 +156,9 @@ function recommendationButton(item, meta) {
       return;
     }
 
-    status.textContent = "Ajustant la vista per mostrar la ruta…";
+    status.textContent = t().adjusting;
     if (!revealRoute(item)) {
-      status.textContent = "No s’ha pogut obrir aquesta ruta de manera fiable.";
+      status.textContent = t().unreliable;
       return;
     }
 
@@ -110,7 +168,7 @@ function recommendationButton(item, meta) {
       return;
     }
 
-    status.textContent = "La ruta continua fora de la vista disponible. Revisa els filtres o el mapa.";
+    status.textContent = t().unavailable;
   });
   return button;
 }
@@ -138,28 +196,21 @@ function render() {
   rendering = true;
   const host = document.createElement("div");
   host.className = "route-explorer-recommendations-host";
+  const labels = t();
 
   const nearby = findNearbyRoutes(route, routes, { limit: 3, maxDistanceKm: 100 }).map(result =>
-    recommendationButton(result.route, `${result.distanceKm.toLocaleString("ca-ES", { maximumFractionDigits: 1 })} km en línia recta entre punts de referència`)
+    recommendationButton(result.route, labels.nearbyMeta(formatDistance(result.distanceKm)))
   );
 
   const similarityApi = window.BiciParkRouteSimilarity;
   const similar = similarityApi?.findSimilarRoutes
     ? similarityApi.findSimilarRoutes(route, routes, { limit: 3, minScore: 45 }).map(result =>
-        recommendationButton(result.route, result.reasons.length ? result.reasons.join(" · ") : `similitud ${result.score}%`)
+        recommendationButton(result.route, result.reasons.length ? result.reasons.join(" · ") : labels.similarity(result.score))
       )
     : [];
 
-  const nearbySection = section(
-    "Rutes properes",
-    "Proximitat geodèsica derivada de la metadata espacial disponible; no és distància per carretera ni entre tracks.",
-    nearby
-  );
-  const similarSection = section(
-    "Rutes semblants",
-    "Similitud calculada amb metadata existent (modalitat, regió, distància, desnivell i dificultat).",
-    similar
-  );
+  const nearbySection = section(labels.nearbyTitle, labels.nearbyHelp, nearby);
+  const similarSection = section(labels.similarTitle, labels.similarHelp, similar);
   if (nearbySection) host.append(nearbySection);
   if (similarSection) host.append(similarSection);
   if (host.childElementCount) details.append(host);
