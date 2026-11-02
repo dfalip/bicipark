@@ -15,6 +15,12 @@ function findSelectedRoute() {
   return title ? routes.find(route => route.name === title) : null;
 }
 
+function findVisibleRouteAction(item) {
+  const cards = [...document.querySelectorAll(".route-explorer-route-card")];
+  const card = cards.find(candidate => candidate.querySelector("h2")?.textContent?.trim() === item.name);
+  return card?.querySelector(".route-explorer-route-action") || null;
+}
+
 function recommendationButton(item, meta) {
   const button = document.createElement("button");
   button.type = "button";
@@ -23,12 +29,18 @@ function recommendationButton(item, meta) {
   name.textContent = item.name;
   const note = document.createElement("small");
   note.textContent = meta;
-  button.append(name, note);
+  const status = document.createElement("small");
+  status.className = "route-explorer-recommendation-status";
+  status.setAttribute("aria-live", "polite");
+  button.append(name, note, status);
   button.addEventListener("click", () => {
-    const cards = [...document.querySelectorAll(".route-explorer-route-card")];
-    const card = cards.find(candidate => candidate.querySelector("h2")?.textContent?.trim() === item.name);
-    const action = card?.querySelector(".route-explorer-route-action");
-    if (action) action.click();
+    const action = findVisibleRouteAction(item);
+    if (action) {
+      action.click();
+      return;
+    }
+
+    status.textContent = "Aquesta ruta no és visible amb la vista o els filtres actuals.";
   });
   return button;
 }
