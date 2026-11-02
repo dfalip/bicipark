@@ -32,6 +32,23 @@ export function clearGeometryCache() {
   geometryCache.clear();
 }
 
+function parseTrackPoint(node) {
+  const latitude = Number(node.getAttribute("lat"));
+  const longitude = Number(node.getAttribute("lon"));
+  const elevationNode = node.querySelector("ele");
+  const elevation = elevationNode ? Number(elevationNode.textContent) : null;
+
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    return null;
+  }
+
+  return {
+    lat: latitude,
+    lng: longitude,
+    elevation: Number.isFinite(elevation) ? elevation : null
+  };
+}
+
 function parseGpx(text) {
   const xml = new DOMParser().parseFromString(
     text,
@@ -42,45 +59,34 @@ function parseGpx(text) {
     throw new Error("El GPX no és XML vàlid.");
   }
 
-  const segments = [
+  const profileSegments = [
     ...xml.querySelectorAll("trkseg")
   ].map(segmentNode =>
     [...segmentNode.querySelectorAll("trkpt")]
-      .map(node => [
-        Number(node.getAttribute("lat")),
-        Number(node.getAttribute("lon"))
-      ])
-      .filter(
-        ([latitude, longitude]) =>
-          Number.isFinite(latitude) &&
-          Number.isFinite(longitude)
-      )
+      .map(parseTrackPoint)
+      .filter(Boolean)
   ).filter(segment => segment.length >= 2);
 
-  if (segments.length === 0) {
+  if (profileSegments.length === 0) {
     const routePoints = [
       ...xml.querySelectorAll("rtept")
-    ].map(node => [
-      Number(node.getAttribute("lat")),
-      Number(node.getAttribute("lon"))
-    ]).filter(
-      ([latitude, longitude]) =>
-        Number.isFinite(latitude) &&
-        Number.isFinite(longitude)
-    );
+    ].map(parseTrackPoint).filter(Boolean);
 
     if (routePoints.length >= 2) {
-      segments.push(routePoints);
+      profileSegments.push(routePoints);
     }
   }
 
-  if (segments.length === 0) {
+  if (profileSegments.length === 0) {
     throw new Error("El GPX no conté prou punts.");
   }
 
   return {
     kind: "polylines",
-    data: segments
+    data: profileSegments.map(segment =>
+      segment.map(point => [point.lat, point.lng])
+    ),
+    profileSegments
   };
 }
 
