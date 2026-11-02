@@ -204,9 +204,12 @@ function render() {
 
   const similarityApi = window.BiciParkRouteSimilarity;
   const similar = similarityApi?.findSimilarRoutes
-    ? similarityApi.findSimilarRoutes(route, routes, { limit: 3, minScore: 45 }).map(result =>
-        recommendationButton(result.route, result.reasons.length ? result.reasons.join(" · ") : labels.similarity(result.score))
-      )
+    ? similarityApi.findSimilarRoutes(route, routes, { limit: 3, minScore: 45 }).map(result => {
+        const meta = getLanguage() === "ca" && result.reasons.length
+          ? result.reasons.join(" · ")
+          : labels.similarity(result.score);
+        return recommendationButton(result.route, meta);
+      })
     : [];
 
   const nearbySection = section(labels.nearbyTitle, labels.nearbyHelp, nearby);
