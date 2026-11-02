@@ -5,27 +5,52 @@ function toRadians(value) {
 }
 
 export function normalisePoint(value) {
-  if (!Array.isArray(value) || value.length < 2) return null;
-  const lat = Number(value[0]);
-  const lng = Number(value[1]);
+  let lat;
+  let lng;
+
+  if (Array.isArray(value) && value.length >= 2) {
+    lat = Number(value[0]);
+    lng = Number(value[1]);
+  } else if (value && typeof value === 'object') {
+    lat = Number(value.lat ?? value.latitude);
+    lng = Number(value.lng ?? value.lon ?? value.longitude);
+  } else {
+    return null;
+  }
+
   if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
   return [lat, lng];
+}
+
+function normaliseBounds(bounds) {
+  if (Array.isArray(bounds) && bounds.length >= 2) {
+    const southWest = normalisePoint(bounds[0]);
+    const northEast = normalisePoint(bounds[1]);
+    return southWest && northEast ? { southWest, northEast } : null;
+  }
+
+  if (bounds && typeof bounds === 'object') {
+    const southWest = normalisePoint([bounds.south, bounds.west]);
+    const northEast = normalisePoint([bounds.north, bounds.east]);
+    return southWest && northEast ? { southWest, northEast } : null;
+  }
+
+  return null;
 }
 
 export function routeReferencePoint(route) {
   const explicit = normalisePoint(route?.center);
   if (explicit) return { point: explicit, provenance: 'center' };
 
-  const bounds = route?.bounds;
-  if (Array.isArray(bounds) && bounds.length >= 2) {
-    const southWest = normalisePoint(bounds[0]);
-    const northEast = normalisePoint(bounds[1]);
-    if (southWest && northEast) {
-      return {
-        point: [(southWest[0] + northEast[0]) / 2, (southWest[1] + northEast[1]) / 2],
-        provenance: 'bounds-centroid'
-      };
-    }
+  const bounds = normaliseBounds(route?.bounds);
+  if (bounds) {
+    return {
+      point: [
+        (bounds.southWest[0] + bounds.northEast[0]) / 2,
+        (bounds.southWest[1] + bounds.northEast[1]) / 2
+      ],
+      provenance: 'bounds-centroid'
+    };
   }
   return null;
 }
@@ -47,7 +72,7 @@ export function findNearbyRoutes(currentRoute, routes, { limit = 4, maxDistanceK
   if (!origin || !Array.isArray(routes)) return [];
 
   return routes
-    .filter(route => route && route.id !== currentRoute?.id)
+    .filter(route => route && route.id !== currentRoute?.id && route.enabled !== false)
     .map(route => {
       const reference = routeReferencePoint(route);
       if (!reference) return null;
