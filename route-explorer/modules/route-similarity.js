@@ -18,7 +18,7 @@ function scoreRouteSimilarity(origin,candidate){
 }
 function findSimilarRoutes(origin,routes,{limit=4,minScore=45}={}){
  if(!origin||!Array.isArray(routes))return [];
- return routes.map(r=>scoreRouteSimilarity(origin,r)).filter(Boolean).filter(x=>x.score>=minScore).sort((a,b)=>b.score-a.score||String(a.route.name||'').localeCompare(String(b.route.name||''),'ca')).slice(0,Math.max(0,limit));
+ return routes.filter(route=>route&&route.enabled!==false).map(r=>scoreRouteSimilarity(origin,r)).filter(Boolean).filter(x=>x.score>=minScore).sort((a,b)=>b.score-a.score||String(a.route.name||'').localeCompare(String(b.route.name||''),'ca')).slice(0,Math.max(0,limit));
 }
 const api={scoreRouteSimilarity,findSimilarRoutes};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
