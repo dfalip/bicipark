@@ -1,26 +1,10 @@
 (() => {
   "use strict";
 
-  const mapElement = document.getElementById("routeMap");
-  if (!mapElement || !window.L) return;
+  if (!document.getElementById("routeMap") || !window.L) return;
 
   let marker = null;
   let hideTimer = null;
-
-  function getMap() {
-    const id = mapElement._leaflet_id;
-    if (!id) return null;
-    return Object.values(L._mapInstances || {}).find(instance => instance?._container === mapElement) || mapElement._leaflet_map || null;
-  }
-
-  function findMap() {
-    if (mapElement._leaflet_map) return mapElement._leaflet_map;
-    for (const key of Object.keys(mapElement)) {
-      const value = mapElement[key];
-      if (value && value._container === mapElement && typeof value.addLayer === "function") return value;
-    }
-    return getMap();
-  }
 
   function clearMarker() {
     if (!marker) return;
@@ -35,7 +19,7 @@
     const lng = Number(detail.lng);
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
 
-    const map = findMap();
+    const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
     if (!map) return;
 
     if (!marker) {
@@ -59,9 +43,7 @@
     }).openTooltip();
 
     if (hideTimer) window.clearTimeout(hideTimer);
-    hideTimer = window.setTimeout(() => {
-      if (marker) marker.closeTooltip();
-    }, 1800);
+    hideTimer = window.setTimeout(() => marker?.closeTooltip(), 1800);
   });
 
   window.addEventListener("pagehide", clearMarker);
