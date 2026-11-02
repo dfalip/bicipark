@@ -16,9 +16,67 @@ function findSelectedRoute() {
 }
 
 function findVisibleRouteAction(item) {
-  const cards = [...document.querySelectorAll(".route-explorer-route-card")];
-  const card = cards.find(candidate => candidate.querySelector("h2")?.textContent?.trim() === item.name);
-  return card?.querySelector(".route-explorer-route-action") || null;
+  const matches = [...document.querySelectorAll(".route-explorer-route-card")]
+    .filter(candidate => candidate.querySelector("h2")?.textContent?.trim() === item.name);
+
+  if (matches.length !== 1) return null;
+  return matches[0].querySelector(".route-explorer-route-action") || null;
+}
+
+function waitForRouteAction(item, timeoutMs = 1600) {
+  return new Promise(resolve => {
+    const existing = findVisibleRouteAction(item);
+    if (existing) {
+      resolve(existing);
+      return;
+    }
+
+    const routeList = document.getElementById("routeList");
+    if (!routeList) {
+      resolve(null);
+      return;
+    }
+
+    let settled = false;
+    const finish = action => {
+      if (settled) return;
+      settled = true;
+      observer.disconnect();
+      clearTimeout(timer);
+      resolve(action);
+    };
+
+    const observer = new MutationObserver(() => {
+      const action = findVisibleRouteAction(item);
+      if (action) finish(action);
+    });
+
+    observer.observe(routeList, { childList: true, subtree: true });
+    const timer = setTimeout(() => finish(findVisibleRouteAction(item)), timeoutMs);
+  });
+}
+
+function revealRoute(item) {
+  const regionFilter = document.getElementById("regionFilter");
+  const modalityFilter = document.getElementById("modalityFilter");
+  const difficultyFilter = document.getElementById("difficultyFilter");
+
+  if (!regionFilter || !modalityFilter || !difficultyFilter) return false;
+
+  const regionExists = [...regionFilter.options].some(option => option.value === item.region);
+  if (!regionExists) return false;
+
+  // A recommendation is an explicit navigation request. Relax only the catalogue
+  // filters that can hide that route; Route Explorer remains responsible for
+  // fitting the real region/geometry and for the final route selection.
+  regionFilter.value = item.region;
+  modalityFilter.value = "all";
+  difficultyFilter.value = "all";
+
+  regionFilter.dispatchEvent(new Event("change", { bubbles: true }));
+  modalityFilter.dispatchEvent(new Event("change", { bubbles: true }));
+  difficultyFilter.dispatchEvent(new Event("change", { bubbles: true }));
+  return true;
 }
 
 function recommendationButton(item, meta) {
@@ -33,14 +91,26 @@ function recommendationButton(item, meta) {
   status.className = "route-explorer-recommendation-status";
   status.setAttribute("aria-live", "polite");
   button.append(name, note, status);
-  button.addEventListener("click", () => {
-    const action = findVisibleRouteAction(item);
+  button.addEventListener("click", async () => {
+    let action = findVisibleRouteAction(item);
     if (action) {
       action.click();
       return;
     }
 
-    status.textContent = "Aquesta ruta no és visible amb la vista o els filtres actuals.";
+    status.textContent = "Ajustant la vista per mostrar la ruta…";
+    if (!revealRoute(item)) {
+      status.textContent = "No s’ha pogut obrir aquesta ruta de manera fiable.";
+      return;
+    }
+
+    action = await waitForRouteAction(item);
+    if (action) {
+      action.click();
+      return;
+    }
+
+    status.textContent = "La ruta continua fora de la vista disponible. Revisa els filtres o el mapa.";
   });
   return button;
 }
