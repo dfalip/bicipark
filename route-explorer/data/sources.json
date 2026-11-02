@@ -8,7 +8,7 @@
         "wholeRouteZoom":  6,
         "regionalPadding":  0.35,
         "localPadding":  0.12,
-        "visibleByDefault":  true,
+        "visibleByDefault":  false,
         "enabled":  true
     }
 ]
