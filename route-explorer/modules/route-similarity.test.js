@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict');
-const {scoreRouteSimilarity,findSimilarRoutes}=require('./route-similarity.js');
+const {REASON_CODES,scoreRouteSimilarity,findSimilarRoutes}=require('./route-similarity.js');
 const base={id:'a',name:'A',modality:'gravel',region:'navarra',distanceKm:60,elevationGain:1000,difficulty:'moderada'};
 const close={id:'b',name:'B',modality:'gravel',region:'navarra',distanceKm:58,elevationGain:950,difficulty:'moderada'};
 const far={id:'c',name:'C',modality:'road',region:'barcelona',distanceKm:15,elevationGain:100,difficulty:'facil'};
@@ -7,7 +7,8 @@ const disabled={id:'d',name:'D',modality:'gravel',region:'navarra',distanceKm:60
 const closeScore=scoreRouteSimilarity(base,close);
 const farScore=scoreRouteSimilarity(base,far);
 assert.ok(closeScore.score>farScore.score,'a route with matching real metadata should rank higher');
-assert.ok(closeScore.reasons.includes('mateixa modalitat'));
+assert.ok(closeScore.reasons.includes(REASON_CODES.MODALITY));
+assert.deepEqual(closeScore.reasons,[REASON_CODES.MODALITY,REASON_CODES.REGION,REASON_CODES.DISTANCE,REASON_CODES.ELEVATION,REASON_CODES.DIFFICULTY]);
 assert.deepEqual(findSimilarRoutes(base,[base,far,close],{limit:1}),[closeScore]);
 assert.deepEqual(findSimilarRoutes(base,[disabled,close],{limit:4}),[closeScore],'disabled routes must never be recommended');
 assert.equal(scoreRouteSimilarity(base,base),null,'the origin route is never recommended as similar');
