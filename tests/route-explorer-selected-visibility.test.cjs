@@ -19,7 +19,7 @@ function visible({ zoom, selectedId, routes, region = "all" }) {
     getLocalRouteLimit: mode => mode === "regional" ? 5 : mode === "local" ? 15 : 30,
     routeMatchesFilters: r => region === "all" || r.region === region,
     routeIntersectsBounds: r => r.inViewport !== false };
-  return vm.runInNewContext(selector + "\ngetVisibleLocalRoutes()", context).map(r => r.id);
+  return Array.from(vm.runInNewContext(selector + "\ngetVisibleLocalRoutes()", context), r => r.id);
 }
 
 test("selected route survives regional featured filter and minimumZoom", () => {
