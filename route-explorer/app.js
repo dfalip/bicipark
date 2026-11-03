@@ -171,38 +171,35 @@ function getVisibleLocalRoutes() {
   const mode = getVisibilityMode(zoom);
   const viewport = map.getBounds();
 
-  if (mode === "overview") {
+  // Keep an explicitly selected route visible even when its minimum zoom,
+  // featured flag or catalog priority would otherwise hide it.
+  const selected = state.localRoutes.find(
+    route => route.id === state.selectedRouteId && route.enabled !== false
+  );
+  if (mode === "overview" && !selected) {
     return [];
   }
 
   let candidates = state.localRoutes
     .filter(route => route.enabled !== false)
-    .filter(routeMatchesFilters)
-    .filter(
-      route =>
-        Number(route.minimumZoom ?? 0) <= zoom
-    )
-    .filter(
-      route => routeIntersectsBounds(route, viewport)
-    );
+    .filter(route => route.id === selected?.id || routeMatchesFilters(route))
+    .filter(route => route.id === selected?.id || Number(route.minimumZoom ?? 0) <= zoom)
+    .filter(route => route.id === selected?.id || routeIntersectsBounds(route, viewport));
 
   if (mode === "regional") {
-    candidates = candidates.filter(
-      route => route.featured === true
-    );
+    candidates = candidates.filter(route => route.id === selected?.id || route.featured === true);
+  }
+  if (mode === "overview") {
+    candidates = candidates.filter(route => route.id === selected?.id);
   }
 
   candidates.sort((first, second) => {
-    const firstPriority = Number(first.priority ?? 999);
-    const secondPriority = Number(second.priority ?? 999);
-
-    return firstPriority - secondPriority;
+    if (first.id === selected?.id) return -1;
+    if (second.id === selected?.id) return 1;
+    return Number(first.priority ?? 999) - Number(second.priority ?? 999);
   });
 
-  return candidates.slice(
-    0,
-    getLocalRouteLimit(mode)
-  );
+  return candidates.slice(0, getLocalRouteLimit(mode));
 }
 
 function getVisibleSegmentedRoutes() {
