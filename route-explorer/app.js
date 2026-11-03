@@ -652,6 +652,27 @@ async function selectRoute(routeId, options = {}) {
   }
 }
 
+// Passage search is based on real local geometry; navigate before selecting so
+// a result outside the current viewport is not silently omitted by map filters.
+window.addEventListener("bicipark:passage-open-route", async event => {
+  const route = state.localRoutes.find(item => item.id === event.detail?.routeId && item.enabled !== false);
+  if (!route) return;
+  try {
+    const geometry = await loadRouteGeometry(route);
+    const preview = createGeometryLayer(route, geometry, getRouteStyle(route, true));
+    const bounds = preview.getBounds?.();
+    if (!bounds?.isValid()) return;
+    elements.regionFilter.value = "all";
+    elements.modalityFilter.value = "all";
+    elements.difficultyFilter.value = "all";
+    map.fitBounds(bounds, { padding: [35, 35], maxZoom: 14 });
+    await selectRoute(route.id, { fit: false });
+    elements.routeDetails.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+  } catch (error) {
+    console.warn("Unable to open passage result:", error);
+  }
+});
+
 function createCollectionCard(collection) {
   const article = document.createElement("article");
   article.className = "route-explorer-collection-card";
