@@ -50,9 +50,12 @@ export async function loadSegmentedRouteSources(
       continue;
     }
 
+    // The curated source configuration is authoritative for runtime policy
+    // (enabled/default visibility, styling and viewport behaviour). Generated
+    // catalog metadata may be stale, so it must never override those choices.
     const source = {
-      ...configuration,
-      ...(catalog.source || {})
+      ...(catalog.source || {}),
+      ...configuration
     };
 
     sources.push(source);
