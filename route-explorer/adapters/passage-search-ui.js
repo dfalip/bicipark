@@ -46,9 +46,11 @@ function mount() {
   let pickMarker = null;
   let picking = false;
   let searchRevision = 0;
+  pickButton.setAttribute("aria-pressed", "false");
 
   function stopPicking() {
     picking = false;
+    pickButton.setAttribute("aria-pressed", "false");
     section.classList.remove("is-picking");
     const map = getMap();
     if (map?.getContainer) map.getContainer().classList.remove("is-passage-picking");
@@ -77,9 +79,17 @@ function mount() {
     const map = getMap();
     if (!map) return;
     picking = !picking;
+    pickButton.setAttribute("aria-pressed", String(picking));
     section.classList.toggle("is-picking", picking);
     map.getContainer().classList.toggle("is-passage-picking", picking);
     status.textContent = picking ? t.picking : "";
+  });
+
+  pickButton.addEventListener("keydown", event => {
+    if (event.key === "Escape" && picking) {
+      stopPicking();
+      status.textContent = "";
+    }
   });
 
   section.querySelector("#passageSubmit").addEventListener("click", async () => {
