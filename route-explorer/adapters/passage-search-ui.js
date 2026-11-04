@@ -111,7 +111,7 @@ function mount() {
     const lng = Number(lngInput.value);
     const radius = Number(section.querySelector("#passageRadius").value);
     results.replaceChildren();
-    if (!latInput.value.trim() || !lngInput.value.trim() || !Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) { status.textContent = t.invalid; return; }
+    if (!latInput.value.trim() || !lngInput.value.trim() || !Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180 || ![0.5, 1, 2, 5].includes(radius)) { status.textContent = t.invalid; return; }
     status.textContent = t.searching;
     try {
       const routes = await loadRoutes();
