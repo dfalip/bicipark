@@ -651,11 +651,14 @@ async function selectRoute(routeId, options = {}) {
 
 // Passage search is based on real local geometry; navigate before selecting so
 // a result outside the current viewport is not silently omitted by map filters.
+let passageNavigationRevision = 0;
 window.addEventListener("bicipark:passage-open-route", async event => {
+  const revision = ++passageNavigationRevision;
   const route = state.localRoutes.find(item => item.id === event.detail?.routeId && item.enabled !== false);
   if (!route) return;
   try {
     const geometry = await loadRouteGeometry(route);
+    if (revision !== passageNavigationRevision) return;
     const preview = createGeometryLayer(route, geometry, getRouteStyle(route, true));
     const bounds = preview.getBounds?.();
     if (!bounds?.isValid()) return;
