@@ -81,3 +81,34 @@ test("geometry load errors leave selection untouched", async () => {
   await fire("real-route");
   assert.deepEqual(calls, ["geometry", "warning"]);
 });
+
+test("stale passage navigation does not override a newer click", async () => {
+  const calls = [];
+  const pending = [];
+  let listener;
+  const route = { id: "real-route", enabled: true };
+  const elements = {
+    regionFilter: { value: "other" },
+    modalityFilter: { value: "road" },
+    difficultyFilter: { value: "hard" },
+    routeDetails: { scrollIntoView: () => calls.push("scroll") }
+  };
+  vm.runInNewContext(listenerSource, {
+    window: { addEventListener: (_type, fn) => { listener = fn; } },
+    state: { localRoutes: [route] },
+    elements,
+    loadRouteGeometry: () => new Promise(resolve => pending.push(resolve)),
+    createGeometryLayer: () => ({ getBounds: () => ({ isValid: () => true }) }),
+    getRouteStyle: () => ({}),
+    map: { fitBounds: () => calls.push("fit") },
+    selectRoute: async () => calls.push("select"),
+    console: { warn: () => calls.push("warning") }
+  });
+  const first = listener({ detail: { routeId: route.id } });
+  const second = listener({ detail: { routeId: route.id } });
+  pending[1]({});
+  await second;
+  pending[0]({});
+  await first;
+  assert.deepEqual(calls, ["fit", "select", "scroll"]);
+});
