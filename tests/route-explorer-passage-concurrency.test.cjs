@@ -45,6 +45,7 @@ function setup() {
     document: { createElement: tag => ({
       tag, children: [], textContent: "",
       append(...nodes) { this.children.push(...nodes); },
+      appendChild(node) { this.children.push(node); },
       setAttribute() {}, addEventListener() {}
     }) },
     window: { dispatchEvent() {} },
