@@ -62,6 +62,9 @@ function mount() {
     map.on("click", event => {
       if (!picking || !event?.latlng) return;
       const { lat, lng } = event.latlng;
+      if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) return;
+      ++searchRevision;
+      results.replaceChildren();
       latInput.value = Number(lat).toFixed(6);
       lngInput.value = Number(lng).toFixed(6);
       if (pickMarker) pickMarker.setLatLng(event.latlng);
