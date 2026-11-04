@@ -85,7 +85,7 @@ function mount() {
     status.textContent = picking ? t.picking : "";
   });
 
-  pickButton.addEventListener("keydown", event => {
+  document.addEventListener("keydown", event => {
     if (event.key === "Escape" && picking) {
       stopPicking();
       status.textContent = "";
