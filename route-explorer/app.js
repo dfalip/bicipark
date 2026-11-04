@@ -667,6 +667,7 @@ window.addEventListener("bicipark:passage-open-route", async event => {
     elements.difficultyFilter.value = "all";
     map.fitBounds(bounds, { padding: [35, 35], maxZoom: 14 });
     await selectRoute(route.id, { fit: false });
+    if (revision !== passageNavigationRevision) return;
     elements.routeDetails.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
   } catch (error) {
     console.warn("Unable to open passage result:", error);
