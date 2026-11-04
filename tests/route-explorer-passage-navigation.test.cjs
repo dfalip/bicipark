@@ -5,7 +5,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const source = fs.readFileSync(path.join(__dirname, "../route-explorer/app.js"), "utf8");
-const start = source.indexOf('window.addEventListener("bicipark:passage-open-route"');
+const start = source.indexOf("let passageNavigationRevision = 0;");
 const end = source.indexOf("\nfunction createCollectionCard(", start);
 assert.ok(start !== -1 && end > start, "passage route navigation listener exists");
 const listenerSource = source.slice(start, end);
