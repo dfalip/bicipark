@@ -45,6 +45,7 @@ function mount() {
   const pickButton = section.querySelector("#passagePick");
   let pickMarker = null;
   let picking = false;
+  let searchRevision = 0;
 
   function stopPicking() {
     picking = false;
@@ -83,6 +84,7 @@ function mount() {
 
   section.querySelector("#passageSubmit").addEventListener("click", async () => {
     stopPicking();
+    const revision = ++searchRevision;
     const lat = Number(latInput.value);
     const lng = Number(lngInput.value);
     const radius = Number(section.querySelector("#passageRadius").value);
@@ -93,6 +95,7 @@ function mount() {
       const routes = await loadRoutes();
       let checked = 0;
       const matches = await findRoutesPassingNear({ routes, target: [lat, lng], maximumDistanceKm: radius, loadGeometry: async route => { const geometry = await loadRouteGeometry(route); checked += 1; return geometry; } });
+      if (revision !== searchRevision) return;
       status.textContent = t.coverage(checked);
       if (!matches.length) { results.textContent = t.empty; return; }
       const list = document.createElement("ul");
@@ -111,6 +114,7 @@ function mount() {
       }
       results.appendChild(list);
     } catch (error) {
+      if (revision !== searchRevision) return;
       console.warn("Passage search:", error);
       status.textContent = t.empty;
     }
