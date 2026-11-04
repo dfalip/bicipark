@@ -10,6 +10,7 @@ test("passage map picker exposes pressed state and Escape cancels picking", () =
   const { window } = dom;
   const listeners = {};
   const mapContainer = window.document.createElement("div");
+  window.document.body.appendChild(mapContainer);
   const map = {
     getContainer: () => mapContainer,
     on: (event, callback) => { listeners[event] = callback; }
