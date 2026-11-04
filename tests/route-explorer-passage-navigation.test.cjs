@@ -112,3 +112,39 @@ test("stale passage navigation does not override a newer click", async () => {
   await first;
   assert.deepEqual(calls, ["fit", "select", "scroll"]);
 });
+
+test("older navigation does not scroll details after a newer selection starts", async () => {
+  const calls = [];
+  const pendingSelections = [];
+  let listener;
+  const route = { id: "real-route", enabled: true };
+  const bounds = { isValid: () => true };
+  vm.runInNewContext(listenerSource, {
+    window: { addEventListener: (_type, fn) => { listener = fn; } },
+    state: { localRoutes: [route] },
+    elements: {
+      regionFilter: { value: "all" },
+      modalityFilter: { value: "all" },
+      difficultyFilter: { value: "all" },
+      routeDetails: { scrollIntoView: () => calls.push("scroll") }
+    },
+    loadRouteGeometry: async () => ({}),
+    createGeometryLayer: () => ({ getBounds: () => bounds }),
+    getRouteStyle: () => ({}),
+    map: { fitBounds: () => calls.push("fit") },
+    selectRoute: () => new Promise(resolve => pendingSelections.push(resolve)),
+    console: { warn: () => calls.push("warning") }
+  });
+  const first = listener({ detail: { routeId: route.id } });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(pendingSelections.length, 1);
+  const second = listener({ detail: { routeId: route.id } });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(pendingSelections.length, 2);
+  pendingSelections[0]();
+  await first;
+  assert.equal(calls.includes("scroll"), false, "stale navigation must not scroll");
+  pendingSelections[1]();
+  await second;
+  assert.equal(calls.filter(call => call === "scroll").length, 1);
+});
