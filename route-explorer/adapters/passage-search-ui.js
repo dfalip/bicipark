@@ -95,6 +95,15 @@ function mount() {
     }
   });
 
+  // Coordinates or radius changed: previous matches no longer describe the current query.
+  for (const control of [latInput, lngInput, section.querySelector("#passageRadius")]) {
+    control.addEventListener("input", () => {
+      ++searchRevision;
+      results.replaceChildren();
+      status.textContent = "";
+    });
+  }
+
   section.querySelector("#passageSubmit").addEventListener("click", async () => {
     stopPicking();
     const revision = ++searchRevision;
