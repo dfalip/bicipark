@@ -33,7 +33,7 @@ function setup() {
     stopPicking: () => {},
     searchRevision: 0,
     latInput, lngInput, section, status, results,
-    t: { invalid: "invalid", searching: "searching", empty: "empty", coverage: n => "checked " + n, near: n => n, open: "Open" },
+    t: { invalid: "invalid", searching: "searching", empty: "empty", error: "error", coverage: n => "checked " + n, near: n => n, open: "Open" },
     loadRoutes: () => {
       const request = deferred();
       requests.push(request);
@@ -90,4 +90,15 @@ test("invalid new coordinates invalidate a pending older search", async () => {
   await older;
   assert.equal(s.status.textContent, "invalid");
   assert.equal(s.results.children.length, 0);
+});
+
+
+test("a failed current search reports an error rather than a false no-match result", async () => {
+  const s = setup();
+  const request = s.click();
+  s.requests[0].reject(new Error("network unavailable"));
+  await request;
+  assert.equal(s.status.textContent, "error");
+  assert.equal(s.results.children.length, 0);
+  assert.notEqual(s.results.textContent, "empty");
 });
