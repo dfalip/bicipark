@@ -26,6 +26,10 @@ test("map picker selects valid coordinates, restores focus and ignores invalid m
     const lat = window.document.querySelector("#passageLat");
     const lng = window.document.querySelector("#passageLng");
     assert.equal(typeof handlers.click, "function");
+    // Ordinary map clicks must not alter search coordinates until selection is enabled.
+    handlers.click({ latlng: { lat: 40, lng: 1 } });
+    assert.equal(lat.value, "");
+    assert.equal(lng.value, "");
     pick.click();
     assert.equal(pick.getAttribute("aria-pressed"), "true");
     assert.equal(container.classList.contains("is-passage-picking"), true);
@@ -38,6 +42,10 @@ test("map picker selects valid coordinates, restores focus and ignores invalid m
     assert.equal(pick.getAttribute("aria-pressed"), "false");
     assert.equal(container.classList.contains("is-passage-picking"), false);
     assert.equal(window.document.activeElement, submit);
+    // Once a point is selected, later map clicks must not silently overwrite it.
+    handlers.click({ latlng: { lat: 42, lng: 3 } });
+    assert.equal(lat.value, "41.387000");
+    assert.equal(lng.value, "2.170000");
     pick.click();
     window.document.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     assert.equal(pick.getAttribute("aria-pressed"), "false");
