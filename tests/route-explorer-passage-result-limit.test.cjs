@@ -17,3 +17,8 @@ test("passage search progressively reveals all matches with translated controls"
   assert.match(source, /more\.hidden = shown >= matches\.length/);
   assert.match(source, /more\.addEventListener\("click", showNext\)/);
 });
+
+test("final page does not strand keyboard focus on a hidden load-more control", () => {
+  assert.match(source, /const triggeredByMore = shown > 0/);
+  assert.match(source, /if \(triggeredByMore && more\.hidden\) list\.lastElementChild\?\.querySelector\("button"\)\?\.focus\(\)/);
+});
