@@ -17,7 +17,8 @@ async function loadRoutes() {
   const response = await fetch("./data/routes.json", { cache: "no-store" });
   if (!response.ok) throw new Error(`routes ${response.status}`);
   const routes = await response.json();
-  return Array.isArray(routes) ? routes.filter(route => route?.enabled !== false) : [];
+  if (!Array.isArray(routes)) throw new TypeError("Invalid route catalog: expected an array");
+  return routes.filter(route => route?.enabled !== false);
 }
 
 function formatDistance(value) {
