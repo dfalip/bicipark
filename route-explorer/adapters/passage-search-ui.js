@@ -76,7 +76,7 @@ function mount() {
   }
 
   bindMapPicker(getMap());
-  window.addEventListener("bicipark:route-map-ready", event => bindMapPicker(event.detail?.map), { once: true });
+  window.addEventListener("bicipark:route-map-ready", event => bindMapPicker(event.detail?.map));
 
   pickButton.addEventListener("click", () => {
     const map = getMap();
