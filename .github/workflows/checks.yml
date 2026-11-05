@@ -13,3 +13,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - name: Verify connected client bundles
+        run: npm run build:connected
