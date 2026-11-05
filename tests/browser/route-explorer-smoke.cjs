@@ -12,7 +12,7 @@ const assert = require('node:assert/strict');
       page.on('pageerror', error => errors.push(error.message));
       const response = await page.goto(base + '/route-explorer/', { waitUntil: 'domcontentloaded' });
       assert.equal(response.status(), 200, 'Route Explorer should load');
-      await page.waitForFunction(() => !!window.L && !!document.querySelector('#routeMap .leaflet-container'), { timeout: 25000 });
+      await page.waitForFunction(() => !!window.L && !!document.querySelector('#routeMap.leaflet-container'), { timeout: 25000 });
       await page.locator('#regionFilter').selectOption('barcelona');
       assert.equal(await page.locator('#regionFilter').inputValue(), 'barcelona');
       await page.locator('#regionFilter').selectOption('all');
