@@ -132,6 +132,7 @@ function mount() {
       more.textContent = t.more;
       more.addEventListener("click", showNext);
       function showNext() {
+        const triggeredByMore = shown > 0;
         const end = Math.min(shown + 10, matches.length);
         for (const match of matches.slice(shown, end)) {
           const item = document.createElement("li");
@@ -148,6 +149,8 @@ function mount() {
         }
         shown = end;
         more.hidden = shown >= matches.length;
+        // When the final page hides the focused button, keep keyboard focus in the results.
+        if (triggeredByMore && more.hidden) list.lastElementChild?.querySelector("button")?.focus();
       }
       showNext();
       if (shown < matches.length) results.appendChild(more);
