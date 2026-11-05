@@ -36,7 +36,9 @@ test("passage map picker exposes pressed state and Escape cancels picking", () =
   assert.equal(button.getAttribute("aria-pressed"), "true");
   assert.equal(section.classList.contains("is-picking"), true);
   assert.equal(mapContainer.classList.contains("is-passage-picking"), true);
+  mapContainer.focus();
   mapContainer.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  assert.equal(window.document.activeElement, button, "Escape returns focus to the picker control");
   assert.equal(button.getAttribute("aria-pressed"), "false");
   assert.equal(section.classList.contains("is-picking"), false);
   assert.equal(mapContainer.classList.contains("is-passage-picking"), false);
