@@ -2,10 +2,10 @@ import { findRoutesPassingNear } from "../modules/route-passage-catalog.js";
 import { loadRouteGeometry } from "../modules/geometry-loader.js";
 
 const COPY = {
-  ca: { title: "Rutes que passen per aquí", intro: "Cerca només sobre rutes amb geometria real carregable. L’absència d’un resultat no vol dir necessàriament que la ruta no hi passi.", lat: "Latitud", lng: "Longitud", radius: "Radi", search: "Cercar", pick: "Triar punt al mapa", picking: "Clica un punt del mapa", picked: "Punt seleccionat al mapa", searching: "Comprovant geometries…", empty: "Cap coincidència dins del radi entre les rutes amb geometria disponible.", coverage: n => `${n} rutes amb geometria comprovades`, partial: "Algunes geometries no s’han pogut carregar; els resultats poden ser incomplets.", near: km => `${km} km del track`, open: "Veure ruta al mapa", invalid: "Introdueix coordenades vàlides.", error: "No s’ha pogut completar la cerca. Torna-ho a provar.", truncated: "Mostrant les 10 primeres coincidències.", mapUnavailable: "Mapa encara no disponible. Torna-ho a provar." },
-  es: { title: "Rutas que pasan por aquí", intro: "Busca solo sobre rutas con geometría real cargable. La ausencia de un resultado no significa necesariamente que la ruta no pase por aquí.", lat: "Latitud", lng: "Longitud", radius: "Radio", search: "Buscar", pick: "Elegir punto en el mapa", picking: "Haz clic en un punto del mapa", picked: "Punto seleccionado en el mapa", searching: "Comprobando geometrías…", empty: "Ninguna coincidencia dentro del radio entre las rutas con geometría disponible.", coverage: n => `${n} rutas con geometría comprobadas`, partial: "No se han podido cargar algunas geometrías; los resultados pueden ser incompletos.", near: km => `${km} km del track`, open: "Ver ruta en el mapa", invalid: "Introduce coordenadas válidas.", error: "No se ha podido completar la búsqueda. Inténtalo de nuevo.", truncated: "Mostrando las 10 primeras coincidencias.", mapUnavailable: "El mapa todavía no está disponible. Inténtalo de nuevo." },
-  en: { title: "Routes passing near here", intro: "Searches only routes with loadable real geometry. No result does not necessarily mean a route does not pass here.", lat: "Latitude", lng: "Longitude", radius: "Radius", search: "Search", pick: "Pick point on map", picking: "Click a point on the map", picked: "Point selected on map", searching: "Checking route geometry…", empty: "No matches within the radius among routes with available geometry.", coverage: n => `${n} routes with geometry checked`, partial: "Some route geometries could not be loaded; results may be incomplete.", near: km => `${km} km from track`, open: "View route on map", invalid: "Enter valid coordinates.", error: "Could not complete the search. Please try again.", truncated: "Showing the first 10 matches.", mapUnavailable: "Map is not available yet. Please try again." },
-  fr: { title: "Itinéraires passant près d’ici", intro: "Recherche uniquement les itinéraires disposant d’une géométrie réelle chargeable. L’absence de résultat ne signifie pas forcément qu’un itinéraire ne passe pas ici.", lat: "Latitude", lng: "Longitude", radius: "Rayon", search: "Rechercher", pick: "Choisir un point sur la carte", picking: "Cliquez sur un point de la carte", picked: "Point sélectionné sur la carte", searching: "Vérification des géométries…", empty: "Aucune correspondance dans le rayon parmi les itinéraires avec géométrie disponible.", coverage: n => `${n} itinéraires avec géométrie vérifiés`, partial: "Certaines géométries n’ont pas pu être chargées ; les résultats peuvent être incomplets.", near: km => `${km} km de la trace`, open: "Voir sur la carte", invalid: "Saisissez des coordonnées valides.", error: "La recherche a échoué. Veuillez réessayer.", truncated: "Affichage des 10 premières correspondances.", mapUnavailable: "La carte n’est pas encore disponible. Veuillez réessayer." }
+  ca: { title: "Rutes que passen per aquí", intro: "Cerca només sobre rutes amb geometria real carregable. L’absència d’un resultat no vol dir necessàriament que la ruta no hi passi.", lat: "Latitud", lng: "Longitud", radius: "Radi", search: "Cercar", pick: "Triar punt al mapa", picking: "Clica un punt del mapa", picked: "Punt seleccionat al mapa", searching: "Comprovant geometries…", empty: "Cap coincidència dins del radi entre les rutes amb geometria disponible.", coverage: n => `${n} rutes amb geometria comprovades`, partial: "Algunes geometries no s’han pogut carregar; els resultats poden ser incomplets.", near: km => `${km} km del track`, open: "Veure ruta al mapa", invalid: "Introdueix coordenades vàlides.", error: "No s’ha pogut completar la cerca. Torna-ho a provar.", more: "Mostrar 10 rutes més", mapUnavailable: "Mapa encara no disponible. Torna-ho a provar." },
+  es: { title: "Rutas que pasan por aquí", intro: "Busca solo sobre rutas con geometría real cargable. La ausencia de un resultado no significa necesariamente que la ruta no pase por aquí.", lat: "Latitud", lng: "Longitud", radius: "Radio", search: "Buscar", pick: "Elegir punto en el mapa", picking: "Haz clic en un punto del mapa", picked: "Punto seleccionado en el mapa", searching: "Comprobando geometrías…", empty: "Ninguna coincidencia dentro del radio entre las rutas con geometría disponible.", coverage: n => `${n} rutas con geometría comprobadas`, partial: "No se han podido cargar algunas geometrías; los resultados pueden ser incompletos.", near: km => `${km} km del track`, open: "Ver ruta en el mapa", invalid: "Introduce coordenadas válidas.", error: "No se ha podido completar la búsqueda. Inténtalo de nuevo.", more: "Mostrar 10 rutas más", mapUnavailable: "El mapa todavía no está disponible. Inténtalo de nuevo." },
+  en: { title: "Routes passing near here", intro: "Searches only routes with loadable real geometry. No result does not necessarily mean a route does not pass here.", lat: "Latitude", lng: "Longitude", radius: "Radius", search: "Search", pick: "Pick point on map", picking: "Click a point on the map", picked: "Point selected on map", searching: "Checking route geometry…", empty: "No matches within the radius among routes with available geometry.", coverage: n => `${n} routes with geometry checked`, partial: "Some route geometries could not be loaded; results may be incomplete.", near: km => `${km} km from track`, open: "View route on map", invalid: "Enter valid coordinates.", error: "Could not complete the search. Please try again.", more: "Show 10 more routes", mapUnavailable: "Map is not available yet. Please try again." },
+  fr: { title: "Itinéraires passant près d’ici", intro: "Recherche uniquement les itinéraires disposant d’une géométrie réelle chargeable. L’absence de résultat ne signifie pas forcément qu’un itinéraire ne passe pas ici.", lat: "Latitude", lng: "Longitude", radius: "Rayon", search: "Rechercher", pick: "Choisir un point sur la carte", picking: "Cliquez sur un point de la carte", picked: "Point sélectionné sur la carte", searching: "Vérification des géométries…", empty: "Aucune correspondance dans le rayon parmi les itinéraires avec géométrie disponible.", coverage: n => `${n} itinéraires avec géométrie vérifiés`, partial: "Certaines géométries n’ont pas pu être chargées ; les résultats peuvent être incomplets.", near: km => `${km} km de la trace`, open: "Voir sur la carte", invalid: "Saisissez des coordonnées valides.", error: "La recherche a échoué. Veuillez réessayer.", more: "Afficher 10 itinéraires supplémentaires", mapUnavailable: "La carte n’est pas encore disponible. Veuillez réessayer." }
 };
 
 function language() {
@@ -124,26 +124,33 @@ function mount() {
       status.textContent = `${t.coverage(checked)}${unavailable ? `. ${t.partial}` : ""}`;
       if (!matches.length) { results.textContent = t.empty; return; }
       const list = document.createElement("ul");
-      for (const match of matches.slice(0, 10)) {
-        const item = document.createElement("li");
-        const name = document.createElement("button");
-        name.type = "button";
-        name.className = "passage-search-open";
-        name.textContent = match.route.name || match.route.id;
-        name.setAttribute("aria-label", `${t.open}: ${name.textContent}`);
-        name.addEventListener("click", () => window.dispatchEvent(new CustomEvent("bicipark:passage-open-route", { detail: { routeId: match.route.id } })));
-        const distance = document.createElement("span");
-        distance.textContent = t.near(formatDistance(match.distanceKm));
-        item.append(name, distance);
-        list.appendChild(item);
-      }
       results.appendChild(list);
-      if (matches.length > 10) {
-        const notice = document.createElement("p");
-        notice.className = "passage-search-note";
-        notice.textContent = t.truncated;
-        results.appendChild(notice);
+      let shown = 0;
+      const more = document.createElement("button");
+      more.type = "button";
+      more.className = "passage-search-open";
+      more.textContent = t.more;
+      more.addEventListener("click", showNext);
+      function showNext() {
+        const end = Math.min(shown + 10, matches.length);
+        for (const match of matches.slice(shown, end)) {
+          const item = document.createElement("li");
+          const name = document.createElement("button");
+          name.type = "button";
+          name.className = "passage-search-open";
+          name.textContent = match.route.name || match.route.id;
+          name.setAttribute("aria-label", `${t.open}: ${name.textContent}`);
+          name.addEventListener("click", () => window.dispatchEvent(new CustomEvent("bicipark:passage-open-route", { detail: { routeId: match.route.id } })));
+          const distance = document.createElement("span");
+          distance.textContent = t.near(formatDistance(match.distanceKm));
+          item.append(name, distance);
+          list.appendChild(item);
+        }
+        shown = end;
+        more.hidden = shown >= matches.length;
       }
+      showNext();
+      if (shown < matches.length) results.appendChild(more);
     } catch (error) {
       if (revision !== searchRevision) return;
       console.warn("Passage search:", error);
