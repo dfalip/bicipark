@@ -95,6 +95,8 @@ function mount() {
     if (event.key === "Escape" && picking) {
       stopPicking();
       status.textContent = "";
+      // Restore keyboard focus after cancelling map selection.
+      pickButton.focus();
     }
   });
 
