@@ -81,6 +81,8 @@ function mount() {
   pickButton.addEventListener("click", () => {
     const map = getMap();
     if (!map?.getContainer) { status.textContent = t.mapUnavailable; return; }
+    // The map may become available after an early or incomplete ready event.
+    bindMapPicker(map);
     picking = !picking;
     pickButton.setAttribute("aria-pressed", String(picking));
     section.classList.toggle("is-picking", picking);
