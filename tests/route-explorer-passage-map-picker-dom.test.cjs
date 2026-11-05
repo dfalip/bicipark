@@ -33,8 +33,16 @@ test("map picker selects valid coordinates, restores focus and ignores invalid m
     pick.click();
     assert.equal(pick.getAttribute("aria-pressed"), "true");
     assert.equal(container.classList.contains("is-passage-picking"), true);
-    handlers.click({ latlng: { lat: 91, lng: 2 } });
-    assert.equal(pick.getAttribute("aria-pressed"), "true");
+    for (const latlng of [
+      { lat: 91, lng: 2 }, { lat: 40, lng: 181 },
+      { lat: NaN, lng: 2 }, { lat: 40, lng: Infinity },
+      { lat: -Infinity, lng: 2 }
+    ]) {
+      handlers.click({ latlng });
+      assert.equal(pick.getAttribute("aria-pressed"), "true");
+      assert.equal(lat.value, "");
+      assert.equal(lng.value, "");
+    }
     assert.equal(lat.value, "");
     handlers.click({ latlng: { lat: 41.387, lng: 2.17 } });
     assert.equal(lat.value, "41.387000");
