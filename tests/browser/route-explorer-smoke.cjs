@@ -88,6 +88,38 @@ const assert = require('node:assert/strict');
         assert.equal(viewportEvents.moves >= 1, true, 'Leaflet must emit moveend');
         assert.equal(viewportEvents.boundsVisible, true, 'Leaflet fitBounds must contain the requested bounds');
 
+        // End-to-end passage search using an existing GPX track from the published catalog.
+        // Run once at desktop width to keep the browser smoke workflow bounded.
+        if (viewport.width > 1000) {
+          const fixture = await page.evaluate(async () => {
+            const response = await fetch('./data/routes.json');
+            if (!response.ok) throw new Error('Cannot read the real route catalog');
+            const routes = await response.json();
+            const route = routes.find(item => item.enabled !== false && item.geometryFile?.endsWith('.gpx'));
+            if (!route) throw new Error('No GPX-backed route in catalog');
+            const trackResponse = await fetch(route.geometryFile);
+            if (!trackResponse.ok) throw new Error('Real GPX unavailable: ' + route.geometryFile);
+            const xml = new DOMParser().parseFromString(await trackResponse.text(), 'application/xml');
+            const point = xml.querySelector('trkpt[lat][lon], rtept[lat][lon]');
+            if (!point) throw new Error('Real GPX has no valid track point');
+            return { id: route.id, name: route.name, lat: point.getAttribute('lat'), lng: point.getAttribute('lon') };
+          });
+          await lat.fill(fixture.lat);
+          await lng.fill(fixture.lng);
+          await page.locator('#passageRadius').selectOption('0.5');
+          await submit.click();
+          await page.waitForFunction(() => {
+            const status = document.querySelector('#passageStatus')?.textContent || '';
+            return !/Comprovant|Comprobando|Checking|Vérification/.test(status);
+          }, { timeout: 120000 });
+          const matchingResult = page.locator('#passageResults li button').filter({ hasText: fixture.name }).first();
+          await matchingResult.waitFor({ state: 'visible', timeout: 120000 });
+          await matchingResult.click();
+          await page.waitForFunction(name => document.querySelector('#routeDetails h2')?.textContent === name, fixture.name, { timeout: 30000 });
+          assert.equal(await page.locator('#regionFilter').inputValue(), 'all', 'Opening passage result resets restrictive region filter');
+          assert.equal(await page.locator('#modalityFilter').inputValue(), 'all', 'Opening passage result resets restrictive modality filter');
+        }
+
         // Invalid coordinates must not be reported as zero verified matches.
         await lat.fill('91');
         await submit.click();
