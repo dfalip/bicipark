@@ -106,15 +106,11 @@ const assert = require('node:assert/strict');
                 && Math.abs(lat) <= 90 && Math.abs(lng) <= 180);
             if (!points.length) throw new Error('Real GPX has no valid track point');
             const [firstLat, firstLng] = points[0];
-            return {
-              id: route.id, name: route.name, lat: String(firstLat), lng: String(firstLng),
-              extent: {
-                south: Math.min(...points.map(p => p[0])),
-                west: Math.min(...points.map(p => p[1])),
-                north: Math.max(...points.map(p => p[0])),
-                east: Math.max(...points.map(p => p[1]))
-              }
-            };
+            const extent = points.reduce((bounds, [lat, lng]) => ({
+              south: Math.min(bounds.south, lat), west: Math.min(bounds.west, lng),
+              north: Math.max(bounds.north, lat), east: Math.max(bounds.east, lng)
+            }), { south: firstLat, west: firstLng, north: firstLat, east: firstLng });
+            return { id: route.id, name: route.name, lat: String(firstLat), lng: String(firstLng), extent };
           });
           await lat.fill(fixture.lat);
           await lng.fill(fixture.lng);
