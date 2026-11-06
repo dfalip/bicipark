@@ -48,7 +48,7 @@ const assert = require('node:assert/strict');
         assert.equal((await lat.inputValue()).length > 0, true);
         assert.equal((await lng.inputValue()).length > 0, true);
 
-        // Invalid coordinates must not be reported as zero verified matches.
+        // A map click outside picker mode must not silently overwrite the selected point.\n        const selectedLat = await lat.inputValue();\n        const selectedLng = await lng.inputValue();\n        await page.evaluate(() => {\n          const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;\n          map.fire('click', { latlng: map.getBounds().getNorthEast() });\n        });\n        assert.equal(await lat.inputValue(), selectedLat, 'Inactive picker must preserve latitude');\n        assert.equal(await lng.inputValue(), selectedLng, 'Inactive picker must preserve longitude');\n\n        // Invalid coordinates must not be reported as zero verified matches.
         await lat.fill('91');
         await submit.click();
         assert.equal((await page.locator('#passageStatus').textContent() || '').trim().length > 0, true);
