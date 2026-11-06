@@ -89,8 +89,8 @@ const assert = require('node:assert/strict');
         assert.equal(viewportEvents.boundsVisible, true, 'Leaflet fitBounds must contain the requested bounds');
 
         // End-to-end passage search using an existing GPX track from the published catalog.
-        // Run once at desktop width to keep the browser smoke workflow bounded.
-        if (viewport.width > 1000) {
+        // Run on desktop and mobile against existing catalog geometry; no synthetic route fixtures.
+        {
           const fixture = await page.evaluate(async () => {
             const response = await fetch('./data/routes.json');
             if (!response.ok) throw new Error('Cannot read the real route catalog');
@@ -118,6 +118,11 @@ const assert = require('node:assert/strict');
           await page.waitForFunction(name => document.querySelector('#routeDetails h2')?.textContent === name, fixture.name, { timeout: 30000 });
           assert.equal(await page.locator('#regionFilter').inputValue(), 'all', 'Opening passage result resets restrictive region filter');
           assert.equal(await page.locator('#modalityFilter').inputValue(), 'all', 'Opening passage result resets restrictive modality filter');
+          const routeMapContainsPoint = await page.evaluate(({ lat, lng }) => {
+            const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
+            return map.getBounds().contains(window.L.latLng(Number(lat), Number(lng)));
+          }, fixture);
+          assert.equal(routeMapContainsPoint, true, 'Opening an existing route should show its GPX point on the map');
         }
 
         // Invalid coordinates must not be reported as zero verified matches.
