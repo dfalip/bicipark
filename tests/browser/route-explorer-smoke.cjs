@@ -100,9 +100,21 @@ const assert = require('node:assert/strict');
             const trackResponse = await fetch(route.geometryFile);
             if (!trackResponse.ok) throw new Error('Real GPX unavailable: ' + route.geometryFile);
             const xml = new DOMParser().parseFromString(await trackResponse.text(), 'application/xml');
-            const point = xml.querySelector('trkpt[lat][lon], rtept[lat][lon]');
-            if (!point) throw new Error('Real GPX has no valid track point');
-            return { id: route.id, name: route.name, lat: point.getAttribute('lat'), lng: point.getAttribute('lon') };
+            const points = [...xml.querySelectorAll('trkpt[lat][lon], rtept[lat][lon]')]
+              .map(el => [Number(el.getAttribute('lat')), Number(el.getAttribute('lon'))])
+              .filter(([lat, lng]) => Number.isFinite(lat) && Number.isFinite(lng)
+                && Math.abs(lat) <= 90 && Math.abs(lng) <= 180);
+            if (!points.length) throw new Error('Real GPX has no valid track point');
+            const [firstLat, firstLng] = points[0];
+            return {
+              id: route.id, name: route.name, lat: String(firstLat), lng: String(firstLng),
+              extent: {
+                south: Math.min(...points.map(p => p[0])),
+                west: Math.min(...points.map(p => p[1])),
+                north: Math.max(...points.map(p => p[0])),
+                east: Math.max(...points.map(p => p[1]))
+              }
+            };
           });
           await lat.fill(fixture.lat);
           await lng.fill(fixture.lng);
@@ -123,6 +135,16 @@ const assert = require('node:assert/strict');
             return map.getBounds().contains(window.L.latLng(Number(lat), Number(lng)));
           }, fixture);
           assert.equal(routeMapContainsPoint, true, 'Opening an existing route should show its GPX point on the map');
+          // Check the full recorded GPX extent, not just the passage search point.
+          // This intentionally fails if route selection leaves part of the track outside the map.
+          const fullTrackVisible = await page.evaluate(({ extent }) => {
+            const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
+            const trackBounds = window.L.latLngBounds(
+              [extent.south, extent.west], [extent.north, extent.east]
+            );
+            return map.getBounds().contains(trackBounds);
+          }, fixture);
+          assert.equal(fullTrackVisible, true, 'Opening an existing route must frame the complete real GPX track');
         }
 
         // Invalid coordinates must not be reported as zero verified matches.
