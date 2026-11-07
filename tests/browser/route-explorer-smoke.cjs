@@ -48,6 +48,25 @@ const assert = require('node:assert/strict');
         assert.equal((await lat.inputValue()).length > 0, true);
         assert.equal((await lng.inputValue()).length > 0, true);
 
+        // Exercise an actual browser pointer click, not only a synthetic Leaflet event.
+        // Click at a map pixel away from the controls and verify Leaflet's conversion
+        // to geographic coordinates. This catches broken pointer event wiring.
+        await pick.click();
+        const pointerTarget = await page.evaluate(() => {
+          const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
+          const size = map.getSize();
+          const point = window.L.point(Math.round(size.x * 0.65), Math.round(size.y * 0.55));
+          const latlng = map.containerPointToLatLng(point);
+          const rect = map.getContainer().getBoundingClientRect();
+          return { x: rect.left + point.x, y: rect.top + point.y, lat: latlng.lat, lng: latlng.lng };
+        });
+        await page.mouse.click(pointerTarget.x, pointerTarget.y);
+        assert.equal(await pick.getAttribute('aria-pressed'), 'false', 'Pointer click should exit picker mode');
+        assert.equal(Math.abs(Number(await lat.inputValue()) - pointerTarget.lat) < 0.001, true,
+          'Real pointer click should select the clicked latitude');
+        assert.equal(Math.abs(Number(await lng.inputValue()) - pointerTarget.lng) < 0.001, true,
+          'Real pointer click should select the clicked longitude');
+
         // A map click outside picker mode must not silently overwrite the selected point.
         const selectedLat = await lat.inputValue();
         const selectedLng = await lng.inputValue();
