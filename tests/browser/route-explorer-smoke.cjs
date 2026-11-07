@@ -122,6 +122,13 @@ const assert = require('node:assert/strict');
           }, { timeout: 120000 });
           const matchingResult = page.locator('#passageResults li button').filter({ hasText: fixture.name }).first();
           await matchingResult.waitFor({ state: 'visible', timeout: 120000 });
+          // Reapply restrictive filters immediately before opening the passage result.
+          // This verifies a real restrictive -> all transition rather than asserting
+          // filters that were already reset earlier in this smoke test.
+          await page.locator('#regionFilter').selectOption('barcelona');
+          await page.locator('#modalityFilter').selectOption('road');
+          assert.equal(await page.locator('#regionFilter').inputValue(), 'barcelona');
+          assert.equal(await page.locator('#modalityFilter').inputValue(), 'road');
           await matchingResult.click();
           await page.waitForFunction(name => document.querySelector('#routeDetails h2')?.textContent === name, fixture.name, { timeout: 30000 });
           assert.equal(await page.locator('#regionFilter').inputValue(), 'all', 'Opening passage result resets restrictive region filter');
