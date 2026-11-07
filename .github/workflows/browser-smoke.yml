@@ -3,6 +3,12 @@ on:
   push:
     branches: [main, 'feat/passage-results-open-route-20261103']
   pull_request:
+  workflow_dispatch:
+    inputs:
+      preview_url:
+        description: 'Optional HTTPS Vercel preview URL (leave blank for local server)'
+        required: false
+        type: string
 permissions:
   contents: read
 jobs:
@@ -19,14 +25,21 @@ jobs:
       - name: Install isolated browser test dependency
         run: npm install --no-save --package-lock=false playwright@1.56.1
       - run: npx playwright install --with-deps chromium
+      - name: Validate remote preview URL
+        if: ${{ inputs.preview_url != '' }}
+        env:
+          PREVIEW_URL: ${{ inputs.preview_url }}
+        run: |
+          node -e 'const u = new URL(process.env.PREVIEW_URL); if (u.protocol !== "https:" || !u.hostname.endsWith(".vercel.app") || u.username || u.password || u.search || u.hash) process.exit(1)'
       - name: Serve repository over HTTP
+        if: ${{ inputs.preview_url == '' }}
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/bicipark-http.log 2>&1 &
           echo $! > /tmp/bicipark-http.pid
       - name: Check real Leaflet interactions at desktop and mobile widths
         env:
-          BICIPARK_BASE_URL: http://127.0.0.1:8765
+          BICIPARK_BASE_URL: ${{ inputs.preview_url || 'http://127.0.0.1:8765' }}
         run: node tests/browser/route-explorer-smoke.cjs
       - name: Show server log on failure
-        if: failure()
+        if: ${{ failure() && inputs.preview_url == '' }}
         run: cat /tmp/bicipark-http.log || true
