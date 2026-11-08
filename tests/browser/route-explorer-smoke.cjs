@@ -48,6 +48,74 @@ const assert = require('node:assert/strict');
         assert.equal((await lat.inputValue()).length > 0, true);
         assert.equal((await lng.inputValue()).length > 0, true);
 
+        // Exercise an actual browser pointer click, not only a synthetic Leaflet event.
+        // Click at a map pixel away from the controls and verify Leaflet's conversion
+        // to geographic coordinates. This catches broken pointer event wiring.
+        await pick.click();
+        // The map can be below the viewport after the picker button is clicked,
+        // especially on mobile. Scroll it into view before using viewport pixels.
+        await page.locator('#routeMap').scrollIntoViewIfNeeded();
+        const pointerTarget = await page.evaluate(() => {
+          const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
+          const container = map.getContainer();
+          const rect = container.getBoundingClientRect();
+          const left = Math.max(0, rect.left);
+          const right = Math.min(window.innerWidth, rect.right);
+          const top = Math.max(0, rect.top);
+          const bottom = Math.min(window.innerHeight, rect.bottom);
+          if (right - left < 40 || bottom - top < 40) {
+            throw new Error('Map has insufficient visible area for a real pointer test');
+          }
+          // Find an unobstructed point in the visible map, avoiding controls.
+          const candidates = [
+            [0.5, 0.5], [0.65, 0.55], [0.35, 0.6], [0.5, 0.7]
+          ];
+          for (const [fx, fy] of candidates) {
+            const x = left + (right - left) * fx;
+            const y = top + (bottom - top) * fy;
+            const hit = document.elementFromPoint(x, y);
+            if (!hit || !container.contains(hit) || hit.closest('.leaflet-control-container')) continue;
+            const latlng = map.containerPointToLatLng(window.L.point(x - rect.left, y - rect.top));
+            return { x, y, lat: latlng.lat, lng: latlng.lng };
+          }
+          throw new Error('Visible map is obstructed: no safe pointer target');
+        });
+        // Capture the actual Leaflet event independently of the picker, so a
+        // mismatch can distinguish map projection/scroll drift from UI wiring.
+        await page.evaluate(() => {
+          const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
+          window.__BICIPARK_TEST_POINTER_EVENT__ = null;
+          map.once('click', event => {
+            window.__BICIPARK_TEST_POINTER_EVENT__ = {
+              lat: event.latlng.lat, lng: event.latlng.lng
+            };
+          });
+        });
+        await page.mouse.click(pointerTarget.x, pointerTarget.y);
+        const pointerObserved = await page.evaluate(() => window.__BICIPARK_TEST_POINTER_EVENT__);
+        assert.ok(pointerObserved, 'Real pointer must produce a Leaflet map click');
+        assert.equal(await pick.getAttribute('aria-pressed'), 'false', 'Pointer click should exit picker mode');
+        const actualLat = Number(await lat.inputValue());
+        const actualLng = Number(await lng.inputValue());
+        const diagnostic = JSON.stringify({
+          viewport, pointerTarget, pointerObserved, actualLat, actualLng
+        });
+        assert.ok(Math.abs(actualLat - pointerObserved.lat) < 0.001,
+          'Picker latitude must match actual Leaflet pointer event: ' + diagnostic);
+        assert.ok(Math.abs(actualLng - pointerObserved.lng) < 0.001,
+          'Picker longitude must match actual Leaflet pointer event: ' + diagnostic);
+        // Leaflet rounds DOM event pixels to integer container coordinates.
+        // Compare projected pixels, not degrees: one pixel varies by zoom/latitude.
+        const pointerPixelDrift = await page.evaluate(({ target, observed }) => {
+          const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
+          const expected = map.latLngToContainerPoint([target.lat, target.lng]);
+          const actual = map.latLngToContainerPoint([observed.lat, observed.lng]);
+          return Math.hypot(actual.x - expected.x, actual.y - expected.y);
+        }, { target: pointerTarget, observed: pointerObserved });
+        assert.ok(pointerPixelDrift <= 1.5,
+          'Pointer projection drift exceeds Leaflet pixel rounding: ' +
+          JSON.stringify({ diagnostic, pointerPixelDrift }));
+
         // A map click outside picker mode must not silently overwrite the selected point.
         const selectedLat = await lat.inputValue();
         const selectedLng = await lng.inputValue();
