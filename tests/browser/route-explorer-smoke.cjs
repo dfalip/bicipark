@@ -13,7 +13,15 @@ const assert = require('node:assert/strict');
       page.on('pageerror', error => errors.push(error.message));
       try {
         const response = await page.goto(base + '/route-explorer/', { waitUntil: 'domcontentloaded' });
+        assert.ok(response, 'Route Explorer navigation must return an HTTP response');
         assert.equal(response.status(), 200, 'Route Explorer should load');
+        // Remote previews must not silently redirect to another deployment or
+        // authentication host; a successful response alone is insufficient.
+        if (new URL(base).protocol === 'https:') {
+          const expectedOrigin = new URL(base).origin;
+          assert.equal(new URL(page.url()).origin, expectedOrigin, 'Remote preview must remain on its expected origin');
+          assert.equal(new URL(response.url()).origin, expectedOrigin, 'Remote document must be served from the expected origin');
+        }
         await page.waitForFunction(() => !!window.L && !!document.querySelector('#routeMap.leaflet-container') && !!window.__BICIPARK_ROUTE_EXPLORER_MAP__, { timeout: 25000 });
         await page.locator('#regionFilter').selectOption('barcelona');
         assert.equal(await page.locator('#regionFilter').inputValue(), 'barcelona');
