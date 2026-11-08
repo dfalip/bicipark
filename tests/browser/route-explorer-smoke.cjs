@@ -52,13 +52,33 @@ const assert = require('node:assert/strict');
         // Click at a map pixel away from the controls and verify Leaflet's conversion
         // to geographic coordinates. This catches broken pointer event wiring.
         await pick.click();
+        // The map can be below the viewport after the picker button is clicked,
+        // especially on mobile. Scroll it into view before using viewport pixels.
+        await page.locator('#routeMap').scrollIntoViewIfNeeded();
         const pointerTarget = await page.evaluate(() => {
           const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
-          const size = map.getSize();
-          const point = window.L.point(Math.round(size.x * 0.65), Math.round(size.y * 0.55));
-          const latlng = map.containerPointToLatLng(point);
-          const rect = map.getContainer().getBoundingClientRect();
-          return { x: rect.left + point.x, y: rect.top + point.y, lat: latlng.lat, lng: latlng.lng };
+          const container = map.getContainer();
+          const rect = container.getBoundingClientRect();
+          const left = Math.max(0, rect.left);
+          const right = Math.min(window.innerWidth, rect.right);
+          const top = Math.max(0, rect.top);
+          const bottom = Math.min(window.innerHeight, rect.bottom);
+          if (right - left < 40 || bottom - top < 40) {
+            throw new Error('Map has insufficient visible area for a real pointer test');
+          }
+          // Find an unobstructed point in the visible map, avoiding controls.
+          const candidates = [
+            [0.5, 0.5], [0.65, 0.55], [0.35, 0.6], [0.5, 0.7]
+          ];
+          for (const [fx, fy] of candidates) {
+            const x = left + (right - left) * fx;
+            const y = top + (bottom - top) * fy;
+            const hit = document.elementFromPoint(x, y);
+            if (!hit || !container.contains(hit) || hit.closest('.leaflet-control-container')) continue;
+            const latlng = map.containerPointToLatLng(window.L.point(x - rect.left, y - rect.top));
+            return { x, y, lat: latlng.lat, lng: latlng.lng };
+          }
+          throw new Error('Visible map is obstructed: no safe pointer target');
         });
         await page.mouse.click(pointerTarget.x, pointerTarget.y);
         assert.equal(await pick.getAttribute('aria-pressed'), 'false', 'Pointer click should exit picker mode');
