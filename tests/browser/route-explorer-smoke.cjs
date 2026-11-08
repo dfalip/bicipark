@@ -101,7 +101,24 @@ const assert = require('node:assert/strict');
         });
         await page.mouse.click(pointerTarget.x, pointerTarget.y);
         const pointerObserved = await page.evaluate(() => window.__BICIPARK_TEST_POINTER_EVENT__);
-        assert.ok(pointerObserved, 'Real pointer must produce a Leaflet map click');
+        if (!pointerObserved) {
+          const pointerDiagnostic = await page.evaluate(target => {
+            const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
+            const rect = map.getContainer().getBoundingClientRect();
+            const hit = document.elementFromPoint(target.x, target.y);
+            return {
+              target,
+              hitTag: hit?.tagName || null,
+              hitClass: typeof hit?.className === 'string' ? hit.className : null,
+              hitInsideMap: !!hit && map.getContainer().contains(hit),
+              mapRect: { left: rect.left, top: rect.top, width: rect.width, height: rect.height },
+              mapDragging: !!map.dragging?.enabled(),
+              pickerPressed: document.querySelector('#passagePick')?.getAttribute('aria-pressed'),
+              activeElement: document.activeElement?.id || null
+            };
+          }, pointerTarget);
+          throw new Error('Real pointer must produce a Leaflet map click: ' + JSON.stringify({ viewport, pointerDiagnostic }));
+        }
         assert.equal(await pick.getAttribute('aria-pressed'), 'false', 'Pointer click should exit picker mode');
         const actualLat = Number(await lat.inputValue());
         const actualLng = Number(await lng.inputValue());
