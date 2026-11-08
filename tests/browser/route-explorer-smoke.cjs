@@ -80,12 +80,34 @@ const assert = require('node:assert/strict');
           }
           throw new Error('Visible map is obstructed: no safe pointer target');
         });
+        // Capture the actual Leaflet event independently of the picker, so a
+        // mismatch can distinguish map projection/scroll drift from UI wiring.
+        await page.evaluate(() => {
+          const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
+          window.__BICIPARK_TEST_POINTER_EVENT__ = null;
+          map.once('click', event => {
+            window.__BICIPARK_TEST_POINTER_EVENT__ = {
+              lat: event.latlng.lat, lng: event.latlng.lng
+            };
+          });
+        });
         await page.mouse.click(pointerTarget.x, pointerTarget.y);
+        const pointerObserved = await page.evaluate(() => window.__BICIPARK_TEST_POINTER_EVENT__);
+        assert.ok(pointerObserved, 'Real pointer must produce a Leaflet map click');
         assert.equal(await pick.getAttribute('aria-pressed'), 'false', 'Pointer click should exit picker mode');
-        assert.equal(Math.abs(Number(await lat.inputValue()) - pointerTarget.lat) < 0.001, true,
-          'Real pointer click should select the clicked latitude');
-        assert.equal(Math.abs(Number(await lng.inputValue()) - pointerTarget.lng) < 0.001, true,
-          'Real pointer click should select the clicked longitude');
+        const actualLat = Number(await lat.inputValue());
+        const actualLng = Number(await lng.inputValue());
+        const diagnostic = JSON.stringify({
+          viewport, pointerTarget, pointerObserved, actualLat, actualLng
+        });
+        assert.ok(Math.abs(actualLat - pointerObserved.lat) < 0.001,
+          'Picker latitude must match actual Leaflet pointer event: ' + diagnostic);
+        assert.ok(Math.abs(actualLng - pointerObserved.lng) < 0.001,
+          'Picker longitude must match actual Leaflet pointer event: ' + diagnostic);
+        assert.ok(Math.abs(pointerObserved.lat - pointerTarget.lat) < 0.001,
+          'Pointer latitude projection drift: ' + diagnostic);
+        assert.ok(Math.abs(pointerObserved.lng - pointerTarget.lng) < 0.001,
+          'Pointer longitude projection drift: ' + diagnostic);
 
         // A map click outside picker mode must not silently overwrite the selected point.
         const selectedLat = await lat.inputValue();
