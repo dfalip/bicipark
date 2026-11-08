@@ -104,10 +104,17 @@ const assert = require('node:assert/strict');
           'Picker latitude must match actual Leaflet pointer event: ' + diagnostic);
         assert.ok(Math.abs(actualLng - pointerObserved.lng) < 0.001,
           'Picker longitude must match actual Leaflet pointer event: ' + diagnostic);
-        assert.ok(Math.abs(pointerObserved.lat - pointerTarget.lat) < 0.001,
-          'Pointer latitude projection drift: ' + diagnostic);
-        assert.ok(Math.abs(pointerObserved.lng - pointerTarget.lng) < 0.001,
-          'Pointer longitude projection drift: ' + diagnostic);
+        // Leaflet rounds DOM event pixels to integer container coordinates.
+        // Compare projected pixels, not degrees: one pixel varies by zoom/latitude.
+        const pointerPixelDrift = await page.evaluate(({ target, observed }) => {
+          const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
+          const expected = map.latLngToContainerPoint([target.lat, target.lng]);
+          const actual = map.latLngToContainerPoint([observed.lat, observed.lng]);
+          return Math.hypot(actual.x - expected.x, actual.y - expected.y);
+        }, { target: pointerTarget, observed: pointerObserved });
+        assert.ok(pointerPixelDrift <= 1.5,
+          'Pointer projection drift exceeds Leaflet pixel rounding: ' +
+          JSON.stringify({ diagnostic, pointerPixelDrift }));
 
         // A map click outside picker mode must not silently overwrite the selected point.
         const selectedLat = await lat.inputValue();
