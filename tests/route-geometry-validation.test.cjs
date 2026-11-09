@@ -77,3 +77,13 @@ test('invalid geometry cannot expose partially cleaned lines', () => {
   assert.equal(result.lines, null);
   assert.ok(result.errors.includes('invalid_coordinate'));
 });
+
+
+test('validated coordinates are isolated from subsequent source mutations', () => {
+  const coordinates = [[2, 41, 0], [2.1, 41.1, 12]];
+  const result = validateRouteGeometry({ type: 'LineString', coordinates });
+  assert.equal(result.valid, true);
+  coordinates[0][0] = 181;
+  coordinates[1][2] = 999;
+  assert.deepEqual(result.lines, [[[2, 41, 0], [2.1, 41.1, 12]]]);
+});
