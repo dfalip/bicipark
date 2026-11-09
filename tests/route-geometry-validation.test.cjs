@@ -46,3 +46,34 @@ test('rejects unsupported shapes and limits oversized input', () => {
   assert.equal(result.valid, false);
   assert.ok(result.errors.includes('point_limit_exceeded'));
 });
+
+test('point limit applies across all MultiLineString segments, not per segment', () => {
+  const route = { type: 'MultiLineString', coordinates: [
+    [[2, 41], [2.1, 41.1]], [[3, 42], [3.1, 42.1]]
+  ] };
+  const result = validateRouteGeometry(route, { maxPoints: 3 });
+  assert.equal(result.valid, false);
+  assert.equal(result.lines, null);
+  assert.ok(result.errors.includes('point_limit_exceeded'));
+});
+
+test('mixed elevation availability is not treated as a complete elevation profile', () => {
+  const route = { type: 'MultiLineString', coordinates: [
+    [[2, 41, 0], [2.1, 41.1, 15]], [[3, 42], [3.1, 42.1, 8]]
+  ] };
+  const result = validateRouteGeometry(route);
+  assert.equal(result.valid, true);
+  assert.equal(result.hasCompleteElevation, false);
+  assert.equal(result.lines[0][0][2], 0);
+  assert.equal(result.lines[1][0].length, 2);
+});
+
+test('invalid geometry cannot expose partially cleaned lines', () => {
+  const route = { type: 'MultiLineString', coordinates: [
+    [[2, 41], [2.1, 41.1]], [[3, 42], [181, 42]]
+  ] };
+  const result = validateRouteGeometry(route);
+  assert.equal(result.valid, false);
+  assert.equal(result.lines, null);
+  assert.ok(result.errors.includes('invalid_coordinate'));
+});
