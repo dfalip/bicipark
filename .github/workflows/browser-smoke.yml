@@ -33,8 +33,24 @@ jobs:
         if: ${{ inputs.preview_url != '' }}
         env:
           PREVIEW_URL: ${{ inputs.preview_url }}
+          ALLOWED_PREVIEW_HOSTS: ${{ vars.BICIPARK_VERCEL_PREVIEW_HOSTS }}
         run: |
-          node -e 'const u = new URL(process.env.PREVIEW_URL); if (u.protocol !== "https:" || !/^bicipark(?:-[a-z0-9-]+)?\.vercel\.app$/i.test(u.hostname) || u.username || u.password || u.port || u.pathname !== "/" || u.search || u.hash) { console.error("Remote preview must be a root HTTPS bicipark*.vercel.app URL without credentials, port, query or fragment"); process.exit(1); }'
+          node - <<'NODE'
+          const raw = process.env.ALLOWED_PREVIEW_HOSTS || "";
+          const hosts = raw.split(",").map(value => value.trim().toLowerCase()).filter(Boolean);
+          if (!hosts.length || hosts.some(host => !/^[-a-z0-9]+\.vercel\.app$/.test(host)) || new Set(hosts).size !== hosts.length) {
+            console.error("Configure BICIPARK_VERCEL_PREVIEW_HOSTS with comma-separated exact trusted Vercel hostnames; remote checks fail closed.");
+            process.exit(1);
+          }
+          let url;
+          try { url = new URL(process.env.PREVIEW_URL || ""); }
+          catch { console.error("Invalid preview URL"); process.exit(1); }
+          if (url.protocol !== "https:" || !hosts.includes(url.hostname.toLowerCase()) ||
+              url.username || url.password || url.port || url.pathname !== "/" || url.search || url.hash) {
+            console.error("Remote preview must use the root HTTPS URL of an explicitly allowed Vercel hostname.");
+            process.exit(1);
+          }
+          NODE
       - name: Confirm checkout SHA for remote preview
         if: ${{ inputs.preview_url != '' }}
         env:
