@@ -13,7 +13,15 @@ const assert = require('node:assert/strict');
       page.on('pageerror', error => errors.push(error.message));
       try {
         const response = await page.goto(base + '/route-explorer/', { waitUntil: 'domcontentloaded' });
+        assert.ok(response, 'Route Explorer navigation must return an HTTP response');
         assert.equal(response.status(), 200, 'Route Explorer should load');
+        // Remote previews must not silently redirect to another deployment or
+        // authentication host; a successful response alone is insufficient.
+        if (new URL(base).protocol === 'https:') {
+          const expectedOrigin = new URL(base).origin;
+          assert.equal(new URL(page.url()).origin, expectedOrigin, 'Remote preview must remain on its expected origin');
+          assert.equal(new URL(response.url()).origin, expectedOrigin, 'Remote document must be served from the expected origin');
+        }
         await page.waitForFunction(() => !!window.L && !!document.querySelector('#routeMap.leaflet-container') && !!window.__BICIPARK_ROUTE_EXPLORER_MAP__, { timeout: 25000 });
         await page.locator('#regionFilter').selectOption('barcelona');
         assert.equal(await page.locator('#regionFilter').inputValue(), 'barcelona');
@@ -93,7 +101,24 @@ const assert = require('node:assert/strict');
         });
         await page.mouse.click(pointerTarget.x, pointerTarget.y);
         const pointerObserved = await page.evaluate(() => window.__BICIPARK_TEST_POINTER_EVENT__);
-        assert.ok(pointerObserved, 'Real pointer must produce a Leaflet map click');
+        if (!pointerObserved) {
+          const pointerDiagnostic = await page.evaluate(target => {
+            const map = window.__BICIPARK_ROUTE_EXPLORER_MAP__;
+            const rect = map.getContainer().getBoundingClientRect();
+            const hit = document.elementFromPoint(target.x, target.y);
+            return {
+              target,
+              hitTag: hit?.tagName || null,
+              hitClass: typeof hit?.className === 'string' ? hit.className : null,
+              hitInsideMap: !!hit && map.getContainer().contains(hit),
+              mapRect: { left: rect.left, top: rect.top, width: rect.width, height: rect.height },
+              mapDragging: !!map.dragging?.enabled(),
+              pickerPressed: document.querySelector('#passagePick')?.getAttribute('aria-pressed'),
+              activeElement: document.activeElement?.id || null
+            };
+          }, pointerTarget);
+          throw new Error('Real pointer must produce a Leaflet map click: ' + JSON.stringify({ viewport, pointerDiagnostic }));
+        }
         assert.equal(await pick.getAttribute('aria-pressed'), 'false', 'Pointer click should exit picker mode');
         const actualLat = Number(await lat.inputValue());
         const actualLng = Number(await lng.inputValue());

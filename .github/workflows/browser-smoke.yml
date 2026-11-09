@@ -9,6 +9,10 @@ on:
         description: 'Optional HTTPS Vercel preview URL (leave blank for local server)'
         required: false
         type: string
+      expected_sha:
+        description: 'Required for remote preview: exact 40-character Git commit SHA checked out by this run'
+        required: false
+        type: string
 permissions:
   contents: read
 jobs:
@@ -29,8 +33,31 @@ jobs:
         if: ${{ inputs.preview_url != '' }}
         env:
           PREVIEW_URL: ${{ inputs.preview_url }}
+          ALLOWED_PREVIEW_HOSTS: ${{ vars.BICIPARK_VERCEL_PREVIEW_HOSTS }}
         run: |
-          node -e 'const u = new URL(process.env.PREVIEW_URL); if (u.protocol !== "https:" || !u.hostname.endsWith(".vercel.app") || u.username || u.password || u.search || u.hash) process.exit(1)'
+          node - <<'NODE'
+          const raw = process.env.ALLOWED_PREVIEW_HOSTS || "";
+          const hosts = raw.split(",").map(value => value.trim().toLowerCase()).filter(Boolean);
+          if (!hosts.length || hosts.some(host => !/^[-a-z0-9]+\.vercel\.app$/.test(host)) || new Set(hosts).size !== hosts.length) {
+            console.error("Configure BICIPARK_VERCEL_PREVIEW_HOSTS with comma-separated exact trusted Vercel hostnames; remote checks fail closed.");
+            process.exit(1);
+          }
+          let url;
+          try { url = new URL(process.env.PREVIEW_URL || ""); }
+          catch { console.error("Invalid preview URL"); process.exit(1); }
+          if (url.protocol !== "https:" || !hosts.includes(url.hostname.toLowerCase()) ||
+              url.username || url.password || url.port || url.pathname !== "/" || url.search || url.hash) {
+            console.error("Remote preview must use the root HTTPS URL of an explicitly allowed Vercel hostname.");
+            process.exit(1);
+          }
+          NODE
+      - name: Confirm checkout SHA for remote preview
+        if: ${{ inputs.preview_url != '' }}
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+          ACTUAL_SHA: ${{ github.sha }}
+        run: |
+          node -e 'const expected = process.env.EXPECTED_SHA || ""; const actual = process.env.ACTUAL_SHA || ""; if (!/^[0-9a-f]{40}$/i.test(expected) || expected.toLowerCase() !== actual.toLowerCase()) { console.error(`Remote preview checkout SHA mismatch: expected ${expected || "(missing)"}, actual ${actual}`); process.exit(1); }'
       - name: Serve repository over HTTP
         if: ${{ inputs.preview_url == '' }}
         run: |
