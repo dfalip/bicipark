@@ -34,7 +34,7 @@ jobs:
         env:
           PREVIEW_URL: ${{ inputs.preview_url }}
         run: |
-          node -e 'const u = new URL(process.env.PREVIEW_URL); if (u.protocol !== "https:" || !u.hostname.endsWith(".vercel.app") || u.username || u.password || u.port || u.pathname !== "/" || u.search || u.hash) { console.error("Remote preview must be a root HTTPS *.vercel.app URL without credentials, port, query or fragment"); process.exit(1); }'
+          node -e 'const u = new URL(process.env.PREVIEW_URL); if (u.protocol !== "https:" || !/^bicipark(?:-[a-z0-9-]+)?\.vercel\.app$/i.test(u.hostname) || u.username || u.password || u.port || u.pathname !== "/" || u.search || u.hash) { console.error("Remote preview must be a root HTTPS bicipark*.vercel.app URL without credentials, port, query or fragment"); process.exit(1); }'
       - name: Confirm checkout SHA for remote preview
         if: ${{ inputs.preview_url != '' }}
         env:
