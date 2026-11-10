@@ -60,3 +60,21 @@ test('malformed validation options fail closed without profile samples', () => {
   assert.equal(result.samples, null);
   assert.ok(result.errors.includes('invalid_options'));
 });
+
+test('antimeridian crossing uses shortest spherical arc, not a world-spanning jump', () => {
+  const result = deriveElevationProfile({ type: 'LineString', coordinates: [
+    [179.9, 0, 3], [-179.9, 0, 4]
+  ] });
+  assert.equal(result.valid, true);
+  assert.ok(result.distanceMeters > 20000 && result.distanceMeters < 25000);
+  assert.deepEqual(result.samples.map(sample => sample.elevationMeters), [3, 4]);
+});
+
+test('source coordinates are not mutated when deriving a profile', () => {
+  const coordinates = [[2, 41, 0], [2.01, 41]];
+  const original = JSON.stringify(coordinates);
+  const result = deriveElevationProfile({ type: 'LineString', coordinates });
+  assert.equal(result.valid, true);
+  assert.equal(JSON.stringify(coordinates), original);
+  assert.equal(result.samples[1].elevationMeters, null);
+});
