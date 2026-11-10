@@ -111,3 +111,16 @@ test('malformed options fail closed without throwing', () => {
   }
   assert.equal(validateRouteGeometry(route, {}).valid, true);
 });
+
+
+test('rejects sparse coordinate arrays instead of accepting missing longitude or elevation', () => {
+  const sparseLongitude = [, 41];
+  const sparseElevation = [2, 41, ,];
+  const sparseLatitude = [2, , 12];
+  for (const bad of [sparseLongitude, sparseLatitude, sparseElevation]) {
+    const result = validateRouteGeometry({ type: 'LineString', coordinates: [[2, 41], bad] });
+    assert.equal(result.valid, false);
+    assert.equal(result.lines, null);
+    assert.ok(result.errors.includes('invalid_coordinate'));
+  }
+});
