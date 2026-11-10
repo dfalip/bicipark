@@ -87,3 +87,15 @@ test('validated coordinates are isolated from subsequent source mutations', () =
   coordinates[1][2] = 999;
   assert.deepEqual(result.lines, [[[2, 41, 0], [2.1, 41.1, 12]]]);
 });
+
+
+test('invalid explicit point limits fail closed rather than silently using defaults', () => {
+  const route = { type: 'LineString', coordinates: [[2, 41], [2.1, 41.1]] };
+  for (const maxPoints of [0, 1, -1, 1.5, NaN, Infinity, '2', null]) {
+    const result = validateRouteGeometry(route, { maxPoints });
+    assert.equal(result.valid, false);
+    assert.equal(result.lines, null);
+    assert.ok(result.errors.includes('invalid_point_limit'));
+  }
+  assert.equal(validateRouteGeometry(route, { maxPoints: 2 }).valid, true);
+});
