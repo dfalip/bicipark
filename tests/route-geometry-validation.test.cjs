@@ -99,3 +99,15 @@ test('invalid explicit point limits fail closed rather than silently using defau
   }
   assert.equal(validateRouteGeometry(route, { maxPoints: 2 }).valid, true);
 });
+
+
+test('malformed options fail closed without throwing', () => {
+  const route = { type: 'LineString', coordinates: [[2, 41], [2.1, 41.1]] };
+  for (const options of [null, 2, 'bad', false, []]) {
+    const result = validateRouteGeometry(route, options);
+    assert.equal(result.valid, false);
+    assert.equal(result.lines, null);
+    assert.ok(result.errors.includes('invalid_options'));
+  }
+  assert.equal(validateRouteGeometry(route, {}).valid, true);
+});
