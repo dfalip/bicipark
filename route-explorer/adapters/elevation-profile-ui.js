@@ -9,7 +9,8 @@ const COPY={
  fr:{title:"Profil altimétrique",loading:"Chargement de l'altitude…",missing:"Le fichier ne contient pas d'altitude. Aucun profil inventé.",partial:"L'altitude n'est disponible que sur une partie de la trace. Le profil incomplet est masqué.",invalid:"Géométrie invalide pour un profil fiable.",stationary:"La trace n'a pas de distance horizontale suffisante.",error:"Impossible de charger le profil.",source:"Altitude du fichier, non vérifiée indépendamment.",gaps:"Les tronçons discontinus ne sont pas reliés.",label:"Point du profil. Utilisez les flèches pour explorer la trace."}
 };
 const language=(document.documentElement.lang||'ca').slice(0,2).toLowerCase();
-const t=COPY[language]||COPY.ca;
+const getText=()=>COPY[(document.documentElement.lang||'ca').slice(0,2).toLowerCase()]||COPY.ca;
+const t=getText();
 const locale={ca:'ca-ES',es:'es-ES',en:'en-GB',fr:'fr-FR'}[language]||'ca-ES';
 const fmt=(v,decimals=0)=>Number(v).toLocaleString(locale,{maximumFractionDigits:decimals});
 let requestId=0,chart=null;
@@ -66,7 +67,9 @@ function mountChart(profile,canvas,readout,routeId) {
   function selectPointer(e) {
     const rect=canvas.getBoundingClientRect();
     if(!(rect.width>0))return;
-    const target=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width))*profile.distanceMeters;
+    const width=Math.max(1,rect.width);
+    const innerWidth=Math.max(1,width-2*pad);
+    const target=Math.max(0,Math.min(1,(e.clientX-rect.left-pad)/innerWidth))*profile.distanceMeters;
     let best=0,delta=Infinity;
     for(let i=0;i<points.length;i++){
       const d=Math.abs(points[i].distanceMeters-target);
@@ -100,25 +103,45 @@ if(details) {
     if(!route?.id)return;
     const section=element('section','route-elevation-profile');
     section.dataset.routeId=route.id;
-    section.append(element('h3',null,t.title));
-    const status=element('p','route-elevation-profile-note',t.loading);
+    const copy=getText();
+    section.append(element('h3',null,copy.title));
+    const button=element('button','route-elevation-profile-toggle',copy.title);
+    button.type='button';
+    button.setAttribute('aria-expanded','false');
+    section.append(button);
+    const status=element('p','route-elevation-profile-note','');
+    status.hidden=true;
     status.setAttribute('role','status');
     section.append(status);
     details.append(section);
-    if(!route.geometryFile){status.textContent=t.missing;return;}
-    try{
+    button.addEventListener('click',async()=>{
+      if(button.getAttribute('aria-expanded')==='true'){
+        ++requestId;
+        button.setAttribute('aria-expanded','false');
+        status.hidden=true;
+        section.querySelectorAll('.route-elevation-profile-range,.route-elevation-profile-chart,.route-elevation-profile-readout').forEach(node=>node.remove());
+        chart=null;
+        window.dispatchEvent(new CustomEvent('bicipark:elevation-point-clear'));
+        return;
+      }
+      const active=++requestId;
+      button.setAttribute('aria-expanded','true');
+      status.hidden=false;
+      status.textContent=getText().loading;
+      if(!route.geometryFile){status.textContent=getText().missing;return;}
+      try{
       const geometry=await loadRouteGeometry(route);
-      if(current!==requestId||!section.isConnected)return;
+      if(active!==requestId||!section.isConnected)return;
       const profile=deriveRouteElevationDisplay(geometry);
       section.dataset.quality=profile.status;
       if(profile.status!=='complete'){
-        status.textContent=t[profile.status]||t.invalid;
+        status.textContent=getText()[profile.status]||getText().invalid;
         return;
       }
-      status.textContent=t.source;
+      status.textContent=getText().source;
       section.append(element('p','route-elevation-profile-range',
         fmt(profile.minimumElevation)+'–'+fmt(profile.maximumElevation)+' m'));
-      if(profile.hasDiscontinuities)section.append(element('p','route-elevation-profile-note',t.gaps));
+      if(profile.hasDiscontinuities)section.append(element('p','route-elevation-profile-note',getText().gaps));
       const canvas=element('canvas','route-elevation-profile-chart');
       const readout=element('p','route-elevation-profile-readout');
       readout.setAttribute('aria-live','polite');
@@ -126,9 +149,10 @@ if(details) {
       chart={routeId:route.id,redraw:mountChart(profile,canvas,readout,route.id)};
     }catch(error){
       if(current!==requestId||!section.isConnected)return;
-      status.textContent=t.error;
+      status.textContent=getText().error;
       console.warn('[Elevation profile]',error);
-    }
+      }
+    });
   });
   window.addEventListener('resize',()=>{
     if(chart&&details.querySelector('.route-elevation-profile-chart'))chart.redraw();
