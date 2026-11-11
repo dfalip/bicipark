@@ -149,3 +149,15 @@ test('segment metadata identifies discontinuities without guessing a connecting 
   assert.equal(invalid.segmentCount, null);
   assert.equal(invalid.hasDiscontinuities, null);
 });
+
+
+test('touching MultiLineString segments do not claim a geographic discontinuity', () => {
+  const result = deriveElevationProfile({ type: 'MultiLineString', coordinates: [
+    [[2, 41, 1], [2.01, 41, 2]], [[2.01, 41, 2], [2.02, 41, 3]]
+  ] });
+  assert.equal(result.valid, true);
+  assert.equal(result.segmentCount, 2);
+  assert.equal(result.hasDiscontinuities, false);
+  assert.equal(result.samples[2].segmentDistanceMeters, 0);
+  assert.equal(result.samples[2].distanceMeters, result.samples[1].distanceMeters);
+});
