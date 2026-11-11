@@ -12,7 +12,7 @@ const language=(document.documentElement.lang||'ca').slice(0,2).toLowerCase();
 const getText=()=>COPY[(document.documentElement.lang||'ca').slice(0,2).toLowerCase()]||COPY.ca;
 const t=getText();
 const locale={ca:'ca-ES',es:'es-ES',en:'en-GB',fr:'fr-FR'}[language]||'ca-ES';
-const fmt=(v,decimals=0)=>Number(v).toLocaleString(locale,{maximumFractionDigits:decimals});
+const fmt=(v,decimals=0)=>Number(v).toLocaleString(({ca:'ca-ES',es:'es-ES',en:'en-GB',fr:'fr-FR'}[(document.documentElement.lang||'ca').slice(0,2).toLowerCase()]||'ca-ES'),{maximumFractionDigits:decimals});
 let requestId=0,chart=null;
 function element(tag,css,text) {
   const node=document.createElement(tag);
@@ -97,7 +97,7 @@ function mountChart(profile,canvas,readout,routeId) {
 if(details) {
   window.addEventListener('bicipark:route-selected',async event=>{
     const route=event.detail?.route;
-    const current=++requestId;
+    ++requestId;
     details.querySelector('.route-elevation-profile')?.remove();
     chart=null;
     if(!route?.id)return;
@@ -148,7 +148,7 @@ if(details) {
       section.append(canvas,readout);
       chart={routeId:route.id,redraw:mountChart(profile,canvas,readout,route.id)};
     }catch(error){
-      if(current!==requestId||!section.isConnected)return;
+      if(active!==requestId||!section.isConnected)return;
       status.textContent=getText().error;
       console.warn('[Elevation profile]',error);
       }
