@@ -135,3 +135,17 @@ test('segment-local distance resets at MultiLineString boundaries while route di
   assert.ok(result.samples[3].segmentDistanceMeters > 0);
   assert.ok(result.samples[3].segmentDistanceMeters < result.samples[3].distanceMeters);
 });
+
+
+test('segment metadata identifies discontinuities without guessing a connecting route', () => {
+  const continuous = deriveElevationProfile({ type: 'LineString', coordinates: [[2, 41], [2.01, 41]] });
+  assert.deepEqual([continuous.segmentCount, continuous.hasDiscontinuities], [1, false]);
+  const disconnected = deriveElevationProfile({ type: 'MultiLineString', coordinates: [
+    [[2, 41], [2.01, 41]], [[10, 50], [10.01, 50]]
+  ] });
+  assert.deepEqual([disconnected.segmentCount, disconnected.hasDiscontinuities], [2, true]);
+  assert.equal(disconnected.samples[2].distanceMeters, disconnected.samples[1].distanceMeters);
+  const invalid = deriveElevationProfile({ type: 'LineString', coordinates: [[2, 41], [200, 41]] });
+  assert.equal(invalid.segmentCount, null);
+  assert.equal(invalid.hasDiscontinuities, null);
+});
