@@ -99,3 +99,13 @@ test('repeated positions within a segment add zero distance without dropping sam
   assert.equal(result.samples[1].distanceMeters, 0);
   assert.ok(result.samples[2].distanceMeters > 0);
 });
+
+
+test('elevation coverage distinguishes absent, partial and complete source altitude', () => {
+  const absent = deriveElevationProfile({ type: 'LineString', coordinates: [[2, 41], [2.01, 41]] });
+  assert.deepEqual([absent.elevationPointCount, absent.pointCount, absent.hasAnyElevation, absent.hasCompleteElevation], [0, 2, false, false]);
+  const partial = deriveElevationProfile({ type: 'LineString', coordinates: [[2, 41, 0], [2.01, 41]] });
+  assert.deepEqual([partial.elevationPointCount, partial.pointCount, partial.hasAnyElevation, partial.hasCompleteElevation], [1, 2, true, false]);
+  const complete = deriveElevationProfile({ type: 'LineString', coordinates: [[2, 41, -5], [2.01, 41, 0]] });
+  assert.deepEqual([complete.elevationPointCount, complete.pointCount, complete.hasAnyElevation, complete.hasCompleteElevation], [2, 2, true, true]);
+});
