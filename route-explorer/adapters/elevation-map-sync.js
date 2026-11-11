@@ -32,5 +32,6 @@
     if (timer) window.clearTimeout(timer);
     timer=window.setTimeout(()=>marker?.closeTooltip(),1800);
   });
+  window.addEventListener("bicipark:elevation-point-clear",clearMarker);
   window.addEventListener("pagehide",clearMarker);
 })();
