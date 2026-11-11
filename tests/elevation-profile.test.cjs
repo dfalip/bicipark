@@ -78,3 +78,24 @@ test('source coordinates are not mutated when deriving a profile', () => {
   assert.equal(JSON.stringify(coordinates), original);
   assert.equal(result.samples[1].elevationMeters, null);
 });
+
+test('negative and zero elevations remain exact source values, not missing data', () => {
+  const result = deriveElevationProfile({ type: 'LineString', coordinates: [
+    [2, 41, -12], [2.001, 41, 0], [2.002, 41, -4]
+  ] });
+  assert.equal(result.valid, true);
+  assert.equal(result.hasCompleteElevation, true);
+  assert.deepEqual(result.samples.map(sample => sample.elevationMeters), [-12, 0, -4]);
+  assert.ok(result.samples[2].distanceMeters > result.samples[1].distanceMeters);
+});
+
+test('repeated positions within a segment add zero distance without dropping samples', () => {
+  const result = deriveElevationProfile({ type: 'LineString', coordinates: [
+    [2, 41, 1], [2, 41, 2], [2.01, 41, 3]
+  ] });
+  assert.equal(result.valid, true);
+  assert.equal(result.samples.length, 3);
+  assert.equal(result.samples[0].distanceMeters, 0);
+  assert.equal(result.samples[1].distanceMeters, 0);
+  assert.ok(result.samples[2].distanceMeters > 0);
+});
