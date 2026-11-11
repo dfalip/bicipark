@@ -26,8 +26,10 @@
         fillOpacity: 1, interactive: false, pane: "markerPane"
       }).addTo(map);
     } else marker.setLatLng([lat,lng]);
-    const message = Number(distanceKm).toLocaleString("ca-ES",{maximumFractionDigits:2})+
-      " km · "+Math.round(elevation)+" m";
+    const locale = ({ca:"ca-ES",es:"es-ES",en:"en-GB",fr:"fr-FR"})[
+      (document.documentElement.lang || "ca").slice(0,2).toLowerCase()] || "ca-ES";
+    const message = Number(distanceKm).toLocaleString(locale,{maximumFractionDigits:2})+
+      " km · "+Number(elevation).toLocaleString(locale,{maximumFractionDigits:0})+" m";
     marker.bindTooltip(message,{permanent:false,direction:"top",offset:[0,-8]}).openTooltip();
     if (timer) window.clearTimeout(timer);
     timer=window.setTimeout(()=>marker?.closeTooltip(),1800);
