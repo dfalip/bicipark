@@ -8,10 +8,7 @@ const COPY={
  en:{title:"Elevation profile",loading:"Loading track elevation…",missing:"The track has no elevation. No invented profile is displayed.",partial:"Elevation is only available for part of the route. The incomplete profile is hidden.",invalid:"Invalid track geometry; no reliable profile is shown.",stationary:"The track has insufficient horizontal distance.",error:"Could not load the profile.",source:"Elevation included in the route file; not independently verified.",gaps:"Disconnected segments are not joined.",label:"Profile point. Use arrow keys to explore the track."},
  fr:{title:"Profil altimétrique",loading:"Chargement de l'altitude…",missing:"Le fichier ne contient pas d'altitude. Aucun profil inventé.",partial:"L'altitude n'est disponible que sur une partie de la trace. Le profil incomplet est masqué.",invalid:"Géométrie invalide pour un profil fiable.",stationary:"La trace n'a pas de distance horizontale suffisante.",error:"Impossible de charger le profil.",source:"Altitude du fichier, non vérifiée indépendamment.",gaps:"Les tronçons discontinus ne sont pas reliés.",label:"Point du profil. Utilisez les flèches pour explorer la trace."}
 };
-const language=(document.documentElement.lang||'ca').slice(0,2).toLowerCase();
 const getText=()=>COPY[(document.documentElement.lang||'ca').slice(0,2).toLowerCase()]||COPY.ca;
-const t=getText();
-const locale={ca:'ca-ES',es:'es-ES',en:'en-GB',fr:'fr-FR'}[language]||'ca-ES';
 const fmt=(v,decimals=0)=>Number(v).toLocaleString(({ca:'ca-ES',es:'es-ES',en:'en-GB',fr:'fr-FR'}[(document.documentElement.lang||'ca').slice(0,2).toLowerCase()]||'ca-ES'),{maximumFractionDigits:decimals});
 let requestId=0,chart=null;
 function element(tag,css,text) {
@@ -86,7 +83,7 @@ function mountChart(profile,canvas,readout,routeId) {
     e.preventDefault();select(next,true);
   });
   canvas.setAttribute('role','slider');
-  canvas.setAttribute('aria-label',t.label);
+  canvas.setAttribute('aria-label',getText().label);
   canvas.setAttribute('aria-valuemin','0');
   canvas.setAttribute('aria-valuemax',String(points.length-1));
   canvas.tabIndex=0;
@@ -119,7 +116,7 @@ if(details) {
         ++requestId;
         button.setAttribute('aria-expanded','false');
         status.hidden=true;
-        section.querySelectorAll('.route-elevation-profile-range,.route-elevation-profile-chart,.route-elevation-profile-readout').forEach(node=>node.remove());
+        section.querySelectorAll('.route-elevation-profile-range,.route-elevation-profile-chart,.route-elevation-profile-readout,.route-elevation-profile-gaps').forEach(node=>node.remove());
         chart=null;
         window.dispatchEvent(new CustomEvent('bicipark:elevation-point-clear'));
         return;
@@ -141,7 +138,7 @@ if(details) {
       status.textContent=getText().source;
       section.append(element('p','route-elevation-profile-range',
         fmt(profile.minimumElevation)+'–'+fmt(profile.maximumElevation)+' m'));
-      if(profile.hasDiscontinuities)section.append(element('p','route-elevation-profile-note',getText().gaps));
+      if(profile.hasDiscontinuities)section.append(element('p','route-elevation-profile-note route-elevation-profile-gaps',getText().gaps));
       const canvas=element('canvas','route-elevation-profile-chart');
       const readout=element('p','route-elevation-profile-readout');
       readout.setAttribute('aria-live','polite');
