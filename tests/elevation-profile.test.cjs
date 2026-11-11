@@ -121,3 +121,17 @@ test('invalid geometry reports unavailable coverage rather than misleading zero 
   assert.equal(result.hasAnyElevation, false);
   assert.equal(result.hasCompleteElevation, false);
 });
+
+
+test('segment-local distance resets at MultiLineString boundaries while route distance remains cumulative', () => {
+  const result = deriveElevationProfile({ type: 'MultiLineString', coordinates: [
+    [[2, 41, 1], [2.01, 41, 2]],
+    [[10, 50, 3], [10.01, 50, 4]]
+  ] });
+  assert.equal(result.valid, true);
+  assert.deepEqual(result.samples.filter(s => s.pointIndex === 0).map(s => s.segmentDistanceMeters), [0, 0]);
+  assert.equal(result.samples[1].segmentDistanceMeters, result.samples[1].distanceMeters);
+  assert.equal(result.samples[2].distanceMeters, result.samples[1].distanceMeters);
+  assert.ok(result.samples[3].segmentDistanceMeters > 0);
+  assert.ok(result.samples[3].segmentDistanceMeters < result.samples[3].distanceMeters);
+});
