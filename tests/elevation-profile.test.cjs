@@ -109,3 +109,15 @@ test('elevation coverage distinguishes absent, partial and complete source altit
   const complete = deriveElevationProfile({ type: 'LineString', coordinates: [[2, 41, -5], [2.01, 41, 0]] });
   assert.deepEqual([complete.elevationPointCount, complete.pointCount, complete.hasAnyElevation, complete.hasCompleteElevation], [2, 2, true, true]);
 });
+
+
+test('invalid geometry reports unavailable coverage rather than misleading zero counts', () => {
+  const result = deriveElevationProfile({ type: 'LineString', coordinates: [[2, 41], [200, 41]] });
+  assert.equal(result.valid, false);
+  assert.equal(result.samples, null);
+  assert.equal(result.distanceMeters, null);
+  assert.equal(result.elevationPointCount, null);
+  assert.equal(result.pointCount, null);
+  assert.equal(result.hasAnyElevation, false);
+  assert.equal(result.hasCompleteElevation, false);
+});
