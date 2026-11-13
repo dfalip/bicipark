@@ -167,6 +167,19 @@ export const biciparkModules = [
     enabled: true
   },
   {
+    id: "geo-sprint",
+    category: "games",
+    title: "GeoSprint · Volta al món",
+    description:
+      "Cinc ciutats de cinc continents: encerta on són, guanya punts i viatja pel planeta amb el mapa.",
+    href: "../geo-sprint/",
+    icon: "🌍",
+    status: "Prototip jugable",
+    statusType: "development",
+    tags: ["Món", "Geografia", "5 rondes", "CA · ES · EN · FR"],
+    enabled: true
+  },
+  {
     id: "bike-jump",
     category: "games",
     title: "Bike Jump",
