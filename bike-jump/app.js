@@ -38,7 +38,12 @@ const elements = {
   landingResult: document.getElementById("landingResult"),
   jumpScoreResult: document.getElementById("jumpScoreResult"),
   nextAttemptButton: document.getElementById("nextAttemptButton"),
-  countdown: document.getElementById("countdown")
+  countdown: document.getElementById("countdown"),
+  jumpFeedback: document.getElementById("jumpFeedback"),
+  jumpStars: document.getElementById("jumpStars"),
+  gameSummary: document.getElementById("gameSummary"),
+  gameSummaryTitle: document.getElementById("gameSummaryTitle"),
+  gameSummaryText: document.getElementById("gameSummaryText")
 };
 
 const STORAGE_KEY = "bicipark-bike-jump-high-score-v1";
@@ -59,6 +64,7 @@ const state = {
   lastFrameAt: null,
   releaseRequested: false,
   idealZoneAnnounced: false,
+  flightTrail: [],
   animationFrameId: null
 };
 
@@ -123,6 +129,7 @@ function resetAttempt() {
   state.power = 0;
   state.releaseRequested = false;
   state.idealZoneAnnounced = false;
+  state.flightTrail = [];
   state.rotationInput = 0;
   state.lastFrameAt = null;
   state.wind = randomWind();
@@ -143,12 +150,14 @@ function resetAttempt() {
   };
 
   elements.resultPanel.hidden = true;
+  elements.jumpFeedback.hidden = true;
+  elements.gameSummary.hidden = true;
   elements.launchButton.disabled = false;
-  elements.launchButton.textContent = "Preparar salt";
+  elements.launchButton.textContent = "Mantén per saltar";
   elements.rotateLeftButton.disabled = true;
   elements.rotateRightButton.disabled = true;
   elements.statusText.textContent =
-    "Mantén premut «Preparar salt» i deixa’l anar prop del final del trampolí.";
+    "Mantén premut per baixar i deixa anar a la franja groga. Després, equilibra la bici.";
 
   updateDashboard();
   updatePowerDisplay();
@@ -164,7 +173,7 @@ function startRun() {
   state.runStartedAt = performance.now();
   state.chargeStartedAt = state.runStartedAt;
   state.releaseRequested = false;
-  elements.launchButton.textContent = "Deixa anar per saltar";
+  elements.launchButton.textContent = "Deixa anar!";
   elements.statusText.textContent =
     "La bicicleta baixa pel trampolí. Deixa anar a prop de la vora.";
 
@@ -197,6 +206,7 @@ function performLaunch() {
   state.bike.rotation = launch.rotation;
   state.bike.angularVelocity = launch.angularVelocity;
   state.bike.takeoffAccuracy = launch.takeoffAccuracy;
+  state.flightTrail = [{x: state.bike.x, y: state.bike.y}];
 
   elements.launchButton.disabled = true;
   elements.rotateLeftButton.disabled = false;
@@ -229,7 +239,7 @@ function calculateScores(landing) {
   const controlScore = Math.round(
     clamp(
       1000 -
-      state.bike.controlEffort * 115 -
+      state.bike.controlEffort * 85 -
       Math.abs(state.bike.angularVelocity) * 95,
       0,
       1000
@@ -275,6 +285,7 @@ function finishAttempt() {
     : landing.slopeAngle;
 
   const scores = calculateScores(landing);
+  const priorRecord = state.highScore;
   state.totalScore += scores.jumpScore;
 
   if (state.totalScore > state.highScore) {
@@ -289,6 +300,15 @@ function finishAttempt() {
   elements.rotateRightButton.disabled = true;
   elements.resultPanel.hidden = false;
   elements.resultTitle.textContent = landing.label;
+  const stars = landing.crashed ? 0 :
+    landing.score === 2000 && scores.takeoffScore >= 750 ? 3 :
+    landing.score >= 1450 ? 2 : 1;
+  elements.jumpStars.textContent = "★".repeat(stars) + "☆".repeat(3 - stars);
+  elements.jumpStars.setAttribute("aria-label", `${stars} de 3 estrelles`);
+  elements.jumpFeedback.hidden = false;
+  elements.jumpFeedback.classList.toggle("bike-jump-feedback--crash", landing.crashed);
+  elements.jumpFeedback.textContent = landing.crashed ? "Ui! Torna-ho a provar" :
+    stars === 3 ? "SALT PERFECTE!" : stars === 2 ? "MOLT BÉ!" : "BON SALT!";
 
   elements.resultDescription.textContent =
     landing.crashed
@@ -316,8 +336,15 @@ function finishAttempt() {
   const isLastAttempt = state.attempt >= level.attempts;
 
   elements.nextAttemptButton.textContent = isLastAttempt
-    ? "Nova partida"
+    ? "Torna-hi!"
     : "Següent salt";
+
+  elements.gameSummary.hidden = !isLastAttempt;
+  if (isLastAttempt) {
+    const newRecord = state.totalScore > priorRecord;
+    elements.gameSummaryTitle.textContent = newRecord ? "🏆 Nou rècord!" : "🏁 Partida completada!";
+    elements.gameSummaryText.textContent = `3 salts · ${formatScore(state.totalScore)} punts totals. ${newRecord ? "Fantàstic!" : "Pots superar-ho?"}`;
+  }
 
   elements.statusText.textContent =
     `Salt completat: ${formatScore(scores.jumpScore)} punts.`;
@@ -403,6 +430,9 @@ function updateFlight(deltaSeconds) {
     wind: state.wind
   });
 
+  state.flightTrail.push({x: state.bike.x, y: state.bike.y});
+  if (state.flightTrail.length > 32) state.flightTrail.shift();
+
   const landingY = getLandingY(
     level,
     state.bike.x
@@ -467,6 +497,17 @@ function drawBackground() {
 
   context.fillStyle = gradient;
   context.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Soft sun and distant atmosphere, all drawn locally on the canvas.
+  const sun = context.createRadialGradient(835, 104, 12, 835, 104, 115);
+  sun.addColorStop(0, "rgba(255,245,182,.92)");
+  sun.addColorStop(1, "rgba(255,245,182,0)");
+  context.fillStyle = sun;
+  context.fillRect(700, 0, 300, 265);
+  context.fillStyle = "#fff2bd";
+  context.beginPath();
+  context.arc(835, 104, 34, 0, Math.PI * 2);
+  context.fill();
 
   context.fillStyle = "#ffffff";
   context.globalAlpha = 0.76;
@@ -655,6 +696,7 @@ function drawBike() {
   context.save();
   context.translate(bike.x, bike.y);
   context.rotate(bike.rotation);
+  context.scale(1.18, 1.18);
 
   const wheelRadius = 11;
 
@@ -691,6 +733,16 @@ function drawBike() {
   context.lineTo(-4, -28);
   context.stroke();
 
+  // Rider jersey and a brighter helmet for readability on small screens.
+  context.fillStyle = "#ff8c3d";
+  context.beginPath();
+  context.moveTo(-7, -25);
+  context.lineTo(8, -20);
+  context.lineTo(1, -9);
+  context.lineTo(-12, -14);
+  context.closePath();
+  context.fill();
+
   context.fillStyle = "#f4d719";
   context.beginPath();
   context.arc(-6, -34, 7, 0, Math.PI * 2);
@@ -724,6 +776,54 @@ function drawHud() {
   );
 }
 
+function drawFlightTrail() {
+  if (state.flightTrail.length < 2) return;
+  context.save();
+  context.strokeStyle = "rgba(18,111,95,.35)";
+  context.lineWidth = 3;
+  context.lineCap = "round";
+  context.setLineDash([5, 10]);
+  context.beginPath();
+  state.flightTrail.forEach((point, index) => {
+    if (index === 0) context.moveTo(point.x, point.y);
+    else context.lineTo(point.x, point.y);
+  });
+  context.stroke();
+  context.restore();
+}
+
+function drawSpeedLines() {
+  if (state.phase !== "inrun" || state.runProgress < 0.2) return;
+  const bike = state.bike;
+  context.save();
+  context.strokeStyle = "rgba(255,255,255,.9)";
+  context.lineWidth = 3;
+  context.lineCap = "round";
+  for (let i = -1; i <= 1; i += 1) {
+    context.beginPath();
+    context.moveTo(bike.x - 70 - (i + 1) * 12, bike.y + i * 15);
+    context.lineTo(bike.x - 35 - (i + 1) * 12, bike.y + i * 15);
+    context.stroke();
+  }
+  context.restore();
+}
+
+function drawLandingEffect() {
+  if (state.phase !== "result") return;
+  context.save();
+  for (let i = 0; i < 7; i += 1) {
+    const angle = (i / 7) * Math.PI * 2;
+    const radius = state.bike.crashed ? 21 : 35;
+    const x = state.bike.x + Math.cos(angle) * radius;
+    const y = state.bike.y + Math.sin(angle) * radius;
+    context.fillStyle = state.bike.crashed ? "rgba(142,119,95,.7)" : "#ffd43b";
+    context.beginPath();
+    context.arc(x, y, state.bike.crashed ? 5 : 3, 0, Math.PI * 2);
+    context.fill();
+  }
+  context.restore();
+}
+
 function draw() {
   context.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
@@ -731,7 +831,10 @@ function draw() {
   drawRamp();
   drawLandingHill();
   drawDistanceMarkers();
+  drawFlightTrail();
+  drawSpeedLines();
   drawBike();
+  drawLandingEffect();
   drawHud();
 }
 
@@ -817,6 +920,20 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
+// Keyboard support when the main game button itself has focus.
+elements.launchButton.addEventListener("keydown", event => {
+  if ((event.code === "Space" || event.code === "Enter") && !event.repeat) {
+    event.preventDefault();
+    startRun();
+  }
+});
+elements.launchButton.addEventListener("keyup", event => {
+  if (event.code === "Space" || event.code === "Enter") {
+    event.preventDefault();
+    requestLaunch();
+  }
+});
+
 elements.launchButton.addEventListener(
   "pointerdown",
   event => {
@@ -855,6 +972,22 @@ function addRotationPointerControl(button, value) {
 
   button.addEventListener("pointercancel", () => {
     setRotationInput(0);
+  });
+}
+
+// Keep buttons usable from a keyboard, not just a touch screen.
+for (const [button, value] of [[elements.rotateLeftButton, -1], [elements.rotateRightButton, 1]]) {
+  button.addEventListener("keydown", event => {
+    if ((event.code === "Space" || event.code === "Enter") && state.phase === "flight") {
+      event.preventDefault();
+      setRotationInput(value);
+    }
+  });
+  button.addEventListener("keyup", event => {
+    if (event.code === "Space" || event.code === "Enter") {
+      event.preventDefault();
+      setRotationInput(0);
+    }
   });
 }
 
