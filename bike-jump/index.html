@@ -21,7 +21,8 @@
   <header class="bike-jump-header">
     <div>
       <p class="bike-jump-eyebrow">Bicipark Games</p>
-      <h1>Bike Jump</h1>
+      <h1>Bike Jump <span class="bike-jump-title-accent">v2</span></h1>
+      <p class="bike-jump-subtitle">Un salt. Una bona sortida. Un aterratge perfecte.</p>
     </div>
 
     <nav class="bike-jump-header-links" aria-label="Navegació">
@@ -62,12 +63,13 @@
       ></canvas>
 
       <div id="countdown" class="bike-jump-countdown" hidden></div>
+      <div id="jumpFeedback" class="bike-jump-feedback" role="status" aria-live="polite" hidden></div>
     </section>
 
     <section class="bike-jump-controls">
       <div class="bike-jump-power-panel">
         <div class="bike-jump-power-header">
-          <span>Potència</span>
+          <span>Impuls</span>
           <strong id="powerValue">0%</strong>
         </div>
 
@@ -79,7 +81,7 @@
         <div class="bike-jump-run-track" role="progressbar" aria-label="Progrés pel trampolí" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="runProgressTrack"><div class="bike-jump-ideal-zone" title="Zona òptima de sortida"></div><div id="runProgressBar" class="bike-jump-run-bar"></div></div>
         <p class="bike-jump-zone-note">La franja groga indica la zona de sortida recomanada.</p>
         <p id="statusText" aria-live="polite">
-          Mantén premut «Preparar salt» i deixa’l anar prop del final del trampolí.
+          Mantén premut per baixar i deixa anar a la franja groga. Després, equilibra la bici.
         </p>
       </div>
 
@@ -89,7 +91,7 @@
           class="bike-jump-button bike-jump-button-primary"
           type="button"
         >
-          Preparar salt
+          Mantén per saltar
         </button>
 
         <button
@@ -112,9 +114,8 @@
       </div>
 
       <p class="bike-jump-help">
-        Teclat: mantén <strong>espai</strong> per preparar el salt i
-        deixa’l anar per enlairar-te. Durant el vol utilitza
-        <strong>←</strong> i <strong>→</strong>.
+        <strong>Com jugar:</strong> mantén premut, deixa anar a la franja groga i ajusta l’aterratge amb ← →.
+        A mòbil, utilitza els botons grans.
       </p>
     </section>
 
@@ -122,6 +123,7 @@
       <div>
         <p class="bike-jump-result-kicker">Resultat del salt</p>
         <h2 id="resultTitle">Aterratge</h2>
+        <div id="jumpStars" class="bike-jump-stars" aria-label="Valoració del salt"></div>
         <p id="resultDescription"></p>
       </div>
 
@@ -150,6 +152,11 @@
           <span>Total del salt</span>
           <strong id="jumpScoreResult">0</strong>
         </article>
+      </div>
+
+      <div id="gameSummary" class="bike-jump-game-summary" hidden>
+        <strong id="gameSummaryTitle">Partida completada!</strong>
+        <span id="gameSummaryText"></span>
       </div>
 
       <button
