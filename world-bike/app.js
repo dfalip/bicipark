@@ -142,11 +142,7 @@ async function fetchAroundCenter(){
   }finally{
     clearTimeout(timeout);
     pending=false;
-    updateView();
-    // updateView can overwrite the request result. Restore useful feedback via result count.
-    if(searchedCentre){
-      ui.status.textContent=`Consulta per ${coords(searchedCentre)} · ${records.length} registres cartografiats (no verificats).`;
-    }
+    ui.searchButton.disabled=map.getZoom()<12;
   }
 }
 filters.forEach(button=>button.addEventListener("click",()=>{
