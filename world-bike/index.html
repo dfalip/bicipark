@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#0b4637">
+  <title>BiciPark World · Serveis ciclistes cartografiats</title>
+  <meta name="description" content="Prototip experimental de consulta voluntària de serveis ciclistes cartografiats a OpenStreetMap, a qualsevol regió del món.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="wb-header">
+    <a href="../index.html" class="wb-brand">🚲 <strong>BiciPark</strong> <span>WORLD</span></a>
+    <nav aria-label="Navegació"><a href="../explora/">Explora</a><a href="../mapa-ciclista.html">Mapa ciclista</a></nav>
+  </header>
+  <main class="wb-main">
+    <div class="wb-title">
+      <div>
+        <p class="wb-overline">BiciPark World · pilot experimental</p>
+        <h1>El planeta, a dues rodes.</h1>
+        <p>Busca serveis ciclistes <strong>cartografiats</strong> al voltant de qualsevol punt del món. Mou el mapa, apropa't i prem «Buscar aquí».</p>
+      </div>
+      <div class="wb-provenance"><strong>Font: OpenStreetMap</strong><span>Registres comunitaris · no verificats in situ</span></div>
+    </div>
+    <section class="wb-layout">
+      <div class="wb-map-wrap">
+        <div class="wb-map-header"><strong>Mapa mundial</strong><span id="coordinates">Mou el mapa fins a una ciutat</span></div>
+        <div id="worldMap" role="region" class="wb-map" aria-label="Mapa mundial amb navegació per teclat"></div>
+        <div class="wb-map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a></div>
+      </div>
+      <aside class="wb-panel">
+        <div class="wb-panel-head"><h2>Serveis per a ciclistes</h2><p>Només es consulten dades quan prems el botó.</p></div>
+        <button id="locateButton" type="button" class="wb-button wb-button-secondary">📍 Centra a la meva zona</button>
+        <button id="searchButton" type="button" class="wb-button wb-button-primary" disabled>🔎 Buscar aquí (900 m)</button>
+        <p class="wb-disclaimer">La consulta envia la zona seleccionada al servei públic d'Overpass. No s'envia la teva posició mentre no premis «Buscar aquí». Zoom mínim: 12.</p>
+        <p id="status" class="wb-status" role="status" aria-live="polite">Apropa el mapa a una zona per començar.</p>
+        <div class="wb-filters" aria-label="Filtra serveis cartografiats">
+          <button type="button" data-type="all" aria-pressed="true">Tots</button>
+          <button type="button" data-type="bicycle_parking" aria-pressed="false">🅿️ Aparcament</button>
+          <button type="button" data-type="bicycle_repair_station" aria-pressed="false">🛠️ Reparació</button>
+          <button type="button" data-type="drinking_water" aria-pressed="false">💧 Aigua</button>
+          <button type="button" data-type="bicycle_shop" aria-pressed="false">🏪 Botigues</button>
+          <button type="button" data-type="bicycle_rental" aria-pressed="false">🚲 Lloguer</button>
+        </div>
+        <div class="wb-results-head"><strong id="resultCount">Cap consulta encara</strong><small id="sourceStamp">Font: OSM · dades variables segons la zona</small></div>
+        <ul id="resultList" class="wb-results"></ul>
+        <p class="wb-legal">La manca de resultats no vol dir que no hi hagi serveis. Les dades OSM poden ser incompletes, antigues o imprecises. Sense resultats inventats.</p>
+      </aside>
+    </section>
+    <footer><p>Prototip de descoberta, no navegador ni garantia de seguretat. Verifica sempre la disponibilitat dels serveis abans de sortir.</p></footer>
+  </main>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
