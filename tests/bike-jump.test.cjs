@@ -82,3 +82,16 @@ test('New feedback is backed by labels and accessible controls', () => {
   assert.match(css, /bike-jump-feedback\[hidden\]/);
   assert.match(source('index.html'), /aria-live="polite"/);
 });
+
+test('Mobile balance guidance is mounted only while airborne', () => {
+  const html = source('index.html');
+  const js = source('app.js');
+  const css = source('styles.css');
+  assert.match(html, /id="flightHint"[^>]*hidden/);
+  assert.match(js, /function updateFlightHint\(/);
+  assert.match(js, /getLandingAngle\(level, targetX\)/);
+  assert.match(js, /classList\.add\("bike-jump-in-flight"\)/);
+  assert.match(js, /classList\.remove\("bike-jump-in-flight"\)/);
+  assert.match(css, /bike-jump-in-flight \.bike-jump-rotation-controls/);
+  assert.match(css, /position:fixed/);
+});
