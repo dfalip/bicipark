@@ -308,3 +308,13 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Runway timing feedback (separate from power charging). */
+.bike-jump-run-header{display:flex;justify-content:space-between;gap:12px;margin:14px 0 7px;font-size:.82rem;font-weight:700;color:#475467}
+.bike-jump-run-track{position:relative;height:13px;border-radius:999px;background:#e3e8e5;overflow:hidden}
+.bike-jump-run-bar{position:absolute;z-index:2;inset:0 auto 0 0;width:0;background:#176b45;border-radius:999px;transition:width 70ms linear}
+.bike-jump-ideal-zone{position:absolute;z-index:3;left:89%;width:10%;top:0;bottom:0;background:repeating-linear-gradient(135deg,rgba(255,204,32,.7) 0 5px,rgba(255,221,91,.4) 5px 10px);border-inline:2px solid #936800;pointer-events:none}
+.bike-jump-power-panel .bike-jump-zone-note{margin-top:6px;min-height:0;font-size:.76rem;color:#667085}
+:where(.bike-jump-button,.bike-jump-rotation-controls button,.bike-jump-header-links a):focus-visible{outline:3px solid #165dca;outline-offset:3px}
+@media(max-width:500px){.bike-jump-button,.bike-jump-rotation-controls button{min-height:54px}}
+@media(prefers-reduced-motion:reduce){.bike-jump-run-bar,.bike-jump-power-bar{transition:none}}
