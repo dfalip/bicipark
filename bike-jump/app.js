@@ -21,6 +21,9 @@ const elements = {
   windValue: document.getElementById("windValue"),
   powerValue: document.getElementById("powerValue"),
   powerBar: document.getElementById("powerBar"),
+  runProgressValue: document.getElementById("runProgressValue"),
+  runProgressBar: document.getElementById("runProgressBar"),
+  runProgressTrack: document.getElementById("runProgressTrack"),
   statusText: document.getElementById("statusText"),
   launchButton: document.getElementById("launchButton"),
   restartButton: document.getElementById("restartButton"),
@@ -55,6 +58,7 @@ const state = {
   rotationInput: 0,
   lastFrameAt: null,
   releaseRequested: false,
+  idealZoneAnnounced: false,
   animationFrameId: null
 };
 
@@ -100,13 +104,25 @@ function updatePowerDisplay() {
   }
 }
 
+function updateRunProgress() {
+  const percent = Math.round(state.runProgress * 100);
+  elements.runProgressValue.textContent = `${percent}%`;
+  elements.runProgressBar.style.width = `${percent}%`;
+  elements.runProgressTrack.setAttribute("aria-valuenow", String(percent));
+}
+
 function resetAttempt() {
+  if (state.animationFrameId !== null) {
+    cancelAnimationFrame(state.animationFrameId);
+    state.animationFrameId = null;
+  }
   state.phase = "ready";
   state.runStartedAt = null;
   state.chargeStartedAt = null;
   state.runProgress = 0;
   state.power = 0;
   state.releaseRequested = false;
+  state.idealZoneAnnounced = false;
   state.rotationInput = 0;
   state.lastFrameAt = null;
   state.wind = randomWind();
@@ -136,6 +152,7 @@ function resetAttempt() {
 
   updateDashboard();
   updatePowerDisplay();
+  updateRunProgress();
 }
 
 function startRun() {
@@ -359,6 +376,12 @@ function updateInrun(now) {
     0.33 + state.runProgress * 0.18;
 
   updatePowerDisplay();
+  updateRunProgress();
+
+  if (!state.idealZoneAnnounced && state.runProgress >= level.idealTakeoffProgress - 0.05) {
+    state.idealZoneAnnounced = true;
+    elements.statusText.textContent = "Zona òptima: deixa anar ara per buscar una bona sortida!";
+  }
 
   if (state.releaseRequested) {
     performLaunch();
@@ -738,8 +761,12 @@ function setRotationInput(value) {
   state.rotationInput = value;
 }
 
+function isTypingTarget(target) {
+  return target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(target.tagName));
+}
+
 function handleSpaceDown(event) {
-  if (event.code !== "Space" || event.repeat) {
+  if (event.code !== "Space" || event.repeat || isTypingTarget(event.target)) {
     return;
   }
 
@@ -748,7 +775,7 @@ function handleSpaceDown(event) {
 }
 
 function handleSpaceUp(event) {
-  if (event.code !== "Space") {
+  if (event.code !== "Space" || isTypingTarget(event.target)) {
     return;
   }
 
@@ -759,12 +786,12 @@ function handleSpaceUp(event) {
 document.addEventListener("keydown", event => {
   handleSpaceDown(event);
 
-  if (event.code === "ArrowLeft") {
+  if (state.phase === "flight" && !isTypingTarget(event.target) && event.code === "ArrowLeft") {
     event.preventDefault();
     setRotationInput(-1);
   }
 
-  if (event.code === "ArrowRight") {
+  if (state.phase === "flight" && !isTypingTarget(event.target) && event.code === "ArrowRight") {
     event.preventDefault();
     setRotationInput(1);
   }
@@ -773,11 +800,20 @@ document.addEventListener("keydown", event => {
 document.addEventListener("keyup", event => {
   handleSpaceUp(event);
 
-  if (
-    event.code === "ArrowLeft" ||
-    event.code === "ArrowRight"
-  ) {
+  if (event.code === "ArrowLeft" || event.code === "ArrowRight") {
     setRotationInput(0);
+  }
+});
+
+window.addEventListener("blur", () => {
+  setRotationInput(0);
+  if (state.phase === "inrun") requestLaunch();
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    setRotationInput(0);
+    if (state.phase === "inrun") requestLaunch();
   }
 });
 
