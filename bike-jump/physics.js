@@ -113,8 +113,8 @@ export function integrateFlight({
   rotationInput,
   wind
 }) {
-  const rotationAcceleration = 2.85;
-  const damping = 0.975;
+  const rotationAcceleration = 2.35;
+  const damping = 0.958;
 
   bike.angularVelocity +=
     rotationInput *
@@ -125,8 +125,16 @@ export function integrateFlight({
     damping,
     deltaSeconds * 60
   );
+  bike.angularVelocity = clamp(bike.angularVelocity, -1.5, 1.5);
 
   bike.rotation += bike.angularVelocity * deltaSeconds;
+
+  // Very gentle stabilization when the player releases both controls.
+  // Keeps manual correction relevant while making first-time landings kinder.
+  if (rotationInput === 0) {
+    const error = normalizeAngle(getLandingAngle(level, bike.x) - bike.rotation);
+    bike.rotation += clamp(error, -0.35, 0.35) * deltaSeconds * 0.24;
+  }
 
   const dragX =
     bike.velocityX *
@@ -164,15 +172,15 @@ export function evaluateLanding({
   let score;
   let crashed;
 
-  if (angleDifference < 0.10) {
+  if (angleDifference < 0.14) {
     label = "Aterratge perfecte";
     score = 2000;
     crashed = false;
-  } else if (angleDifference < 0.23) {
+  } else if (angleDifference < 0.30) {
     label = "Bon aterratge";
     score = 1450;
     crashed = false;
-  } else if (angleDifference < 0.42) {
+  } else if (angleDifference < 0.51) {
     label = "Aterratge inestable";
     score = 650;
     crashed = false;
