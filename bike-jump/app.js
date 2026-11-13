@@ -49,11 +49,14 @@ const elements = {
 const STORAGE_KEY = "bicipark-bike-jump-high-score-v1";
 const level = levels[0];
 
+const safeStoredRecord = Number(localStorage.getItem(STORAGE_KEY) || 0);
+
 const state = {
   phase: "ready",
   attempt: 1,
   totalScore: 0,
-  highScore: Number(localStorage.getItem(STORAGE_KEY) || 0),
+  highScore: Number.isFinite(safeStoredRecord) && safeStoredRecord >= 0 ? safeStoredRecord : 0,
+  gameStartingRecord: Number.isFinite(safeStoredRecord) && safeStoredRecord >= 0 ? safeStoredRecord : 0,
   runStartedAt: null,
   chargeStartedAt: null,
   runProgress: 0,
@@ -162,6 +165,7 @@ function resetAttempt() {
   updateDashboard();
   updatePowerDisplay();
   updateRunProgress();
+  draw();
 }
 
 function startRun() {
@@ -285,7 +289,6 @@ function finishAttempt() {
     : landing.slopeAngle;
 
   const scores = calculateScores(landing);
-  const priorRecord = state.highScore;
   state.totalScore += scores.jumpScore;
 
   if (state.totalScore > state.highScore) {
@@ -341,7 +344,7 @@ function finishAttempt() {
 
   elements.gameSummary.hidden = !isLastAttempt;
   if (isLastAttempt) {
-    const newRecord = state.totalScore > priorRecord;
+    const newRecord = state.totalScore > state.gameStartingRecord;
     elements.gameSummaryTitle.textContent = newRecord ? "🏆 Nou rècord!" : "🏁 Partida completada!";
     elements.gameSummaryText.textContent = `3 salts · ${formatScore(state.totalScore)} punts totals. ${newRecord ? "Fantàstic!" : "Pots superar-ho?"}`;
   }
@@ -360,6 +363,7 @@ function nextAttempt() {
   if (state.attempt >= level.attempts) {
     state.attempt = 1;
     state.totalScore = 0;
+    state.gameStartingRecord = state.highScore;
   } else {
     state.attempt += 1;
   }
@@ -370,6 +374,7 @@ function nextAttempt() {
 function restartGame() {
   state.attempt = 1;
   state.totalScore = 0;
+  state.gameStartingRecord = state.highScore;
   resetAttempt();
 }
 
@@ -1012,4 +1017,3 @@ elements.restartButton.addEventListener(
 );
 
 resetAttempt();
-draw();
