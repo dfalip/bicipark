@@ -6,6 +6,7 @@ import {
   clamp,
   getInrunPosition,
   getLandingY,
+  getLandingAngle,
   launchBike,
   integrateFlight,
   evaluateLanding
@@ -40,6 +41,7 @@ const elements = {
   nextAttemptButton: document.getElementById("nextAttemptButton"),
   countdown: document.getElementById("countdown"),
   jumpFeedback: document.getElementById("jumpFeedback"),
+  flightHint: document.getElementById("flightHint"),
   jumpStars: document.getElementById("jumpStars"),
   gameSummary: document.getElementById("gameSummary"),
   gameSummaryTitle: document.getElementById("gameSummaryTitle"),
@@ -126,6 +128,8 @@ function resetAttempt() {
     state.animationFrameId = null;
   }
   state.phase = "ready";
+  document.body.classList.remove("bike-jump-in-flight");
+  elements.flightHint.hidden = true;
   state.runStartedAt = null;
   state.chargeStartedAt = null;
   state.runProgress = 0;
@@ -205,6 +209,8 @@ function performLaunch() {
   });
 
   state.phase = "flight";
+  document.body.classList.add("bike-jump-in-flight");
+  elements.flightHint.hidden = false;
   state.bike.velocityX = launch.velocityX;
   state.bike.velocityY = launch.velocityY;
   state.bike.rotation = launch.rotation;
@@ -283,6 +289,8 @@ function finishAttempt() {
   });
 
   state.phase = "result";
+  document.body.classList.remove("bike-jump-in-flight");
+  elements.flightHint.hidden = true;
   state.bike.crashed = landing.crashed;
   state.bike.rotation = landing.crashed
     ? landing.slopeAngle + 0.82
@@ -426,6 +434,24 @@ function updateInrun(now) {
   }
 }
 
+function updateFlightHint() {
+  // Anticipate the landing gradient; tell the player what to correct.
+  // Keep the on-screen guidance non-live to avoid noisy announcements each frame.
+  const targetX = Math.max(level.landingStartX, Math.min(canvas.width, state.bike.x + 100));
+  const targetAngle = getLandingAngle(level, targetX);
+  const delta = Math.atan2(Math.sin(targetAngle - state.bike.rotation), Math.cos(targetAngle - state.bike.rotation));
+  const direction = delta > 0.13 ? "forward" : delta < -0.13 ? "backward" : "balanced";
+  const messages = {
+    forward: "→ Inclina endavant",
+    backward: "← Inclina enrere",
+    balanced: "✓ Bona posició!"
+  };
+  if (elements.flightHint.dataset.balance !== direction) {
+    elements.flightHint.dataset.balance = direction;
+    elements.flightHint.textContent = messages[direction];
+  }
+}
+
 function updateFlight(deltaSeconds) {
   integrateFlight({
     bike: state.bike,
@@ -437,6 +463,7 @@ function updateFlight(deltaSeconds) {
 
   state.flightTrail.push({x: state.bike.x, y: state.bike.y});
   if (state.flightTrail.length > 32) state.flightTrail.shift();
+  updateFlightHint();
 
   const landingY = getLandingY(
     level,
