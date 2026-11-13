@@ -3,7 +3,7 @@ import {chooseRoundCities, haversineKm, scoreForGuess, ROUNDS} from "./engine.js
 
 const copy = {
   ca: {
-    language:"Idioma", eyebrow:"BiciPark · volta al món",
+    language:"Idioma",allGames:"Tots els jocs",home:"Inici", eyebrow:"BiciPark · volta al món",
     intro:"5 ciutats. 5 oportunitats per descobrir el planeta. Com més a prop marquis, més punts guanyes!",
     round:"Ronda", score:"Punts", best:"Millor marca", question:"ON ÉS AQUESTA CIUTAT?",
     instruction:"Toca el mapa allà on creus que és aquesta ciutat.",
@@ -22,7 +22,7 @@ const copy = {
     continents:{"Europe":"Europa","Asia":"Àsia","Africa":"Àfrica","North America":"Amèrica del Nord","South America":"Amèrica del Sud","Oceania":"Oceania"}
   },
   es: {
-    language:"Idioma", eyebrow:"BiciPark · vuelta al mundo",
+    language:"Idioma",allGames:"Todos los juegos",home:"Inicio", eyebrow:"BiciPark · vuelta al mundo",
     intro:"5 ciudades. 5 oportunidades para descubrir el planeta. ¡Cuanto más cerca señales, más puntos consigues!",
     round:"Ronda",score:"Puntos",best:"Récord",question:"¿DÓNDE ESTÁ ESTA CIUDAD?",
     instruction:"Toca el mapa donde creas que está la ciudad.",
@@ -41,7 +41,7 @@ const copy = {
     continents:{"Europe":"Europa","Asia":"Asia","Africa":"África","North America":"América del Norte","South America":"América del Sur","Oceania":"Oceanía"}
   },
   en: {
-    language:"Language",eyebrow:"BiciPark · around the world",
+    language:"Language",allGames:"All games",home:"Home",eyebrow:"BiciPark · around the world",
     intro:"5 cities. 5 chances to discover the planet. The closer your guess, the more points you win!",
     round:"Round",score:"Points",best:"Personal best",question:"WHERE IS THIS CITY?",
     instruction:"Tap the map where you think the city is.",
@@ -60,7 +60,7 @@ const copy = {
     continents:{"Europe":"Europe","Asia":"Asia","Africa":"Africa","North America":"North America","South America":"South America","Oceania":"Oceania"}
   },
   fr: {
-    language:"Langue",eyebrow:"BiciPark · tour du monde",
+    language:"Langue",allGames:"Tous les jeux",home:"Accueil",eyebrow:"BiciPark · tour du monde",
     intro:"5 villes. 5 occasions de découvrir le monde. Plus tu es proche, plus tu gagnes de points !",
     round:"Manche",score:"Points",best:"Record",question:"OÙ SE TROUVE CETTE VILLE ?",
     instruction:"Touche la carte là où tu penses que se trouve cette ville.",
@@ -82,7 +82,7 @@ const copy = {
 
 const $ = id=>document.getElementById(id);
 const ids = [
-  "languageSelect","languageLabel","eyebrow","intro","roundLabel","roundValue",
+  "languageSelect","languageLabel","allGamesLink","homeLink","eyebrow","intro","roundLabel","roundValue",
   "scoreLabel","scoreValue","bestLabel","bestValue","stepLabel","cityName",
   "instructions","hintText","hintButton","centerButton","mapGuide",
   "resultCard","resultLabel","pointsAwarded","distanceText","correctPlaceText",
@@ -125,7 +125,7 @@ function updateLanguage(){
   document.documentElement.lang=language;
   ui.languageSelect.value=language;
   for(const [id,value] of Object.entries({
-    languageLabel:txt.language,eyebrow:txt.eyebrow,intro:txt.intro,
+    languageLabel:txt.language,allGamesLink:txt.allGames,homeLink:txt.home,eyebrow:txt.eyebrow,intro:txt.intro,
     roundLabel:txt.round,scoreLabel:txt.score,bestLabel:txt.best,
     stepLabel:txt.question,instructions:txt.instruction,
     hintButton:txt.hintButton,centerButton:txt.centerButton,
