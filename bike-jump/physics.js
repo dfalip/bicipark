@@ -25,7 +25,8 @@ export function normalizeAngle(angle) {
 }
 
 export function getInrunPosition(level, progress) {
-  const eased = easeInCubic(clamp(progress, 0, 1));
+  const safeProgress = clamp(progress, 0, 1);
+  const eased = easeInCubic(safeProgress);
 
   const x = lerp(
     level.startPoint.x,
@@ -39,7 +40,7 @@ export function getInrunPosition(level, progress) {
       level.takeoffPoint.y,
       eased
     ) +
-    Math.sin(progress * Math.PI) * 22;
+    Math.sin(safeProgress * Math.PI) * 22;
 
   return {
     x,
