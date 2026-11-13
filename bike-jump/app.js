@@ -6,6 +6,7 @@ import {
   clamp,
   getInrunPosition,
   getLandingY,
+  getLandingAngle,
   launchBike,
   integrateFlight,
   evaluateLanding
@@ -21,6 +22,9 @@ const elements = {
   windValue: document.getElementById("windValue"),
   powerValue: document.getElementById("powerValue"),
   powerBar: document.getElementById("powerBar"),
+  runProgressValue: document.getElementById("runProgressValue"),
+  runProgressBar: document.getElementById("runProgressBar"),
+  runProgressTrack: document.getElementById("runProgressTrack"),
   statusText: document.getElementById("statusText"),
   launchButton: document.getElementById("launchButton"),
   restartButton: document.getElementById("restartButton"),
@@ -35,17 +39,26 @@ const elements = {
   landingResult: document.getElementById("landingResult"),
   jumpScoreResult: document.getElementById("jumpScoreResult"),
   nextAttemptButton: document.getElementById("nextAttemptButton"),
-  countdown: document.getElementById("countdown")
+  countdown: document.getElementById("countdown"),
+  jumpFeedback: document.getElementById("jumpFeedback"),
+  flightHint: document.getElementById("flightHint"),
+  jumpStars: document.getElementById("jumpStars"),
+  gameSummary: document.getElementById("gameSummary"),
+  gameSummaryTitle: document.getElementById("gameSummaryTitle"),
+  gameSummaryText: document.getElementById("gameSummaryText")
 };
 
 const STORAGE_KEY = "bicipark-bike-jump-high-score-v1";
 const level = levels[0];
 
+const safeStoredRecord = Number(localStorage.getItem(STORAGE_KEY) || 0);
+
 const state = {
   phase: "ready",
   attempt: 1,
   totalScore: 0,
-  highScore: Number(localStorage.getItem(STORAGE_KEY) || 0),
+  highScore: Number.isFinite(safeStoredRecord) && safeStoredRecord >= 0 ? safeStoredRecord : 0,
+  gameStartingRecord: Number.isFinite(safeStoredRecord) && safeStoredRecord >= 0 ? safeStoredRecord : 0,
   runStartedAt: null,
   chargeStartedAt: null,
   runProgress: 0,
@@ -55,6 +68,8 @@ const state = {
   rotationInput: 0,
   lastFrameAt: null,
   releaseRequested: false,
+  idealZoneAnnounced: false,
+  flightTrail: [],
   animationFrameId: null
 };
 
@@ -100,13 +115,28 @@ function updatePowerDisplay() {
   }
 }
 
+function updateRunProgress() {
+  const percent = Math.round(state.runProgress * 100);
+  elements.runProgressValue.textContent = `${percent}%`;
+  elements.runProgressBar.style.width = `${percent}%`;
+  elements.runProgressTrack.setAttribute("aria-valuenow", String(percent));
+}
+
 function resetAttempt() {
+  if (state.animationFrameId !== null) {
+    cancelAnimationFrame(state.animationFrameId);
+    state.animationFrameId = null;
+  }
   state.phase = "ready";
+  document.body.classList.remove("bike-jump-in-flight");
+  elements.flightHint.hidden = true;
   state.runStartedAt = null;
   state.chargeStartedAt = null;
   state.runProgress = 0;
   state.power = 0;
   state.releaseRequested = false;
+  state.idealZoneAnnounced = false;
+  state.flightTrail = [];
   state.rotationInput = 0;
   state.lastFrameAt = null;
   state.wind = randomWind();
@@ -127,15 +157,19 @@ function resetAttempt() {
   };
 
   elements.resultPanel.hidden = true;
+  elements.jumpFeedback.hidden = true;
+  elements.gameSummary.hidden = true;
   elements.launchButton.disabled = false;
-  elements.launchButton.textContent = "Preparar salt";
+  elements.launchButton.textContent = "Mantén per saltar";
   elements.rotateLeftButton.disabled = true;
   elements.rotateRightButton.disabled = true;
   elements.statusText.textContent =
-    "Mantén premut «Preparar salt» i deixa’l anar prop del final del trampolí.";
+    "Mantén premut per baixar i deixa anar a la franja groga. Després, equilibra la bici.";
 
   updateDashboard();
   updatePowerDisplay();
+  updateRunProgress();
+  draw();
 }
 
 function startRun() {
@@ -147,7 +181,7 @@ function startRun() {
   state.runStartedAt = performance.now();
   state.chargeStartedAt = state.runStartedAt;
   state.releaseRequested = false;
-  elements.launchButton.textContent = "Deixa anar per saltar";
+  elements.launchButton.textContent = "Deixa anar!";
   elements.statusText.textContent =
     "La bicicleta baixa pel trampolí. Deixa anar a prop de la vora.";
 
@@ -175,11 +209,14 @@ function performLaunch() {
   });
 
   state.phase = "flight";
+  document.body.classList.add("bike-jump-in-flight");
+  elements.flightHint.hidden = false;
   state.bike.velocityX = launch.velocityX;
   state.bike.velocityY = launch.velocityY;
   state.bike.rotation = launch.rotation;
   state.bike.angularVelocity = launch.angularVelocity;
   state.bike.takeoffAccuracy = launch.takeoffAccuracy;
+  state.flightTrail = [{x: state.bike.x, y: state.bike.y}];
 
   elements.launchButton.disabled = true;
   elements.rotateLeftButton.disabled = false;
@@ -212,7 +249,7 @@ function calculateScores(landing) {
   const controlScore = Math.round(
     clamp(
       1000 -
-      state.bike.controlEffort * 115 -
+      state.bike.controlEffort * 85 -
       Math.abs(state.bike.angularVelocity) * 95,
       0,
       1000
@@ -252,6 +289,8 @@ function finishAttempt() {
   });
 
   state.phase = "result";
+  document.body.classList.remove("bike-jump-in-flight");
+  elements.flightHint.hidden = true;
   state.bike.crashed = landing.crashed;
   state.bike.rotation = landing.crashed
     ? landing.slopeAngle + 0.82
@@ -272,6 +311,15 @@ function finishAttempt() {
   elements.rotateRightButton.disabled = true;
   elements.resultPanel.hidden = false;
   elements.resultTitle.textContent = landing.label;
+  const stars = landing.crashed ? 0 :
+    landing.score === 2000 && scores.takeoffScore >= 750 ? 3 :
+    landing.score >= 1450 ? 2 : 1;
+  elements.jumpStars.textContent = "★".repeat(stars) + "☆".repeat(3 - stars);
+  elements.jumpStars.setAttribute("aria-label", `${stars} de 3 estrelles`);
+  elements.jumpFeedback.hidden = false;
+  elements.jumpFeedback.classList.toggle("bike-jump-feedback--crash", landing.crashed);
+  elements.jumpFeedback.textContent = landing.crashed ? "Ui! Torna-ho a provar" :
+    stars === 3 ? "SALT PERFECTE!" : stars === 2 ? "MOLT BÉ!" : "BON SALT!";
 
   elements.resultDescription.textContent =
     landing.crashed
@@ -299,8 +347,15 @@ function finishAttempt() {
   const isLastAttempt = state.attempt >= level.attempts;
 
   elements.nextAttemptButton.textContent = isLastAttempt
-    ? "Nova partida"
+    ? "Torna-hi!"
     : "Següent salt";
+
+  elements.gameSummary.hidden = !isLastAttempt;
+  if (isLastAttempt) {
+    const newRecord = state.totalScore > state.gameStartingRecord;
+    elements.gameSummaryTitle.textContent = newRecord ? "🏆 Nou rècord!" : "🏁 Partida completada!";
+    elements.gameSummaryText.textContent = `3 salts · ${formatScore(state.totalScore)} punts totals. ${newRecord ? "Fantàstic!" : "Pots superar-ho?"}`;
+  }
 
   elements.statusText.textContent =
     `Salt completat: ${formatScore(scores.jumpScore)} punts.`;
@@ -316,6 +371,7 @@ function nextAttempt() {
   if (state.attempt >= level.attempts) {
     state.attempt = 1;
     state.totalScore = 0;
+    state.gameStartingRecord = state.highScore;
   } else {
     state.attempt += 1;
   }
@@ -326,6 +382,7 @@ function nextAttempt() {
 function restartGame() {
   state.attempt = 1;
   state.totalScore = 0;
+  state.gameStartingRecord = state.highScore;
   resetAttempt();
 }
 
@@ -359,6 +416,12 @@ function updateInrun(now) {
     0.33 + state.runProgress * 0.18;
 
   updatePowerDisplay();
+  updateRunProgress();
+
+  if (!state.idealZoneAnnounced && state.runProgress >= level.idealTakeoffProgress - 0.05) {
+    state.idealZoneAnnounced = true;
+    elements.statusText.textContent = "Zona òptima: deixa anar ara per buscar una bona sortida!";
+  }
 
   if (state.releaseRequested) {
     performLaunch();
@@ -371,6 +434,24 @@ function updateInrun(now) {
   }
 }
 
+function updateFlightHint() {
+  // Anticipate the landing gradient; tell the player what to correct.
+  // Keep the on-screen guidance non-live to avoid noisy announcements each frame.
+  const targetX = Math.max(level.landingStartX, Math.min(canvas.width, state.bike.x + 100));
+  const targetAngle = getLandingAngle(level, targetX);
+  const delta = Math.atan2(Math.sin(targetAngle - state.bike.rotation), Math.cos(targetAngle - state.bike.rotation));
+  const direction = delta > 0.13 ? "forward" : delta < -0.13 ? "backward" : "balanced";
+  const messages = {
+    forward: "→ Inclina endavant",
+    backward: "← Inclina enrere",
+    balanced: "✓ Bona posició!"
+  };
+  if (elements.flightHint.dataset.balance !== direction) {
+    elements.flightHint.dataset.balance = direction;
+    elements.flightHint.textContent = messages[direction];
+  }
+}
+
 function updateFlight(deltaSeconds) {
   integrateFlight({
     bike: state.bike,
@@ -379,6 +460,10 @@ function updateFlight(deltaSeconds) {
     rotationInput: state.rotationInput,
     wind: state.wind
   });
+
+  state.flightTrail.push({x: state.bike.x, y: state.bike.y});
+  if (state.flightTrail.length > 32) state.flightTrail.shift();
+  updateFlightHint();
 
   const landingY = getLandingY(
     level,
@@ -444,6 +529,17 @@ function drawBackground() {
 
   context.fillStyle = gradient;
   context.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Soft sun and distant atmosphere, all drawn locally on the canvas.
+  const sun = context.createRadialGradient(835, 104, 12, 835, 104, 115);
+  sun.addColorStop(0, "rgba(255,245,182,.92)");
+  sun.addColorStop(1, "rgba(255,245,182,0)");
+  context.fillStyle = sun;
+  context.fillRect(700, 0, 300, 265);
+  context.fillStyle = "#fff2bd";
+  context.beginPath();
+  context.arc(835, 104, 34, 0, Math.PI * 2);
+  context.fill();
 
   context.fillStyle = "#ffffff";
   context.globalAlpha = 0.76;
@@ -632,6 +728,7 @@ function drawBike() {
   context.save();
   context.translate(bike.x, bike.y);
   context.rotate(bike.rotation);
+  context.scale(1.18, 1.18);
 
   const wheelRadius = 11;
 
@@ -668,6 +765,16 @@ function drawBike() {
   context.lineTo(-4, -28);
   context.stroke();
 
+  // Rider jersey and a brighter helmet for readability on small screens.
+  context.fillStyle = "#ff8c3d";
+  context.beginPath();
+  context.moveTo(-7, -25);
+  context.lineTo(8, -20);
+  context.lineTo(1, -9);
+  context.lineTo(-12, -14);
+  context.closePath();
+  context.fill();
+
   context.fillStyle = "#f4d719";
   context.beginPath();
   context.arc(-6, -34, 7, 0, Math.PI * 2);
@@ -701,6 +808,54 @@ function drawHud() {
   );
 }
 
+function drawFlightTrail() {
+  if (state.flightTrail.length < 2) return;
+  context.save();
+  context.strokeStyle = "rgba(18,111,95,.35)";
+  context.lineWidth = 3;
+  context.lineCap = "round";
+  context.setLineDash([5, 10]);
+  context.beginPath();
+  state.flightTrail.forEach((point, index) => {
+    if (index === 0) context.moveTo(point.x, point.y);
+    else context.lineTo(point.x, point.y);
+  });
+  context.stroke();
+  context.restore();
+}
+
+function drawSpeedLines() {
+  if (state.phase !== "inrun" || state.runProgress < 0.2) return;
+  const bike = state.bike;
+  context.save();
+  context.strokeStyle = "rgba(255,255,255,.9)";
+  context.lineWidth = 3;
+  context.lineCap = "round";
+  for (let i = -1; i <= 1; i += 1) {
+    context.beginPath();
+    context.moveTo(bike.x - 70 - (i + 1) * 12, bike.y + i * 15);
+    context.lineTo(bike.x - 35 - (i + 1) * 12, bike.y + i * 15);
+    context.stroke();
+  }
+  context.restore();
+}
+
+function drawLandingEffect() {
+  if (state.phase !== "result") return;
+  context.save();
+  for (let i = 0; i < 7; i += 1) {
+    const angle = (i / 7) * Math.PI * 2;
+    const radius = state.bike.crashed ? 21 : 35;
+    const x = state.bike.x + Math.cos(angle) * radius;
+    const y = state.bike.y + Math.sin(angle) * radius;
+    context.fillStyle = state.bike.crashed ? "rgba(142,119,95,.7)" : "#ffd43b";
+    context.beginPath();
+    context.arc(x, y, state.bike.crashed ? 5 : 3, 0, Math.PI * 2);
+    context.fill();
+  }
+  context.restore();
+}
+
 function draw() {
   context.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
@@ -708,7 +863,10 @@ function draw() {
   drawRamp();
   drawLandingHill();
   drawDistanceMarkers();
+  drawFlightTrail();
+  drawSpeedLines();
   drawBike();
+  drawLandingEffect();
   drawHud();
 }
 
@@ -738,8 +896,12 @@ function setRotationInput(value) {
   state.rotationInput = value;
 }
 
+function isTypingTarget(target) {
+  return target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(target.tagName));
+}
+
 function handleSpaceDown(event) {
-  if (event.code !== "Space" || event.repeat) {
+  if (event.code !== "Space" || event.repeat || isTypingTarget(event.target)) {
     return;
   }
 
@@ -748,7 +910,7 @@ function handleSpaceDown(event) {
 }
 
 function handleSpaceUp(event) {
-  if (event.code !== "Space") {
+  if (event.code !== "Space" || isTypingTarget(event.target)) {
     return;
   }
 
@@ -759,12 +921,12 @@ function handleSpaceUp(event) {
 document.addEventListener("keydown", event => {
   handleSpaceDown(event);
 
-  if (event.code === "ArrowLeft") {
+  if (state.phase === "flight" && !isTypingTarget(event.target) && event.code === "ArrowLeft") {
     event.preventDefault();
     setRotationInput(-1);
   }
 
-  if (event.code === "ArrowRight") {
+  if (state.phase === "flight" && !isTypingTarget(event.target) && event.code === "ArrowRight") {
     event.preventDefault();
     setRotationInput(1);
   }
@@ -773,11 +935,34 @@ document.addEventListener("keydown", event => {
 document.addEventListener("keyup", event => {
   handleSpaceUp(event);
 
-  if (
-    event.code === "ArrowLeft" ||
-    event.code === "ArrowRight"
-  ) {
+  if (event.code === "ArrowLeft" || event.code === "ArrowRight") {
     setRotationInput(0);
+  }
+});
+
+window.addEventListener("blur", () => {
+  setRotationInput(0);
+  if (state.phase === "inrun") requestLaunch();
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    setRotationInput(0);
+    if (state.phase === "inrun") requestLaunch();
+  }
+});
+
+// Keyboard support when the main game button itself has focus.
+elements.launchButton.addEventListener("keydown", event => {
+  if ((event.code === "Space" || event.code === "Enter") && !event.repeat) {
+    event.preventDefault();
+    startRun();
+  }
+});
+elements.launchButton.addEventListener("keyup", event => {
+  if (event.code === "Space" || event.code === "Enter") {
+    event.preventDefault();
+    requestLaunch();
   }
 });
 
@@ -822,6 +1007,22 @@ function addRotationPointerControl(button, value) {
   });
 }
 
+// Keep buttons usable from a keyboard, not just a touch screen.
+for (const [button, value] of [[elements.rotateLeftButton, -1], [elements.rotateRightButton, 1]]) {
+  button.addEventListener("keydown", event => {
+    if ((event.code === "Space" || event.code === "Enter") && state.phase === "flight") {
+      event.preventDefault();
+      setRotationInput(value);
+    }
+  });
+  button.addEventListener("keyup", event => {
+    if (event.code === "Space" || event.code === "Enter") {
+      event.preventDefault();
+      setRotationInput(0);
+    }
+  });
+}
+
 addRotationPointerControl(
   elements.rotateLeftButton,
   -1
@@ -843,4 +1044,3 @@ elements.restartButton.addEventListener(
 );
 
 resetAttempt();
-draw();

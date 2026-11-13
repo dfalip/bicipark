@@ -308,3 +308,189 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Runway timing feedback (separate from power charging). */
+.bike-jump-run-header{display:flex;justify-content:space-between;gap:12px;margin:14px 0 7px;font-size:.82rem;font-weight:700;color:#475467}
+.bike-jump-run-track{position:relative;height:13px;border-radius:999px;background:#e3e8e5;overflow:hidden}
+.bike-jump-run-bar{position:absolute;z-index:2;inset:0 auto 0 0;width:0;background:#176b45;border-radius:999px;transition:width 70ms linear}
+.bike-jump-ideal-zone{position:absolute;z-index:3;left:89%;width:10%;top:0;bottom:0;background:repeating-linear-gradient(135deg,rgba(255,204,32,.7) 0 5px,rgba(255,221,91,.4) 5px 10px);border-inline:2px solid #936800;pointer-events:none}
+.bike-jump-power-panel .bike-jump-zone-note{margin-top:6px;min-height:0;font-size:.76rem;color:#667085}
+:where(.bike-jump-button,.bike-jump-rotation-controls button,.bike-jump-header-links a):focus-visible{outline:3px solid #165dca;outline-offset:3px}
+@media(max-width:500px){.bike-jump-button,.bike-jump-rotation-controls button{min-height:54px}}
+@media(prefers-reduced-motion:reduce){.bike-jump-run-bar,.bike-jump-power-bar{transition:none}}
+
+
+/* BikeJump v2 — friendlier arcade look. No external art or libraries. */
+.bike-jump-body{
+  background:linear-gradient(180deg,#e5f5ef 0,#f7faf5 360px,#f4f6f8 100%);
+}
+.bike-jump-header{
+  background:linear-gradient(110deg,#0b513b,#08392f);
+  color:#fff;
+  border-bottom:4px solid #f5ce42;
+}
+.bike-jump-header-links a,
+.bike-jump-header .bike-jump-eyebrow{color:#d9fbe3}
+.bike-jump-header-links a:hover{text-decoration:underline}
+.bike-jump-title-accent{
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:999px;
+  background:#ffda52;
+  color:#073a2c;
+  font-size:.64em;
+  vertical-align:middle;
+  letter-spacing:.02em;
+}
+.bike-jump-subtitle{margin:6px 0 0;color:#d5eee1;font-size:.87rem}
+.bike-jump-main{padding-top:17px}
+.bike-jump-stat{
+  border:1px solid #d6e5dd;
+  box-shadow:0 4px 12px rgba(17,73,50,.04);
+}
+.bike-jump-stat strong{color:#155a40;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.bike-jump-game-shell{
+  border:2px solid #c4ddd0;
+  box-shadow:0 10px 30px rgba(21,89,64,.1);
+  border-radius:18px;
+}
+.bike-jump-controls{
+  border-color:#d3e5da;
+  box-shadow:0 5px 18px rgba(28,91,60,.055);
+}
+.bike-jump-power-header span,
+.bike-jump-run-header span{font-weight:800;color:#314b40}
+.bike-jump-button-primary{
+  background:linear-gradient(135deg,#218958,#11633e);
+  box-shadow:0 4px 0 #0c4b31;
+  letter-spacing:.01em;
+}
+.bike-jump-button-primary:hover:not(:disabled){
+  background:linear-gradient(135deg,#299e68,#157248)
+}
+.bike-jump-button-primary:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 #0c4b31}
+.bike-jump-rotation-controls button{
+  background:#e8f7f0;
+  border:2px solid #b7d9c9;
+  color:#145e44;
+  font-size:.95rem;
+}
+.bike-jump-rotation-controls button:active:not(:disabled){background:#c4edd9}
+.bike-jump-result{
+  border:2px solid #d4e8d5;
+  box-shadow:0 7px 24px rgba(28,91,60,.065);
+}
+.bike-jump-result-grid article{background:#eff7f1}
+.bike-jump-result-grid article:last-child{background:#e0f2df}
+.bike-jump-result-grid article:last-child strong{color:#0c633e;font-size:1.1rem}
+.bike-jump-stars{
+  font-size:1.55rem;
+  line-height:1.35;
+  letter-spacing:.12em;
+  color:#d89a0b;
+  margin-top:6px;
+}
+.bike-jump-feedback{
+  position:absolute;
+  bottom:16px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:12px 20px;
+  max-width:92%;
+  border-radius:999px;
+  text-align:center;
+  white-space:nowrap;
+  color:#073c2c;
+  font-size:clamp(.92rem,2vw,1.35rem);
+  font-weight:900;
+  letter-spacing:.025em;
+  background:#ffdf5a;
+  border:3px solid #fff4cb;
+  box-shadow:0 8px 30px rgba(23,69,48,.25);
+  pointer-events:none;
+  animation:bike-jump-pop .3s ease-out both;
+}
+.bike-jump-feedback--crash{
+  background:#fff0dc;
+  border-color:#fff;
+  color:#8a3b23;
+}
+.bike-jump-game-summary{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  padding:14px 16px;
+  margin:12px 0;
+  border-radius:12px;
+  background:#e7f6df;
+  border:1px solid #bcdda9;
+  color:#255b30;
+}
+.bike-jump-game-summary strong{font-size:1.12rem}
+.bike-jump-feedback[hidden],
+.bike-jump-game-summary[hidden],
+.bike-jump-countdown[hidden]{display:none!important}
+@keyframes bike-jump-pop{
+  from{opacity:0;transform:translate(-50%,10px) scale(.9)}
+  to{opacity:1;transform:translate(-50%,0) scale(1)}
+}
+@media(max-width:600px){
+  .bike-jump-dashboard{gap:7px}
+  .bike-jump-stat{padding:9px 5px}
+  .bike-jump-stat strong{font-size:.96rem}
+  .bike-jump-stat span{font-size:.7rem}
+  .bike-jump-header{padding:12px 14px;align-items:center;flex-wrap:wrap}
+  .bike-jump-subtitle{font-size:.75rem}
+  .bike-jump-feedback{bottom:8px;padding:7px 12px;font-size:.86rem}
+  .bike-jump-controls{padding:12px}
+  .bike-jump-rotation-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bike-jump-rotation-controls button{font-size:.81rem;padding:9px 4px}
+}
+@media(prefers-reduced-motion:reduce){
+  .bike-jump-feedback{animation:none}
+  .bike-jump-button-primary:active:not(:disabled){transform:none}
+}
+
+
+/* v2.1: actionable in-flight guidance and controls that stay visible on phones. */
+.bike-jump-flight-hint{
+  position:absolute;
+  top:14px;
+  right:14px;
+  z-index:4;
+  padding:10px 15px;
+  border:2px solid rgba(255,255,255,.86);
+  border-radius:999px;
+  background:#fff4c9;
+  box-shadow:0 5px 18px rgba(4,45,31,.16);
+  color:#164735;
+  font-weight:900;
+  letter-spacing:.01em;
+  font-size:clamp(.82rem,1.7vw,1.04rem);
+  pointer-events:none;
+}
+.bike-jump-flight-hint[data-balance="balanced"]{background:#d7f8df;color:#126041}
+.bike-jump-flight-hint[hidden]{display:none!important}
+@media(max-width:600px){
+  .bike-jump-flight-hint{top:8px;right:8px;padding:6px 9px;font-size:.75rem;border-width:1px}
+  .bike-jump-in-flight .bike-jump-rotation-controls{
+    position:fixed;
+    left:12px;
+    right:12px;
+    bottom:max(12px,env(safe-area-inset-bottom));
+    z-index:30;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    padding:9px;
+    background:rgba(247,251,246,.97);
+    border:2px solid #b6dbc5;
+    border-radius:16px;
+    box-shadow:0 6px 26px rgba(5,49,31,.24);
+  }
+  .bike-jump-in-flight .bike-jump-rotation-controls button{
+    min-height:66px;
+    font-size:.98rem;
+    touch-action:none;
+  }
+}
