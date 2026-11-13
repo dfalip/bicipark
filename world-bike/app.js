@@ -108,7 +108,12 @@ async function fetchAroundCenter(){
   const centre=map.getCenter();
   if(!validateCoords(centre.lat,centre.lng))return;
   const key=`${centre.lat.toFixed(3)}:${centre.lng.toFixed(3)}`;
-  if(cache.has(key)){applyData(cache.get(key),centre);return;}
+  if(cache.has(key)){
+    const saved=cache.get(key);
+    applyData(saved.data,saved.centre);
+    message("Resultats reutilitzats de la consulta anterior en aquesta zona.");
+    return;
+  }
   const now=Date.now();
   if(now-lastRequestAt<COOLDOWN_MS){
     message("Per respectar el servei públic, espera uns segons abans de fer una nova consulta.");
@@ -131,7 +136,7 @@ async function fetchAroundCenter(){
     });
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
     const parsed=normalizeOverpassResponse(await response.json());
-    cache.set(key,parsed);
+    cache.set(key,{data:parsed,centre:{lat:centre.lat,lng:centre.lng}});
     if(cache.size>CACHE_MAX_ENTRIES)cache.delete(cache.keys().next().value);
     applyData(parsed,centre);
   }catch(error){
