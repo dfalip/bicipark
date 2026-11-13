@@ -450,3 +450,47 @@ body {
   .bike-jump-feedback{animation:none}
   .bike-jump-button-primary:active:not(:disabled){transform:none}
 }
+
+
+/* v2.1: actionable in-flight guidance and controls that stay visible on phones. */
+.bike-jump-flight-hint{
+  position:absolute;
+  top:14px;
+  right:14px;
+  z-index:4;
+  padding:10px 15px;
+  border:2px solid rgba(255,255,255,.86);
+  border-radius:999px;
+  background:#fff4c9;
+  box-shadow:0 5px 18px rgba(4,45,31,.16);
+  color:#164735;
+  font-weight:900;
+  letter-spacing:.01em;
+  font-size:clamp(.82rem,1.7vw,1.04rem);
+  pointer-events:none;
+}
+.bike-jump-flight-hint[data-balance="balanced"]{background:#d7f8df;color:#126041}
+.bike-jump-flight-hint[hidden]{display:none!important}
+@media(max-width:600px){
+  .bike-jump-flight-hint{top:8px;right:8px;padding:6px 9px;font-size:.75rem;border-width:1px}
+  .bike-jump-in-flight .bike-jump-rotation-controls{
+    position:fixed;
+    left:12px;
+    right:12px;
+    bottom:max(12px,env(safe-area-inset-bottom));
+    z-index:30;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    padding:9px;
+    background:rgba(247,251,246,.97);
+    border:2px solid #b6dbc5;
+    border-radius:16px;
+    box-shadow:0 6px 26px rgba(5,49,31,.24);
+  }
+  .bike-jump-in-flight .bike-jump-rotation-controls button{
+    min-height:66px;
+    font-size:.98rem;
+    touch-action:none;
+  }
+}
