@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c3d35">
+  <meta name="description" content="GeoSprint: un joc geogràfic mundial de BiciPark. Busca ciutats en un mapa i encerta la seva ubicació.">
+  <title>GeoSprint · BiciPark Games</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="gs-topbar">
+    <a href="../explora/?category=games" class="gs-brand" aria-label="Torna als jocs de BiciPark"><span aria-hidden="true">🚲</span> BiciPark <span class="gs-brand-tag">PLAY</span></a>
+    <nav aria-label="Navegació"><a id="allGamesLink" href="../explora/?category=games">Tots els jocs</a><a id="homeLink" href="../index.html">Inici</a></nav>
+    <label class="gs-language">🌐 <span id="languageLabel">Idioma</span>
+      <select id="languageSelect" aria-label="Idioma del joc">
+        <option value="ca">Català</option><option value="es">Español</option>
+        <option value="en">English</option><option value="fr">Français</option>
+      </select>
+    </label>
+  </header>
+  <main class="gs-main">
+    <section class="gs-hero">
+      <div class="gs-hero-copy">
+        <div class="gs-eyebrow" id="eyebrow">BiciPark · volta al món</div>
+        <h1>Geo<span>Sprint</span> <span class="gs-globe" aria-hidden="true">🌍</span></h1>
+        <p id="intro">5 ciutats. 5 oportunitats per descobrir el planeta. Com més a prop marquis, més punts guanyes!</p>
+      </div>
+      <div class="gs-scoreboard" aria-label="Estadístiques de la partida">
+        <div class="gs-stat"><small id="roundLabel">Ronda</small><strong id="roundValue">1 / 5</strong></div>
+        <div class="gs-stat"><small id="scoreLabel">Punts</small><strong id="scoreValue">0</strong></div>
+        <div class="gs-stat"><small id="bestLabel">Millor marca</small><strong id="bestValue">0</strong></div>
+      </div>
+    </section>
+
+    <section class="gs-game" aria-label="Joc de geografia">
+      <div class="gs-panel">
+        <div id="questionCard" class="gs-question">
+          <div class="gs-step" id="stepLabel">ON ÉS AQUESTA CIUTAT?</div>
+          <h2 id="cityName">...</h2>
+          <p id="instructions">Toca el mapa allà on creus que és aquesta ciutat.</p>
+          <div id="hintText" class="gs-hint" hidden></div>
+        </div>
+        <div class="gs-actions">
+          <button id="hintButton" type="button" class="gs-button gs-button-subtle">💡 Pista (−20%)</button>
+          <button id="centerButton" type="button" class="gs-button gs-button-primary">📍 Marca el centre del mapa</button>
+        </div>
+        <div class="gs-guide" id="mapGuide">Toca el mapa o mou-lo i prem «Marca el centre». Funciona també amb teclat.</div>
+        <div id="resultCard" class="gs-result" hidden>
+          <div class="gs-result-head"><strong id="resultLabel">Molt bé!</strong><span id="pointsAwarded">+0 punts</span></div>
+          <p id="distanceText"></p>
+          <p id="correctPlaceText"></p>
+          <div class="gs-result-actions">
+            <a id="osmLink" target="_blank" rel="noopener noreferrer" href="https://www.openstreetmap.org/" class="gs-osm-link">Explora la ciutat ↗</a>
+            <button id="nextButton" class="gs-button gs-button-primary" type="button">Següent ciutat →</button>
+          </div>
+        </div>
+        <div id="endCard" class="gs-finale" hidden>
+          <div class="gs-finale-icon" aria-hidden="true">🏆</div>
+          <h2 id="endTitle">Volta al món completada!</h2>
+          <p id="endDetail"></p>
+          <button id="againButton" class="gs-button gs-button-primary" type="button">🔄 Torna a jugar</button>
+        </div>
+      </div>
+      <div class="gs-map-shell">
+        <div class="gs-map-heading"><strong id="mapHeading">El món és el teu tauler</strong><span id="mapStatus">Escull un punt</span></div>
+        <div id="gameMap" class="gs-map" role="region" aria-label="Mapa interactiu del món. Utilitza les fletxes per moure'l i el botó Marca el centre per confirmar."></div>
+        <div id="mapFailure" role="status" class="gs-map-error" hidden>El mapa no està disponible. Comprova la connexió.</div>
+        <div class="gs-map-footer"><span id="mapFooter">Sense cronòmetre. Juga al teu ritme.</span><span>© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a></span></div>
+      </div>
+    </section>
+    <footer class="gs-footer"><p id="disclaimer">Ciutats reals amb coordenades aproximades del centre urbà. Joc educatiu; no és un mapa de serveis ciclistes.</p></footer>
+  </main>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

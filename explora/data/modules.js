@@ -141,16 +141,55 @@ export const biciparkModules = [
     enabled: true
   },
   {
+    id: "joc-3clics",
+    category: "games",
+    title: "El joc dels 3 clics",
+    description:
+      "Troba monuments i llocs al mapa amb un màxim de tres intents.",
+    href: "../joc-3clics.html",
+    icon: "🌍",
+    status: "Disponible",
+    statusType: "default",
+    tags: ["Geografia", "Mapa", "3 intents"],
+    enabled: true
+  },
+  {
+    id: "bike-cannon",
+    category: "games",
+    title: "Bike Cannon",
+    description:
+      "Un prototip experimental: ajusta l'angle i la potència i llança la bicicleta.",
+    href: "../modules/bike-cannon/",
+    icon: "🚀",
+    status: "Prototip",
+    statusType: "development",
+    tags: ["Arcade", "Llançament", "Experimental"],
+    enabled: true
+  },
+  {
+    id: "geo-sprint",
+    category: "games",
+    title: "GeoSprint · Volta al món",
+    description:
+      "Cinc ciutats de cinc continents: encerta on són, guanya punts i viatja pel planeta amb el mapa.",
+    href: "../geo-sprint/",
+    icon: "🌍",
+    status: "Prototip jugable",
+    statusType: "development",
+    tags: ["Món", "Geografia", "5 rondes", "CA · ES · EN · FR"],
+    enabled: true
+  },
+  {
     id: "bike-jump",
     category: "games",
     title: "Bike Jump",
     description:
-      "Baixa pel trampolí, calcula la sortida, controla la bicicleta en vol i aterra sobre la pendent.",
+      "Prova tres salts amb bicicleta, controla l'equilibri i busca un bon aterratge.",
     href: "../bike-jump/",
     icon: "🚵",
-    status: "Nou",
-    statusType: "new",
-    tags: ["Física", "Salt", "3 intents"],
+    status: "En evolució",
+    statusType: "development",
+    tags: ["Arcade", "Salt", "3 intents"],
     enabled: true
   }
 ];

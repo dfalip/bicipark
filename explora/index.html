@@ -45,6 +45,10 @@
         Consulta el mapa, descobreix rutes, completa missions o posa a
         prova la teva orientació amb els jocs geogràfics.
       </p>
+      <div class="hub-hero-actions">
+        <a href="?category=games#moduleGrid" class="hub-hero-action hub-hero-action-primary">🎮 Juga ara</a>
+        <a href="?category=routes#moduleGrid" class="hub-hero-action">🚴 Descobreix rutes</a>
+      </div>
     </section>
 
     <nav
@@ -52,6 +56,12 @@
       class="hub-category-navigation"
       aria-label="Categories de mòduls"
     ></nav>
+
+    <div class="hub-discovery-controls">
+      <label for="moduleSearch">Què busques?</label>
+      <input id="moduleSearch" type="search" autocomplete="off" placeholder="Per exemple: salt, mapes, rutes o missions">
+      <span id="moduleResults" role="status" aria-live="polite"></span>
+    </div>
 
     <section
       id="moduleGrid"
