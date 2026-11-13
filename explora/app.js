@@ -107,7 +107,8 @@ function createModuleAction(module) {
   const link = document.createElement("a");
   link.className = "hub-module-link";
   link.href = module.href;
-  link.textContent = "Obrir mòdul";
+  link.textContent = module.category === "games" ? "Jugar ara" :
+    module.category === "routes" ? "Explorar ruta" : "Obrir mòdul";
   link.setAttribute(
     "aria-label",
     `Obrir ${module.title}`
