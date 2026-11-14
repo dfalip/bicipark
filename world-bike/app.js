@@ -21,6 +21,7 @@ const filters=[...document.querySelectorAll(".wb-filters button")];
 let activeType="all";
 let records=[];
 let sourceTimestamp=null;
+let sourceProvider=null;
 let mayBeTruncated=false;
 let searchedCentre=null;
 const lastRequestAt=[0,0];
@@ -78,7 +79,7 @@ function renderResults(){
     `${visible.length} registres cartografiats${mayBeTruncated?" (llista limitada)":""}` :
     "Cap consulta encara";
   ui.sourceStamp.textContent=searchedCentre?
-    `OSM · zona ${coords(searchedCentre)}${sourceTimestamp?" · dades del "+sourceTimestamp.slice(0,10):" · actualització no indicada"}` :
+    `OpenStreetMap · ${sourceProvider||"font no indicada"} · zona ${coords(searchedCentre)}${sourceTimestamp?" · dades del "+sourceTimestamp.slice(0,10):" · actualització no indicada"}` :
     "Font: OpenStreetMap · cobertura variable";
   if(markers)markers.clearLayers();
   if(visible.length===0&&searchedCentre){
@@ -119,6 +120,7 @@ function renderResults(){
 function applyData(data,location){
   records=data.places;
   sourceTimestamp=data.sourceTimestamp;
+  sourceProvider=data.provider||null;
   mayBeTruncated=data.truncated;
   searchedCentre={lat:location.lat,lng:location.lng};
   if(searchCircle)map.removeLayer(searchCircle);
@@ -199,6 +201,7 @@ async function fetchAroundCenter({alternative=false}={}){
     }
     if(payload?.ok!==true)throw new Error("Invalid gateway envelope");
     const parsed=normalizeOverpassResponse(payload);
+    parsed.provider=typeof payload.provider==="string"?payload.provider:provider.label;
     activeProviderIndex=providerIndex;
     const queriedCenter=payload.queriedCenter&&
       validateCoords(payload.queriedCenter.lat,payload.queriedCenter.lng)
