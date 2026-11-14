@@ -135,6 +135,8 @@ test('Provider 429 is visible and is not shown as an empty successful response',
     h.window.document.querySelector('[data-type="drinking_water"]').click();
     await h.flush();
     assert.equal(h.fetchCount,1,'429 must impose a local pause without automatic retry');
+    assert.match(h.window.document.getElementById('status').textContent,/limitat la petició/,
+      'Cooldown cannot replace the original upstream error or its recovery action');
   }finally{h.dom.window.close();}
 });
 
