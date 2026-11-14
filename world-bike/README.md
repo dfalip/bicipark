@@ -14,13 +14,13 @@ Categories OSM: `amenity=bicycle_parking`, `bicycle_repair_station`, `drinking_w
 
 ## Restriccions del pilot
 
-- **No és una infraestructura de producció mundial.** L'endpoint públic de `overpass-api.de` està compartit, sense SLA ni garantia de capacitat, i NO s'ha d'utilitzar com a backend de BiciPark quan hi hagi una audiència significativa.
+- **No és una infraestructura de producció mundial.** El prototip consulta primer `overpass.private.coffee`; si falla, pot consultar `overpass-api.de` només després que l'usuari premi explícitament el botó alternatiu. Tots dos són servidors públics compartits, sense SLA ni garantia de capacitat. Un portal mundial amb audiència significativa requereix un proveïdor adequat o una infraestructura pròpia.
 - Límits locals: radi màxim 1,2 km, consulta per acció explícita (botó de cerca, categoria o GPS), 12 s de temps al servidor, 16 s de timeout client, màxim 150 registres, pausa de 20 s entre peticions noves i almenys 30 s després d'un 406/429, memòria de 12 consultes en sessió, sense reintents automàtics.
 - La pausa és **per client**, no per conjunt de visitants. És insuficient per a producció a escala: cal un backend propi o proveïdor contractat amb quotas, límits globals, mètriques, política d'errors, cache compartida i respecte a la llicència.
 - La capa de mapa utilitza tesel·les d'OSM amb atribució. Política: https://operations.osmfoundation.org/policies/tiles/
 - Els POIs OSM són ODbL i requereixen atribució i, segons la reutilització, condicions de compartició. https://www.openstreetmap.org/copyright
 - No inclou geocodificació per nom ni cerca automàtica. Nominatim públic no és adequat per a cerca global escala sense respecte als límits d'1 req/s agregada i prohibició d'autocompletar: https://operations.osmfoundation.org/policies/nominatim/
-- El mapa pot mostrar al proveïdor el fragment que visites. El GPS només es demana per acció explícita del navegador. La cerca envia la coordenada al servei Overpass.
+- El mapa pot mostrar al proveïdor el fragment que visites. El GPS només es demana per acció explícita del navegador. La cerca envia el centre consultat al servei Overpass escollit. L'operador de `Private.coffee` publica les seves condicions i política de privacitat a https://overpass.private.coffee/.
 - No es carreguen dades si l'usuari no fa la cerca. Cap persistència de localització al servidor BiciPark.
 
 ## Provar localment
@@ -39,7 +39,7 @@ npm test
 
 ## Release gates obligatoris
 
-1. Proves en navegador real: consulta de zona sense dades, zona amb dades, error 429/504/CORS, GPS denegat, retorn de dades mal formades, mobile/touch i teclat.
+1. Proves en navegador real: consulta de zona sense dades, zona amb dades, errors 400/406/429/503/504/CORS, GPS denegat, canvi manual a servidor alternatiu, missatge persistent en moure el mapa, retorn de dades mal formades, mobile/touch i teclat.
 2. Proveïdor Overpass adequat per producció, cache compartida, control d'ús global i cost sota control. **Sense això, no integrar al catàleg públic.**
 3. Política de privacitat, procedència i termes ODbL/atribució visibles en quatre idiomes.
 4. Comprovació amb rutes i mapes existents per evitar solapament/confusió.
