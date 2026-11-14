@@ -44,12 +44,18 @@ function hideAlternative(){
 }
 const num=value=>Number(value).toLocaleString("ca-ES",{maximumFractionDigits:3});
 const coords=centre=>`${num(centre.lat)}°, ${num(centre.lng)}°`;
-
+// The browser and gateway both use a 0.001-degree cell (~111m latitude).
+// Repeated searches inside the same cell must reuse the same documented area.
+function queryCentre(position){
+  return {
+    lat:Math.round(position.lat*1000)/1000,
+    lng:Math.round(position.lng*1000)/1000
+  };
+}
 function isNewArea() {
   if(!map||!searchedCentre)return true;
-  const centre=map.getCenter();
-  return Math.abs(centre.lat-searchedCentre.lat)>0.004 ||
-    Math.abs(centre.lng-searchedCentre.lng)>0.005;
+  const centre=queryCentre(map.getCenter());
+  return centre.lat!==searchedCentre.lat || centre.lng!==searchedCentre.lng;
 }
 function updateView() {
   if(!map)return;
@@ -60,8 +66,10 @@ function updateView() {
   ui.searchButton.disabled=pending;
   // Never silently overwrite an error or the status of an in-flight request
   // when the user pans/zooms the map.
-  if(!pending&&!locating&&isNewArea()&&ui.status.dataset.kind==="info"){
-    message("Tria un tipus de servei o prem «Buscar al centre» per consultar aquesta zona.");
+  if(!pending&&!locating&&isNewArea()&&ui.status.dataset.kind!=="error"&&ui.status.dataset.kind!=="loading"){
+    message(searchedCentre
+      ? "El mapa mostra una zona nova. Els punts visibles són de l'última consulta; prem «Buscar al centre» per actualitzar-los."
+      : "Tria un tipus de servei o prem «Buscar al centre» per consultar aquesta zona.");
   }
 }
 function createOsmLink(item){
@@ -139,9 +147,9 @@ async function fetchAroundCenter({alternative=false}={}){
   if(!map||pending)return;
   // A single deliberate click chooses a 900m area and zooms to show it.
   if(map.getZoom()<12)map.setView(map.getCenter(),14,{animate:false});
-  const centre=map.getCenter();
+  const centre=queryCentre(map.getCenter());
   if(!validateCoords(centre.lat,centre.lng))return;
-  // Cache only identical query centres: rounding could reuse a different 900m circle.
+  // The request, cache and 900m circle all refer to the same snapped centre.
   const key=`${centre.lat}:${centre.lng}`;
   if(!alternative&&cache.has(key)){
     const saved=cache.get(key);
@@ -170,10 +178,7 @@ async function fetchAroundCenter({alternative=false}={}){
   try{
     // Approximate coordinates BEFORE sending them to the backend, so
     // exact GPS coordinates do not enter request URLs, CDN or access logs.
-    const approximateCentre={
-      lat:Math.round(centre.lat*1000)/1000,
-      lng:Math.round(centre.lng*1000)/1000
-    };
+    const approximateCentre=centre;
     const query=new URLSearchParams({
       lat:String(approximateCentre.lat),lng:String(approximateCentre.lng),provider:provider.key
     });
@@ -211,6 +216,9 @@ async function fetchAroundCenter({alternative=false}={}){
     applyData(parsed,queriedCenter);
   }catch(error){
     ui.resultCount.textContent="No s'han pogut carregar els resultats";
+    if(searchedCentre){
+      ui.sourceStamp.textContent=`Mostrant punts de la consulta anterior (${coords(searchedCentre)}), no de la zona nova.`;
+    }
     const msg=String(error?.message||"");
     let explanation;
     if(error?.name==="AbortError"){
