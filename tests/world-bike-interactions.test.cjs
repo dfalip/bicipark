@@ -228,3 +228,21 @@ test('A changed map cell keeps previous results visibly marked as from the old q
     assert.equal(h.fetchCount,1,'Moving the map must never trigger an automatic provider call');
   }finally{h.dom.window.close();}
 });
+
+test('Mapped OSM POIs can be opened in BiciPark route planner with a verified destination',async()=>{
+  const h=await setup();
+  try{
+    h.map.setView([41.39,2.17],15);
+    h.window.document.getElementById('searchButton').click();
+    await h.flush();
+    const links=[...h.window.document.querySelectorAll('#resultList a')]
+      .filter(link=>link.textContent.includes('Planifica'));
+    assert.equal(links.length,2,'One planner link per sourced POI');
+    const target=new URL(links[0].href);
+    assert.equal(target.pathname,'/modules/route-planner/');
+    assert.equal(target.searchParams.get('to'),'41.39,2.17');
+    assert.equal(links[0].target,'_blank','Keep the discovered POI list available');
+    assert.match(h.window.document.getElementById('resultList').textContent,/Fitxa OSM/);
+    assert.equal(h.fetchCount,1,'Opening a link must not issue a second provider request');
+  }finally{h.dom.window.close();}
+});
