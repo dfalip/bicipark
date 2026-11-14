@@ -26,7 +26,9 @@ function fail(res,status,code,message,provider) {
 function valid(lat,lng){
   return Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat)<=90&&Math.abs(lng)<=180;
 }
-// Five decimals limit positional displacement to roughly one metre; three decimals\n// could shift a 900 m radius query by over 60 m and misrepresent its centre.\nfunction snapped(value){return Math.round(value*100000)/100000;}
+// Five decimals limit positional displacement to roughly one metre; three decimals
+// could shift a 900 m radius query by over 60 m and misrepresent its centre.
+function snapped(value){return Math.round(value*100000)/100000;}
 function query(lat,lng){
   const near=`900,${lat.toFixed(5)},${lng.toFixed(5)}`;
   return `[out:json][timeout:10][maxsize:16000000];(nwr(around:${near})["amenity"~"^(bicycle_parking|bicycle_repair_station|drinking_water|bicycle_rental)$"];nwr(around:${near})["shop"="bicycle"];);out center ${MAX_ELEMENTS};`;
