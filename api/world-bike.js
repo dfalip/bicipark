@@ -72,8 +72,31 @@ async function requestOverpass(provider,lat,lng){
   try{
     const claimed=Number(response.headers.get("content-length"));
     if(claimed>MAX_BODY_BYTES)return {ok:false,code:"UPSTREAM_TOO_LARGE",status:502};
-    const raw=await response.text();
-    if(Buffer.byteLength(raw,"utf8")>MAX_BODY_BYTES)return {ok:false,code:"UPSTREAM_TOO_LARGE",status:502};
+    // Stop reading at the byte cap, even when upstream omits Content-Length.
+    // This avoids buffering arbitrarily large Overpass responses in a function.
+    let raw;
+    if(response.body && typeof response.body.getReader==="function"){
+      const reader=response.body.getReader();
+      const chunks=[];
+      let total=0;
+      try{
+        while(true){
+          const {done,value}=await reader.read();
+          if(done)break;
+          total+=value.byteLength;
+          if(total>MAX_BODY_BYTES){
+            await reader.cancel().catch(()=>{});
+            return {ok:false,code:"UPSTREAM_TOO_LARGE",status:502};
+          }
+          chunks.push(Buffer.from(value));
+        }
+      }finally{reader.releaseLock();}
+      raw=Buffer.concat(chunks,total).toString("utf8");
+    }else{
+      // Compatibility with test doubles that expose text() but no stream.
+      raw=await response.text();
+      if(Buffer.byteLength(raw,"utf8")>MAX_BODY_BYTES)return {ok:false,code:"UPSTREAM_TOO_LARGE",status:502};
+    }
     const body=JSON.parse(raw);
     if(!Array.isArray(body.elements))return {ok:false,code:"UPSTREAM_INVALID_DATA",status:502};
     return {ok:true,elements:body.elements.slice(0,MAX_ELEMENTS),
