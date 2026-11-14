@@ -79,3 +79,20 @@ test('World gateway fails closed when an upstream returns HTML or invalid data',
     assert.equal(res.data.code,'UPSTREAM_INVALID_DATA');
   }finally{global.fetch=previous;}
 });
+
+test('World gateway diagnostics never log exact or rounded user coordinates',async()=>{
+  const previous=global.fetch, info=console.info;
+  const logs=[];
+  try{
+    console.info=message=>logs.push(String(message));
+    global.fetch=async()=>({ok:false,status:503,headers:{get:()=>null}});
+    const res=await invoke('/api/world-bike?lat=53.34984&lng=-6.26031');
+    assert.equal(res.statusCode,503);
+    assert.equal(logs.length,1);
+    const metric=JSON.parse(logs[0]);
+    assert.equal(metric.event,'world-bike.provider');
+    assert.equal(metric.provider,'Private.coffee');
+    assert.equal(metric.outcome,'UPSTREAM_HTTP');
+    assert.doesNotMatch(logs[0],/53\\.34|6\\.26|lat|lng|coords|ipAddress/i);
+  }finally{global.fetch=previous;console.info=info;}
+});
