@@ -115,3 +115,19 @@ test('World gateway preserves distinct nearby search centres instead of aliasing
     assert.notDeepEqual(first.data.queriedCenter,second.data.queriedCenter);
   }finally{global.fetch=previous;}
 });
+
+test('World gateway rejects multibyte upstream bodies exceeding the UTF-8 byte cap',async()=>{
+  const previous=global.fetch;
+  try{
+    const multibyte='é'.repeat(430_000);
+    assert.ok(multibyte.length<850_000);
+    assert.ok(Buffer.byteLength(multibyte,'utf8')>850_000);
+    global.fetch=async()=>({
+      ok:true,status:200,headers:{get:()=>null},
+      text:async()=>multibyte
+    });
+    const res=await invoke('/api/world-bike?lat=40.71281&lng=-74.00601');
+    assert.equal(res.statusCode,503);
+    assert.equal(res.data.code,'UPSTREAM_TOO_LARGE');
+  }finally{global.fetch=previous;}
+});
