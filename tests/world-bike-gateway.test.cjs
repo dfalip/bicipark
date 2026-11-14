@@ -177,3 +177,33 @@ test('World gateway accepts valid JSON delivered in multiple stream chunks',asyn
     assert.equal(res.data.elements[0].id,77);
   }finally{global.fetch=previous;}
 });
+
+test('World gateway caps concurrent distinct upstream calls per instance and permits recovery',async()=>{
+  const previous=global.fetch;
+  const releases=[];
+  let calls=0;
+  try{
+    global.fetch=async()=>{
+      calls++;
+      return await new Promise(resolve=>releases.push(()=>resolve({
+        ok:true,status:200,headers:{get:()=>null},
+        text:async()=>JSON.stringify({elements:[]})
+      })));
+    };
+    const pending=Array.from({length:4},(_,i)=>invoke('/api/world-bike?lat=12.'+(10000+i)+'&lng=30.12345'));
+    await Promise.resolve();
+    assert.equal(calls,4);
+    const blocked=await invoke('/api/world-bike?lat=13.12345&lng=30.12345');
+    assert.equal(blocked.statusCode,503);
+    assert.equal(blocked.data.code,'LOCAL_CAPACITY');
+    assert.equal(calls,4);
+    releases.forEach(release=>release());
+    const finished=await Promise.all(pending);
+    assert.ok(finished.every(r=>r.statusCode===200));
+    const next=invoke('/api/world-bike?lat=14.12345&lng=30.12345');
+    await Promise.resolve();
+    assert.equal(calls,5);
+    releases[4]();
+    assert.equal((await next).statusCode,200);
+  }finally{global.fetch=previous;}
+});
