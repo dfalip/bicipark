@@ -39,3 +39,18 @@ test("world API rejects missing and invalid GPS coordinates", async () => {
     assert.equal(res.payload.code, "INVALID_COORDS", url);
   }
 });
+
+test("world API rejects ambiguous and nondecimal coordinates without contacting provider", async () => {
+  for (const url of [
+    "/api/world-bike?lat=41.38&lat=42&lng=2.17",
+    "/api/world-bike?lat=41.38&lng=2.17&lng=3",
+    "/api/world-bike?lat=0x29&lng=2.17",
+    "/api/world-bike?lat=4.138e1&lng=2.17",
+    "/api/world-bike?lat=41.38abc&lng=2.17",
+    "/api/world-bike?lat=%2B&lng=2.17"
+  ]) {
+    const res = await invoke(url);
+    assert.equal(res.statusCode, 400, url);
+    assert.equal(res.payload.code, "INVALID_COORDS", url);
+  }
+});
