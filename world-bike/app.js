@@ -3,13 +3,18 @@ import {SEARCH_RADIUS_METERS, SERVICE_TYPES, buildOverpassQuery, normalizeOverpa
 // Public, shared Overpass is for deliberately small manual pilot requests only.
 // DO NOT use this as the production backend at scale. A quota-limited service
 // with global application-level caching and throttling must replace it.
-const PROVIDER = "https://overpass-api.de/api/interpreter";
+// Two independently operated public Overpass services; the second is used
+// ONLY after the visitor explicitly requests an alternative. No blind retries.
+const PROVIDERS = Object.freeze([
+  {label:"Private.coffee",url:"https://overpass.private.coffee/api/interpreter"},
+  {label:"FOSSGIS / overpass-api.de",url:"https://overpass-api.de/api/interpreter"}
+]);
 const COOLDOWN_MS = 20000;
 const PROVIDER_LIMIT_PAUSE_MS = 30000;
 const CACHE_MAX_ENTRIES = 12;
 const ui = Object.fromEntries([
   "worldMap","coordinates","locateButton","searchButton","status",
-  "resultCount","sourceStamp","resultList"
+  "resultCount","sourceStamp","resultList","alternateProviderButton"
 ].map(id=>[id,document.getElementById(id)]));
 const filters=[...document.querySelectorAll(".wb-filters button")];
 let activeType="all";
@@ -17,15 +22,24 @@ let records=[];
 let sourceTimestamp=null;
 let mayBeTruncated=false;
 let searchedCentre=null;
-let lastRequestAt=0;
-let limitedUntil=0;
+const lastRequestAt=[0,0];
+const limitedUntil=[0,0];
+let activeProviderIndex=0;
+let lastErrorProvider=null;
 let pending=false;
 let locating=false;
 const cache=new Map();
 let map=null;
 let markers=null;
 let searchCircle=null;
-const message=text=>{ui.status.textContent=text;};
+const message=(text,kind="info")=>{
+  ui.status.textContent=text;
+  ui.status.dataset.kind=kind;
+};
+function hideAlternative(){
+  ui.alternateProviderButton.hidden=true;
+  lastErrorProvider=null;
+}
 const num=value=>Number(value).toLocaleString("ca-ES",{maximumFractionDigits:3});
 const coords=centre=>`${num(centre.lat)}°, ${num(centre.lng)}°`;
 
@@ -42,8 +56,10 @@ function updateView() {
   // The query radius is fixed at 900m regardless of the current map zoom.
   // Never trap first-time visitors behind an unexplained disabled button.
   ui.searchButton.disabled=pending;
-  if(!pending&&!locating&&isNewArea()){
-    message("Tria un tipus de servei o prem «Buscar aquí» per carregar dades del centre del mapa.");
+  // Never silently overwrite an error or the status of an in-flight request
+  // when the user pans/zooms the map.
+  if(!pending&&!locating&&isNewArea()&&ui.status.dataset.kind==="info"){
+    message("Tria un tipus de servei o prem «Buscar al centre» per consultar aquesta zona.");
   }
 }
 function createOsmLink(item){
@@ -108,10 +124,15 @@ function applyData(data,location){
   searchCircle=L.circle([location.lat,location.lng],{radius:SEARCH_RADIUS_METERS,
     color:"#0b7055",weight:2,fillOpacity:.04}).addTo(map);
   renderResults();
-  if(records.length===0)message("No hi ha registres en aquesta consulta. Les dades OSM poden ser incompletes.");
-  else message(`Consulta completada: ${records.length} registres OSM dins de 900 m. No verificats in situ.`);
+  if(records.length===0)message("Consulta completada, però sense registres per aquesta zona. Les dades OSM poden ser incompletes.","success");
+  else message(`Consulta completada: ${records.length} registres OSM dins de 900 m (no verificats in situ).`,"success");
+  hideAlternative();
 }
-async function fetchAroundCenter(){
+async function fetchAroundCenter({alternative=false}={}){
+  // Search is always triggered by a user action (category, nearby, or button).
+  if(alternative&&lastErrorProvider===null)return;
+  const providerIndex=alternative ? 1-lastErrorProvider : activeProviderIndex;
+  const provider=PROVIDERS[providerIndex];
   if(!map||pending)return;
   // A single deliberate click chooses a 900m area and zooms to show it.
   if(map.getZoom()<12)map.setView(map.getCenter(),14,{animate:false});
@@ -126,24 +147,24 @@ async function fetchAroundCenter(){
     return;
   }
   const now=Date.now();
-  if(now<limitedUntil){
-    message("El servei públic ha limitat les consultes. Torna-ho a provar al cap de 30 segons o més.");
+  if(now<limitedUntil[providerIndex]){
+    message(`${provider.label}: cal esperar abans de tornar a consultar aquest servidor.`,"error");
     return;
   }
-  if(now-lastRequestAt<COOLDOWN_MS){
-    message("Per respectar el servei públic, espera uns segons abans de fer una nova consulta.");
+  if(now-lastRequestAt[providerIndex]<COOLDOWN_MS){
+    message(`${provider.label}: espera uns segons abans de repetir la consulta.`,"error");
     return;
   }
-  lastRequestAt=now;
+  lastRequestAt[providerIndex]=now;
   pending=true;
   ui.searchButton.disabled=true;
   ui.resultCount.textContent="Buscant serveis cartografiats...";
-  message("Consultant un radi de 900 m. Aquesta cerca envia el centre del mapa a Overpass.");
+  message(`Consultant ${provider.label} per a un radi de 900 m...`,"loading");
   const controller=new AbortController();
   const timeout=setTimeout(()=>controller.abort(),16000);
   try{
     const query=buildOverpassQuery(centre.lat,centre.lng);
-    const response=await fetch(PROVIDER,{
+    const response=await fetch(provider.url,{
       method:"POST",
       headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},
       body:new URLSearchParams({data:query}).toString(),
@@ -152,18 +173,34 @@ async function fetchAroundCenter(){
     });
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
     const parsed=normalizeOverpassResponse(await response.json());
+    activeProviderIndex=providerIndex;
     cache.set(key,{data:parsed,centre:{lat:centre.lat,lng:centre.lng}});
     if(cache.size>CACHE_MAX_ENTRIES)cache.delete(cache.keys().next().value);
     applyData(parsed,centre);
   }catch(error){
-    if(!searchedCentre)ui.resultCount.textContent="No s'han pogut carregar els resultats";
-    if(error?.name==="AbortError")message("La consulta ha trigat massa. Prova més tard; no la repetim automàticament.");
-    else if(/HTTP (406|429)/.test(error?.message||"")){
-      limitedUntil=Date.now()+PROVIDER_LIMIT_PAUSE_MS;
-      message("Overpass ha limitat o rebutjat la consulta. Espera almenys 30 segons abans de tornar-ho a provar; no hi ha reintents automàtics.");
-    }else if(/HTTP (504|503|502)/.test(error?.message||"")){
-      message("El servidor Overpass està saturat o temporalment indisponible. Prova més tard.");
-    }else message("No s'han pogut recuperar dades d'aquesta zona. Comprova la connexió o prova més tard.");
+    ui.resultCount.textContent="No s'han pogut carregar els resultats";
+    const msg=String(error?.message||"");
+    let explanation;
+    if(error?.name==="AbortError"){
+      explanation="La consulta ha superat el temps màxim de 16 segons.";
+    }else if(/HTTP (406|429)/.test(msg)){
+      limitedUntil[providerIndex]=Date.now()+PROVIDER_LIMIT_PAUSE_MS;
+      explanation=`El servidor ha limitat o rebutjat la petició (${msg}).`;
+    }else if(/HTTP (502|503|504)/.test(msg)){
+      explanation=`El servidor està saturat o temporalment indisponible (${msg}).`;
+    }else if(/HTTP 400/.test(msg)){
+      explanation="La consulta ha estat rebutjada per format incorrecte (HTTP 400).";
+    }else if(/^HTTP \d{3}$/.test(msg)){
+      explanation=`El servidor ha respost amb ${msg}.`;
+    }else if(error?.name==="TypeError"){
+      explanation="No s'ha pogut connectar amb el servei des del navegador (possible xarxa o CORS).";
+    }else{
+      explanation="La resposta del servei no és vàlida o la connexió ha fallat.";
+    }
+    message(`Error de ${provider.label}: ${explanation} Pots provar l'altre servidor una sola vegada, manualment.`,"error");
+    lastErrorProvider=providerIndex;
+    ui.alternateProviderButton.hidden=false;
+    ui.alternateProviderButton.textContent=`🔄 Provar ${PROVIDERS[1-providerIndex].label}`;
   }finally{
     clearTimeout(timeout);
     pending=false;
@@ -178,7 +215,10 @@ filters.forEach(button=>button.addEventListener("click",()=>{
   if(map&&!pending&&isNewArea())fetchAroundCenter();
   else renderResults();
 }));
-ui.searchButton.addEventListener("click",fetchAroundCenter);
+ui.searchButton.addEventListener("click",()=>fetchAroundCenter());
+ui.alternateProviderButton.addEventListener("click",()=>{
+  if(!pending&&lastErrorProvider!==null)fetchAroundCenter({alternative:true});
+});
 ui.locateButton.addEventListener("click",()=>{
   if(!map)return;
   if(!navigator.geolocation){
