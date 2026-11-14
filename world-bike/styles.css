@@ -40,3 +40,11 @@
 :where(a,button,.leaflet-container):focus-visible{outline:3px solid #176ad5;outline-offset:3px}
 @media(max-width:820px){.wb-layout{grid-template-columns:1fr}.wb-map{height:clamp(320px,55vh,540px)}.wb-map-wrap{order:0}.wb-panel{order:1}}
 @media(max-width:420px){.wb-main{width:calc(100% - 18px);padding-top:15px}.wb-header{padding:13px}.wb-panel{padding:13px}}
+
+/* A failed public data query must be clear, recoverable and never silent. */
+.wb-provider-retry{margin:10px 0 14px;min-height:46px}
+.wb-provider-retry[hidden]{display:none!important}
+.wb-status[data-kind="loading"]{background:#e9f2ff;border:1px solid #b6cdf1;color:#174b85}
+.wb-status[data-kind="success"]{background:#e5f6ec;border:1px solid #b8e2c7;color:#0e5939}
+.wb-status[data-kind="error"]{background:#fff1e4;border:1px solid #edc3a3;color:#83401e;font-weight:700}
+.wb-disclaimer a{color:#156d4d;text-underline-offset:3px}
