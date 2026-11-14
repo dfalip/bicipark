@@ -18,6 +18,7 @@ let mayBeTruncated=false;
 let searchedCentre=null;
 let lastRequestAt=0;
 let pending=false;
+let locating=false;
 const cache=new Map();
 let map=null;
 let markers=null;
@@ -26,15 +27,21 @@ const message=text=>{ui.status.textContent=text;};
 const num=value=>Number(value).toLocaleString("ca-ES",{maximumFractionDigits:3});
 const coords=centre=>`${num(centre.lat)}°, ${num(centre.lng)}°`;
 
+function isNewArea() {
+  if(!map||!searchedCentre)return true;
+  const centre=map.getCenter();
+  return Math.abs(centre.lat-searchedCentre.lat)>0.004 ||
+    Math.abs(centre.lng-searchedCentre.lng)>0.005;
+}
 function updateView() {
   if(!map)return;
   const centre=map.getCenter();
   ui.coordinates.textContent=`${coords(centre)} · zoom ${map.getZoom()}`;
-  ui.searchButton.disabled=map.getZoom()<12||pending;
-  if(map.getZoom()<12){
-    message("Acosta el mapa fins a zoom 12 o superior per consultar una àrea concreta.");
-  }else if(!pending){
-    message("Pots consultar ara un radi de 900 m al centre del mapa.");
+  // The query radius is fixed at 900m regardless of the current map zoom.
+  // Never trap first-time visitors behind an unexplained disabled button.
+  ui.searchButton.disabled=pending;
+  if(!pending&&!locating&&isNewArea()){
+    message("Tria un tipus de servei o prem «Buscar aquí» per carregar dades del centre del mapa.");
   }
 }
 function createOsmLink(item){
@@ -104,7 +111,8 @@ function applyData(data,location){
 }
 async function fetchAroundCenter(){
   if(!map||pending)return;
-  if(map.getZoom()<12){message("Acosta el mapa a zoom 12 o més abans de consultar.");return;}
+  // A single deliberate click chooses a 900m area and zooms to show it.
+  if(map.getZoom()<12)map.setView(map.getCenter(),14,{animate:false});
   const centre=map.getCenter();
   if(!validateCoords(centre.lat,centre.lng))return;
   const key=`${centre.lat.toFixed(3)}:${centre.lng.toFixed(3)}`;
@@ -122,7 +130,8 @@ async function fetchAroundCenter(){
   lastRequestAt=now;
   pending=true;
   ui.searchButton.disabled=true;
-  message("Consultant un radi reduït... Sense consultes automàtiques ni reintents.");
+  ui.resultCount.textContent="Buscant serveis cartografiats...";
+  message("Consultant un radi de 900 m. Aquesta cerca envia el centre del mapa a Overpass.");
   const controller=new AbortController();
   const timeout=setTimeout(()=>controller.abort(),16000);
   try{
@@ -140,6 +149,7 @@ async function fetchAroundCenter(){
     if(cache.size>CACHE_MAX_ENTRIES)cache.delete(cache.keys().next().value);
     applyData(parsed,centre);
   }catch(error){
+    if(!searchedCentre)ui.resultCount.textContent="No s'han pogut carregar els resultats";
     if(error?.name==="AbortError")message("La consulta ha trigat massa. Prova més tard; no la repetim automàticament.");
     else if(/HTTP (429|504|503|502)/.test(error?.message||"")){
       message("Servei públic saturat o limitat. No es faran reintents automàtics.");
@@ -147,21 +157,45 @@ async function fetchAroundCenter(){
   }finally{
     clearTimeout(timeout);
     pending=false;
-    ui.searchButton.disabled=map.getZoom()<12;
+    ui.searchButton.disabled=false;
   }
 }
 filters.forEach(button=>button.addEventListener("click",()=>{
   activeType=button.dataset.type;
   filters.forEach(item=>item.setAttribute("aria-pressed",String(item===button)));
-  renderResults();
+  // A category tap is a user-initiated search if no results exist for this zone.
+  // Otherwise it filters the already fetched results without a network call.
+  if(map&&!pending&&isNewArea())fetchAroundCenter();
+  else renderResults();
 }));
 ui.searchButton.addEventListener("click",fetchAroundCenter);
 ui.locateButton.addEventListener("click",()=>{
-  if(!navigator.geolocation){message("La geolocalització no està disponible en aquest navegador.");return;}
-  message("Sol·licitant permís de localització al navegador...");
+  if(!map)return;
+  if(!navigator.geolocation){
+    message("Aquest navegador no permet accedir al GPS. Mou el mapa i prem «Buscar aquí».");
+    return;
+  }
+  locating=true;
+  ui.locateButton.disabled=true;
+  message("Esperant permís del GPS... En confirmar-lo, cercarem serveis a prop teu.");
   navigator.geolocation.getCurrentPosition(position=>{
-    map?.setView([position.coords.latitude,position.coords.longitude],15);
-  },()=>message("No s'ha pogut accedir a la localització. També pots moure el mapa manualment."),{
+    locating=false;
+    ui.locateButton.disabled=false;
+    const lat=position.coords.latitude,lng=position.coords.longitude;
+    if(!validateCoords(lat,lng)){
+      message("La ubicació GPS no és vàlida. Mou el mapa manualment.");
+      return;
+    }
+    map.setView([lat,lng],15,{animate:false});
+    // The button explicitly requests a nearby service search, not just centering.
+    fetchAroundCenter();
+  },error=>{
+    locating=false;
+    ui.locateButton.disabled=false;
+    if(error?.code===1)message("Permís de localització denegat. Pots moure el mapa i prémer «Buscar aquí».");
+    else if(error?.code===3)message("No s'ha pogut obtenir la ubicació a temps. Mou el mapa o torna-ho a provar.");
+    else message("No s'ha pogut obtenir la ubicació. Pots cercar directament al centre del mapa.");
+  },{
     enableHighAccuracy:false,maximumAge:60000,timeout:12000
   });
 });
@@ -182,5 +216,11 @@ if(typeof window.L==="undefined"){
   markers=L.layerGroup().addTo(map);
   map.on("moveend",updateView);
   map.on("zoomend",updateView);
+  map.on("click",event=>{
+    if(map.getZoom()<12){
+      map.setView(event.latlng,14,{animate:false});
+      message("Zona seleccionada. Tria una categoria o prem «Buscar aquí».");
+    }
+  });
   updateView();
 }
