@@ -34,8 +34,9 @@
         <div class="wb-panel-head"><h2>Serveis per a ciclistes</h2><p>Els botons de categoria consulten la zona del mapa i després filtren els resultats.</p></div>
         <button id="locateButton" type="button" class="wb-button wb-button-secondary">📍 Cerca serveis a prop meu</button>
         <button id="searchButton" type="button" class="wb-button wb-button-primary">🔎 Buscar al centre del mapa (900 m)</button>
-        <p class="wb-disclaimer">«Cerca serveis a prop meu» demana permís de GPS i, si el concedeixes, consulta la teva zona a Overpass. Les categories i «Buscar al centre» consulten el centre del mapa. Les tesel·les del mapa comuniquen al proveïdor la zona visualitzada. Radi de cerca: 900 m.</p>
+        <p class="wb-disclaimer">«Cerca serveis a prop meu» demana permís de GPS i, si el concedeixes, consulta la teva zona a Overpass. Les categories i «Buscar al centre» consulten el centre del mapa. Les tesel·les del mapa comuniquen al proveïdor la zona visualitzada. Les consultes de serveis es fan a <a href="https://overpass.private.coffee/" target="_blank" rel="noopener noreferrer">Private.coffee</a>, o al servidor alternatiu si ho tries. Radi de cerca: 900 m.</p>
         <p id="status" class="wb-status" role="status" aria-live="polite">Selecciona una categoria, prem «Buscar al centre» o cerca a prop teu.</p>
+        <button id="alternateProviderButton" type="button" class="wb-button wb-button-secondary wb-provider-retry" hidden>🔄 Prova un altre servidor de dades</button>
         <div class="wb-filters" aria-label="Cerca o filtra serveis cartografiats">
           <button type="button" data-type="all" aria-pressed="true">Tots</button>
           <button type="button" data-type="bicycle_parking" aria-pressed="false">🅿️ Aparcament</button>
