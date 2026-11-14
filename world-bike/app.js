@@ -5,6 +5,7 @@ import {SEARCH_RADIUS_METERS, SERVICE_TYPES, buildOverpassQuery, normalizeOverpa
 // with global application-level caching and throttling must replace it.
 const PROVIDER = "https://overpass-api.de/api/interpreter";
 const COOLDOWN_MS = 20000;
+const PROVIDER_LIMIT_PAUSE_MS = 30000;
 const CACHE_MAX_ENTRIES = 12;
 const ui = Object.fromEntries([
   "worldMap","coordinates","locateButton","searchButton","status",
@@ -17,6 +18,7 @@ let sourceTimestamp=null;
 let mayBeTruncated=false;
 let searchedCentre=null;
 let lastRequestAt=0;
+let limitedUntil=0;
 let pending=false;
 let locating=false;
 const cache=new Map();
@@ -123,6 +125,10 @@ async function fetchAroundCenter(){
     return;
   }
   const now=Date.now();
+  if(now<limitedUntil){
+    message("El servei públic ha limitat les consultes. Torna-ho a provar al cap de 30 segons o més.");
+    return;
+  }
   if(now-lastRequestAt<COOLDOWN_MS){
     message("Per respectar el servei públic, espera uns segons abans de fer una nova consulta.");
     return;
@@ -151,8 +157,11 @@ async function fetchAroundCenter(){
   }catch(error){
     if(!searchedCentre)ui.resultCount.textContent="No s'han pogut carregar els resultats";
     if(error?.name==="AbortError")message("La consulta ha trigat massa. Prova més tard; no la repetim automàticament.");
-    else if(/HTTP (429|504|503|502)/.test(error?.message||"")){
-      message("Servei públic saturat o limitat. No es faran reintents automàtics.");
+    else if(/HTTP (406|429)/.test(error?.message||"")){
+      limitedUntil=Date.now()+PROVIDER_LIMIT_PAUSE_MS;
+      message("Overpass ha limitat o rebutjat la consulta. Espera almenys 30 segons abans de tornar-ho a provar; no hi ha reintents automàtics.");
+    }else if(/HTTP (504|503|502)/.test(error?.message||"")){
+      message("El servidor Overpass està saturat o temporalment indisponible. Prova més tard.");
     }else message("No s'han pogut recuperar dades d'aquesta zona. Comprova la connexió o prova més tard.");
   }finally{
     clearTimeout(timeout);
