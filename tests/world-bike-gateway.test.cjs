@@ -50,7 +50,7 @@ test('World gateway sends a bounded query server-side and returns attributable O
     assert.equal(res.data.ok,true);
     assert.equal(res.data.elements.length,1);
     assert.equal(res.data.provider,'Private.coffee');
-    assert.deepEqual(res.data.queriedCenter,{lat:41.389,lng:2.17});
+    assert.deepEqual(res.data.queriedCenter,{lat:41.38902,lng:2.16996});
     assert.match(res.headers['cache-control'],/s-maxage=600/);
     assert.equal(requests,1);
   }finally{global.fetch=previous;}
@@ -95,4 +95,23 @@ test('World gateway diagnostics never log exact or rounded user coordinates',asy
     assert.equal(metric.outcome,'UPSTREAM_HTTP');
     assert.doesNotMatch(logs[0],/53\\.34|6\\.26|lat|lng|coords|ipAddress/i);
   }finally{global.fetch=previous;console.info=info;}
+});
+
+test('World gateway preserves distinct nearby search centres instead of aliasing 3-decimal buckets',async()=>{
+  const previous=global.fetch;
+  const centres=[];
+  try{
+    global.fetch=async (_url,opts)=>{
+      centres.push(new URLSearchParams(String(opts.body)).get('data'));
+      return {ok:true,status:200,headers:{get:()=>null},text:async()=>JSON.stringify({elements:[]})};
+    };
+    const first=await invoke('/api/world-bike?lat=48.85661&lng=2.35221');
+    const second=await invoke('/api/world-bike?lat=48.85699&lng=2.35249');
+    assert.equal(first.statusCode,200);
+    assert.equal(second.statusCode,200);
+    assert.equal(centres.length,2);
+    assert.match(centres[0],/around:900,48\\.85661,2\\.35221/);
+    assert.match(centres[1],/around:900,48\\.85699,2\\.35249/);
+    assert.notDeepEqual(first.data.queriedCenter,second.data.queriedCenter);
+  }finally{global.fetch=previous;}
 });
