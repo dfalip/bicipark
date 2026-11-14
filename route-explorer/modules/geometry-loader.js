@@ -33,12 +33,16 @@ export function clearGeometryCache() {
 }
 
 function parseTrackPoint(node) {
-  const latitude = Number(node.getAttribute("lat"));
-  const longitude = Number(node.getAttribute("lon"));
+  const rawLat = node.getAttribute("lat");
+  const rawLon = node.getAttribute("lon");
+  const latitude = rawLat?.trim() ? Number(rawLat) : NaN;
+  const longitude = rawLon?.trim() ? Number(rawLon) : NaN;
   const elevationNode = node.querySelector("ele");
-  const elevation = elevationNode ? Number(elevationNode.textContent) : null;
+  const rawEle = elevationNode?.textContent;
+  const elevation = rawEle?.trim() ? Number(rawEle) : null;
 
-  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude) ||
+      latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
     return null;
   }
 
@@ -61,16 +65,21 @@ function parseGpx(text) {
 
   const profileSegments = [
     ...xml.querySelectorAll("trkseg")
-  ].map(segmentNode =>
-    [...segmentNode.querySelectorAll("trkpt")]
-      .map(parseTrackPoint)
-      .filter(Boolean)
-  ).filter(segment => segment.length >= 2);
+  ].map(segmentNode => {
+    const parsed = [...segmentNode.querySelectorAll("trkpt")].map(parseTrackPoint);
+    if (parsed.some(point => point === null)) {
+      throw new Error("El GPX conté punts amb coordenades no vàlides.");
+    }
+    return parsed;
+  }).filter(segment => segment.length >= 2);
 
   if (profileSegments.length === 0) {
     const routePoints = [
       ...xml.querySelectorAll("rtept")
-    ].map(parseTrackPoint).filter(Boolean);
+    ].map(parseTrackPoint);
+    if (routePoints.some(point => point === null)) {
+      throw new Error("El GPX conté punts de ruta no vàlids.");
+    }
 
     if (routePoints.length >= 2) {
       profileSegments.push(routePoints);
