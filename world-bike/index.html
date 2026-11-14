@@ -20,7 +20,7 @@
       <div>
         <p class="wb-overline">BiciPark World · pilot experimental</p>
         <h1>El planeta, a dues rodes.</h1>
-        <p>Busca serveis ciclistes <strong>cartografiats</strong> al voltant de qualsevol punt del món. Mou el mapa, apropa't i prem «Buscar aquí».</p>
+        <p>Busca serveis ciclistes <strong>cartografiats</strong> arreu del món. Mou el mapa i tria un servei, o prem «Cerca serveis a prop meu» per fer-ho amb el GPS.</p>
       </div>
       <div class="wb-provenance"><strong>Font: OpenStreetMap</strong><span>Registres comunitaris · no verificats in situ</span></div>
     </div>
@@ -31,12 +31,12 @@
         <div class="wb-map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a></div>
       </div>
       <aside class="wb-panel">
-        <div class="wb-panel-head"><h2>Serveis per a ciclistes</h2><p>Només es consulten dades quan prems el botó.</p></div>
-        <button id="locateButton" type="button" class="wb-button wb-button-secondary">📍 Centra a la meva zona</button>
-        <button id="searchButton" type="button" class="wb-button wb-button-primary" disabled>🔎 Buscar aquí (900 m)</button>
-        <p class="wb-disclaimer">La cerca envia el centre del mapa a Overpass. Les tesel·les del mapa també mostren al proveïdor la zona visualitzada. El GPS només s'activa si prems «Centra a la meva zona». Zoom mínim: 12.</p>
-        <p id="status" class="wb-status" role="status" aria-live="polite">Apropa el mapa a una zona per començar.</p>
-        <div class="wb-filters" aria-label="Filtra serveis cartografiats">
+        <div class="wb-panel-head"><h2>Serveis per a ciclistes</h2><p>Els botons de categoria consulten la zona del mapa i després filtren els resultats.</p></div>
+        <button id="locateButton" type="button" class="wb-button wb-button-secondary">📍 Cerca serveis a prop meu</button>
+        <button id="searchButton" type="button" class="wb-button wb-button-primary">🔎 Buscar al centre del mapa (900 m)</button>
+        <p class="wb-disclaimer">«Cerca serveis a prop meu» demana permís de GPS i, si el concedeixes, consulta la teva zona a Overpass. Les categories i «Buscar al centre» consulten el centre del mapa. Les tesel·les del mapa comuniquen al proveïdor la zona visualitzada. Radi de cerca: 900 m.</p>
+        <p id="status" class="wb-status" role="status" aria-live="polite">Selecciona una categoria, prem «Buscar al centre» o cerca a prop teu.</p>
+        <div class="wb-filters" aria-label="Cerca o filtra serveis cartografiats">
           <button type="button" data-type="all" aria-pressed="true">Tots</button>
           <button type="button" data-type="bicycle_parking" aria-pressed="false">🅿️ Aparcament</button>
           <button type="button" data-type="bicycle_repair_station" aria-pressed="false">🛠️ Reparació</button>
