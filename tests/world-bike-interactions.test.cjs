@@ -130,3 +130,22 @@ test('Provider 429 is visible and is not shown as an empty successful response',
     assert.equal(h.fetchCount,1,'429 must impose a local pause without automatic retry');
   }finally{h.dom.window.close();}
 });
+
+test('Cache reuses only the exact centre, never a shifted 900m search circle',async()=>{
+  const h=await setup();
+  try{
+    h.map.setView([41.39,2.17],15);
+    h.window.document.getElementById('searchButton').click();
+    await h.flush();
+    assert.equal(h.fetchCount,1);
+    h.window.document.getElementById('searchButton').click();
+    await h.flush();
+    assert.equal(h.fetchCount,1,'Same centre should reuse results');
+    assert.match(h.window.document.getElementById('status').textContent,/reutilitzats/);
+    h.map.setView([41.3904,2.1704],15);
+    h.window.document.getElementById('searchButton').click();
+    await h.flush();
+    assert.equal(h.fetchCount,1,'Cooldown still prevents another provider call');
+    assert.match(h.window.document.getElementById('status').textContent,/espera uns segons/,'Shifted centre must not reuse the previous circle');
+  }finally{h.dom.window.close();}
+});
