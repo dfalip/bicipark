@@ -28,6 +28,7 @@ async function setup({withGPS=false,denyGPS=false,failedFetch=false,primaryFails
   let location={lat:20,lng:0};
   let zoom=2;
   let fetchCount=0;
+  const requestUrls=[];
   const listeners = new Map();
   const emit=(key,payload)=>{for(const fn of listeners.get(key)||[])fn(payload);};
   const markerLayer={addTo(){return this;},clearLayers(){},addLayer(){}};
@@ -55,6 +56,7 @@ async function setup({withGPS=false,denyGPS=false,failedFetch=false,primaryFails
   };
   window.fetch=async url=>{
     fetchCount+=1;
+    requestUrls.push(String(url));
     assert.match(String(url),/^\/api\/world-bike\?/,'Browser must use its own gateway, not third-party CORS');
     const provider=new URL(String(url),'https://example.org').searchParams.get('provider');
     if(failedFetch)return {ok:false,status:503,json:async()=>({
@@ -79,7 +81,7 @@ async function setup({withGPS=false,denyGPS=false,failedFetch=false,primaryFails
     'const {SEARCH_RADIUS_METERS,SERVICE_TYPES,buildOverpassQuery,normalizeOverpassResponse,validateCoords}=window.__worldServices;\n'
   ));
   const flush=async()=>{await new Promise(resolve=>setTimeout(resolve,12));};
-  return {window,dom,map,flush,get fetchCount(){return fetchCount;},get zoom(){return zoom;},get location(){return location;}};
+  return {window,dom,map,flush,requestUrls,get fetchCount(){return fetchCount;},get zoom(){return zoom;},get location(){return location;}};
 }
 
 test('Initial search works at world zoom; category button loads OSM data then filters locally',async()=>{
@@ -189,5 +191,20 @@ test('Alternative public provider requires a direct click and can recover from p
     assert.equal(h.window.document.getElementById('alternateProviderButton').hidden,true);
     assert.equal(h.window.document.getElementById('status').dataset.kind,'success');
     assert.match(h.window.document.getElementById('resultCount').textContent,/2 registres/);
+  }finally{h.dom.window.close();}
+});
+
+test('Only approximate GPS coordinates reach the gateway URL and returned provenance is shown',async()=>{
+  const h=await setup();
+  try{
+    h.map.setView([41.38942,2.16987],15);
+    h.window.document.getElementById('searchButton').click();
+    await h.flush();
+    assert.equal(h.fetchCount,1);
+    const request=new URL(h.requestUrls[0],'https://example.org');
+    assert.equal(request.searchParams.get('lat'),'41.389');
+    assert.equal(request.searchParams.get('lng'),'2.17');
+    assert.doesNotMatch(h.requestUrls[0],/41\\.38942|2\\.16987/);
+    assert.match(h.window.document.getElementById('sourceStamp').textContent,/Private.coffee/);
   }finally{h.dom.window.close();}
 });
