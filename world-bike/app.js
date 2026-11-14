@@ -72,6 +72,17 @@ function updateView() {
       : "Tria un tipus de servei o prem «Buscar al centre» per consultar aquesta zona.");
   }
 }
+function createPlannerLink(item){
+  const link=document.createElement("a");
+  link.href="/modules/route-planner/?" + new URLSearchParams({
+    to:`${item.lat},${item.lng}`
+  }).toString();
+  link.target="_blank";
+  link.rel="noopener noreferrer";
+  link.title="Obre el planificador de BiciPark en una pestanya nova";
+  link.textContent="Planifica fins aquí ↗";
+  return link;
+}
 function createOsmLink(item){
   const link=document.createElement("a");
   link.href=item.sourceUrl;
@@ -108,7 +119,7 @@ function renderResults(){
     focus.type="button";
     focus.textContent="Veure al mapa";
     focus.addEventListener("click",()=>{if(map)map.setView([place.lat,place.lng],17);});
-    actions.append(focus,createOsmLink(place));
+    actions.append(focus,createPlannerLink(place),createOsmLink(place));
     li.append(heading,meta,actions);
     ui.resultList.appendChild(li);
     const marker=L.circleMarker([place.lat,place.lng],{
@@ -117,7 +128,7 @@ function renderResults(){
     const popup=document.createElement("div");
     const title=document.createElement("strong");title.textContent=place.name;
     const type=document.createElement("p");type.textContent=category.label+" · OSM (no verificat)";
-    popup.append(title,type,createOsmLink(place));
+    popup.append(title,type,createPlannerLink(place),createOsmLink(place));
     marker.bindPopup(popup);
     markers.addLayer(marker);
   }
