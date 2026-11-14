@@ -93,7 +93,7 @@ test('World gateway diagnostics never log exact or rounded user coordinates',asy
     assert.equal(metric.event,'world-bike.provider');
     assert.equal(metric.provider,'Private.coffee');
     assert.equal(metric.outcome,'UPSTREAM_HTTP');
-    assert.doesNotMatch(logs[0],/53\\.34|6\\.26|lat|lng|coords|ipAddress/i);
+    assert.doesNotMatch(logs[0],/53\.34|6\.26|lat|lng|coords|ipAddress/i);
   }finally{global.fetch=previous;console.info=info;}
 });
 
@@ -110,8 +110,8 @@ test('World gateway preserves distinct nearby search centres instead of aliasing
     assert.equal(first.statusCode,200);
     assert.equal(second.statusCode,200);
     assert.equal(centres.length,2);
-    assert.match(centres[0],/around:900,48\\.85661,2\\.35221/);
-    assert.match(centres[1],/around:900,48\\.85699,2\\.35249/);
+    assert.match(centres[0],/around:900,48\.85661,2\.35221/);
+    assert.match(centres[1],/around:900,48\.85699,2\.35249/);
     assert.notDeepEqual(first.data.queriedCenter,second.data.queriedCenter);
   }finally{global.fetch=previous;}
 });
