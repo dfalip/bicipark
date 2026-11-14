@@ -131,3 +131,49 @@ test('World gateway rejects multibyte upstream bodies exceeding the UTF-8 byte c
     assert.equal(res.data.code,'UPSTREAM_TOO_LARGE');
   }finally{global.fetch=previous;}
 });
+
+test('World gateway cancels an oversized streaming upstream response before buffering all chunks',async()=>{
+  const previous=global.fetch;
+  let reads=0,cancels=0;
+  try{
+    global.fetch=async()=>({
+      ok:true,status:200,headers:{get:()=>null},
+      body:{getReader(){
+        return {
+          async read(){
+            reads++;
+            return {done:false,value:new Uint8Array(500_000)};
+          },
+          async cancel(){cancels++;},
+          releaseLock(){}
+        };
+      }},
+      text:async()=>{throw Error('streaming response must not call text()');}
+    });
+    const res=await invoke('/api/world-bike?lat=37.77493&lng=-122.41942');
+    assert.equal(res.statusCode,503);
+    assert.equal(res.data.code,'UPSTREAM_TOO_LARGE');
+    assert.equal(reads,2);
+    assert.equal(cancels,1);
+  }finally{global.fetch=previous;}
+});
+
+test('World gateway accepts valid JSON delivered in multiple stream chunks',async()=>{
+  const previous=global.fetch;
+  try{
+    const bytes=Buffer.from(JSON.stringify({elements:[{type:'node',id:77,lat:59.33,lon:18.06,tags:{amenity:'drinking_water'}}]}));
+    const chunks=[bytes.subarray(0,9),bytes.subarray(9)];
+    global.fetch=async()=>({
+      ok:true,status:200,headers:{get:()=>null},
+      body:{getReader(){
+        return {
+          async read(){return chunks.length?{done:false,value:chunks.shift()}:{done:true};},
+          releaseLock(){}
+        };
+      }}
+    });
+    const res=await invoke('/api/world-bike?lat=59.32932&lng=18.06858');
+    assert.equal(res.statusCode,200);
+    assert.equal(res.data.elements[0].id,77);
+  }finally{global.fetch=previous;}
+});
