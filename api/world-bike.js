@@ -10,6 +10,8 @@ const WAIT_MS=30_000;
 const MAX_ELEMENTS=150;
 const MAX_BODY_BYTES=850_000;
 const MAX_COORD_CACHE=90;
+// Per-instance overload guard only; NOT a distributed/global provider quota.
+const MAX_INFLIGHT=4;
 const failures=new Map();
 const inflight=new Map();
 function json(res,status,body,cache=false) {
@@ -134,6 +136,9 @@ module.exports=async function handler(req,res){
   }
   let task=inflight.get(key);
   if(!task){
+    if(inflight.size>=MAX_INFLIGHT){
+      return fail(res,503,"LOCAL_CAPACITY","Servei temporalment ocupat. Torna-ho a provar.",provider.name);
+    }
     task=requestOverpass(provider,centre.lat,centre.lng);
     inflight.set(key,task);
   }
