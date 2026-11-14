@@ -51,7 +51,26 @@ const elements = {
 const STORAGE_KEY = "bicipark-bike-jump-high-score-v1";
 const level = levels[0];
 
-const safeStoredRecord = Number(localStorage.getItem(STORAGE_KEY) || 0);
+// Private browsing and restrictive browser settings can deny storage access.
+// A failed record save must never interrupt the game.
+function readRecord() {
+  try {
+    const value = Number(window.localStorage.getItem(STORAGE_KEY) || 0);
+    return Number.isFinite(value) && value >= 0 ? value : 0;
+  } catch (_) {
+    return 0;
+  }
+}
+
+function saveRecord(value) {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, String(value));
+  } catch (_) {
+    // Keep the in-memory high score for this session.
+  }
+}
+
+const safeStoredRecord = readRecord();
 
 const state = {
   phase: "ready",
@@ -301,10 +320,7 @@ function finishAttempt() {
 
   if (state.totalScore > state.highScore) {
     state.highScore = state.totalScore;
-    localStorage.setItem(
-      STORAGE_KEY,
-      String(state.highScore)
-    );
+    saveRecord(state.highScore);
   }
 
   elements.rotateLeftButton.disabled = true;
