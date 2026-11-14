@@ -4,7 +4,7 @@ Prototip independent, **no publicat ni enllaçat a la navegació principal**, pe
 
 ## Flux
 
-1. L'usuari mou el mapa a qualsevol lloc del món, toca el mapa per seleccionar una zona, o demana explícitament una cerca GPS amb **Cerca serveis a prop meu**.
+1. L'usuari pot **cercar una ciutat o adreça per nom**, seleccionar un màxim de 5 resultats i centrar el mapa; també el pot moure manualment a qualsevol regió, tocar-lo per seleccionar una zona o demanar explícitament una cerca GPS amb **Cerca serveis a prop meu**. La cerca textual només geocodifica, no consulta serveis ciclistes fins que l'usuari ho demana.
 2. **Buscar al centre** consulta el radi de 900 m sense requerir cap zoom previ; si cal, el joc apropa el mapa automàticament.
 3. Prémer un filtre de categoria (Aparcament, Aigua, Reparació...) **inicia la consulta** si encara no existeixen dades de l'àrea; si ja existeixen, només filtra les dades locals.
 4. **Cerca serveis a prop meu** sol·licita GPS i, si l'usuari l'autoritza, centra el mapa i consulta un radi de 900 m a Overpass. L'acció i l'enviament de coordenades s'expliquen a la interfície.
@@ -19,9 +19,9 @@ Categories OSM: `amenity=bicycle_parking`, `bicycle_repair_station`, `drinking_w
 - La pausa al navegador és **per client**, i el gateway afegeix cache CDN de resposta i control de concurrència per instància. Això continua sent insuficient per a producció mundial: cal proveïdor contractat o backend amb quotes agregades, mètriques i cache compartida.
 - La capa de mapa utilitza tesel·les d'OSM amb atribució. Política: https://operations.osmfoundation.org/policies/tiles/
 - Els POIs OSM són ODbL i requereixen atribució i, segons la reutilització, condicions de compartició. https://www.openstreetmap.org/copyright
-- No inclou geocodificació per nom ni cerca automàtica. Nominatim públic no és adequat per a cerca global escala sense respecte als límits d'1 req/s agregada i prohibició d'autocompletar: https://operations.osmfoundation.org/policies/nominatim/
+- La geocodificació per nom reutilitza el mòdul BiciPark `modules/geocoding/geocoding.js` i el proveïdor HTTPS configurat a `config/services.json`. Només consulta quan l'usuari envia almenys tres caràcters; retorna fins a 5 opcions. No descarrega serveis ni reintenta de manera automàtica per geocodificar. El text cercat s'envia al proveïdor; revisar els seus termes i quotes abans d'escalar. No fa servir Nominatim públic.
 - El mapa pot mostrar al proveïdor el fragment que visites. El GPS només es demana per acció explícita del navegador. La cerca envia el centre consultat al servei Overpass escollit. L'operador de `Private.coffee` publica les seves condicions i política de privacitat a https://overpass.private.coffee/.
-- No es consulten dades si l'usuari no fa la cerca. Les coordenades aproximades sí travessen el gateway i poden quedar en registres tècnics de l'allotjament; no es guarden en una base de dades de l'aplicació.
+- Els serveis de bicicletes no es consulten si l'usuari no ho demana. La cerca de ciutat envia el text al geocodificador configurat; després de seleccionar un lloc, les coordenades encara **no** s'envien a Overpass fins a prémer «Buscar al centre» o una categoria. Les coordenades aproximades de la cerca de serveis travessen el gateway i poden quedar en registres tècnics de l'allotjament; no es guarden en una base de dades de l'aplicació.
 
 ## Provar localment
 
@@ -54,7 +54,7 @@ Per evitar peticions directes entre el navegador i Overpass, s'ha creat el **gat
 
 ## Release gates obligatoris
 
-1. Proves en navegador real: consulta de zona sense dades, zona amb dades, errors 400/406/429/503/504/CORS, GPS denegat, canvi manual a servidor alternatiu, missatge persistent en moure el mapa, retorn de dades mal formades, mobile/touch i teclat.
+1. Proves en navegador real: cerca d'una ciutat (resultat/fracàs, teclat i selecció), consulta de zona sense dades, zona amb dades, errors 400/406/429/503/504/CORS, GPS denegat, canvi manual a servidor alternatiu, missatge persistent en moure el mapa, retorn de dades mal formades, mobile/touch i teclat.
 2. Proveïdor Overpass adequat per producció, cache compartida, control d'ús global i cost sota control. **Sense això, no integrar al catàleg públic.**
 3. Política de privacitat, procedència i termes ODbL/atribució visibles en quatre idiomes.
 4. Comprovació amb rutes i mapes existents per evitar solapament/confusió.
