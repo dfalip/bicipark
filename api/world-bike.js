@@ -90,7 +90,7 @@ module.exports=async function handler(req,res){
   const latText=url.searchParams.get("lat");
   const lngText=url.searchParams.get("lng");
   const lat=Number(latText),lng=Number(lngText);
-  if(latText===null||lngText===null||!valid(lat,lng)){
+  if(latText===null||lngText===null||!latText.trim()||!lngText.trim()||!valid(lat,lng)){
     return fail(res,400,"INVALID_COORDS","Coordenades fora dels límits.");
   }
   const providerKey=url.searchParams.get("provider")||"primary";
