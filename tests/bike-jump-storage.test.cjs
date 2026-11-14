@@ -8,7 +8,7 @@ const source = fs.readFileSync(path.join(__dirname, "../bike-jump/app.js"), "utf
 const start = source.indexOf("const STORAGE_KEY = ");
 const end = source.indexOf("const safeStoredRecord = readRecord();", start);
 assert.ok(start >= 0 && end > start, "storage helpers must be present");
-const helpers = source.slice(start, end);
+const helpers = source.slice(start, end).replace(/^const level = levels\[0\];\s*/m, "");
 
 function loadHelpers(localStorage) {
   const context = vm.createContext({window: {localStorage}});
