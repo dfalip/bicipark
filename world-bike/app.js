@@ -166,15 +166,28 @@ async function fetchAroundCenter({alternative=false}={}){
   const controller=new AbortController();
   const timeout=setTimeout(()=>controller.abort(),16000);
   try{
+    // Approximate coordinates BEFORE sending them to the backend, so
+    // exact GPS coordinates do not enter request URLs, CDN or access logs.
+    const approximateCentre={
+      lat:Math.round(centre.lat*1000)/1000,
+      lng:Math.round(centre.lng*1000)/1000
+    };
     const query=new URLSearchParams({
-      lat:String(centre.lat),lng:String(centre.lng),provider:provider.key
+      lat:String(approximateCentre.lat),lng:String(approximateCentre.lng),provider:provider.key
     });
     const response=await fetch(`${API_ENDPOINT}?${query.toString()}`,{
       method:"GET",
       headers:{"Accept":"application/json"},
       signal:controller.signal
     });
-    const payload=await response.json();
+    let payload;
+    try{payload=await response.json();}
+    catch{
+      const failure=new Error("Gateway returned non-JSON");
+      failure.httpStatus=response.status;
+      failure.code="INVALID_GATEWAY_RESPONSE";
+      throw failure;
+    }
     if(!response.ok){
       const upstreamStatus=Number(payload?.upstreamStatus);
       const code=typeof payload?.code==="string"?payload.code:"GATEWAY_ERROR";
@@ -187,9 +200,12 @@ async function fetchAroundCenter({alternative=false}={}){
     if(payload?.ok!==true)throw new Error("Invalid gateway envelope");
     const parsed=normalizeOverpassResponse(payload);
     activeProviderIndex=providerIndex;
-    cache.set(key,{data:parsed,centre:{lat:centre.lat,lng:centre.lng}});
+    const queriedCenter=payload.queriedCenter&&
+      validateCoords(payload.queriedCenter.lat,payload.queriedCenter.lng)
+        ? payload.queriedCenter : approximateCentre;
+    cache.set(key,{data:parsed,centre:queriedCenter});
     if(cache.size>CACHE_MAX_ENTRIES)cache.delete(cache.keys().next().value);
-    applyData(parsed,centre);
+    applyData(parsed,queriedCenter);
   }catch(error){
     ui.resultCount.textContent="No s'han pogut carregar els resultats";
     const msg=String(error?.message||"");
@@ -204,7 +220,9 @@ async function fetchAroundCenter({alternative=false}={}){
     }else if(error?.code==="RECENT_FAILURE"){
       explanation="Aquest servidor continua en pausa després d'un error recent.";
     }else if(error?.httpStatus===404){
-      explanation="El servei intermedi de BiciPark no està disponible en aquesta versió.";
+      explanation="El servei intermedi de BiciPark no està disponible (HTTP 404).";
+    }else if(error?.code==="INVALID_GATEWAY_RESPONSE"){
+      explanation=`El servei intermedi no ha retornat dades JSON vàlides (HTTP ${error.httpStatus||"desconegut"}).`;
     }else if(error?.name==="TypeError"){
       explanation="No s'ha pogut connectar amb el servidor de BiciPark.";
     }else{
