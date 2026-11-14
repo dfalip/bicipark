@@ -53,11 +53,17 @@ async function setup({withGPS=false,denyGPS=false,failedFetch=false,primaryFails
     circle(){return circle;},
     circleMarker(){return marker;}
   };
-  window.fetch=async (url)=>{
+  window.fetch=async url=>{
     fetchCount+=1;
-    if(failedFetch)return {ok:false,status:429};
-    if(primaryFails&&String(url).includes("private.coffee"))return {ok:false,status:503};
-    return {ok:true,json:async()=>sampleData};
+    assert.match(String(url),/^\/api\/world-bike\?/,'Browser must use its own gateway, not third-party CORS');
+    const provider=new URL(String(url),'https://example.org').searchParams.get('provider');
+    if(failedFetch)return {ok:false,status:503,json:async()=>({
+      ok:false,code:'UPSTREAM_HTTP',upstreamStatus:429,provider:'Private.coffee'
+    })};
+    if(primaryFails&&provider==='primary')return {ok:false,status:503,json:async()=>({
+      ok:false,code:'UPSTREAM_HTTP',upstreamStatus:503,provider:'Private.coffee'
+    })};
+    return {ok:true,status:200,json:async()=>({...sampleData,ok:true})};
   };
   const gps=withGPS?{
     getCurrentPosition(success,failure){
@@ -123,7 +129,7 @@ test('Provider 429 is visible and is not shown as an empty successful response',
     h.window.document.getElementById('searchButton').click();
     await h.flush();
     assert.equal(h.fetchCount,1);
-    assert.match(h.window.document.getElementById('status').textContent,/limitat o rebutjat/);
+    assert.match(h.window.document.getElementById('status').textContent,/limitat la petició/);
     assert.match(h.window.document.getElementById('resultCount').textContent,/No s'han pogut carregar/);
     h.map.setView([41.4,2.2],15);
     h.window.document.querySelector('[data-type="drinking_water"]').click();
