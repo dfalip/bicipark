@@ -34,6 +34,17 @@ function query(lat,lng){
 function prune(map){
   while(map.size>MAX_COORD_CACHE)map.delete(map.keys().next().value);
 }
+// Diagnostic metadata only: no IP, request URL, location, headers or GPS.
+function logQuery(provider,answer,elapsedMs){
+  console.info(JSON.stringify({
+    event:"world-bike.provider",
+    provider,
+    outcome:answer.ok?"success":answer.code,
+    upstreamStatus:answer.status||null,
+    durationMs:Math.max(0,Math.round(elapsedMs)),
+    records:answer.ok?answer.elements.length:null
+  }));
+}
 async function requestOverpass(provider,lat,lng){
   let response;
   try{
@@ -85,6 +96,7 @@ module.exports=async function handler(req,res){
     return fail(res,400,"INVALID_PROVIDER","Proveïdor no permès.");
   }
   const provider=PROVIDERS[providerKey];
+  const startTime=Date.now();
   const centre={lat:snapped(lat),lng:snapped(lng)};
   const key=`${providerKey}/${centre.lat}/${centre.lng}`;
   const now=Date.now();
@@ -99,6 +111,7 @@ module.exports=async function handler(req,res){
   let answer;
   try{answer=await task;}
   finally{if(inflight.get(key)===task)inflight.delete(key);}
+  logQuery(provider.name,answer,Date.now()-startTime);
   if(!answer.ok){
     failures.set(key,Date.now()+WAIT_MS);
     prune(failures);
