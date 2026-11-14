@@ -31,10 +31,20 @@
         <div class="wb-map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a></div>
       </div>
       <aside class="wb-panel">
-        <div class="wb-panel-head"><h2>Serveis per a ciclistes</h2><p>Els botons de categoria consulten la zona del mapa i després filtren els resultats.</p></div>
+        <div class="wb-panel-head"><h2>Serveis per a ciclistes</h2><p>Busca primer una ciutat del món, o utilitza la teva zona, i després consulta els serveis cartografiats.</p></div>
+        <form id="placeSearchForm" class="wb-place-search" role="search">
+          <label for="placeSearchInput">Troba una ciutat o una adreça</label>
+          <div class="wb-place-search-row">
+            <input id="placeSearchInput" type="search" minlength="3" maxlength="120" required placeholder="Amsterdam, Tòquio, París..." autocomplete="off">
+            <button id="placeSearchButton" type="submit" class="wb-button wb-button-primary">Cerca ciutat</button>
+          </div>
+          <p class="wb-place-search-note">Cerca mitjançant el geocodificador configurat a BiciPark (dades basades en OpenStreetMap). Només s'envia el text quan prems «Cerca ciutat».</p>
+          <div id="placeSearchStatus" role="status" aria-live="polite" class="wb-place-search-status"></div>
+          <ul id="placeSearchResults" class="wb-place-search-results" aria-label="Resultats de cerca de llocs"></ul>
+        </form>
         <button id="locateButton" type="button" class="wb-button wb-button-secondary">📍 Cerca serveis a prop meu</button>
         <button id="searchButton" type="button" class="wb-button wb-button-primary">🔎 Buscar al centre del mapa (900 m)</button>
-        <p class="wb-disclaimer">«Cerca serveis a prop meu» demana permís de GPS i, si el concedeixes, consulta la teva zona a Overpass. Les categories i «Buscar al centre» consulten el centre del mapa. Les tesel·les del mapa comuniquen al proveïdor la zona visualitzada. Les consultes de serveis es fan a <a href="https://overpass.private.coffee/" target="_blank" rel="noopener noreferrer">Private.coffee</a>, o al servidor alternatiu si ho tries. Radi de cerca: 900 m.</p>
+        <p class="wb-disclaimer">«Cerca serveis a prop meu» demana permís de GPS i, si el concedeixes, consulta la teva zona a Overpass. Les categories i «Buscar al centre» consulten el centre del mapa. Les tesel·les del mapa comuniquen al proveïdor la zona visualitzada. Les consultes de serveis passen pel servidor de BiciPark, que transmet la zona aproximada a <a href="https://overpass.private.coffee/" target="_blank" rel="noopener noreferrer">Private.coffee</a> o, si ho tries, al servidor alternatiu. Radi de cerca: 900 m.</p>
         <p id="status" class="wb-status" role="status" aria-live="polite">Selecciona una categoria, prem «Buscar al centre» o cerca a prop teu.</p>
         <button id="alternateProviderButton" type="button" class="wb-button wb-button-secondary wb-provider-retry" hidden>🔄 Prova un altre servidor de dades</button>
         <div class="wb-filters" aria-label="Cerca o filtra serveis cartografiats">
@@ -53,6 +63,7 @@
     <footer><p>Prototip de descoberta, no navegador ni garantia de seguretat. Verifica sempre la disponibilitat dels serveis abans de sortir.</p></footer>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="../modules/geocoding/geocoding.js"></script>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
