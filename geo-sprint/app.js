@@ -99,6 +99,7 @@ let total = 0;
 let usedHint = false;
 let answered = false;
 let finished = false;
+let lastAnswer = null;
 const recordKey = "bicipark-geosprint-best-v1";
 function getRecord(){
   try{
@@ -160,6 +161,7 @@ function clearFeedback(){
 function renderRound(){
   answered=false;
   usedHint=false;
+  lastAnswer=null;
   clearFeedback();
   ui.questionCard.hidden=false;
   ui.endCard.hidden=true;
@@ -183,18 +185,9 @@ function scoreTitle(score,km){
   if(km<=950)return t().good;
   return t().retry;
 }
-function guessAt(location){
-  if(!map||answered||finished)return;
-  const target=currentCity();
-  const km=haversineKm(location,target);
-  const points=scoreForGuess(km,usedHint);
-  total+=points;
-  answered=true;
-  ui.hintButton.disabled=true;
-  ui.centerButton.disabled=true;
-  ui.hintButton.hidden=true;
-  ui.centerButton.hidden=true;
-  ui.resultCard.hidden=false;
+function renderAnswer(){
+  if(!lastAnswer)return;
+  const {km,points,target}=lastAnswer;
   setText("resultLabel",scoreTitle(points,km));
   setText("pointsAwarded",t().points(localizedNumber(points)));
   setText("distanceText",t().distance(localizedNumber(Math.round(km))));
@@ -202,6 +195,21 @@ function guessAt(location){
   setText("nextButton",roundIndex===ROUNDS-1?t().finish:t().next);
   ui.osmLink.href=`https://www.openstreetmap.org/#map=12/${target.lat}/${target.lng}`;
   setText("mapStatus",t().mapDone);
+}
+function guessAt(location){
+  if(!map||answered||finished)return;
+  const target=currentCity();
+  const km=haversineKm(location,target);
+  const points=scoreForGuess(km,usedHint);
+  total+=points;
+  lastAnswer={km,points,target};
+  answered=true;
+  ui.hintButton.disabled=true;
+  ui.centerButton.disabled=true;
+  ui.hintButton.hidden=true;
+  ui.centerButton.hidden=true;
+  ui.resultCard.hidden=false;
+  renderAnswer();
   setText("scoreValue",localizedNumber(total));
 
   const userPoint=[location.lat,location.lng];
@@ -251,11 +259,7 @@ ui.languageSelect.addEventListener("change",event=>{
   url.searchParams.set("lang",language);
   window.history.replaceState(null,"",url);
   updateLanguage();
-  if(answered&&!finished){
-    const city=currentCity();
-    setText("correctPlaceText",t().correct(city.name,countryName(city.country)));
-    setText("nextButton",roundIndex===ROUNDS-1?t().finish:t().next);
-  }
+  if(answered&&!finished)renderAnswer();
   if(finished)finishGame();
 });
 
