@@ -18,7 +18,7 @@ const sampleData = {
   ]
 };
 
-async function setup({withGPS=false,denyGPS=false,failedFetch=false}={}) {
+async function setup({withGPS=false,denyGPS=false,failedFetch=false,primaryFails=false}={}) {
   const dom = new JSDOM(html, {
     url:'https://example.org/world-bike/',
     runScripts:'outside-only',
@@ -53,9 +53,10 @@ async function setup({withGPS=false,denyGPS=false,failedFetch=false}={}) {
     circle(){return circle;},
     circleMarker(){return marker;}
   };
-  window.fetch=async ()=>{
+  window.fetch=async (url)=>{
     fetchCount+=1;
     if(failedFetch)return {ok:false,status:429};
+    if(primaryFails&&String(url).includes("private.coffee"))return {ok:false,status:503};
     return {ok:true,json:async()=>sampleData};
   };
   const gps=withGPS?{
@@ -147,5 +148,38 @@ test('Cache reuses only the exact centre, never a shifted 900m search circle',as
     await h.flush();
     assert.equal(h.fetchCount,1,'Cooldown still prevents another provider call');
     assert.match(h.window.document.getElementById('status').textContent,/espera uns segons/,'Shifted centre must not reuse the previous circle');
+  }finally{h.dom.window.close();}
+});
+
+test('A failed server query keeps its cause visible after zoom/pan and never retries automatically',async()=>{
+  const h=await setup({primaryFails:true});
+  try{
+    h.window.document.getElementById('searchButton').click();
+    await h.flush();
+    assert.equal(h.fetchCount,1);
+    const status=h.window.document.getElementById('status');
+    assert.match(status.textContent,/Private.coffee/);
+    assert.match(status.textContent,/503/);
+    assert.equal(status.dataset.kind,'error');
+    const alternative=h.window.document.getElementById('alternateProviderButton');
+    assert.equal(alternative.hidden,false);
+    h.map.setView([42.0,2.0],10);
+    assert.match(status.textContent,/503/,'Map pan cannot hide the error');
+    assert.equal(h.fetchCount,1,'Map movement cannot trigger a blind second request');
+  }finally{h.dom.window.close();}
+});
+
+test('Alternative public provider requires a direct click and can recover from primary outage',async()=>{
+  const h=await setup({primaryFails:true});
+  try{
+    h.window.document.getElementById('searchButton').click();
+    await h.flush();
+    assert.equal(h.fetchCount,1);
+    h.window.document.getElementById('alternateProviderButton').click();
+    await h.flush();
+    assert.equal(h.fetchCount,2,'The second provider is only contacted after clicking retry');
+    assert.equal(h.window.document.getElementById('alternateProviderButton').hidden,true);
+    assert.equal(h.window.document.getElementById('status').dataset.kind,'success');
+    assert.match(h.window.document.getElementById('resultCount').textContent,/2 registres/);
   }finally{h.dom.window.close();}
 });
