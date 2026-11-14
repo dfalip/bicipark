@@ -15,7 +15,9 @@ const PROVIDER_LIMIT_PAUSE_MS = 30000;
 const CACHE_MAX_ENTRIES = 12;
 const ui = Object.fromEntries([
   "worldMap","coordinates","locateButton","searchButton","status",
-  "resultCount","sourceStamp","resultList","alternateProviderButton"
+  "resultCount","sourceStamp","resultList","alternateProviderButton",
+  "placeSearchForm","placeSearchInput","placeSearchButton",
+  "placeSearchStatus","placeSearchResults"
 ].map(id=>[id,document.getElementById(id)]));
 const filters=[...document.querySelectorAll(".wb-filters button")];
 let activeType="all";
@@ -72,6 +74,76 @@ function updateView() {
       : "Tria un tipus de servei o prem «Buscar al centre» per consultar aquesta zona.");
   }
 }
+function clearVisibleServices(){
+  records=[];
+  sourceTimestamp=null;
+  sourceProvider=null;
+  mayBeTruncated=false;
+  searchedCentre=null;
+  if(markers)markers.clearLayers();
+  if(searchCircle&&map)map.removeLayer(searchCircle);
+  searchCircle=null;
+  ui.resultList.replaceChildren();
+  ui.resultCount.textContent="Cap consulta en aquesta zona";
+  ui.sourceStamp.textContent="Dades pendents · prem «Buscar al centre» o una categoria";
+  hideAlternative();
+}
+async function searchPlace(event){
+  event.preventDefault();
+  const name=ui.placeSearchInput.value.trim();
+  if(name.length<3){
+    ui.placeSearchStatus.textContent="Escriu almenys tres caràcters.";
+    return;
+  }
+  if(pending){
+    ui.placeSearchStatus.textContent="Espera que acabi la consulta de serveis abans de canviar de zona.";
+    return;
+  }
+  if(!map||typeof window.BiciParkGeocoder?.search!=="function"){
+    ui.placeSearchStatus.textContent="El cercador de ciutats no està disponible. Pots moure el mapa manualment.";
+    return;
+  }
+  ui.placeSearchButton.disabled=true;
+  ui.placeSearchResults.replaceChildren();
+  ui.placeSearchStatus.textContent="Buscant llocs...";
+  try{
+    const suggestions=await window.BiciParkGeocoder.search(name);
+    const places=Array.isArray(suggestions)?suggestions
+      .filter(p=>validateCoords(p?.lat,p?.lng)&&typeof p.label==="string"&&p.label.trim())
+      .slice(0,5):[];
+    if(!places.length){
+      ui.placeSearchStatus.textContent="No s'ha trobat cap lloc. Prova una localitat més concreta.";
+      return;
+    }
+    ui.placeSearchStatus.textContent=`${places.length} llocs trobats. Selecciona'n un per centrar el mapa.`;
+    for(const place of places){
+      const li=document.createElement("li");
+      const button=document.createElement("button");
+      button.type="button";
+      button.textContent=place.label;
+      button.addEventListener("click",()=>{
+        if(pending){
+          ui.placeSearchStatus.textContent="Espera que acabi la consulta abans de canviar de zona.";
+          return;
+        }
+        clearVisibleServices();
+        map.setView([place.lat,place.lng],14,{animate:false});
+        ui.placeSearchStatus.textContent=`Mapa centrat a ${place.label}. Tria una categoria per consultar serveis.`;
+        ui.placeSearchResults.replaceChildren();
+        message("Lloc seleccionat. Prem «Buscar al centre» o tria una categoria per carregar dades.");
+      });
+      li.appendChild(button);
+      ui.placeSearchResults.appendChild(li);
+    }
+  }catch(error){
+    ui.placeSearchStatus.textContent=error?.name==="AbortError"?
+      "La cerca de ciutats ha trigat massa. Prova-ho de nou.":
+      "No s'ha pogut cercar aquesta localitat. Pots moure el mapa manualment.";
+  }finally{
+    ui.placeSearchButton.disabled=false;
+  }
+}
+ui.placeSearchForm.addEventListener("submit",searchPlace);
 function createPlannerLink(item){
   const link=document.createElement("a");
   link.href="/modules/route-planner/?" + new URLSearchParams({
