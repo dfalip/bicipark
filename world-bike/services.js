@@ -38,12 +38,32 @@ export function normalizeOsmElement(raw) {
   return {id:`${raw.type}/${raw.id}`,type,name,lat,lng,
     sourceUrl:`https://www.openstreetmap.org/${raw.type}/${raw.id}`};
 }
-export function normalizeOverpassResponse(data) {
+export function approximateDistanceMetres(a,b) {
+  if(!validateCoords(a?.lat,a?.lng)||!validateCoords(b?.lat,b?.lng)){
+    throw new RangeError("Invalid distance coordinates");
+  }
+  const radians=angle=>angle*Math.PI/180;
+  const deltaLat=radians(b.lat-a.lat);
+  const deltaLng=radians(b.lng-a.lng);
+  const value=Math.sin(deltaLat/2)**2+
+    Math.cos(radians(a.lat))*Math.cos(radians(b.lat))*Math.sin(deltaLng/2)**2;
+  return 12_742_000*Math.asin(Math.min(1,Math.sqrt(Math.max(0,value))));
+}
+export function normalizeOverpassResponse(data,queryCenter=null) {
   if(!data||!Array.isArray(data.elements))throw new TypeError("Invalid provider response");
+  if(queryCenter&&!validateCoords(queryCenter.lat,queryCenter.lng)){
+    throw new RangeError("Invalid query center");
+  }
   const seen=new Set();
   const places=[];
   for(const element of data.elements.slice(0,MAX_RESULTS)) {
     const item=normalizeOsmElement(element);
+    // Overpass "around" may select a long way/relation whose returned
+    // geometry centre lies OUTSIDE the radius. Do not display its marker
+    // as though its centre is inside the searched 900m circle.
+    if(item&&queryCenter&&approximateDistanceMetres(queryCenter,item)>SEARCH_RADIUS_METERS){
+      continue;
+    }
     if(item&&!seen.has(item.id)){seen.add(item.id);places.push(item);}
   }
   return {places,sourceTimestamp:typeof data.osm3s?.timestamp_osm_base==="string"?
