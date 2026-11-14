@@ -87,6 +87,8 @@ async function setup({withGPS=false,denyGPS=false,failedFetch=false,primaryFails
 test('Initial search works at world zoom; category button loads OSM data then filters locally',async()=>{
   const h=await setup();
   try{
+    // Choose a region without zooming in: mocked POIs are in Barcelona.
+    h.map.setView([41.39,2.17],2);
     assert.equal(h.window.document.getElementById('searchButton').disabled,false);
     const parking=h.window.document.querySelector('[data-type="bicycle_parking"]');
     parking.click();
@@ -188,6 +190,8 @@ test('A failed server query keeps its cause visible after zoom/pan and never ret
 test('Alternative public provider requires a direct click and can recover from primary outage',async()=>{
   const h=await setup({primaryFails:true});
   try{
+    // Mocked success response contains POIs in Barcelona, not the world-map default.
+    h.map.setView([41.39,2.17],15);
     h.window.document.getElementById('searchButton').click();
     await h.flush();
     assert.equal(h.fetchCount,1);
