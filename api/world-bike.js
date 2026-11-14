@@ -23,6 +23,9 @@ function json(res,status,body,cache=false) {
 function fail(res,status,code,message,provider) {
   json(res,status,{ok:false,code,message,provider:provider||null});
 }
+function decimalCoordinate(text){
+  return typeof text==="string" && /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(text.trim());
+}
 function valid(lat,lng){
   return Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat)<=90&&Math.abs(lng)<=180;
 }
@@ -90,7 +93,8 @@ module.exports=async function handler(req,res){
   const latText=url.searchParams.get("lat");
   const lngText=url.searchParams.get("lng");
   const lat=Number(latText),lng=Number(lngText);
-  if(latText===null||lngText===null||!latText.trim()||!lngText.trim()||!valid(lat,lng)){
+  if(url.searchParams.getAll("lat").length!==1||url.searchParams.getAll("lng").length!==1||
+    !decimalCoordinate(latText)||!decimalCoordinate(lngText)||!valid(lat,lng)){
     return fail(res,400,"INVALID_COORDS","Coordenades fora dels límits.");
   }
   const providerKey=url.searchParams.get("provider")||"primary";
