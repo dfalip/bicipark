@@ -122,7 +122,11 @@ test('Provider 429 is visible and is not shown as an empty successful response',
     h.window.document.getElementById('searchButton').click();
     await h.flush();
     assert.equal(h.fetchCount,1);
-    assert.match(h.window.document.getElementById('status').textContent,/saturat o limitat/);
+    assert.match(h.window.document.getElementById('status').textContent,/limitat o rebutjat/);
     assert.match(h.window.document.getElementById('resultCount').textContent,/No s'han pogut carregar/);
+    h.map.setView([41.4,2.2],15);
+    h.window.document.querySelector('[data-type="drinking_water"]').click();
+    await h.flush();
+    assert.equal(h.fetchCount,1,'429 must impose a local pause without automatic retry');
   }finally{h.dom.window.close();}
 });
