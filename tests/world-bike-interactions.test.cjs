@@ -142,7 +142,7 @@ test('Provider 429 is visible and is not shown as an empty successful response',
   }finally{h.dom.window.close();}
 });
 
-test('Cache reuses only the exact centre, never a shifted 900m search circle',async()=>{
+test('Cache reuses the same approximate 100m cell but never a different search circle',async()=>{
   const h=await setup();
   try{
     h.map.setView([41.39,2.17],15);
@@ -156,8 +156,14 @@ test('Cache reuses only the exact centre, never a shifted 900m search circle',as
     h.map.setView([41.3904,2.1704],15);
     h.window.document.getElementById('searchButton').click();
     await h.flush();
-    assert.equal(h.fetchCount,1,'Cooldown still prevents another provider call');
-    assert.match(h.window.document.getElementById('status').textContent,/espera uns segons/,'Shifted centre must not reuse the previous circle');
+    assert.equal(h.fetchCount,1,'A new GPS fix inside the same rounded cell must reuse results');
+    assert.match(h.window.document.getElementById('status').textContent,/reutilitzats/);
+    h.map.setView([41.3914,2.1714],15);
+    assert.match(h.window.document.getElementById('status').textContent,/zona nova/);
+    h.window.document.getElementById('searchButton').click();
+    await h.flush();
+    assert.equal(h.fetchCount,1,'Cooldown still prevents a call for a distinct area');
+    assert.match(h.window.document.getElementById('status').textContent,/espera uns segons/);
   }finally{h.dom.window.close();}
 });
 
@@ -206,5 +212,19 @@ test('Only approximate GPS coordinates reach the gateway URL and returned proven
     assert.equal(request.searchParams.get('lng'),'2.17');
     assert.doesNotMatch(h.requestUrls[0],/41\\.38942|2\\.16987/);
     assert.match(h.window.document.getElementById('sourceStamp').textContent,/Private.coffee/);
+  }finally{h.dom.window.close();}
+});
+
+test('A changed map cell keeps previous results visibly marked as from the old query',async()=>{
+  const h=await setup();
+  try{
+    h.map.setView([41.39,2.17],15);
+    h.window.document.getElementById('searchButton').click();
+    await h.flush();
+    assert.match(h.window.document.getElementById('resultCount').textContent,/2 registres/);
+    h.map.setView([41.398,2.18],15);
+    assert.match(h.window.document.getElementById('status').textContent,/zona nova/);
+    assert.match(h.window.document.getElementById('status').textContent,/última consulta/);
+    assert.equal(h.fetchCount,1,'Moving the map must never trigger an automatic provider call');
   }finally{h.dom.window.close();}
 });
