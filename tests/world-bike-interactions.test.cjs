@@ -29,6 +29,7 @@ async function setup({withGPS=false,denyGPS=false,failedFetch=false,primaryFails
   let zoom=2;
   let fetchCount=0;
   const requestUrls=[];
+  const geoQueries=[];
   const listeners = new Map();
   const emit=(key,payload)=>{for(const fn of listeners.get(key)||[])fn(payload);};
   const markerLayer={addTo(){return this;},clearLayers(){},addLayer(){}};
@@ -74,6 +75,15 @@ async function setup({withGPS=false,denyGPS=false,failedFetch=false,primaryFails
     }
   }:undefined;
   Object.defineProperty(window.navigator,'geolocation',{configurable:true,value:gps});
+  window.BiciParkGeocoder={
+    search:async q=>{
+      geoQueries.push(q);
+      return [
+        {lat:52.3676,lng:4.9041,label:"Amsterdam, Nederland"},
+        {lat:35.6762,lng:139.6503,label:"Tòquio, Japó"}
+      ];
+    }
+  };
   window.__worldServices=await services;
   const importLine=/^import \{[^\n]+\} from "\.\/services\.js";\s*/;
   assert.match(appSource,importLine);
@@ -81,7 +91,7 @@ async function setup({withGPS=false,denyGPS=false,failedFetch=false,primaryFails
     'const {SEARCH_RADIUS_METERS,SERVICE_TYPES,buildOverpassQuery,normalizeOverpassResponse,validateCoords}=window.__worldServices;\n'
   ));
   const flush=async()=>{await new Promise(resolve=>setTimeout(resolve,12));};
-  return {window,dom,map,flush,requestUrls,get fetchCount(){return fetchCount;},get zoom(){return zoom;},get location(){return location;}};
+  return {window,dom,map,flush,requestUrls,geoQueries,get fetchCount(){return fetchCount;},get zoom(){return zoom;},get location(){return location;}};
 }
 
 test('Initial search works at world zoom; category button loads OSM data then filters locally',async()=>{
@@ -248,5 +258,50 @@ test('Mapped OSM POIs can be opened in BiciPark route planner with a verified de
     assert.equal(links[0].target,'_blank','Keep the discovered POI list available');
     assert.match(h.window.document.getElementById('resultList').textContent,/Fitxa OSM/);
     assert.equal(h.fetchCount,1,'Opening a link must not issue a second provider request');
+  }finally{h.dom.window.close();}
+});
+
+test('World Bike searches a city, displays accessible choices and never fetches OSM services until selected',async()=>{
+  const h=await setup();
+  try{
+    const $=id=>h.window.document.getElementById(id);
+    $('placeSearchInput').value="Amsterdam";
+    $('placeSearchForm').dispatchEvent(new h.window.Event('submit',{bubbles:true,cancelable:true}));
+    await h.flush();
+    assert.deepEqual(h.geoQueries,['Amsterdam']);
+    const results=[...$('placeSearchResults').querySelectorAll('button')];
+    assert.equal(results.length,2);
+    assert.equal(h.fetchCount,0,'Geocoding must not initiate an Overpass request');
+    assert.match(results[0].textContent,/Amsterdam/);
+    results[0].click();
+    assert.deepEqual(h.location,{lat:52.3676,lng:4.9041});
+    assert.equal(h.zoom,14);
+    assert.equal(h.fetchCount,0,'Selecting a place must not initiate an Overpass request');
+    assert.match($('placeSearchStatus').textContent,/Mapa centrat a Amsterdam/);
+    assert.match($('resultCount').textContent,/Cap consulta en aquesta zona/);
+    $('searchButton').click();
+    await h.flush();
+    assert.equal(h.fetchCount,1,'Only the explicit services button initiates an Overpass request');
+    const url=new URL(h.requestUrls[0],'https://example.org');
+    assert.equal(url.searchParams.get('lat'),'52.368');
+    assert.equal(url.searchParams.get('lng'),'4.904');
+  }finally{h.dom.window.close();}
+});
+
+test('World Bike clears stale nearby POIs when the user switches cities',async()=>{
+  const h=await setup();
+  try{
+    const $=id=>h.window.document.getElementById(id);
+    h.map.setView([41.39,2.17],15);
+    $('searchButton').click();
+    await h.flush();
+    assert.match($('resultCount').textContent,/2 registres/);
+    $('placeSearchInput').value='Tokyo';
+    $('placeSearchForm').dispatchEvent(new h.window.Event('submit',{cancelable:true}));
+    await h.flush();
+    $('placeSearchResults').querySelectorAll('button')[1].click();
+    assert.match($('resultCount').textContent,/Cap consulta en aquesta zona/);
+    assert.equal($('resultList').children.length,0);
+    assert.equal(h.fetchCount,1,'Switching the city must never silently refetch provider data');
   }finally{h.dom.window.close();}
 });
