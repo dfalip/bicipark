@@ -918,36 +918,44 @@ function handleSpaceUp(event) {
   requestLaunch();
 }
 
+// Track both arrows: releasing one must not cancel the other held key.
+const heldRotationKeys = new Set();
+function syncKeyboardRotation() {
+  const left = heldRotationKeys.has("ArrowLeft");
+  const right = heldRotationKeys.has("ArrowRight");
+  setRotationInput(Number(right) - Number(left));
+}
+function clearKeyboardRotation() {
+  heldRotationKeys.clear();
+  setRotationInput(0);
+}
+
 document.addEventListener("keydown", event => {
   handleSpaceDown(event);
-
-  if (state.phase === "flight" && !isTypingTarget(event.target) && event.code === "ArrowLeft") {
+  if (state.phase === "flight" && !isTypingTarget(event.target) &&
+      (event.code === "ArrowLeft" || event.code === "ArrowRight")) {
     event.preventDefault();
-    setRotationInput(-1);
-  }
-
-  if (state.phase === "flight" && !isTypingTarget(event.target) && event.code === "ArrowRight") {
-    event.preventDefault();
-    setRotationInput(1);
+    heldRotationKeys.add(event.code);
+    syncKeyboardRotation();
   }
 });
 
 document.addEventListener("keyup", event => {
   handleSpaceUp(event);
-
   if (event.code === "ArrowLeft" || event.code === "ArrowRight") {
-    setRotationInput(0);
+    heldRotationKeys.delete(event.code);
+    syncKeyboardRotation();
   }
 });
 
 window.addEventListener("blur", () => {
-  setRotationInput(0);
+  clearKeyboardRotation();
   if (state.phase === "inrun") requestLaunch();
 });
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
-    setRotationInput(0);
+    clearKeyboardRotation();
     if (state.phase === "inrun") requestLaunch();
   }
 });
