@@ -149,11 +149,13 @@ async function fetchAroundCenter({alternative=false}={}){
   }
   const now=Date.now();
   if(now<limitedUntil[providerIndex]){
-    message(`${provider.label}: cal esperar abans de tornar a consultar aquest servidor.`,"error");
+    // The cooldown isn't the original failure; don't overwrite its diagnosis.
+    if(lastErrorProvider===null)message(`${provider.label}: cal esperar abans de tornar a consultar aquest servidor.`,"error");
     return;
   }
   if(now-lastRequestAt[providerIndex]<COOLDOWN_MS){
-    message(`${provider.label}: espera uns segons abans de repetir la consulta.`,"error");
+    // Preserve the actual upstream reason and the alternative-provider action.
+    if(lastErrorProvider===null)message(`${provider.label}: espera uns segons abans de repetir la consulta.`,"error");
     return;
   }
   lastRequestAt[providerIndex]=now;
