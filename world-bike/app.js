@@ -117,7 +117,8 @@ async function fetchAroundCenter(){
   if(map.getZoom()<12)map.setView(map.getCenter(),14,{animate:false});
   const centre=map.getCenter();
   if(!validateCoords(centre.lat,centre.lng))return;
-  const key=`${centre.lat.toFixed(3)}:${centre.lng.toFixed(3)}`;
+  // Cache only identical query centres: rounding could reuse a different 900m circle.
+  const key=`${centre.lat}:${centre.lng}`;
   if(cache.has(key)){
     const saved=cache.get(key);
     applyData(saved.data,saved.centre);
