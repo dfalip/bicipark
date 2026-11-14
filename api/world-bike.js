@@ -73,7 +73,7 @@ async function requestOverpass(provider,lat,lng){
     const claimed=Number(response.headers.get("content-length"));
     if(claimed>MAX_BODY_BYTES)return {ok:false,code:"UPSTREAM_TOO_LARGE",status:502};
     const raw=await response.text();
-    if(raw.length>MAX_BODY_BYTES)return {ok:false,code:"UPSTREAM_TOO_LARGE",status:502};
+    if(Buffer.byteLength(raw,"utf8")>MAX_BODY_BYTES)return {ok:false,code:"UPSTREAM_TOO_LARGE",status:502};
     const body=JSON.parse(raw);
     if(!Array.isArray(body.elements))return {ok:false,code:"UPSTREAM_INVALID_DATA",status:502};
     return {ok:true,elements:body.elements.slice(0,MAX_ELEMENTS),
