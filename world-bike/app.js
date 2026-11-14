@@ -216,12 +216,12 @@ async function fetchAroundCenter({alternative=false}={}){
       throw error;
     }
     if(payload?.ok!==true)throw new Error("Invalid gateway envelope");
-    const parsed=normalizeOverpassResponse(payload);
-    parsed.provider=typeof payload.provider==="string"?payload.provider:provider.label;
-    activeProviderIndex=providerIndex;
     const queriedCenter=payload.queriedCenter&&
       validateCoords(payload.queriedCenter.lat,payload.queriedCenter.lng)
         ? payload.queriedCenter : approximateCentre;
+    const parsed=normalizeOverpassResponse(payload,queriedCenter);
+    parsed.provider=typeof payload.provider==="string"?payload.provider:provider.label;
+    activeProviderIndex=providerIndex;
     cache.set(key,{data:parsed,centre:queriedCenter});
     if(cache.size>CACHE_MAX_ENTRIES)cache.delete(cache.keys().next().value);
     applyData(parsed,queriedCenter);
