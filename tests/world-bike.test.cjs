@@ -63,3 +63,22 @@ test('World Bike handles absent timestamps and caps displayed provider entries',
   assert.equal(data.sourceTimestamp,null);
   assert.throws(()=>normalizeOverpassResponse({}),TypeError);
 });
+
+test('World Bike does not display OSM polygon centres beyond the searched 900m radius',async()=>{
+  const {normalizeOverpassResponse,approximateDistanceMetres,SEARCH_RADIUS_METERS}=await services;
+  const centre={lat:41.390,lng:2.170};
+  const near={lat:41.392,lng:2.170};
+  const far={lat:41.404,lng:2.170};
+  assert.ok(approximateDistanceMetres(centre,near)<SEARCH_RADIUS_METERS);
+  assert.ok(approximateDistanceMetres(centre,far)>SEARCH_RADIUS_METERS);
+  const response={elements:[
+    {type:'node',id:401,lat:near.lat,lon:near.lng,tags:{amenity:'drinking_water'}},
+    {type:'way',id:402,center:{lat:far.lat,lon:far.lng},tags:{amenity:'bicycle_parking'}},
+    {type:'relation',id:403,center:{lat:41.391,lon:2.171},tags:{amenity:'bicycle_rental'}}
+  ]};
+  const result=normalizeOverpassResponse(response,centre);
+  assert.deepEqual(result.places.map(item=>item.id),['node/401','relation/403']);
+  assert.equal(normalizeOverpassResponse(response).places.length,3,
+    'The optional radius filter must preserve backwards-compatible parser use');
+  assert.throws(()=>normalizeOverpassResponse(response,{lat:400,lng:0}),RangeError);
+});
