@@ -16,7 +16,7 @@ test('World Bike modules have valid syntax and on-demand UI contract',()=>{
   }
   assert.match(html,/noindex,nofollow/);
   assert.match(html,/OpenStreetMap contributors/);
-  assert.match(js,/ui\.searchButton\.addEventListener\("click",fetchAroundCenter\)/);
+  assert.match(js,/ui\.searchButton\.addEventListener\("click",\s*\(\)\s*=>\s*fetchAroundCenter\(\)\)/);
   assert.match(js,/ui\.locateButton\.addEventListener\("click"/);
   assert.match(js,/\.textContent/);
   assert.doesNotMatch(js,/\.innerHTML\s*=/);
