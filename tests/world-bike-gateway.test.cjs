@@ -36,7 +36,7 @@ test('World gateway sends a bounded query server-side and returns attributable O
       assert.match(url,/^https:\/\/overpass\.private\.coffee\/api\/interpreter$/);
       assert.equal(opts.method,'POST');
       assert.match(String(opts.body),/data=/);
-      assert.match(new URLSearchParams(String(opts.body)).get('data'),/around:900,41\.389,2\.170/);
+      assert.match(new URLSearchParams(String(opts.body)).get('data'),/around:900,41\.38902,2\.16996/);
       return {
         ok:true,status:200,headers:{get:()=>null},
         text:async()=>JSON.stringify({
