@@ -1,13 +1,14 @@
-import {SEARCH_RADIUS_METERS, SERVICE_TYPES, buildOverpassQuery, normalizeOverpassResponse, validateCoords} from "./services.js";
+import {SEARCH_RADIUS_METERS, SERVICE_TYPES, normalizeOverpassResponse, validateCoords} from "./services.js";
 
 // Public, shared Overpass is for deliberately small manual pilot requests only.
 // DO NOT use this as the production backend at scale. A quota-limited service
 // with global application-level caching and throttling must replace it.
-// Two independently operated public Overpass services; the second is used
-// ONLY after the visitor explicitly requests an alternative. No blind retries.
+// Same-origin Vercel endpoint handles outbound Overpass requests and CDN caching.
+// The second data source remains a deliberate user-initiated recovery action.
+const API_ENDPOINT = "/api/world-bike";
 const PROVIDERS = Object.freeze([
-  {label:"Private.coffee",url:"https://overpass.private.coffee/api/interpreter"},
-  {label:"FOSSGIS / overpass-api.de",url:"https://overpass-api.de/api/interpreter"}
+  {label:"Private.coffee",key:"primary"},
+  {label:"FOSSGIS",key:"secondary"}
 ]);
 const COOLDOWN_MS = 20000;
 const PROVIDER_LIMIT_PAUSE_MS = 30000;
@@ -140,7 +141,7 @@ async function fetchAroundCenter({alternative=false}={}){
   if(!validateCoords(centre.lat,centre.lng))return;
   // Cache only identical query centres: rounding could reuse a different 900m circle.
   const key=`${centre.lat}:${centre.lng}`;
-  if(cache.has(key)){
+  if(!alternative&&cache.has(key)){
     const saved=cache.get(key);
     applyData(saved.data,saved.centre);
     message("Resultats reutilitzats de la consulta anterior en aquesta zona.");
@@ -163,16 +164,26 @@ async function fetchAroundCenter({alternative=false}={}){
   const controller=new AbortController();
   const timeout=setTimeout(()=>controller.abort(),16000);
   try{
-    const query=buildOverpassQuery(centre.lat,centre.lng);
-    const response=await fetch(provider.url,{
-      method:"POST",
-      headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},
-      body:new URLSearchParams({data:query}).toString(),
-      signal:controller.signal,
-      cache:"default"
+    const query=new URLSearchParams({
+      lat:String(centre.lat),lng:String(centre.lng),provider:provider.key
     });
-    if(!response.ok)throw new Error(`HTTP ${response.status}`);
-    const parsed=normalizeOverpassResponse(await response.json());
+    const response=await fetch(`${API_ENDPOINT}?${query.toString()}`,{
+      method:"GET",
+      headers:{"Accept":"application/json"},
+      signal:controller.signal
+    });
+    const payload=await response.json();
+    if(!response.ok){
+      const upstreamStatus=Number(payload?.upstreamStatus);
+      const code=typeof payload?.code==="string"?payload.code:"GATEWAY_ERROR";
+      const error=new Error(`BiciPark gateway ${code}`);
+      error.code=code;
+      error.upstreamStatus=Number.isFinite(upstreamStatus)?upstreamStatus:null;
+      error.httpStatus=response.status;
+      throw error;
+    }
+    if(payload?.ok!==true)throw new Error("Invalid gateway envelope");
+    const parsed=normalizeOverpassResponse(payload);
     activeProviderIndex=providerIndex;
     cache.set(key,{data:parsed,centre:{lat:centre.lat,lng:centre.lng}});
     if(cache.size>CACHE_MAX_ENTRIES)cache.delete(cache.keys().next().value);
@@ -183,17 +194,17 @@ async function fetchAroundCenter({alternative=false}={}){
     let explanation;
     if(error?.name==="AbortError"){
       explanation="La consulta ha superat el temps màxim de 16 segons.";
-    }else if(/HTTP (406|429)/.test(msg)){
+    }else if(error?.upstreamStatus===406||error?.upstreamStatus===429){
       limitedUntil[providerIndex]=Date.now()+PROVIDER_LIMIT_PAUSE_MS;
-      explanation=`El servidor ha limitat o rebutjat la petició (${msg}).`;
-    }else if(/HTTP (502|503|504)/.test(msg)){
-      explanation=`El servidor està saturat o temporalment indisponible (${msg}).`;
-    }else if(/HTTP 400/.test(msg)){
-      explanation="La consulta ha estat rebutjada per format incorrecte (HTTP 400).";
-    }else if(/^HTTP \d{3}$/.test(msg)){
-      explanation=`El servidor ha respost amb ${msg}.`;
+      explanation=`El proveïdor ha limitat la petició (HTTP ${error.upstreamStatus}).`;
+    }else if(["UPSTREAM_HTTP","UPSTREAM_TIMEOUT","UPSTREAM_NETWORK","UPSTREAM_INVALID_DATA","UPSTREAM_TOO_LARGE"].includes(error?.code)){
+      explanation=`La font de dades no està disponible (${error.code}${error.upstreamStatus?"/ HTTP "+error.upstreamStatus:""}).`;
+    }else if(error?.code==="RECENT_FAILURE"){
+      explanation="Aquest servidor continua en pausa després d'un error recent.";
+    }else if(error?.httpStatus===404){
+      explanation="El servei intermedi de BiciPark no està disponible en aquesta versió.";
     }else if(error?.name==="TypeError"){
-      explanation="No s'ha pogut connectar amb el servei des del navegador (possible xarxa o CORS).";
+      explanation="No s'ha pogut connectar amb el servidor de BiciPark.";
     }else{
       explanation="La resposta del servei no és vàlida o la connexió ha fallat.";
     }
