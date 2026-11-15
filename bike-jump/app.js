@@ -22,6 +22,8 @@ const elements = {
   challengeModeButton: document.getElementById("challengeModeButton"),
   practiceModeButton: document.getElementById("practiceModeButton"),
   gameModeNote: document.getElementById("gameModeNote"),
+  challengeTitle: document.getElementById("challengeTitle"),
+  challengeSubtitle: document.getElementById("challengeSubtitle"),
   totalScoreValue: document.getElementById("totalScoreValue"),
   highScoreValue: document.getElementById("highScoreValue"),
   windValue: document.getElementById("windValue"),
@@ -116,6 +118,8 @@ function syncGameMode() {
   elements.challengeModeButton.disabled=busy;
   elements.scoreLabel.textContent=practice?"Últim salt":"Punts";
   elements.attemptLabel.textContent=practice?"Pràctica":"Salt";
+  elements.challengeTitle.textContent=practice?"∞ salts":"3 salts";
+  elements.challengeSubtitle.textContent=practice?"Entrena sense tocar el rècord.":"Supera el teu millor total.";
   elements.gameModeNote.textContent=practice
     ? "Pràctica: salts il·limitats. Les puntuacions no es sumen al repte ni modifiquen el rècord."
     : "Repte: tres salts puntuables. La pràctica és il·limitada i no modifica els rècords.";
