@@ -138,3 +138,17 @@ test('Tactical HUD follows shot type and the correct skill without repeating',()
     assert.equal(h.$('turboButton').textContent.trim(),'✦ ONA EXPANSIVA');
   }finally{h.dom.window.close();}
 });
+
+test('Optional procedural sound can be toggled without needing AudioContext or networking',()=>{
+  const h=createHarness();
+  try{
+    assert.equal(h.$('soundToggle').getAttribute('aria-pressed'),'false');
+    h.$('soundToggle').click();
+    assert.equal(h.$('soundToggle').getAttribute('aria-pressed'),'true');
+    assert.match(h.$('soundToggle').textContent,/ACTIVAT/);
+    h.$('fireButton').click();
+    assert.equal(h.w.__gameForTest().phase,'flying');
+    h.$('soundToggle').click();
+    assert.equal(h.$('soundToggle').getAttribute('aria-pressed'),'false');
+  }finally{h.dom.window.close();}
+});
