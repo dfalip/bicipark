@@ -180,6 +180,19 @@ export const biciparkModules = [
     enabled: true
   },
   {
+    id: "roda-rumble",
+    category: "games",
+    title: "RodaRumble · Destrueix les torres",
+    description:
+      "Apunta una llançadora, dispara rodes i fes caure estructures de fusta, vidre i acer. Quatre nivells de física i explosions!",
+    href: "../roda-rumble/",
+    icon: "💥",
+    status: "Nou joc",
+    statusType: "new",
+    tags: ["Demolició", "Arcade", "Física", "4 nivells", "Puzle"],
+    enabled: true
+  },
+  {
     id: "bike-jump",
     category: "games",
     title: "Bike Jump",

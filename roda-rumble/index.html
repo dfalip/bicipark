@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102439">
+  <meta name="description" content="RodaRumble, el joc original de demolició de BiciPark. Apunta amb una llançadora, tomba torres de ferralla i supera quatre nivells.">
+  <title>RodaRumble · BiciPark Play</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="rr-page">
+  <header class="rr-header">
+    <a href="../explora/?category=games" class="rr-brand" aria-label="Torna als jocs de BiciPark"><span aria-hidden="true">✺</span> BICIPARK <b>PLAY</b></a>
+    <nav aria-label="Navegació"><a href="../explora/?category=games">Tots els jocs</a><a href="../index.html">Mapa</a></nav>
+  </header>
+  <main class="rr-main">
+    <section class="rr-hero">
+      <div>
+        <p class="rr-kicker">FERRALLA · FÍSICA · DESTRUCCIÓ</p>
+        <h1>RODA<span>RUMBLE</span><em>!</em></h1>
+        <p class="rr-intro">Apunta, dispara rodes i enderroca les torres. Cada estructura és un puzle. Cada impacte compta.</p>
+      </div>
+      <div class="rr-level-chooser">
+        <label for="levelSelect">ESCULL NIVELL</label>
+        <select id="levelSelect">
+          <option value="0">01 · Primer impacte</option>
+          <option value="1">02 · La fàbrica</option>
+          <option value="2">03 · Efecte dominó</option>
+          <option value="3">04 · Castell circular</option>
+        </select>
+        <small id="levelSubtitle">Aprèn a trencar la torre de ferralla</small>
+      </div>
+    </section>
+    <section class="rr-scoreboard" aria-label="Marcador">
+      <div><span>RODES</span><strong id="shotsValue">4</strong></div>
+      <div><span>ROBOTS PENDENTS</span><strong id="targetsValue">2</strong></div>
+      <div><span>PUNTUACIÓ</span><strong id="scoreValue">0</strong></div>
+      <div><span>MILLOR MARCA</span><strong id="bestValue">0</strong></div>
+    </section>
+
+    <section class="rr-game-shell" aria-label="Zona de joc">
+      <div class="rr-stage-title"><span id="stageName">PRIMER IMPACTE</span><span id="phaseLabel">PREPARAT · APUNTA</span></div>
+      <canvas id="gameCanvas" width="1000" height="560" role="img"
+        aria-label="Escenari de demolició: llançadora a l'esquerra, torres de ferralla i robots a la dreta. Apunta amb el ratolí, o utilitza els controls d'angle i potència sota el joc."
+        aria-describedby="gameInstructions gameStatus">
+        Utilitza els controls d'angle i potència i el botó Llança per jugar sense arrossegar.
+      </canvas>
+      <div id="stageTip" class="rr-stage-tip">Arrossega la roda de la llançadora cap enrere, apunta i deixa-la anar.</div>
+      <div id="impactNotice" class="rr-impact-notice" aria-hidden="true" hidden>BOOM!</div>
+      <div id="resultPanel" class="rr-result" hidden>
+        <div class="rr-result-icon" id="resultIcon" aria-hidden="true">🏁</div>
+        <p class="rr-result-kicker" id="resultKicker">REPTE COMPLETAT</p>
+        <h2 id="resultTitle">TORRES A TERRA!</h2>
+        <p id="resultDescription"></p>
+        <div id="resultStars" class="rr-stars" aria-label="Estrelles aconseguides">★★★</div>
+        <button id="resultButton" type="button" class="rr-btn rr-btn-primary">SEGÜENT NIVELL</button>
+      </div>
+    </section>
+    <p id="gameStatus" class="rr-status" role="status" aria-live="polite">Arrossega cap enrere per preparar el llançament.</p>
+    <section class="rr-actions" aria-label="Controls del joc">
+      <button id="fireButton" class="rr-btn rr-btn-primary" type="button">🎯 LLANÇA LA RODA</button>
+      <button id="turboButton" class="rr-btn rr-btn-turbo" type="button" disabled>✦ TURBO EN VOL</button>
+      <button id="nextButton" class="rr-btn rr-btn-secondary" type="button" hidden>↻ SEGÜENT RODA</button>
+      <button id="retryButton" class="rr-btn rr-btn-secondary" type="button">↺ REINICIA</button>
+    </section>
+    <section class="rr-aim-panel" aria-label="Apunta sense arrossegar">
+      <div class="rr-range">
+        <label for="angleInput">ANGLE <strong id="angleValue">42°</strong></label>
+        <input type="range" id="angleInput" min="8" max="78" value="42" step="1">
+      </div>
+      <div class="rr-range">
+        <label for="powerInput">POTÈNCIA <strong id="powerValue">77%</strong></label>
+        <input type="range" id="powerInput" min="15" max="100" value="77" step="1">
+      </div>
+    </section>
+    <p id="gameInstructions" class="rr-help">**ARROSSEGA** la roda cap enrere i deixa-la anar per disparar. També pots ajustar l'angle i la potència i prémer <b>Espai</b>. Durant el vol, prem <b>Espai</b> o <b>Turbo</b> una sola vegada per accelerar. Les caixes de vidre cauen fàcilment, l'acer resisteix i els bidons vermells exploten.</p>
+    <footer class="rr-footer">Joc original de BiciPark · Quatre nivells · Sense anuncis · Sense dades personals · Marques guardades al navegador</footer>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
