@@ -31,11 +31,13 @@ function decimalCoordinate(text){
 function valid(lat,lng){
   return Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat)<=90&&Math.abs(lng)<=180;
 }
-// Five decimals limit positional displacement to roughly one metre; three decimals
-// could shift a 900 m radius query by over 60 m and misrepresent its centre.
-function snapped(value){return Math.round(value*100000)/100000;}
+// The browser already uses three decimal places (~111m latitude cells).
+// Enforce the same coarse GPS precision at the gateway before forwarding any
+// direct API request to external Overpass providers. A 900m radius is measured
+// from this declared approximate centre, not the user's exact GPS position.
+function snapped(value){return Math.round(value*1000)/1000;}
 function query(lat,lng){
-  const near=`900,${lat.toFixed(5)},${lng.toFixed(5)}`;
+  const near=`900,${lat.toFixed(3)},${lng.toFixed(3)}`;
   return `[out:json][timeout:10][maxsize:16000000];(nwr(around:${near})["amenity"~"^(bicycle_parking|bicycle_repair_station|drinking_water|bicycle_rental)$"];nwr(around:${near})["shop"="bicycle"];);out center ${MAX_ELEMENTS};`;
 }
 function prune(map){
