@@ -153,6 +153,14 @@ async function searchPlace(event){
     if(generation===placeSearchGeneration)ui.placeSearchButton.disabled=false;
   }
 }
+// Suggestions are tied to the exact submitted text. Invalidate them immediately
+// when the input changes, including while a geocoder request is still in flight.
+ui.placeSearchInput.addEventListener("input",()=>{
+  placeSearchGeneration++;
+  ui.placeSearchResults.replaceChildren();
+  ui.placeSearchButton.disabled=false;
+  ui.placeSearchStatus.textContent="La cerca ha canviat. Prem «Cerca ciutat» per actualitzar els resultats.";
+});
 ui.placeSearchForm.addEventListener("submit",searchPlace);
 function createPlannerLink(item){
   const link=document.createElement("a");
