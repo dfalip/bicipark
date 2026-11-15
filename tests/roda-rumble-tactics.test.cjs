@@ -88,3 +88,17 @@ test('Additional levels have finite geometry and the shot simulation can advance
     assert.ok(g.debris.length<=170);
   }
 });
+
+test('Pulse used too early is armed and detonates automatically near the first tower',async()=>{
+  const e=await engine(),g=e.newGame(0);
+  g.shotCount=1;
+  e.fire(g);
+  assert.equal(g.projectile.type,'pulse');
+  assert.equal(e.turbo(g),true);
+  assert.equal(g.projectile.pulseArmed,true);
+  assert.equal(g.pulses.length,0,'An early press is not wasted off-screen');
+  for(let frame=0;frame<200 && g.projectile.pulseArmed;frame++)e.step(g,1/60);
+  assert.equal(g.projectile.pulseArmed,false);
+  assert.ok(g.pulses.length>0,'The blast appears once the projectile reaches the scrapyard');
+  assert.equal(e.turbo(g),false,'Only one special action per shot');
+});
