@@ -205,7 +205,7 @@ function resetAttempt() {
   state.releaseRequested = false;
   state.idealZoneAnnounced = false;
   state.flightTrail = [];
-  state.rotationInput = 0;
+  clearAllRotationControls();
   state.lastFrameAt = null;
   state.wind = randomWind();
 
@@ -399,6 +399,7 @@ function finishAttempt() {
     }
   }
 
+  clearAllRotationControls();
   elements.rotateLeftButton.disabled = true;
   elements.rotateRightButton.disabled = true;
   elements.resultPanel.hidden = false;
@@ -1053,6 +1054,27 @@ function setRotationInput(value) {
   state.rotationInput = value;
 }
 
+// All simultaneous inputs contribute to the same explicit direction.
+// Releasing one held input never cancels a different held arrow or touch.
+// Opposite directions cancel neutrally instead of oscillating.
+const heldRotationKeys = new Set();
+const heldButtonDirections = new Set();
+const activeRotationPointers = new Map();
+function syncRotationControl() {
+  const pointers = [...activeRotationPointers.values()];
+  const left = heldRotationKeys.has("ArrowLeft") ||
+    heldButtonDirections.has(-1) || pointers.includes(-1);
+  const right = heldRotationKeys.has("ArrowRight") ||
+    heldButtonDirections.has(1) || pointers.includes(1);
+  setRotationInput(state.phase === "flight" ? Number(right) - Number(left) : 0);
+}
+function clearAllRotationControls() {
+  heldRotationKeys.clear();
+  heldButtonDirections.clear();
+  activeRotationPointers.clear();
+  setRotationInput(0);
+}
+
 function isTypingTarget(target) {
   return target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(target.tagName));
 }
@@ -1101,34 +1123,27 @@ function handleSpaceUp(event) {
 
 document.addEventListener("keydown", event => {
   handleSpaceDown(event);
-
-  if (state.phase === "flight" && !isTypingTarget(event.target) && event.code === "ArrowLeft") {
+  if (state.phase === "flight" && !isTypingTarget(event.target) &&
+      (event.code === "ArrowLeft" || event.code === "ArrowRight")) {
     event.preventDefault();
-    setRotationInput(-1);
-  }
-
-  if (state.phase === "flight" && !isTypingTarget(event.target) && event.code === "ArrowRight") {
-    event.preventDefault();
-    setRotationInput(1);
+    heldRotationKeys.add(event.code);
+    syncRotationControl();
   }
 });
-
 document.addEventListener("keyup", event => {
   handleSpaceUp(event);
-
-  if (event.code === "ArrowLeft" || event.code === "ArrowRight") {
-    setRotationInput(0);
+  if(event.code==="ArrowLeft" || event.code==="ArrowRight"){
+    heldRotationKeys.delete(event.code);
+    syncRotationControl();
   }
 });
-
 window.addEventListener("blur", () => {
-  setRotationInput(0);
+  clearAllRotationControls();
   if (state.phase === "inrun") requestLaunch();
 });
-
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
-    setRotationInput(0);
+    clearAllRotationControls();
     if (state.phase === "inrun") requestLaunch();
   }
 });
@@ -1172,36 +1187,43 @@ elements.modeHoldButton.addEventListener("click", () => changeControlMode("hold"
 elements.challengeModeButton.addEventListener("click",()=>changeGameMode("challenge"));
 elements.practiceModeButton.addEventListener("click",()=>changeGameMode("practice"));
 
-function addRotationPointerControl(button, value) {
-  button.addEventListener("pointerdown", event => {
+function addRotationPointerControl(button,value) {
+  // Track each pointer independently, including two simultaneous touches.
+  button.addEventListener("pointerdown",event=>{
+    if(state.phase!=="flight" || (event.button!=null && event.button!==0))return;
     event.preventDefault();
-    button.setPointerCapture(event.pointerId);
-    setRotationInput(value);
+    try{button.setPointerCapture(event.pointerId);}catch{/* Some browsers do not support capture. */}
+    activeRotationPointers.set(event.pointerId,value);
+    syncRotationControl();
   });
-
-  button.addEventListener("pointerup", event => {
-    event.preventDefault();
-    setRotationInput(0);
-  });
-
-  button.addEventListener("pointercancel", () => {
-    setRotationInput(0);
-  });
+  const release=event=>{
+    activeRotationPointers.delete(event.pointerId);
+    syncRotationControl();
+  };
+  button.addEventListener("pointerup",release);
+  button.addEventListener("pointercancel",release);
+  button.addEventListener("lostpointercapture",release);
 }
 
-// Keep buttons usable from a keyboard, not just a touch screen.
-for (const [button, value] of [[elements.rotateLeftButton, -1], [elements.rotateRightButton, 1]]) {
-  button.addEventListener("keydown", event => {
-    if ((event.code === "Space" || event.code === "Enter") && state.phase === "flight") {
+// Controls remain accessible from the keyboard even when the buttons have focus.
+for(const [button,value] of [[elements.rotateLeftButton,-1],[elements.rotateRightButton,1]]){
+  button.addEventListener("keydown",event=>{
+    if((event.code==="Space" || event.code==="Enter") && state.phase==="flight"){
       event.preventDefault();
-      setRotationInput(value);
+      heldButtonDirections.add(value);
+      syncRotationControl();
     }
   });
-  button.addEventListener("keyup", event => {
-    if (event.code === "Space" || event.code === "Enter") {
+  button.addEventListener("keyup",event=>{
+    if(event.code==="Space" || event.code==="Enter"){
       event.preventDefault();
-      setRotationInput(0);
+      heldButtonDirections.delete(value);
+      syncRotationControl();
     }
+  });
+  button.addEventListener("blur",()=>{
+    heldButtonDirections.delete(value);
+    syncRotationControl();
   });
 }
 
