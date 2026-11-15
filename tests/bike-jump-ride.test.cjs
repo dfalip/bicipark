@@ -70,7 +70,8 @@ test('A long downhill course can be completed with acceleration and no pixel tel
 test('Crash animation and restart preserve earned score and checkpoint progress',async()=>{
   const e=await load(),g=e.makeGame();
   e.begin(g);g.checkpoint=1;g.checkpointX=2050;
-  g.grounded=false;g.x=2160;g.y=650;g.vy=550;
+  // Simulate falling below a genuine gap, rather than landing on a hill.
+  g.grounded=false;g.x=1780;g.y=745;g.vy=550;
   g.score=1200;
   e.step(g,{accelerate:false},1/60);
   assert.equal(g.phase,'crash');
