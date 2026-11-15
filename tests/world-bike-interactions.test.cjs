@@ -9,6 +9,7 @@ const root = path.resolve(__dirname, '..', 'world-bike');
 const html = readFileSync(path.join(root, 'index.html'), 'utf8');
 const appSource = readFileSync(path.join(root, 'app.js'), 'utf8');
 const servicesSource = readFileSync(path.join(root, 'services.js'), 'utf8');
+const translationsSource = readFileSync(path.join(root, 'i18n.js'), 'utf8');
 const services = import('data:text/javascript;base64,' + Buffer.from(servicesSource).toString('base64'));
 const sampleData = {
   osm3s: {timestamp_osm_base:'2026-11-14T09:00:00Z'},
@@ -84,6 +85,7 @@ async function setup({withGPS=false,denyGPS=false,failedFetch=false,primaryFails
       ];
     }
   };
+  window.eval(translationsSource);
   window.__worldServices=await services;
   const importLine=/^import \{[^\n]+\} from "\.\/services\.js";\s*/;
   assert.match(appSource,importLine);
@@ -153,6 +155,40 @@ test('A late area response is clearly marked stale when the map moved before com
     assert.match($('status').textContent,/zona nova/);
     assert.doesNotMatch($('status').textContent,/Consulta completada: 2 registres/);
     assert.match($('sourceStamp').textContent,/41,39/,'Result source remains the actual queried centre');
+  }finally{h.dom.window.close();}
+});
+
+test('World pilot switches core UI and local OSM record labels between four languages without refetching',async()=>{
+  const h=await setup();
+  try{
+    const $=id=>h.window.document.getElementById(id);
+    const lang=$('worldLanguage');
+    const samples=[
+      ['es','Buscar ciudad','🅿️ Aparcamiento','es'],
+      ['en','Find city','🅿️ Parking','en'],
+      ['fr','Chercher une ville','🅿️ Stationnement','fr'],
+      ['ca','Cerca ciutat','🅿️ Aparcament','ca']
+    ];
+    for(const [locale,city,parking,documentLang] of samples){
+      lang.value=locale;
+      lang.dispatchEvent(new h.window.Event('change',{bubbles:true}));
+      assert.equal(h.window.document.documentElement.lang,documentLang);
+      assert.equal($('placeSearchButton').textContent,city);
+      assert.equal(h.window.document.querySelector('[data-type="bicycle_parking"]').textContent,parking);
+      assert.equal(new URL(h.window.location.href).searchParams.get('lang'),locale);
+    }
+    h.map.setView([41.39,2.17],15);
+    $('searchButton').click();
+    await h.flush();
+    assert.equal(h.fetchCount,1);
+    lang.value='en';
+    lang.dispatchEvent(new h.window.Event('change',{bubbles:true}));
+    assert.equal(h.fetchCount,1,'Language switch must not refetch services or GPS');
+    assert.match($('resultCount').textContent,/2 mapped records/);
+    assert.match($('resultList').textContent,/Bike parking/);
+    assert.match($('resultList').textContent,/Drinking water/);
+    assert.match($('resultList').textContent,/OSM record/);
+    assert.match($('resultList').textContent,/Plan route here/);
   }finally{h.dom.window.close();}
 });
 
