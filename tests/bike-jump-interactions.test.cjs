@@ -153,7 +153,7 @@ test('Unlimited practice keeps record and official three-jump score untouched',a
     assert.equal(h.$('practiceModeButton').getAttribute('aria-pressed'),'true');
     assert.equal(h.$('attemptValue').textContent,'1 / ∞');
     assert.equal(h.$('scoreLabel').textContent,'Últim salt');
-    assert.match(h.$('gameModeNote').textContent,/no modifiquen el rècord/);
+    assert.match(h.$('gameModeNote').textContent,/ni modifiquen el rècord/);
     playFullJump(h);
     assert.equal(h.$('totalScoreValue').textContent,h.$('jumpScoreResult').textContent);
     assert.match(h.$('nextAttemptButton').textContent,/PRACTICAR/);
