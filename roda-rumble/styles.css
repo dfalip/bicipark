@@ -59,3 +59,29 @@
 }
 @media(max-width:420px){.rr-header{gap:6px}.rr-header nav{gap:9px}.rr-header nav a{font-size:.64rem}.rr-brand{font-size:.8rem}.rr-hero h1{font-size:2.5rem}.rr-intro{font-size:.77rem}.rr-status{font-size:.73rem}}
 @media(prefers-reduced-motion:reduce){.rr-impact-notice{animation:none}.rr-btn{transition:none}}
+
+/* RodaRumble v2: tactical projectile identity and trajectory explanation. */
+.rr-wheel-card{position:absolute;top:59px;left:14px;z-index:3;display:flex;align-items:center;gap:11px;pointer-events:none;
+  max-width:min(275px,calc(100% - 28px));padding:10px 13px;background:rgba(5,32,46,.87);
+  border:1px solid rgba(222,253,179,.85);border-radius:15px;box-shadow:0 9px 30px #001b2999;
+  backdrop-filter:blur(6px);color:#f8fdf1}
+.rr-wheel-card[hidden],.rr-trajectory-hint[hidden]{display:none!important}
+.rr-wheel-card>span{display:grid;place-items:center;background:#375768;color:var(--wheel-color,#ffe16a);
+  border:2px solid var(--wheel-color,#ffe16a);border-radius:50%;width:52px;height:52px;flex-shrink:0;
+  font-size:1.65rem;font-weight:1000;box-shadow:0 0 18px #d3f28b43}
+.rr-wheel-card small{font-size:.56rem;letter-spacing:.09em;color:#c0e0df;font-weight:900;display:block}
+.rr-wheel-card strong{font-size:.88rem;color:var(--wheel-color,#ffe16a);font-weight:1000}
+.rr-wheel-card p{font-size:.64rem;line-height:1.3;margin:3px 0 0;color:#deeeee;font-weight:700}
+.rr-trajectory-hint{position:absolute;left:14px;top:163px;z-index:3;
+  max-width:235px;color:#14384b;background:rgba(239,255,234,.82);border-radius:7px;
+  padding:5px 8px;font-size:.67rem;font-weight:850;pointer-events:none}
+.rr-actions .rr-btn-turbo:not(:disabled){border-color:#b6ffe0;box-shadow:0 4px 0 #0a3d50,0 0 20px #6cecb23b}
+@media(max-width:760px){
+  .rr-wheel-card{left:6px;top:31px;padding:5px 7px;gap:5px;max-width:53%;border-radius:9px}
+  .rr-wheel-card>span{width:28px;height:28px;font-size:.94rem;border-width:1px}
+  .rr-wheel-card small{font-size:.38rem;letter-spacing:0}
+  .rr-wheel-card strong{font-size:.62rem}
+  .rr-wheel-card p{font-size:.5rem;margin-top:1px}
+  .rr-trajectory-hint{left:6px;top:94px;max-width:50%;font-size:.5rem;padding:3px 5px}
+}
+@media(max-width:420px){.rr-trajectory-hint{display:none}}
