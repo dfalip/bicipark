@@ -33,8 +33,30 @@ export const LEVELS=Object.freeze([
     ["steel",822,482,54,57],["glass",890,481,52,58],
     ["wood",853,431,129,23],["glass",849,388,47,66]
    ],
-   robots:[[636,310],[852,355],[750,489]],bombs:[[788,491]]}
+   robots:[[636,310],[852,355],[750,489]],bombs:[[788,491]]},
+  {name:"Pont de ferralla",subtitle:"Tira el suport i desencadena un dominó",shots:5,
+   blocks:[
+    ["glass",545,481,45,56],["steel",607,476,49,67],
+    ["wood",576,427,142,21],["glass",580,380,42,72],
+    ["wood",770,478,51,64],["wood",830,480,50,59],
+    ["glass",800,428,130,22],["wood",805,388,56,58],
+    ["steel",912,485,46,52]
+   ],robots:[[580,340],[800,352],[920,452]],bombs:[[696,491]]},
+  {name:"Gran demolició",subtitle:"Sis rodes i una fortalesa: combina les tres habilitats",shots:6,
+   blocks:[
+    ["steel",545,480,51,60],["glass",613,479,51,62],["wood",680,480,51,62],
+    ["wood",613,428,195,23],["glass",574,382,46,70],["steel",641,384,45,67],
+    ["glass",613,334,143,20],["wood",794,482,49,60],["glass",854,482,49,60],
+    ["steel",917,480,51,62],["wood",851,427,177,22],
+    ["glass",809,384,48,65],["wood",882,386,45,62],["steel",850,337,142,20]
+   ],robots:[[609,300],[851,303],[746,487],[950,486]],bombs:[[715,491],[774,492]]}
 ]);
+export const SHOT_TYPES=Object.freeze([
+  {id:"impact",label:"RODA MARTELL",icon:"●",color:"#ffe16a",help:"Impacte potent contra fusta i vidre"},
+  {id:"pulse",label:"RODA POLS",icon:"✦",color:"#8cfbe4",help:"Turbo: ona expansiva"},
+  {id:"drill",label:"RODA TREPANT",icon:"◆",color:"#fd9a76",help:"Perfora millor l'acer"}
+]);
+export function upcomingShot(g){return SHOT_TYPES[g.shotCount%SHOT_TYPES.length];}
 const MATERIAL={wood:{hp:60,mass:1.3,score:85,bounce:.24},
   glass:{hp:32,mass:.85,score:110,bounce:.16},
   steel:{hp:145,mass:2.5,score:140,bounce:.12}};
@@ -52,7 +74,7 @@ export function newGame(index=0){
   return {levelIndex:clamp(index|0,0,LEVELS.length-1),levelName:level.name,
     phase:"aim",shotsLeft:level.shots,shotsTotal:level.shots,
     angle:42,power:77,score:0,combo:0,shotCount:0,shotTime:0,
-    blocks:entities,robots,bombs,projectile:null,debris:[],
+    blocks:entities,robots,bombs,projectile:null,debris:[],pulses:[],
     shake:0,celebration:0,notice:"Arrossega la roda enrere i deixa-la anar!",
     lastResult:null};
 }
@@ -74,19 +96,32 @@ export function fire(g){
   if(g.phase!=="aim"||g.shotsLeft<=0)return false;
   const theta=g.angle*Math.PI/180;
   const speed=115+g.power*5.1;
-  g.projectile={x:WORLD.anchor.x,y:WORLD.anchor.y,r:18,
+  const type=upcomingShot(g).id;
+  g.projectile={x:WORLD.anchor.x,y:WORLD.anchor.y,r:type==="drill"?17:18,
     vx:Math.cos(theta)*speed,vy:-Math.sin(theta)*speed,angle:0,spin:0,
-    active:true,turbo:false,lowSpeed:0};
+    type,active:true,turbo:false,lowSpeed:0};
   g.shotsLeft-=1;g.shotCount+=1;g.shotTime=0;g.combo=0;
-  g.phase="flying";g.notice="En vol! Prem ✦ o Espai per fer un impuls extra.";
+  g.phase="flying";g.notice=type==="pulse"
+    ?"RODA POLS! Activa el turbo a prop dels blocs per crear una ona expansiva."
+    :type==="drill"?"RODA TREPANT! Turbo perfora millor l'acer."
+    :"RODA MARTELL! Turbo augmenta la força de l'impacte.";
   return true;
 }
 export function turbo(g){
   const p=g.projectile;
   if(g.phase!=="flying"||!p||p.turbo)return false;
   p.turbo=true;
-  p.vx+=155;p.vy-=65;g.shake=Math.max(g.shake,5);
-  g.notice="TURBO! Busca una reacció en cadena.";
+  if(p.type==="pulse"){
+    shockwave(g,p.x,p.y,145);
+    p.vx*=.83;p.vy*=.83;
+    g.notice="ONA EXPANSIVA! Mira com cauen les torres.";
+  }else if(p.type==="drill"){
+    p.vx+=205;p.vy-=25;g.shake=Math.max(g.shake,7);
+    g.notice="TREPANT ACTIVAT! Travessa les defenses.";
+  }else{
+    p.vx+=155;p.vy-=65;g.shake=Math.max(g.shake,5);
+    g.notice="MARTELL ACTIVAT! Busca el punt feble.";
+  }
   return true;
 }
 function sparks(g,x,y,color,count=12){
