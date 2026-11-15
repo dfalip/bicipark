@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#081c2e">
+<meta name="description" content="BikeJump Ride: recorre circuits amb bicicleta, accelera, frena, vola per damunt dels salts, atrapa anelles i arriba a la meta. Joc arcade original de BiciPark.">
+<title>BikeJump Ride · Circuits — BiciPark Play</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body class="ride-page">
+<header class="ride-header">
+<a href="../../explora/?category=games" class="ride-brand"><span>✦</span> BICIPARK <b>PLAY</b></a>
+<nav aria-label="Navegació"><a href="../">Salt clàssic</a><a href="../../explora/?category=games">Tots els jocs</a><a href="../../index.html">Mapa</a></nav>
+</header>
+<main class="ride-main">
+<section class="ride-intro">
+<div><p class="ride-eyebrow">NOU · CONDUEIX · VOLA · ACONSEGUEIX PUNTS</p>
+<h1>BIKE<span>JUMP</span> <small>RIDE</small></h1>
+<p class="ride-description">Un circuit de debò: accelera per les muntanyes, encadena salts, travessa buits i busca la millor línia fins a la meta!</p></div>
+<label class="ride-chooser">CIRCUIT
+<select id="trackSelect" aria-label="Escull circuit">
+<option value="0">🌲 Bosc Volador · iniciació</option>
+<option value="1">🏜 Canyon Rush · distància</option>
+<option value="2">🌆 Skyline Dash · expert</option>
+</select></label>
+</section>
+<section class="ride-stats" aria-label="Marcador de la cursa">
+<div><span>PROGRÉS</span><strong id="distanceText">0%</strong></div>
+<div><span>TEMPS</span><strong id="timeText">0:00.0</strong></div>
+<div><span>PUNTS</span><strong id="scoreText">0</strong></div>
+<div><span>ANELLES</span><strong id="ringsText">0 / 6</strong></div>
+<div><span>RÈCORD</span><strong id="recordText">—</strong></div>
+</section>
+<section class="ride-stage" aria-label="Joc de conducció">
+<canvas id="rideCanvas" width="1000" height="560" role="img"
+aria-label="Circuit interactiu de bicicleta amb rampes, buits, anelles, obstacles i meta. Accelera, salta i inclina't per mantenir l'equilibri."
+aria-describedby="rideHelp rideStatus">Per jugar necessites un navegador amb Canvas. Utilitza els botons de gas, fre, salt i inclinació.</canvas>
+<div class="ride-world-label"><span id="trackLabel">🌲 FOREST FLOW</span><strong id="phaseLabel">● PREPARAT</strong></div>
+<div class="ride-notice" id="noticeText" aria-hidden="true" hidden>PERFECTE!</div>
+<div class="ride-progress"><div id="progressBar" class="ride-progress-fill"></div></div>
+<div class="ride-ready" id="startPanel">
+<p>EL RECORREGUT COMENÇA AQUÍ</p>
+<h2>PREPARA'T PER VOLAR</h2>
+<span>1. Mantén GAS · 2. Salta els obstacles · 3. Equilibra la bici en l'aire</span>
+<button type="button" class="ride-start-button" id="startButton">⚡ COMENÇA A CONDUIR</button>
+</div>
+<div class="ride-result" id="resultPanel" hidden>
+<p class="ride-win-kicker">CIRCUIT COMPLETAT</p>
+<h2 id="finishTitle">HAS ARRIBAT!</h2>
+<div id="finishStars" class="ride-stars" aria-label="Estrelles aconseguides">★★★</div>
+<p id="finishSummary"></p>
+<div class="ride-end-actions">
+<button type="button" id="againButton">↺ REPETEIX EL CIRCUIT</button>
+<button type="button" id="nextTrackButton">SEGÜENT CIRCUIT →</button>
+</div>
+</div>
+</section>
+<div id="rideStatus" class="ride-status" role="status" aria-live="polite">Prem «Comença a conduir» i mantén el gas per arrencar.</div>
+<section class="ride-controls" aria-label="Controls de bicicleta">
+<button type="button" class="ride-action ride-lean" id="leanBackButton"><span>↶</span> ENRERE <kbd>←</kbd></button>
+<button type="button" class="ride-action ride-brake" id="brakeButton"><span>▮▮</span> FRE <kbd>↓</kbd></button>
+<button type="button" class="ride-action ride-gas" id="gasButton"><span>⚡</span> GAS <kbd>↑</kbd></button>
+<button type="button" class="ride-action ride-jump" id="jumpButton"><span>✦</span> SALTA <kbd>ESPAI</kbd></button>
+<button type="button" class="ride-action ride-lean" id="leanForwardButton"><span>↷</span> ENDAVANT <kbd>→</kbd></button>
+</section>
+<section class="ride-toolbar">
+<button id="resetButton" type="button">↺ Reinicia</button>
+<button id="pauseButton" type="button" aria-pressed="false">⏸ Pausa</button>
+<span>Checkpoints: <strong id="checkpointCount">0 / 3</strong></span>
+<span>Salts: <strong id="jumpCount">0</strong></span>
+</section>
+<p class="ride-help" id="rideHelp"><strong>Teclat:</strong> ↑ o W accelera, ↓ o S frena, ←/→ o A/D inclina la bici, <strong>Espai</strong> salta. Al mòbil, mantén els botons amb els dits. Quan arribes a una rampa, la bici salta automàticament si duus velocitat. Si caus, tornes a l'últim checkpoint amb penalització; no has de repetir tot el circuit.</p>
+<footer>Joc arcade original de BiciPark · 3 circuits · Sense anuncis ni connexions externes · Els rècords només es guarden en aquest dispositiu</footer>
+</main>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
