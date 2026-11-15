@@ -23,9 +23,9 @@ function createHarness(){
   w.HTMLCanvasElement.prototype.getBoundingClientRect=()=>({left:0,top:0,width:1000,height:560,
     right:1000,bottom:560});
   const rawEngine=read('engine.js').replace(/^export /gm,'');
-  w.eval(rawEngine+'\nwindow.__engine={WORLD,LEVELS,newGame,setAim,aimFromPointer,fire,turbo,step,nextShot,aliveTargets,starsFor,clamp};');
+  w.eval(rawEngine+'\nwindow.__engine={WORLD,LEVELS,newGame,setAim,aimFromPointer,fire,turbo,step,nextShot,aliveTargets,starsFor,clamp,SHOT_TYPES,upcomingShot,predictShot};');
   let app=read('app.js').replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/engine\.js";/,
-    'const {WORLD,LEVELS,newGame,setAim,aimFromPointer,fire,turbo,step,nextShot,aliveTargets,starsFor,clamp}=window.__engine;');
+    'const {WORLD,LEVELS,newGame,setAim,aimFromPointer,fire,turbo,step,nextShot,aliveTargets,starsFor,clamp,SHOT_TYPES,upcomingShot,predictShot}=window.__engine;');
   assert.doesNotMatch(app,/\bimport\s*\{/);
   w.eval(app+'\nwindow.__gameForTest=()=>game;');
   const $=id=>w.document.getElementById(id);
@@ -111,5 +111,30 @@ test('UI is playable without persistent storage (private browsing / blocked cook
     h.$('fireButton').click();
     h.frame(16);h.frame(32);
     assert.equal(h.w.__gameForTest().phase,'flying');
+  }finally{h.dom.window.close();}
+});
+
+test('Tactical HUD follows shot type and the correct skill without repeating',()=>{
+  const h=createHarness();
+  try{
+    assert.equal(h.$('wheelName').textContent,'RODA MARTELL');
+    assert.equal(h.$('levelSelect').options.length,6);
+    assert.equal(h.$('trajectoryHint').hidden,false);
+    h.$('fireButton').click();
+    assert.equal(h.$('wheelName').textContent,'RODA MARTELL');
+    assert.equal(h.$('trajectoryHint').hidden,true);
+    assert.equal(h.$('turboButton').textContent.trim(),'● TURBO MARTELL');
+    h.$('turboButton').click();
+    assert.equal(h.$('turboButton').disabled,true);
+    const g=h.w.__gameForTest();
+    g.phase='between';
+    h.$('nextButton').click();
+    assert.equal(g.phase,'aim');
+    assert.equal(h.$('wheelName').textContent,'RODA POLS');
+    assert.equal(h.$('wheelIcon').textContent,'✦');
+    assert.match(h.$('wheelHelp').textContent,/expansiva/);
+    assert.equal(h.$('trajectoryHint').hidden,false);
+    h.$('fireButton').click();
+    assert.equal(h.$('turboButton').textContent.trim(),'✦ ONA EXPANSIVA');
   }finally{h.dom.window.close();}
 });
