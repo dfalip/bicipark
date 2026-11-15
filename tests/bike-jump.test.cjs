@@ -91,7 +91,7 @@ test('Mobile balance guidance is mounted only while airborne', () => {
   assert.match(js, /function updateFlightHint\(/);
   assert.match(js, /getLandingAngle\(level, targetX\)/);
   assert.match(js, /classList\.add\("bike-jump-in-flight"\)/);
-  assert.match(js, /classList\.remove\("bike-jump-in-flight"\)/);
+  assert.match(js, /classList\.remove\("bike-jump-in-flight"(?:,\s*"bike-jump-in-sweetspot")?\)/);
   assert.match(css, /bike-jump-in-flight \.bike-jump-rotation-controls/);
   assert.match(css, /position:fixed/);
 });

@@ -45,16 +45,25 @@ const elements = {
   jumpStars: document.getElementById("jumpStars"),
   gameSummary: document.getElementById("gameSummary"),
   gameSummaryTitle: document.getElementById("gameSummaryTitle"),
-  gameSummaryText: document.getElementById("gameSummaryText")
+  gameSummaryText: document.getElementById("gameSummaryText"),
+  phasePill: document.getElementById("phasePill"),
+  stageHint: document.getElementById("stageHint"),
+  launchButtonLabel: document.getElementById("launchButtonLabel"),
+  modeTapButton: document.getElementById("modeTapButton"),
+  modeHoldButton: document.getElementById("modeHoldButton"),
+  controlHelp: document.getElementById("controlHelp")
 };
 
 const STORAGE_KEY = "bicipark-bike-jump-high-score-v1";
 const level = levels[0];
 
-const safeStoredRecord = Number(localStorage.getItem(STORAGE_KEY) || 0);
+// Storage can be unavailable in private mode. Keep the game playable.
+let safeStoredRecord = 0;
+try { safeStoredRecord = Number(localStorage.getItem(STORAGE_KEY) || 0); } catch { /* in-memory record */ }
 
 const state = {
   phase: "ready",
+  controlMode: "tap",
   attempt: 1,
   totalScore: 0,
   highScore: Number.isFinite(safeStoredRecord) && safeStoredRecord >= 0 ? safeStoredRecord : 0,
@@ -72,6 +81,23 @@ const state = {
   flightTrail: [],
   animationFrameId: null
 };
+
+function setLaunchLabel(label) {
+  elements.launchButtonLabel.textContent = label;
+  elements.launchButton.setAttribute("aria-label", label);
+}
+
+function syncControlMode() {
+  const tap = state.controlMode === "tap";
+  const busy = state.phase === "inrun" || state.phase === "flight";
+  elements.modeTapButton.setAttribute("aria-pressed", String(tap));
+  elements.modeHoldButton.setAttribute("aria-pressed", String(!tap));
+  elements.modeTapButton.disabled = busy;
+  elements.modeHoldButton.disabled = busy;
+  elements.controlHelp.textContent = tap
+    ? "Toca una vegada per arrencar i un altre cop per saltar. En vol, corregeix l'angle amb ← → o amb els botons. També pots activar el mode «Mantén»."
+    : "Mantén premut per baixar el trampolí i deixa anar a la zona daurada. En vol, corregeix l'angle amb ← → o amb els botons.";
+}
 
 function randomWind() {
   return Math.round(
@@ -128,7 +154,7 @@ function resetAttempt() {
     state.animationFrameId = null;
   }
   state.phase = "ready";
-  document.body.classList.remove("bike-jump-in-flight");
+  document.body.classList.remove("bike-jump-in-flight", "bike-jump-in-sweetspot");
   elements.flightHint.hidden = true;
   state.runStartedAt = null;
   state.chargeStartedAt = null;
@@ -157,14 +183,21 @@ function resetAttempt() {
   };
 
   elements.resultPanel.hidden = true;
+  document.body.classList.remove("bike-jump-show-result");
   elements.jumpFeedback.hidden = true;
   elements.gameSummary.hidden = true;
   elements.launchButton.disabled = false;
-  elements.launchButton.textContent = "Mantén per saltar";
+  setLaunchLabel(state.controlMode === "tap" ? "TOCA PER COMENÇAR" : "MANTÉN PER COMENÇAR");
+  elements.stageHint.textContent = state.controlMode === "tap"
+    ? "Toca una vegada per baixar. Torna a tocar a la zona daurada."
+    : "Mantén premut mentre baixes i deixa anar a la zona daurada.";
+  elements.phasePill.textContent = "● PREPARAT";
+  syncControlMode();
   elements.rotateLeftButton.disabled = true;
   elements.rotateRightButton.disabled = true;
-  elements.statusText.textContent =
-    "Mantén premut per baixar i deixa anar a la franja groga. Després, equilibra la bici.";
+  elements.statusText.textContent = state.controlMode === "tap"
+    ? "Toca per començar el descens; torna a tocar a la zona daurada per saltar."
+    : "Mantén premut per baixar; deixa anar a la zona daurada per saltar.";
 
   updateDashboard();
   updatePowerDisplay();
@@ -181,9 +214,13 @@ function startRun() {
   state.runStartedAt = performance.now();
   state.chargeStartedAt = state.runStartedAt;
   state.releaseRequested = false;
-  elements.launchButton.textContent = "Deixa anar!";
-  elements.statusText.textContent =
-    "La bicicleta baixa pel trampolí. Deixa anar a prop de la vora.";
+  setLaunchLabel(state.controlMode === "tap" ? "TOCA PER SALTAR!" : "DEIXA ANAR PER SALTAR");
+  elements.phasePill.textContent = "↘ DESCENS";
+  elements.stageHint.textContent = state.controlMode === "tap"
+    ? "Mira la barra daurada: torna a tocar just abans de la vora."
+    : "Mantén premut i deixa anar a la zona daurada.";
+  elements.statusText.textContent = "La bicicleta baixa. Prepara la sortida!";
+  syncControlMode();
 
   ensureAnimation();
 }
@@ -210,6 +247,9 @@ function performLaunch() {
 
   state.phase = "flight";
   document.body.classList.add("bike-jump-in-flight");
+  document.body.classList.remove("bike-jump-in-sweetspot");
+  elements.phasePill.textContent = "✦ EN VOL";
+  elements.stageHint.textContent = "Equilibra la bici amb ← → o els botons de sota.";
   elements.flightHint.hidden = false;
   state.bike.velocityX = launch.velocityX;
   state.bike.velocityY = launch.velocityY;
@@ -219,6 +259,7 @@ function performLaunch() {
   state.flightTrail = [{x: state.bike.x, y: state.bike.y}];
 
   elements.launchButton.disabled = true;
+  syncControlMode();
   elements.rotateLeftButton.disabled = false;
   elements.rotateRightButton.disabled = false;
   elements.statusText.textContent =
@@ -289,7 +330,9 @@ function finishAttempt() {
   });
 
   state.phase = "result";
-  document.body.classList.remove("bike-jump-in-flight");
+  document.body.classList.remove("bike-jump-in-flight", "bike-jump-in-sweetspot");
+  elements.phasePill.textContent = "✦ RESULTAT";
+  syncControlMode();
   elements.flightHint.hidden = true;
   state.bike.crashed = landing.crashed;
   state.bike.rotation = landing.crashed
@@ -301,15 +344,14 @@ function finishAttempt() {
 
   if (state.totalScore > state.highScore) {
     state.highScore = state.totalScore;
-    localStorage.setItem(
-      STORAGE_KEY,
-      String(state.highScore)
-    );
+    try { localStorage.setItem(STORAGE_KEY, String(state.highScore)); }
+    catch { /* record remains visible in memory */ }
   }
 
   elements.rotateLeftButton.disabled = true;
   elements.rotateRightButton.disabled = true;
   elements.resultPanel.hidden = false;
+  document.body.classList.add("bike-jump-show-result");
   elements.resultTitle.textContent = landing.label;
   const stars = landing.crashed ? 0 :
     landing.score === 2000 && scores.takeoffScore >= 750 ? 3 :
@@ -359,7 +401,8 @@ function finishAttempt() {
 
   elements.statusText.textContent =
     `Salt completat: ${formatScore(scores.jumpScore)} punts.`;
-
+  elements.stageHint.textContent = "Pots continuar al panell de resultat.";
+  elements.nextAttemptButton.focus({preventScroll:true});
   updateDashboard();
 }
 
@@ -377,6 +420,7 @@ function nextAttempt() {
   }
 
   resetAttempt();
+  elements.launchButton.focus({preventScroll:true});
 }
 
 function restartGame() {
@@ -384,6 +428,7 @@ function restartGame() {
   state.totalScore = 0;
   state.gameStartingRecord = state.highScore;
   resetAttempt();
+  elements.launchButton.focus({preventScroll:true});
 }
 
 function updateInrun(now) {
@@ -418,9 +463,12 @@ function updateInrun(now) {
   updatePowerDisplay();
   updateRunProgress();
 
-  if (!state.idealZoneAnnounced && state.runProgress >= level.idealTakeoffProgress - 0.05) {
+  const sweetspot = state.runProgress >= level.idealTakeoffProgress - 0.05;
+  document.body.classList.toggle("bike-jump-in-sweetspot", sweetspot);
+  if (!state.idealZoneAnnounced && sweetspot) {
     state.idealZoneAnnounced = true;
-    elements.statusText.textContent = "Zona òptima: deixa anar ara per buscar una bona sortida!";
+    elements.stageHint.textContent = state.controlMode === "tap" ? "✦ ARA! TOCA PER SALTAR!" : "✦ ARA! DEIXA ANAR!";
+    elements.statusText.textContent = "Zona òptima: salta ara!";
   }
 
   if (state.releaseRequested) {
@@ -523,26 +571,27 @@ function drawBackground() {
     canvas.height
   );
 
-  gradient.addColorStop(0, "#bcddea");
-  gradient.addColorStop(0.62, "#eaf3ee");
-  gradient.addColorStop(1, "#d6e4d2");
+  gradient.addColorStop(0, "#104762");
+  gradient.addColorStop(0.48, "#32899b");
+  gradient.addColorStop(1, "#b0dbc9");
 
   context.fillStyle = gradient;
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   // Soft sun and distant atmosphere, all drawn locally on the canvas.
-  const sun = context.createRadialGradient(835, 104, 12, 835, 104, 115);
-  sun.addColorStop(0, "rgba(255,245,182,.92)");
-  sun.addColorStop(1, "rgba(255,245,182,0)");
+  const sun = context.createRadialGradient(800, 126, 8, 800, 126, 186);
+  sun.addColorStop(0, "rgba(255,237,151,1)");
+  sun.addColorStop(.36, "rgba(255,199,113,.55)");
+  sun.addColorStop(1, "rgba(255,206,134,0)");
   context.fillStyle = sun;
-  context.fillRect(700, 0, 300, 265);
-  context.fillStyle = "#fff2bd";
+  context.fillRect(610, 0, 390, 325);
+  context.fillStyle = "#ffe8a3";
   context.beginPath();
-  context.arc(835, 104, 34, 0, Math.PI * 2);
+  context.arc(800, 126, 42, 0, Math.PI * 2);
   context.fill();
 
-  context.fillStyle = "#ffffff";
-  context.globalAlpha = 0.76;
+  context.fillStyle = "#e0fcf8";
+  context.globalAlpha = 0.45;
 
   for (const cloud of [
     [155, 95, 38],
@@ -560,7 +609,7 @@ function drawBackground() {
 }
 
 function drawMountains() {
-  context.fillStyle = "#8cab9d";
+  context.fillStyle = "#527f89";
   context.beginPath();
   context.moveTo(0, 360);
   context.lineTo(115, 220);
@@ -576,7 +625,7 @@ function drawMountains() {
   context.closePath();
   context.fill();
 
-  context.fillStyle = "#6f927f";
+  context.fillStyle = "#245e6c";
   context.beginPath();
   context.moveTo(0, 430);
   context.quadraticCurveTo(250, 325, 490, 420);
@@ -587,9 +636,43 @@ function drawMountains() {
   context.fill();
 }
 
+// Small layered alpine silhouettes add depth without external assets.
+// All objects are created procedurally in the canvas.
+function drawSceneryDetails() {
+  context.save();
+  for (const [x, y, size] of [[42,419,27],[78,422,35],[430,440,22],[475,446,29],[920,429,24],[963,429,33]]) {
+    context.strokeStyle = "#163d48";
+    context.lineWidth = Math.max(2,size*.12);
+    context.beginPath();
+    context.moveTo(x,y);
+    context.lineTo(x,y-size*2);
+    context.stroke();
+    context.fillStyle = "#1c5360";
+    for (let j=0;j<3;j++) {
+      const tip=y-size*2.3 + j*size*.52;
+      context.beginPath();
+      context.moveTo(x,tip);
+      context.lineTo(x-size*(.46+j*.1),tip+size*.72);
+      context.lineTo(x+size*(.46+j*.1),tip+size*.72);
+      context.closePath();
+      context.fill();
+    }
+  }
+  context.strokeStyle="rgba(231,250,248,.47)";
+  context.lineWidth=2;
+  for(const [x,y] of [[62,124],[554,90],[607,125]]) {
+    context.beginPath();
+    context.moveTo(x-8,y);
+    context.quadraticCurveTo(x,y-6,x+8,y);
+    context.quadraticCurveTo(x+16,y-5,x+21,y-1);
+    context.stroke();
+  }
+  context.restore();
+}
+
 function drawRamp() {
-  context.strokeStyle = "#5e6570";
-  context.lineWidth = 18;
+  context.strokeStyle = "#173f52";
+  context.lineWidth = 21;
   context.lineCap = "round";
 
   context.beginPath();
@@ -610,11 +693,11 @@ function drawRamp() {
 
   context.stroke();
 
-  context.strokeStyle = "#f4f5f6";
+  context.strokeStyle = "#78f5dd";
   context.lineWidth = 8;
   context.stroke();
 
-  context.fillStyle = "#4a5058";
+  context.fillStyle = "#194354";
 
   for (let x = 120; x <= 350; x += 42) {
     const progress =
@@ -634,7 +717,7 @@ function drawRamp() {
     );
   }
 
-  context.fillStyle = "#d8dbde";
+  context.fillStyle = "#f2d764";
   context.fillRect(
     level.takeoffPoint.x - 6,
     level.takeoffPoint.y - 2,
@@ -644,7 +727,7 @@ function drawRamp() {
 }
 
 function drawLandingHill() {
-  context.fillStyle = "#f3f5f4";
+  context.fillStyle = "#d7eee5";
   context.beginPath();
   context.moveTo(level.landingStartX, getLandingY(level, level.landingStartX));
 
@@ -661,7 +744,7 @@ function drawLandingHill() {
   context.closePath();
   context.fill();
 
-  context.strokeStyle = "#c9d0cc";
+  context.strokeStyle = "#65b7ac";
   context.lineWidth = 3;
   context.beginPath();
 
@@ -681,7 +764,7 @@ function drawLandingHill() {
 
   context.stroke();
 
-  context.fillStyle = "#6b8f77";
+  context.fillStyle = "#4f9080";
 
   for (let x = 520; x < 980; x += 58) {
     const y = getLandingY(level, x);
@@ -722,13 +805,29 @@ function drawDistanceMarkers() {
   }
 }
 
+function drawTakeoffBeacon() {
+  if(state.phase!=="ready" && state.phase!=="inrun")return;
+  context.save();
+  const x=level.takeoffPoint.x+15, y=level.takeoffPoint.y-36;
+  const ready=state.phase==="inrun" && state.runProgress>=level.idealTakeoffProgress-.05;
+  context.fillStyle=ready?"rgba(116,255,177,.32)":"rgba(255,227,92,.24)";
+  context.beginPath();context.arc(x,y,ready?45:33,0,Math.PI*2);context.fill();
+  context.fillStyle=ready?"#b9ffd1":"#ffe779";
+  context.beginPath();context.moveTo(x,y-22);context.lineTo(x+11,y-4);context.lineTo(x,y+13);context.lineTo(x-11,y-4);context.closePath();context.fill();
+  context.font="bold 15px system-ui";
+  context.textAlign="center";
+  context.fillStyle="#fff7c3";
+  context.fillText(ready?"ARA!":"SORTIDA",x,y-33);
+  context.restore();
+}
+
 function drawBike() {
   const bike = state.bike;
 
   context.save();
   context.translate(bike.x, bike.y);
   context.rotate(bike.rotation);
-  context.scale(1.18, 1.18);
+  context.scale(1.52, 1.52);
 
   const wheelRadius = 11;
 
@@ -743,7 +842,7 @@ function drawBike() {
   context.arc(17, 9, wheelRadius, 0, Math.PI * 2);
   context.stroke();
 
-  context.strokeStyle = "#176b45";
+  context.strokeStyle = "#ffe46c";
   context.lineWidth = 4;
   context.beginPath();
   context.moveTo(-17, 9);
@@ -766,7 +865,7 @@ function drawBike() {
   context.stroke();
 
   // Rider jersey and a brighter helmet for readability on small screens.
-  context.fillStyle = "#ff8c3d";
+  context.fillStyle = "#ff6c8f";
   context.beginPath();
   context.moveTo(-7, -25);
   context.lineTo(8, -20);
@@ -775,7 +874,7 @@ function drawBike() {
   context.closePath();
   context.fill();
 
-  context.fillStyle = "#f4d719";
+  context.fillStyle = "#bcfff1";
   context.beginPath();
   context.arc(-6, -34, 7, 0, Math.PI * 2);
   context.fill();
@@ -811,10 +910,10 @@ function drawHud() {
 function drawFlightTrail() {
   if (state.flightTrail.length < 2) return;
   context.save();
-  context.strokeStyle = "rgba(18,111,95,.35)";
-  context.lineWidth = 3;
+  context.strokeStyle = "rgba(255,245,145,.82)";
+  context.lineWidth = 4;
   context.lineCap = "round";
-  context.setLineDash([5, 10]);
+  context.setLineDash([7, 8]);
   context.beginPath();
   state.flightTrail.forEach((point, index) => {
     if (index === 0) context.moveTo(point.x, point.y);
@@ -860,14 +959,17 @@ function draw() {
   context.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
   drawMountains();
+  drawSceneryDetails();
   drawRamp();
   drawLandingHill();
   drawDistanceMarkers();
   drawFlightTrail();
   drawSpeedLines();
+  drawTakeoffBeacon();
   drawBike();
   drawLandingEffect();
-  drawHud();
+  // Phase and level information now live in a sharp DOM HUD, not a tiny
+  // canvas rectangle that gets unreadable on mobile.
 }
 
 function frame(now) {
@@ -900,13 +1002,37 @@ function isTypingTarget(target) {
   return target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(target.tagName));
 }
 
+// Two-tap mode makes the first touch start the descent (instead of launching
+// immediately on release) and the second touch trigger the jump.
+// Press-and-hold remains available as an explicit alternative.
+function tapAction() {
+  if (state.phase === "ready") startRun();
+  else if (state.phase === "inrun") requestLaunch();
+}
+function changeControlMode(next) {
+  if (state.phase === "inrun" || state.phase === "flight") return;
+  if (next !== "tap" && next !== "hold") return;
+  state.controlMode = next;
+  if (state.phase === "ready") {
+    setLaunchLabel(next === "tap" ? "TOCA PER COMENÇAR" : "MANTÉN PER COMENÇAR");
+    elements.stageHint.textContent = next === "tap"
+      ? "Toca una vegada per baixar. Torna a tocar a la zona daurada."
+      : "Mantén premut mentre baixes i deixa anar a la zona daurada.";
+    elements.statusText.textContent = next === "tap"
+      ? "Toca per començar el descens; torna a tocar per saltar."
+      : "Mantén premut per baixar i deixa anar a la zona daurada.";
+  }
+  syncControlMode();
+}
+
 function handleSpaceDown(event) {
   if (event.code !== "Space" || event.repeat || isTypingTarget(event.target)) {
     return;
   }
 
   event.preventDefault();
-  startRun();
+  if (state.controlMode === "tap") tapAction();
+  else startRun();
 }
 
 function handleSpaceUp(event) {
@@ -915,7 +1041,7 @@ function handleSpaceUp(event) {
   }
 
   event.preventDefault();
-  requestLaunch();
+  if (state.controlMode === "hold") requestLaunch();
 }
 
 document.addEventListener("keydown", event => {
@@ -952,43 +1078,42 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-// Keyboard support when the main game button itself has focus.
+// Keyboard controls work both with and without the stage button focused.
 elements.launchButton.addEventListener("keydown", event => {
   if ((event.code === "Space" || event.code === "Enter") && !event.repeat) {
     event.preventDefault();
-    startRun();
+    if (state.controlMode === "tap") tapAction();
+    else startRun();
   }
 });
 elements.launchButton.addEventListener("keyup", event => {
   if (event.code === "Space" || event.code === "Enter") {
     event.preventDefault();
-    requestLaunch();
+    if (state.controlMode === "hold") requestLaunch();
   }
 });
-
-elements.launchButton.addEventListener(
-  "pointerdown",
-  event => {
-    event.preventDefault();
-    elements.launchButton.setPointerCapture(
-      event.pointerId
-    );
+elements.launchButton.addEventListener("pointerdown", event => {
+  if (event.button != null && event.button !== 0) return;
+  event.preventDefault();
+  if (state.controlMode === "tap") tapAction();
+  else {
+    try { elements.launchButton.setPointerCapture(event.pointerId); }
+    catch { /* fallback if pointer capture is unavailable */ }
     startRun();
   }
-);
-
-elements.launchButton.addEventListener(
-  "pointerup",
-  event => {
-    event.preventDefault();
-    requestLaunch();
-  }
-);
-
-elements.launchButton.addEventListener(
-  "pointercancel",
-  requestLaunch
-);
+});
+elements.launchButton.addEventListener("pointerup", event => {
+  event.preventDefault();
+  if (state.controlMode === "hold") requestLaunch();
+});
+elements.launchButton.addEventListener("pointercancel", () => {
+  if (state.controlMode === "hold") requestLaunch();
+});
+elements.launchButton.addEventListener("lostpointercapture", () => {
+  if (state.controlMode === "hold") requestLaunch();
+});
+elements.modeTapButton.addEventListener("click", () => changeControlMode("tap"));
+elements.modeHoldButton.addEventListener("click", () => changeControlMode("hold"));
 
 function addRotationPointerControl(button, value) {
   button.addEventListener("pointerdown", event => {

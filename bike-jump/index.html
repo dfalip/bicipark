@@ -1,182 +1,119 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="description"
-    content="Joc de salt amb bicicleta de Bicipark."
-  >
-
-  <title>Bike Jump | Bicipark</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="BikeJump de BiciPark: salta en dos tocs, controla el vol i busca l'aterratge perfecte. Joc gratuït de bicicleta per a mòbil i ordinador.">
+  <meta name="theme-color" content="#09212c">
+  <title>BikeJump 3 — BiciPark Play</title>
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="../css/bicipark-nav.css">
 </head>
-
 <body class="bike-jump-body">
   <header class="bike-jump-header">
-    <div>
-      <p class="bike-jump-eyebrow">Bicipark Games</p>
-      <h1>Bike Jump <span class="bike-jump-title-accent">v2</span></h1>
-      <p class="bike-jump-subtitle">Un salt. Una bona sortida. Un aterratge perfecte.</p>
-    </div>
-
+    <a class="bike-jump-brand" href="../explora/" aria-label="Torna als jocs de BiciPark"><span aria-hidden="true">✦</span> BICIPARK <strong>PLAY</strong></a>
     <nav class="bike-jump-header-links" aria-label="Navegació">
-      <a href="../explora/">Explora</a>
-      <a href="../index.html">Mapa principal</a>
+      <a href="../explora/">← Tots els jocs</a>
+      <a href="../index.html">Mapa</a>
     </nav>
   </header>
 
   <main class="bike-jump-main">
-    <section class="bike-jump-dashboard">
-      <article class="bike-jump-stat">
-        <span>Salt</span>
-        <strong id="attemptValue">1 / 3</strong>
-      </article>
+    <div class="bike-jump-intro">
+      <div>
+        <p class="bike-jump-eyebrow">ARCADE · BICICLETA · PRECISIÓ</p>
+        <h1>BIKE<span>JUMP</span> <small>03</small></h1>
+        <p class="bike-jump-subtitle">Dos tocs. Un salt èpic. Clava l'aterratge.</p>
+      </div>
+      <div class="bike-jump-challenge" aria-label="Repte del joc">
+        <span>EL TEU REPTE</span><strong>3 salts</strong><small>Supera el teu millor total.</small>
+      </div>
+    </div>
 
-      <article class="bike-jump-stat">
-        <span>Puntuació total</span>
-        <strong id="totalScoreValue">0</strong>
-      </article>
-
-      <article class="bike-jump-stat">
-        <span>Rècord local</span>
-        <strong id="highScoreValue">0</strong>
-      </article>
-
-      <article class="bike-jump-stat">
-        <span>Vent</span>
-        <strong id="windValue">0,0 m/s</strong>
-      </article>
+    <section class="bike-jump-dashboard" aria-label="Puntuacions de la partida">
+      <article class="bike-jump-stat"><span>Salt</span><strong id="attemptValue">1 / 3</strong></article>
+      <article class="bike-jump-stat bike-jump-stat--highlight"><span>Punts</span><strong id="totalScoreValue">0</strong></article>
+      <article class="bike-jump-stat"><span>Rècord</span><strong id="highScoreValue">0</strong></article>
+      <article class="bike-jump-stat"><span>Vent</span><strong id="windValue">0,0 m/s</strong></article>
     </section>
 
-    <section class="bike-jump-game-shell">
-      <canvas
-        id="gameCanvas"
-        width="1000"
-        height="560"
-        aria-label="Trampolí i salt amb bicicleta"
-      ></canvas>
-
+    <section class="bike-jump-game-shell" aria-label="Zona de joc">
+      <div class="bike-jump-stage-header" aria-hidden="true">
+        <span class="bike-jump-location">⛰ ALPINE RUN · K90</span>
+        <span id="phasePill" class="bike-jump-phase-pill">● PREPARAT</span>
+      </div>
+      <canvas id="gameCanvas" width="1000" height="560" aria-label="Escenari de salt amb bicicleta; utilitza el botó gran per iniciar o saltar">El teu navegador no admet aquest joc.</canvas>
       <div id="countdown" class="bike-jump-countdown" hidden></div>
       <div id="jumpFeedback" class="bike-jump-feedback" role="status" aria-live="polite" hidden></div>
       <div id="flightHint" class="bike-jump-flight-hint" aria-live="off" hidden>Equilibra la bicicleta</div>
+
+      <div class="bike-jump-stage-dock" id="stageDock">
+        <button id="launchButton" class="bike-jump-button bike-jump-button-primary bike-jump-launch" type="button">
+          <span class="bike-jump-launch-icon" aria-hidden="true">⚡</span>
+          <span id="launchButtonLabel">TOCA PER COMENÇAR</span>
+        </button>
+        <p id="stageHint" class="bike-jump-stage-hint" aria-live="polite">Toca una vegada per baixar. Torna a tocar a la zona daurada.</p>
+      </div>
+
+      <section id="resultPanel" class="bike-jump-result" aria-label="Resultat del salt" hidden>
+        <div class="bike-jump-result-top">
+          <p class="bike-jump-result-kicker">RESULTAT DEL SALT</p>
+          <h2 id="resultTitle">Aterratge</h2>
+          <div id="jumpStars" class="bike-jump-stars" aria-label="Valoració del salt"></div>
+          <p id="resultDescription"></p>
+        </div>
+        <div class="bike-jump-result-grid">
+          <article><span>Distància</span><strong id="distanceResult">0 m</strong></article>
+          <article><span>Sortida</span><strong id="takeoffResult">0</strong></article>
+          <article><span>Control</span><strong id="controlResult">0</strong></article>
+          <article><span>Aterratge</span><strong id="landingResult">0</strong></article>
+          <article class="bike-jump-result-total"><span>Punts del salt</span><strong id="jumpScoreResult">0</strong></article>
+        </div>
+        <div id="gameSummary" class="bike-jump-game-summary" hidden>
+          <strong id="gameSummaryTitle">Partida completada!</strong>
+          <span id="gameSummaryText"></span>
+        </div>
+        <button id="nextAttemptButton" class="bike-jump-button bike-jump-button-primary bike-jump-next" type="button">SEGÜENT SALT →</button>
+      </section>
     </section>
 
-    <section class="bike-jump-controls">
+    <section class="bike-jump-controls" aria-label="Controls del joc">
       <div class="bike-jump-power-panel">
-        <div class="bike-jump-power-header">
-          <span>Impuls</span>
-          <strong id="powerValue">0%</strong>
+        <div class="bike-jump-meter-grid">
+          <div>
+            <div class="bike-jump-power-header"><span>ENERGIA</span><strong id="powerValue">0%</strong></div>
+            <div class="bike-jump-power-track"><div id="powerBar" class="bike-jump-power-bar"></div></div>
+          </div>
+          <div>
+            <div class="bike-jump-run-header"><span>ZONA DE SALT</span><strong id="runProgressValue">0%</strong></div>
+            <div id="runProgressTrack" class="bike-jump-run-track" role="progressbar" aria-label="Progrés pel trampolí" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="bike-jump-ideal-zone" title="Zona òptima de sortida"></div>
+              <div id="runProgressBar" class="bike-jump-run-bar"></div>
+            </div>
+          </div>
         </div>
+        <p class="bike-jump-zone-note">✦ Quan la barra entri a la zona daurada, salta!</p>
+        <p id="statusText" aria-live="polite">Toca per començar el descens; torna a tocar per saltar.</p>
+      </div>
 
-        <div class="bike-jump-power-track">
-          <div id="powerBar" class="bike-jump-power-bar"></div>
+      <div class="bike-jump-rotation-controls" aria-label="Control en vol">
+        <button id="rotateLeftButton" type="button"><span aria-hidden="true">↶</span> ENRERE <small>←</small></button>
+        <button id="rotateRightButton" type="button">ENDAVANT <span aria-hidden="true">↷</span> <small>→</small></button>
+      </div>
+
+      <div class="bike-jump-settings">
+        <div class="bike-jump-control-switch" role="group" aria-label="Com vols controlar el salt?">
+          <span>CONTROLS</span>
+          <button id="modeTapButton" type="button" aria-pressed="true">Dos tocs</button>
+          <button id="modeHoldButton" type="button" aria-pressed="false">Mantén</button>
         </div>
-
-        <div class="bike-jump-run-header"><span>Trampolí</span><strong id="runProgressValue">0%</strong></div>
-        <div class="bike-jump-run-track" role="progressbar" aria-label="Progrés pel trampolí" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="runProgressTrack"><div class="bike-jump-ideal-zone" title="Zona òptima de sortida"></div><div id="runProgressBar" class="bike-jump-run-bar"></div></div>
-        <p class="bike-jump-zone-note">La franja groga indica la zona de sortida recomanada.</p>
-        <p id="statusText" aria-live="polite">
-          Mantén premut per baixar i deixa anar a la franja groga. Després, equilibra la bici.
-        </p>
+        <button id="restartButton" class="bike-jump-button bike-jump-button-secondary" type="button">↺ Nova partida</button>
       </div>
-
-      <div class="bike-jump-action-grid">
-        <button
-          id="launchButton"
-          class="bike-jump-button bike-jump-button-primary"
-          type="button"
-        >
-          Mantén per saltar
-        </button>
-
-        <button
-          id="restartButton"
-          class="bike-jump-button bike-jump-button-secondary"
-          type="button"
-        >
-          Reiniciar partida
-        </button>
-      </div>
-
-      <div class="bike-jump-rotation-controls">
-        <button id="rotateLeftButton" type="button">
-          ↶ Inclinar enrere
-        </button>
-
-        <button id="rotateRightButton" type="button">
-          Inclinar endavant ↷
-        </button>
-      </div>
-
-      <p class="bike-jump-help">
-        <strong>Com jugar:</strong> mantén premut, deixa anar a la franja groga i ajusta l’aterratge amb ← →.
-        A mòbil, utilitza els botons grans.
-      </p>
-    </section>
-
-    <section id="resultPanel" class="bike-jump-result" hidden>
-      <div>
-        <p class="bike-jump-result-kicker">Resultat del salt</p>
-        <h2 id="resultTitle">Aterratge</h2>
-        <div id="jumpStars" class="bike-jump-stars" aria-label="Valoració del salt"></div>
-        <p id="resultDescription"></p>
-      </div>
-
-      <div class="bike-jump-result-grid">
-        <article>
-          <span>Distància</span>
-          <strong id="distanceResult">0 m</strong>
-        </article>
-
-        <article>
-          <span>Sortida</span>
-          <strong id="takeoffResult">0</strong>
-        </article>
-
-        <article>
-          <span>Control</span>
-          <strong id="controlResult">0</strong>
-        </article>
-
-        <article>
-          <span>Aterratge</span>
-          <strong id="landingResult">0</strong>
-        </article>
-
-        <article>
-          <span>Total del salt</span>
-          <strong id="jumpScoreResult">0</strong>
-        </article>
-      </div>
-
-      <div id="gameSummary" class="bike-jump-game-summary" hidden>
-        <strong id="gameSummaryTitle">Partida completada!</strong>
-        <span id="gameSummaryText"></span>
-      </div>
-
-      <button
-        id="nextAttemptButton"
-        class="bike-jump-button bike-jump-button-primary"
-        type="button"
-      >
-        Següent salt
-      </button>
+      <p class="bike-jump-help" id="controlHelp">Toca una vegada per arrencar i un altre cop per saltar. En vol, corregeix l'angle amb ← → o amb els botons. També pots activar el mode «Mantén».</p>
     </section>
   </main>
 
-  <footer class="bike-jump-footer">
-    <p>
-      Trampolí fictici inspirat en l’esport dels salts d’esquí,
-      adaptat a una bicicleta i amb gràfics originals.
-    </p>
-  </footer>
-
+  <footer class="bike-jump-footer"><p>Joc arcade original de BiciPark. Sense anuncis ni compres. Les puntuacions es guarden només en aquest dispositiu.</p></footer>
   <script type="module" src="./app.js"></script>
   <script src="../js/bicipark-global-nav.js"></script>
 </body>

@@ -1,496 +1,140 @@
-﻿:root {
-  --jump-green: #176b45;
-  --jump-green-dark: #0f5134;
-  --jump-blue: #285ea8;
-  --jump-text: #1f2937;
-  --jump-muted: #667085;
-  --jump-border: #d9dee5;
-  --jump-surface: #ffffff;
-  --jump-background: #f4f6f8;
-  --jump-warning: #d17c0f;
-  --jump-danger: #b42318;
+/* BikeJump 3 — arcade-first presentation, zero external dependencies. */
+:root{--bj-night:#081b28;--bj-ink:#dff5f2;--bj-muted:#9ebac3;--bj-cyan:#5cf2e6;--bj-acid:#f8e66a;--bj-card:#103041;--bj-outline:rgba(126,229,227,.2);--bj-shadow:0 22px 64px rgba(0,10,20,.33)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+.bike-jump-body{margin:0;min-height:100vh;overflow-x:hidden;color:var(--bj-ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse 72% 460px at 50% 20%,#17465a 0,transparent 75%),linear-gradient(180deg,#071a28 0,#092432 57%,#081c2b 100%)}
+.bike-jump-body button{font-family:inherit}
+.bike-jump-body :where(button,a,select):focus-visible{outline:3px solid var(--bj-acid);outline-offset:4px}
+.bike-jump-header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px max(18px,calc((100vw - 1240px)/2));border-bottom:1px solid var(--bj-outline);background:rgba(3,17,26,.72)}
+.bike-jump-brand{display:inline-flex;align-items:center;gap:7px;font-weight:950;font-size:.9rem;letter-spacing:.09em;color:#fff;text-decoration:none}
+.bike-jump-brand>span{font-size:1.55rem;line-height:1;color:var(--bj-acid)}
+.bike-jump-brand strong{padding:4px 7px;border-radius:5px;background:var(--bj-acid);color:#102131;letter-spacing:.04em;font-size:.7rem}
+.bike-jump-header-links{display:flex;gap:20px;align-items:center;font-size:.85rem;font-weight:800}
+.bike-jump-header-links a{color:#c0e9e7;text-decoration:none}
+.bike-jump-header-links a:hover{text-decoration:underline;color:white}
+.bike-jump-main{width:min(1220px,calc(100% - 32px));margin:0 auto;padding:22px 0 28px}
+.bike-jump-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:0 2px 18px}
+.bike-jump-eyebrow{margin:0 0 4px;color:var(--bj-cyan);letter-spacing:.18em;font-size:.72rem;font-weight:900}
+.bike-jump-intro h1{font-size:clamp(2.55rem,6.5vw,5rem);line-height:1;letter-spacing:-.065em;margin:0;font-weight:1000;color:#f1fffe}
+.bike-jump-intro h1 span{color:var(--bj-acid)}
+.bike-jump-intro h1 small{display:inline-block;vertical-align:middle;border-radius:8px;padding:6px 9px;background:#1e4853;color:var(--bj-cyan);font-size:.27em;letter-spacing:0}
+.bike-jump-subtitle{font-size:clamp(.85rem,2vw,1.05rem);margin:7px 0 0;color:var(--bj-muted);font-weight:600}
+.bike-jump-challenge{display:flex;flex-direction:column;gap:2px;text-align:right;flex-shrink:0;padding:12px 18px;background:rgba(248,230,106,.09);border:1px solid rgba(248,230,106,.28);border-radius:16px}
+.bike-jump-challenge span{font-size:.65rem;font-weight:850;letter-spacing:.13em;color:#b2ced0}
+.bike-jump-challenge strong{color:var(--bj-acid);font-size:1.25rem}
+.bike-jump-challenge small{font-size:.75rem;color:#bcd2d4}
+.bike-jump-dashboard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.bike-jump-stat{display:flex;align-items:baseline;justify-content:space-between;gap:9px;padding:11px 17px;background:linear-gradient(135deg,rgba(35,74,90,.7),rgba(11,42,55,.8));border:1px solid var(--bj-outline);border-radius:13px}
+.bike-jump-stat span{font-size:.76rem;font-weight:780;letter-spacing:.015em;color:#a8c9cd}
+.bike-jump-stat strong{font-size:clamp(1.06rem,2.4vw,1.6rem);letter-spacing:-.035em;font-weight:950;color:#fff;font-variant-numeric:tabular-nums}
+.bike-jump-stat--highlight{border-color:rgba(248,230,106,.5);background:linear-gradient(125deg,#223f41,#183c43)}
+.bike-jump-stat--highlight strong{color:var(--bj-acid)}
+.bike-jump-game-shell{position:relative;isolation:isolate;overflow:hidden;border-radius:24px;border:2px solid rgba(111,231,229,.43);background:#134455;box-shadow:var(--bj-shadow)}
+.bike-jump-game-shell::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(180deg,rgba(2,17,30,.36),transparent 28%,transparent 73%,rgba(1,24,31,.34))}
+.bike-jump-game-shell canvas{display:block;width:100%;height:auto;aspect-ratio:1000/560;touch-action:manipulation}
+.bike-jump-stage-header{position:absolute;z-index:3;top:16px;left:17px;right:17px;display:flex;align-items:center;justify-content:space-between;gap:10px;pointer-events:none}
+.bike-jump-location,.bike-jump-phase-pill{display:inline-flex;align-items:center;gap:4px;padding:9px 13px;border:1px solid rgba(255,255,255,.28);background:rgba(3,31,41,.74);color:#f1fffd;border-radius:999px;backdrop-filter:blur(8px);font-size:.75rem;font-weight:850;letter-spacing:.055em;text-shadow:0 1px 2px #0007}
+.bike-jump-phase-pill{background:rgba(5,27,40,.84);color:var(--bj-cyan)}
+.bike-jump-in-sweetspot .bike-jump-phase-pill{background:#f8e66a;color:#183238;animation:bj-pulse .55s ease-in-out infinite alternate;text-shadow:none}
+.bike-jump-stage-dock{position:absolute;left:50%;bottom:20px;z-index:5;transform:translateX(-50%);width:min(430px,calc(100% - 38px));display:grid;gap:7px;text-align:center}
+.bike-jump-launch{width:100%;min-height:72px;display:flex;align-items:center;justify-content:center;gap:12px;padding:13px 22px;background:linear-gradient(120deg,#f7e75c,#f5bf3c);color:#11252f;border:0;border-radius:17px;font-size:clamp(1rem,2.3vw,1.3rem);font-weight:1000;letter-spacing:.025em;box-shadow:0 7px 0 #a07c25,0 16px 33px #06252787;cursor:pointer;user-select:none;touch-action:manipulation}
+.bike-jump-launch:hover:not(:disabled){filter:brightness(1.07)}
+.bike-jump-launch:active:not(:disabled){transform:translateY(3px);box-shadow:0 4px 0 #a07c25,0 8px 20px #06252780}
+.bike-jump-launch:disabled{opacity:.58;cursor:not-allowed;filter:grayscale(.3)}
+.bike-jump-launch-icon{font-size:1.5rem}
+.bike-jump-stage-hint{margin:0;padding:4px 9px;color:#fff;font-weight:730;font-size:.79rem;line-height:1.3;text-shadow:0 2px 8px #000,0 1px 2px #000}
+.bike-jump-in-flight .bike-jump-stage-dock{display:none}
+.bike-jump-in-sweetspot .bike-jump-launch{background:linear-gradient(115deg,#91ffb0,#5af2d5);box-shadow:0 7px 0 #0c897a,0 13px 24px #011f2380}
+.bike-jump-flight-hint{position:absolute;z-index:5;top:58px;right:16px;padding:12px 16px;color:#112a37;background:#fff0ad;border:2px solid #fff9da;border-radius:13px;font-size:1rem;font-weight:900;pointer-events:none;box-shadow:0 8px 28px #05222b4d}
+.bike-jump-flight-hint[data-balance="balanced"]{background:#c8ffdd;border-color:#e7ffef;color:#115040}
+.bike-jump-feedback{position:absolute;left:50%;top:19%;z-index:5;transform:translateX(-50%);white-space:nowrap;max-width:94%;padding:14px 23px;border-radius:18px;background:var(--bj-acid);color:#142734;border:3px solid #fff8ce;box-shadow:0 13px 33px #051b3188;font-weight:1000;font-size:clamp(.9rem,2vw,1.48rem);text-align:center;pointer-events:none;animation:bj-pulse .35s ease-out}
+.bike-jump-feedback--crash{color:#701f24;background:#ffe4d9}
+.bike-jump-feedback[hidden],.bike-jump-game-summary[hidden],.bike-jump-countdown[hidden],.bike-jump-result[hidden],.bike-jump-flight-hint[hidden]{display:none!important}
+.bike-jump-countdown{position:absolute;inset:0;z-index:4;display:grid;place-items:center;background:#112a4199;font-size:6rem;color:var(--bj-acid);font-weight:1000}
+.bike-jump-result{position:absolute;inset:24px;z-index:8;display:grid;align-content:center;gap:13px;width:min(680px,calc(100% - 44px));height:calc(100% - 48px);margin:auto;padding:20px 24px;border-radius:24px;border:2px solid rgba(102,246,222,.6);background:linear-gradient(135deg,rgba(6,34,48,.97),rgba(15,59,65,.97));box-shadow:0 25px 70px #00131fc9;color:#fff;overflow:auto;scrollbar-width:thin}
+.bike-jump-result-kicker{color:var(--bj-cyan);margin:0 0 3px;font-size:.72rem;letter-spacing:.16em;font-weight:950}
+.bike-jump-result h2{font-size:clamp(1.6rem,3vw,2.4rem);letter-spacing:-.045em;margin:0}
+.bike-jump-result-top p:last-child{margin:6px 0 0;color:#b7d7d7;font-size:.85rem;line-height:1.45}
+.bike-jump-stars{font-size:1.45rem;letter-spacing:.1em;color:var(--bj-acid);line-height:1.2}
+.bike-jump-result-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.bike-jump-result-grid article{display:grid;gap:6px;text-align:center;padding:10px 5px;border:1px solid rgba(117,231,217,.2);border-radius:11px;background:#184555}
+.bike-jump-result-grid span{font-size:.67rem;color:#b2d0d3}
+.bike-jump-result-grid strong{font-size:.97rem;color:#fff;font-variant-numeric:tabular-nums}
+.bike-jump-result-total{background:#3b473b!important;border-color:#f8e66a80!important}
+.bike-jump-result-total strong{color:var(--bj-acid)!important}
+.bike-jump-game-summary{display:flex;flex-direction:column;gap:3px;border:1px solid #f8e66a60;border-radius:11px;padding:10px 13px;background:#273e43;color:#e6f5de;font-size:.83rem}
+.bike-jump-game-summary strong{color:var(--bj-acid)}
+.bike-jump-next{width:100%;min-height:49px;border:0;border-radius:13px;background:var(--bj-acid);color:#132a31;font-size:1rem;font-weight:1000;cursor:pointer}
+.bike-jump-next:hover{filter:brightness(1.08)}
+.bike-jump-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,300px);gap:12px;margin-top:12px}
+.bike-jump-power-panel,.bike-jump-rotation-controls,.bike-jump-settings{border:1px solid var(--bj-outline);border-radius:17px;background:rgba(17,52,66,.78);padding:14px 17px}
+.bike-jump-power-panel{grid-column:1/-1}
+.bike-jump-meter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.bike-jump-power-header,.bike-jump-run-header{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.75rem;color:#b8d7da;font-weight:850;margin-bottom:9px}
+.bike-jump-power-header strong,.bike-jump-run-header strong{color:#fff;font-size:.91rem;font-variant-numeric:tabular-nums}
+.bike-jump-power-track,.bike-jump-run-track{position:relative;height:14px;overflow:hidden;background:#092532;border:1px solid rgba(198,242,227,.15);border-radius:999px}
+.bike-jump-power-bar,.bike-jump-run-bar{width:0;height:100%;border-radius:inherit;background:#4bf1d0;transition:width 70ms linear}
+.bike-jump-run-bar{position:absolute;z-index:2;top:0;left:0}
+.bike-jump-ideal-zone{position:absolute;z-index:3;left:89%;width:10%;top:0;bottom:0;pointer-events:none;background:repeating-linear-gradient(135deg,#ffdf4d 0 5px,#f59d28 5px 10px);border-inline:2px solid #ffe485}
+.bike-jump-zone-note{color:var(--bj-acid)!important;font-size:.79rem!important;font-weight:760;margin:9px 0 0}
+#statusText{color:#bbd9db;margin:3px 0 0;font-size:.82rem;line-height:1.4;min-height:20px}
+.bike-jump-rotation-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-content:center}
+.bike-jump-rotation-controls button{border-radius:12px;border:1px solid #73d5cf60;min-height:64px;background:#184957;color:#efffff;cursor:pointer;font-weight:900;font-size:.86rem;touch-action:none;user-select:none}
+.bike-jump-rotation-controls button span{font-size:1.45rem;display:block;color:var(--bj-cyan)}
+.bike-jump-rotation-controls button small{color:var(--bj-acid)}
+.bike-jump-rotation-controls button:disabled{opacity:.43;cursor:not-allowed}
+.bike-jump-rotation-controls button:active:not(:disabled){background:#246c71}
+.bike-jump-settings{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.bike-jump-control-switch{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.bike-jump-control-switch span{font-size:.65rem;letter-spacing:.08em;color:#a4ced0;font-weight:900;margin-right:4px}
+.bike-jump-control-switch button{background:#193b4d;color:#d0f5ed;border:1px solid #49747c;border-radius:9px;min-height:43px;padding:7px 9px;font-size:.76rem;font-weight:850;cursor:pointer}
+.bike-jump-control-switch button[aria-pressed="true"]{background:var(--bj-cyan);border-color:var(--bj-cyan);color:#102a32}
+.bike-jump-button-secondary{border:1px solid #6b989b;color:#e3f6f5;background:#284756;padding:10px 13px;min-height:44px;min-width:130px;border-radius:10px;font-size:.82rem;font-weight:800;cursor:pointer}
+.bike-jump-button-secondary:hover{background:#325867}
+.bike-jump-help{grid-column:1/-1;margin:0 4px;color:#9abdc4;font-size:.78rem;line-height:1.55}
+.bike-jump-footer{border-top:1px solid var(--bj-outline);background:#071723;color:#789da8;padding:15px 20px;text-align:center;font-size:.72rem}
+.bike-jump-footer p{margin:0}
+.bike-jump-in-flight .bike-jump-rotation-controls{position:fixed;z-index:40;left:50%;transform:translateX(-50%);bottom:max(15px,env(safe-area-inset-bottom));width:min(390px,calc(100% - 24px));box-shadow:0 10px 35px #0009;border:2px solid #63f1d5;backdrop-filter:blur(12px)}
+@keyframes bj-pulse{from{filter:brightness(1)}to{filter:brightness(1.16)}}
+@media(max-width:760px){
+  .bike-jump-header{padding:13px 16px}
+  .bike-jump-main{width:calc(100% - 20px);padding-top:15px}
+  .bike-jump-intro{align-items:start;margin-bottom:11px}
+  .bike-jump-intro h1{font-size:clamp(2rem,8vw,3rem)}
+  .bike-jump-challenge{display:none}
+  .bike-jump-dashboard{gap:6px;margin-bottom:9px}
+  .bike-jump-stat{display:grid;gap:4px;padding:9px 6px;text-align:center}
+  .bike-jump-stat span{font-size:.62rem}
+  .bike-jump-stat strong{font-size:clamp(.92rem,3.4vw,1.3rem)}
+  .bike-jump-game-shell{border-radius:16px}
+  .bike-jump-stage-header{top:8px;left:9px;right:9px}
+  .bike-jump-location,.bike-jump-phase-pill{padding:6px 8px;font-size:.59rem;letter-spacing:0}
+  .bike-jump-stage-dock{position:relative;left:auto;bottom:auto;transform:none;width:100%;padding:12px 12px 10px;background:#102c3b;gap:7px}
+  .bike-jump-launch{min-height:64px;font-size:1rem}
+  .bike-jump-stage-hint{font-size:.76rem}
+  .bike-jump-game-shell::before{bottom:90px}
+  .bike-jump-controls{grid-template-columns:1fr;gap:8px}
+  .bike-jump-power-panel{padding:12px}
+  .bike-jump-settings{flex-wrap:wrap}
+  .bike-jump-result{position:fixed;inset:auto 0 0;width:100%;height:auto;max-height:min(86vh,740px);z-index:80;border-radius:25px 25px 0 0;border-bottom:0;margin:0;padding:24px max(18px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom));box-shadow:0 -16px 60px #000b}
+  .bike-jump-result-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .bike-jump-result-grid article{padding:9px 4px}
+  .bike-jump-result-grid article:last-child{grid-column:span 2}
+  .bike-jump-flight-hint{top:38px;right:8px;padding:7px 10px;font-size:.72rem}
+  .bike-jump-feedback{top:50px;padding:9px 15px}
 }
+@media(max-width:420px){
+  .bike-jump-header-links{gap:8px;font-size:.72rem}
+  .bike-jump-brand{font-size:.78rem}
+  .bike-jump-meter-grid{gap:12px}
+  .bike-jump-zone-note{font-size:.7rem!important}
+  #statusText{font-size:.74rem}
+  .bike-jump-settings{padding:11px}
+  .bike-jump-control-switch{width:100%;justify-content:space-between}
+  .bike-jump-button-secondary{width:100%}
+  .bike-jump-in-flight .bike-jump-rotation-controls button{min-height:78px;font-size:1rem}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}}
 
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  min-height: 100%;
-}
-
-.bike-jump-body {
-  margin: 0;
-  background: var(--jump-background);
-  color: var(--jump-text);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.bike-jump-header {
-  display: flex;
-  min-height: 72px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 12px 20px;
-  background: var(--jump-surface);
-  border-bottom: 1px solid var(--jump-border);
-}
-
-.bike-jump-header h1 {
-  margin: 0;
-  font-size: 1.45rem;
-}
-
-.bike-jump-eyebrow {
-  margin: 0 0 3px;
-  color: var(--jump-green);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.bike-jump-header-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-
-.bike-jump-header-links a {
-  color: var(--jump-green);
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.bike-jump-main {
-  width: min(1180px, calc(100% - 28px));
-  margin: 0 auto;
-  padding: 22px 0 36px;
-}
-
-.bike-jump-dashboard {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.bike-jump-stat {
-  padding: 11px;
-  background: var(--jump-surface);
-  border: 1px solid var(--jump-border);
-  border-radius: 10px;
-  text-align: center;
-}
-
-.bike-jump-stat span {
-  display: block;
-  margin-bottom: 4px;
-  color: var(--jump-muted);
-  font-size: 0.74rem;
-}
-
-.bike-jump-stat strong {
-  font-size: 1.05rem;
-}
-
-.bike-jump-game-shell {
-  position: relative;
-  overflow: hidden;
-  background: #dceaf1;
-  border: 1px solid var(--jump-border);
-  border-radius: 14px;
-}
-
-#gameCanvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1000 / 560;
-  touch-action: none;
-}
-
-.bike-jump-countdown {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgb(15 38 52 / 28%);
-  color: #fff;
-  font-size: clamp(4rem, 14vw, 8rem);
-  font-weight: 900;
-  text-shadow: 0 3px 12px rgb(0 0 0 / 40%);
-}
-
-.bike-jump-controls {
-  display: grid;
-  gap: 12px;
-  margin-top: 12px;
-  padding: 14px;
-  background: var(--jump-surface);
-  border: 1px solid var(--jump-border);
-  border-radius: 12px;
-}
-
-.bike-jump-power-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 7px;
-}
-
-.bike-jump-power-header span {
-  color: var(--jump-muted);
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.bike-jump-power-track {
-  width: 100%;
-  height: 12px;
-  overflow: hidden;
-  background: #e3e8e5;
-  border-radius: 999px;
-}
-
-.bike-jump-power-bar {
-  width: 0%;
-  height: 100%;
-  background: var(--jump-green);
-  border-radius: inherit;
-  transition: width 70ms linear;
-}
-
-.bike-jump-power-panel p {
-  min-height: 22px;
-  margin: 8px 0 0;
-  color: #475467;
-  line-height: 1.4;
-}
-
-.bike-jump-action-grid,
-.bike-jump-rotation-controls {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
-}
-
-.bike-jump-button,
-.bike-jump-rotation-controls button {
-  min-height: 44px;
-  padding: 10px 14px;
-  border: 0;
-  border-radius: 9px;
-  font: inherit;
-  font-weight: 800;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-.bike-jump-button:disabled,
-.bike-jump-rotation-controls button:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-
-.bike-jump-button-primary {
-  background: var(--jump-green);
-  color: #fff;
-}
-
-.bike-jump-button-primary:hover:not(:disabled) {
-  background: var(--jump-green-dark);
-}
-
-.bike-jump-button-secondary {
-  background: #e9edf1;
-  color: #344054;
-}
-
-.bike-jump-rotation-controls button {
-  background: #edf3fb;
-  color: #214d87;
-  border: 1px solid #c4d5eb;
-}
-
-.bike-jump-help {
-  margin: 0;
-  color: var(--jump-muted);
-  font-size: 0.79rem;
-  line-height: 1.45;
-}
-
-.bike-jump-result {
-  margin-top: 13px;
-  padding: 15px;
-  background: var(--jump-surface);
-  border: 1px solid var(--jump-border);
-  border-radius: 12px;
-}
-
-.bike-jump-result-kicker {
-  margin: 0 0 4px;
-  color: var(--jump-green);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.bike-jump-result h2 {
-  margin: 0;
-}
-
-.bike-jump-result p {
-  margin: 7px 0 0;
-  color: #475467;
-}
-
-.bike-jump-result-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
-  margin: 13px 0;
-}
-
-.bike-jump-result-grid article {
-  padding: 9px;
-  background: #f5f7f6;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.bike-jump-result-grid span,
-.bike-jump-result-grid strong {
-  display: block;
-}
-
-.bike-jump-result-grid span {
-  color: var(--jump-muted);
-  font-size: 0.69rem;
-}
-
-.bike-jump-result-grid strong {
-  margin-top: 4px;
-  font-size: 0.94rem;
-}
-
-.bike-jump-footer {
-  padding: 16px 20px;
-  background: #fff;
-  color: var(--jump-muted);
-  border-top: 1px solid var(--jump-border);
-  font-size: 0.78rem;
-  text-align: center;
-}
-
-.bike-jump-footer p {
-  margin: 0;
-}
-
-@media (max-width: 760px) {
-  .bike-jump-dashboard,
-  .bike-jump-result-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 500px) {
-  .bike-jump-header {
-    align-items: flex-start;
-  }
-
-  .bike-jump-action-grid,
-  .bike-jump-rotation-controls {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Runway timing feedback (separate from power charging). */
-.bike-jump-run-header{display:flex;justify-content:space-between;gap:12px;margin:14px 0 7px;font-size:.82rem;font-weight:700;color:#475467}
-.bike-jump-run-track{position:relative;height:13px;border-radius:999px;background:#e3e8e5;overflow:hidden}
-.bike-jump-run-bar{position:absolute;z-index:2;inset:0 auto 0 0;width:0;background:#176b45;border-radius:999px;transition:width 70ms linear}
-.bike-jump-ideal-zone{position:absolute;z-index:3;left:89%;width:10%;top:0;bottom:0;background:repeating-linear-gradient(135deg,rgba(255,204,32,.7) 0 5px,rgba(255,221,91,.4) 5px 10px);border-inline:2px solid #936800;pointer-events:none}
-.bike-jump-power-panel .bike-jump-zone-note{margin-top:6px;min-height:0;font-size:.76rem;color:#667085}
-:where(.bike-jump-button,.bike-jump-rotation-controls button,.bike-jump-header-links a):focus-visible{outline:3px solid #165dca;outline-offset:3px}
-@media(max-width:500px){.bike-jump-button,.bike-jump-rotation-controls button{min-height:54px}}
-@media(prefers-reduced-motion:reduce){.bike-jump-run-bar,.bike-jump-power-bar{transition:none}}
-
-
-/* BikeJump v2 — friendlier arcade look. No external art or libraries. */
-.bike-jump-body{
-  background:linear-gradient(180deg,#e5f5ef 0,#f7faf5 360px,#f4f6f8 100%);
-}
-.bike-jump-header{
-  background:linear-gradient(110deg,#0b513b,#08392f);
-  color:#fff;
-  border-bottom:4px solid #f5ce42;
-}
-.bike-jump-header-links a,
-.bike-jump-header .bike-jump-eyebrow{color:#d9fbe3}
-.bike-jump-header-links a:hover{text-decoration:underline}
-.bike-jump-title-accent{
-  display:inline-block;
-  padding:3px 10px;
-  border-radius:999px;
-  background:#ffda52;
-  color:#073a2c;
-  font-size:.64em;
-  vertical-align:middle;
-  letter-spacing:.02em;
-}
-.bike-jump-subtitle{margin:6px 0 0;color:#d5eee1;font-size:.87rem}
-.bike-jump-main{padding-top:17px}
-.bike-jump-stat{
-  border:1px solid #d6e5dd;
-  box-shadow:0 4px 12px rgba(17,73,50,.04);
-}
-.bike-jump-stat strong{color:#155a40;font-size:1.15rem;font-variant-numeric:tabular-nums}
-.bike-jump-game-shell{
-  border:2px solid #c4ddd0;
-  box-shadow:0 10px 30px rgba(21,89,64,.1);
-  border-radius:18px;
-}
-.bike-jump-controls{
-  border-color:#d3e5da;
-  box-shadow:0 5px 18px rgba(28,91,60,.055);
-}
-.bike-jump-power-header span,
-.bike-jump-run-header span{font-weight:800;color:#314b40}
-.bike-jump-button-primary{
-  background:linear-gradient(135deg,#218958,#11633e);
-  box-shadow:0 4px 0 #0c4b31;
-  letter-spacing:.01em;
-}
-.bike-jump-button-primary:hover:not(:disabled){
-  background:linear-gradient(135deg,#299e68,#157248)
-}
-.bike-jump-button-primary:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 #0c4b31}
-.bike-jump-rotation-controls button{
-  background:#e8f7f0;
-  border:2px solid #b7d9c9;
-  color:#145e44;
-  font-size:.95rem;
-}
-.bike-jump-rotation-controls button:active:not(:disabled){background:#c4edd9}
-.bike-jump-result{
-  border:2px solid #d4e8d5;
-  box-shadow:0 7px 24px rgba(28,91,60,.065);
-}
-.bike-jump-result-grid article{background:#eff7f1}
-.bike-jump-result-grid article:last-child{background:#e0f2df}
-.bike-jump-result-grid article:last-child strong{color:#0c633e;font-size:1.1rem}
-.bike-jump-stars{
-  font-size:1.55rem;
-  line-height:1.35;
-  letter-spacing:.12em;
-  color:#d89a0b;
-  margin-top:6px;
-}
-.bike-jump-feedback{
-  position:absolute;
-  bottom:16px;
-  left:50%;
-  transform:translateX(-50%);
-  padding:12px 20px;
-  max-width:92%;
-  border-radius:999px;
-  text-align:center;
-  white-space:nowrap;
-  color:#073c2c;
-  font-size:clamp(.92rem,2vw,1.35rem);
-  font-weight:900;
-  letter-spacing:.025em;
-  background:#ffdf5a;
-  border:3px solid #fff4cb;
-  box-shadow:0 8px 30px rgba(23,69,48,.25);
-  pointer-events:none;
-  animation:bike-jump-pop .3s ease-out both;
-}
-.bike-jump-feedback--crash{
-  background:#fff0dc;
-  border-color:#fff;
-  color:#8a3b23;
-}
-.bike-jump-game-summary{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  padding:14px 16px;
-  margin:12px 0;
-  border-radius:12px;
-  background:#e7f6df;
-  border:1px solid #bcdda9;
-  color:#255b30;
-}
-.bike-jump-game-summary strong{font-size:1.12rem}
-.bike-jump-feedback[hidden],
-.bike-jump-game-summary[hidden],
-.bike-jump-countdown[hidden]{display:none!important}
-@keyframes bike-jump-pop{
-  from{opacity:0;transform:translate(-50%,10px) scale(.9)}
-  to{opacity:1;transform:translate(-50%,0) scale(1)}
-}
-@media(max-width:600px){
-  .bike-jump-dashboard{gap:7px}
-  .bike-jump-stat{padding:9px 5px}
-  .bike-jump-stat strong{font-size:.96rem}
-  .bike-jump-stat span{font-size:.7rem}
-  .bike-jump-header{padding:12px 14px;align-items:center;flex-wrap:wrap}
-  .bike-jump-subtitle{font-size:.75rem}
-  .bike-jump-feedback{bottom:8px;padding:7px 12px;font-size:.86rem}
-  .bike-jump-controls{padding:12px}
-  .bike-jump-rotation-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .bike-jump-rotation-controls button{font-size:.81rem;padding:9px 4px}
-}
-@media(prefers-reduced-motion:reduce){
-  .bike-jump-feedback{animation:none}
-  .bike-jump-button-primary:active:not(:disabled){transform:none}
-}
-
-
-/* v2.1: actionable in-flight guidance and controls that stay visible on phones. */
-.bike-jump-flight-hint{
-  position:absolute;
-  top:14px;
-  right:14px;
-  z-index:4;
-  padding:10px 15px;
-  border:2px solid rgba(255,255,255,.86);
-  border-radius:999px;
-  background:#fff4c9;
-  box-shadow:0 5px 18px rgba(4,45,31,.16);
-  color:#164735;
-  font-weight:900;
-  letter-spacing:.01em;
-  font-size:clamp(.82rem,1.7vw,1.04rem);
-  pointer-events:none;
-}
-.bike-jump-flight-hint[data-balance="balanced"]{background:#d7f8df;color:#126041}
-.bike-jump-flight-hint[hidden]{display:none!important}
-@media(max-width:600px){
-  .bike-jump-flight-hint{top:8px;right:8px;padding:6px 9px;font-size:.75rem;border-width:1px}
-  .bike-jump-in-flight .bike-jump-rotation-controls{
-    position:fixed;
-    left:12px;
-    right:12px;
-    bottom:max(12px,env(safe-area-inset-bottom));
-    z-index:30;
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:10px;
-    padding:9px;
-    background:rgba(247,251,246,.97);
-    border:2px solid #b6dbc5;
-    border-radius:16px;
-    box-shadow:0 6px 26px rgba(5,49,31,.24);
-  }
-  .bike-jump-in-flight .bike-jump-rotation-controls button{
-    min-height:66px;
-    font-size:.98rem;
-    touch-action:none;
-  }
-}
+/* Keep the mobile result sheet above the lower control deck. */
+.bike-jump-show-result .bike-jump-game-shell{z-index:60;overflow:visible}
