@@ -32,6 +32,7 @@ let activeProviderIndex=0;
 let lastErrorProvider=null;
 let pending=false;
 let locating=false;
+let placeSearchGeneration=0;
 const cache=new Map();
 let map=null;
 let markers=null;
@@ -90,6 +91,8 @@ function clearVisibleServices(){
 }
 async function searchPlace(event){
   event.preventDefault();
+  // Only the latest submitted geocoding request may update suggestions or controls.
+  const generation=++placeSearchGeneration;
   const name=ui.placeSearchInput.value.trim();
   if(name.length<3){
     ui.placeSearchStatus.textContent="Escriu almenys tres caràcters.";
@@ -109,6 +112,7 @@ async function searchPlace(event){
   try{
     const suggestions=await window.BiciParkGeocoder.search(name);
     // A slow geocoder must never show suggestions for text the user has since changed.
+    if(generation!==placeSearchGeneration)return;
     if(ui.placeSearchInput.value.trim()!==name){
       ui.placeSearchStatus.textContent="La cerca ha canviat. Prem «Cerca ciutat» per actualitzar els resultats.";
       return;
@@ -141,11 +145,12 @@ async function searchPlace(event){
       ui.placeSearchResults.appendChild(li);
     }
   }catch(error){
+    if(generation!==placeSearchGeneration)return;
     ui.placeSearchStatus.textContent=error?.name==="AbortError"?
       "La cerca de ciutats ha trigat massa. Prova-ho de nou.":
       "No s'ha pogut cercar aquesta localitat. Pots moure el mapa manualment.";
   }finally{
-    ui.placeSearchButton.disabled=false;
+    if(generation===placeSearchGeneration)ui.placeSearchButton.disabled=false;
   }
 }
 ui.placeSearchForm.addEventListener("submit",searchPlace);
