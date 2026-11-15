@@ -195,12 +195,12 @@ export const biciparkModules = [
   {
     id: "bike-jump-ride",
     category: "games",
-    title: "BikeJump Ride · Circuit de muntanya",
+    title: "BikeJump Ride · Circuit principal",
     description:
       "Condueix la bicicleta per un recorregut continu de 1,2 km amb quatre rampes, barrancs, anelles, punts de control i meta.",
     href: "../bike-jump-ride/",
     icon: "🚵",
-    status: "Nou joc",
+    status: "Destacat",
     statusType: "new",
     tags: ["Conducció", "Salt", "Circuit", "Muntanya", "Arcade"],
     enabled: true
@@ -208,12 +208,12 @@ export const biciparkModules = [
   {
     id: "bike-jump",
     category: "games",
-    title: "Bike Jump",
+    title: "BikeJump clàssic · Salts",
     description:
-      "Prova tres salts amb bicicleta, controla l'equilibri i busca un bon aterratge.",
+      "Versió original: tres salts de precisió, control de l'equilibri i aterratges.",
     href: "../bike-jump/",
     icon: "🚵",
-    status: "En evolució",
+    status: "Clàssic",
     statusType: "development",
     tags: ["Arcade", "Salt", "3 intents"],
     enabled: true
