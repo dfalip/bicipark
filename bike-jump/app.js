@@ -1058,6 +1058,26 @@ function drawBike() {
   context.arc(17, 9, wheelRadius, 0, Math.PI * 2);
   context.stroke();
 
+  // Rotating spokes expose speed during the descent and flight.
+  for(const wheelX of [-17,17]){
+    context.save();
+    context.translate(wheelX,9);
+    context.rotate(bike.wheelSpin||0);
+    context.strokeStyle="rgba(230,250,248,.86)";
+    context.lineWidth=1.3;
+    for(let i=0;i<4;i++){
+      const a=i*Math.PI/4;
+      context.beginPath();
+      context.moveTo(-Math.cos(a)*wheelRadius,-Math.sin(a)*wheelRadius);
+      context.lineTo(Math.cos(a)*wheelRadius,Math.sin(a)*wheelRadius);
+      context.stroke();
+    }
+    context.restore();
+  }
+  // A compression transform simulates the suspension taking the impact.
+  context.save();
+  context.translate(0,(bike.compression||0)/1.52);
+
   context.strokeStyle = "#ffe46c";
   context.lineWidth = 4;
   context.beginPath();
@@ -1080,6 +1100,10 @@ function drawBike() {
   context.lineTo(-4, -28);
   context.stroke();
 
+  // During a crash the pilot becomes a separate animated body; otherwise
+  // the fixed rider would unrealistically stay attached to an inverted bike.
+  const detached=state.phase==="impact" && state.impact?.story.kind==="crash";
+  if(!detached){
   // Rider jersey and a brighter helmet for readability on small screens.
   context.fillStyle = "#ff6c8f";
   context.beginPath();
@@ -1094,8 +1118,9 @@ function drawBike() {
   context.beginPath();
   context.arc(-6, -34, 7, 0, Math.PI * 2);
   context.fill();
-
-  context.restore();
+  }
+  context.restore(); // suspension
+  context.restore(); // bicycle
 }
 
 function drawHud() {
@@ -1140,7 +1165,8 @@ function drawFlightTrail() {
 }
 
 function drawSpeedLines() {
-  if (state.phase !== "inrun" || state.runProgress < 0.2) return;
+  if ((state.phase !== "inrun" || state.runProgress < 0.2) &&
+      state.phase !== "flight") return;
   const bike = state.bike;
   context.save();
   context.strokeStyle = "rgba(255,255,255,.9)";
@@ -1148,8 +1174,9 @@ function drawSpeedLines() {
   context.lineCap = "round";
   for (let i = -1; i <= 1; i += 1) {
     context.beginPath();
-    context.moveTo(bike.x - 70 - (i + 1) * 12, bike.y + i * 15);
-    context.lineTo(bike.x - 35 - (i + 1) * 12, bike.y + i * 15);
+    const length=state.phase==="flight"?100:70;
+    context.moveTo(bike.x-length-(i+1)*14,bike.y+i*17);
+    context.lineTo(bike.x-25-(i+1)*14,bike.y+i*17);
     context.stroke();
   }
   context.restore();
@@ -1205,20 +1232,35 @@ function drawTumblingRider(){
 }
 
 function drawLandingEffect() {
-  if (state.phase !== "result") return;
+  if(state.phase!=="impact" || !state.impact?.pose)return;
+  const {initial,pose,story}=state.impact;
+  const t=pose.progress;
   context.save();
-  for (let i = 0; i < 7; i += 1) {
-    const angle = (i / 7) * Math.PI * 2;
-    const radius = state.bike.crashed ? 21 : 35;
-    const x = state.bike.x + Math.cos(angle) * radius;
-    const y = state.bike.y + Math.sin(angle) * radius;
-    context.fillStyle = state.bike.crashed ? "rgba(142,119,95,.7)" : "#ffd43b";
+  const gy=getLandingY(level,initial.x);
+  for(let i=0;i<18;i++){
+    const a=(i/18)*Math.PI*2;
+    const drift=(story.kind==="crash"?110:story.kind==="rough"?63:42);
+    const spread=(.2+t)*drift;
+    const x=initial.x+Math.cos(a)*spread + t*(story.direction==="forward"?28:-14);
+    const y=gy - Math.abs(Math.sin(a))*spread*.4 - Math.sin(t*Math.PI)*18;
+    const radius=(story.kind==="crash"?5:3)*(1-t*.65);
+    context.fillStyle=story.kind==="crash"
+      ?`rgba(255,196,137,${Math.max(0,.73-t*.67)})`
+      :`rgba(221,254,226,${Math.max(0,.78-t*.69)})`;
     context.beginPath();
-    context.arc(x, y, state.bike.crashed ? 5 : 3, 0, Math.PI * 2);
+    context.arc(x,y,Math.max(.7,radius),0,Math.PI*2);
     context.fill();
+  }
+  if(story.kind==="perfect" && t<.65){
+    context.strokeStyle=`rgba(254,234,107,${1-t})`;
+    context.lineWidth=5;
+    context.beginPath();
+    context.arc(initial.x,initial.y,32+t*38,0,Math.PI*2);
+    context.stroke();
   }
   context.restore();
 }
+
 
 function draw() {
   context.clearRect(0,0,canvas.width,canvas.height);
