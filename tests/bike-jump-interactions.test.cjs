@@ -35,7 +35,8 @@ async function setup(){
   let js=sourceApp.replace(/^\uFEFF?import\s*\{[\s\S]*?\}\s*from\s*"\.\/levels\.js";/,'const {levels}=window.__levels;');
   js=js.replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/physics\.js";/,'const {clamp,getInrunPosition,getLandingY,getLandingAngle,launchBike,integrateFlight,evaluateLanding}=window.__physics;');
   assert.doesNotMatch(js,/\bimport\s*\{/);
-  window.eval(js);
+  // Test-only accessor appended to the same evaluated module scope.
+  window.eval(js + '\nwindow.__rotationInputForTest=()=>state.rotationInput;');
   const $=id=>window.document.getElementById(id);
   function pointer(el,type){
     const event=new window.Event(type,{bubbles:true,cancelable:true});
@@ -208,5 +209,80 @@ test('Game mode cannot change in mid-flight or during launch',async()=>{
     h.frame(at+50);
     assert.equal(h.$('challengeModeButton').disabled,true);
     assert.equal(h.$('totalScoreValue').textContent,'0');
+  }finally{h.dom.window.close();}
+});
+
+
+function intoFlight(h){
+  const start=h.window.performance.now();
+  h.pointer(h.$('launchButton'),'pointerdown');
+  h.frame(start+2350);
+  h.pointer(h.$('launchButton'),'pointerdown');
+  h.frame(start+2400);
+  assert.match(h.$('phasePill').textContent,/EN VOL/);
+}
+function dispatchKey(h,code,type='keydown',target=h.window.document){
+  target.dispatchEvent(new h.window.KeyboardEvent(type,{code,bubbles:true,cancelable:true}));
+}
+function dispatchPointer(h,element,type,id){
+  const ev=new h.window.Event(type,{bubbles:true,cancelable:true});
+  Object.defineProperty(ev,'pointerId',{value:id});
+  Object.defineProperty(ev,'button',{value:0});
+  element.dispatchEvent(ev);
+}
+
+test('Releasing one arrow preserves the remaining held rotation input',async()=>{
+  const h=await setup();
+  try{
+    intoFlight(h);
+    const input=h.window.__rotationInputForTest;
+    dispatchKey(h,'ArrowLeft');
+    assert.equal(input(),-1);
+    dispatchKey(h,'ArrowRight');
+    assert.equal(input(),0,'Opposite arrows held at the same time cancel neutrally');
+    dispatchKey(h,'ArrowRight','keyup');
+    assert.equal(input(),-1,'Left should still rotate when right is released');
+    dispatchKey(h,'ArrowLeft','keyup');
+    assert.equal(input(),0);
+  }finally{h.dom.window.close();}
+});
+
+test('Touch and keyboard controls can overlap without sticking or cancelling one another',async()=>{
+  const h=await setup();
+  try{
+    intoFlight(h);
+    const input=h.window.__rotationInputForTest;
+    const left=h.$('rotateLeftButton'),right=h.$('rotateRightButton');
+    dispatchPointer(h,left,'pointerdown',41);
+    assert.equal(input(),-1);
+    dispatchPointer(h,right,'pointerdown',42);
+    assert.equal(input(),0);
+    dispatchPointer(h,left,'pointerup',41);
+    assert.equal(input(),1,'Releasing one finger preserves the other direction');
+    dispatchKey(h,'ArrowLeft');
+    assert.equal(input(),0);
+    dispatchPointer(h,right,'pointercancel',42);
+    assert.equal(input(),-1,'Pointer cancel must not clear held keyboard input');
+    h.window.dispatchEvent(new h.window.Event('blur'));
+    assert.equal(input(),0,'Loss of focus clears every input');
+    dispatchKey(h,'ArrowLeft','keyup');
+    assert.equal(input(),0);
+  }finally{h.dom.window.close();}
+});
+
+test('Space/Enter on focused steering buttons and blur are balanced',async()=>{
+  const h=await setup();
+  try{
+    intoFlight(h);
+    const input=h.window.__rotationInputForTest;
+    const button=h.$('rotateRightButton');
+    dispatchKey(h,'Space','keydown',button);
+    assert.equal(input(),1);
+    button.dispatchEvent(new h.window.Event('blur'));
+    assert.equal(input(),0);
+    dispatchKey(h,'Enter','keydown',button);
+    assert.equal(input(),1);
+    dispatchKey(h,'Enter','keyup',button);
+    assert.equal(input(),0);
   }finally{h.dom.window.close();}
 });
