@@ -339,3 +339,79 @@ test('Invalid saved records do not corrupt displayed scores',async()=>{
     assert.equal(valid.window.localStorage.getItem('bicipark-bike-jump-high-score-v1'),'777');
   }finally{valid.dom.window.close();}
 });
+
+
+test('Course picker loads three genuinely distinct scenes and preserves per-course records',async()=>{
+  const h=await setup({initialRecord:'777'});
+  try{
+    const picker=h.$('courseSelect');
+    assert.equal(picker.options.length,3);
+    assert.equal(picker.value,'alpine-k90');
+    assert.equal(h.$('highScoreValue').textContent,'777');
+    picker.value='city-skyline';
+    picker.dispatchEvent(new h.window.Event('change',{bubbles:true}));
+    assert.match(h.$('courseTag').textContent,/CITY RUN/);
+    assert.match(h.$('courseHint').textContent,/precís/);
+    assert.equal(h.$('highScoreValue').textContent,'0');
+    assert.equal(h.$('attemptValue').textContent,'1 / 3');
+    playFullJump(h);
+    const cityScore=h.$('jumpScoreResult').textContent;
+    assert.equal(h.$('totalScoreValue').textContent,cityScore);
+    assert.equal(h.window.localStorage.getItem('bicipark-bike-jump-high-score-v1'),'777',
+      'City records may never overwrite the original alpine high score');
+    picker.value='red-canyon';
+    picker.dispatchEvent(new h.window.Event('change',{bubbles:true}));
+    assert.equal(h.$('resultPanel').hidden,true);
+    assert.match(h.$('courseTag').textContent,/CANYON RUN/);
+    assert.match(h.$('courseHint').textContent,/vent variable/);
+    assert.equal(h.$('highScoreValue').textContent,'0');
+    playFullJump(h);
+    picker.value='alpine-k90';
+    picker.dispatchEvent(new h.window.Event('change',{bubbles:true}));
+    assert.equal(h.$('highScoreValue').textContent,'777');
+    assert.equal(h.$('attemptValue').textContent,'1 / 3');
+  }finally{h.dom.window.close();}
+});
+
+test('Course switching is disabled while starting or flying',async()=>{
+  const h=await setup();
+  try{
+    const picker=h.$('courseSelect');
+    const start=h.window.performance.now();
+    h.pointer(h.$('launchButton'),'pointerdown');
+    assert.equal(picker.disabled,true);
+    picker.value='city-skyline';
+    picker.dispatchEvent(new h.window.Event('change',{bubbles:true}));
+    assert.equal(picker.value,'alpine-k90');
+    h.frame(start+2350);
+    h.pointer(h.$('launchButton'),'pointerdown');
+    h.frame(start+2400);
+    assert.match(h.$('phasePill').textContent,/EN VOL/);
+    assert.equal(picker.disabled,true);
+    picker.value='red-canyon';
+    picker.dispatchEvent(new h.window.Event('change',{bubbles:true}));
+    assert.equal(picker.value,'alpine-k90');
+  }finally{h.dom.window.close();}
+});
+
+test('All three course definitions have valid geometry and distinct flight physics',async()=>{
+  const [levelsModule, physics]=await modules;
+  const {levels}=levelsModule;
+  assert.deepEqual(levels.map(x=>x.id),['alpine-k90','city-skyline','red-canyon']);
+  assert.equal(new Set(levels.map(x=>x.theme)).size,3);
+  assert.equal(new Set(levels.map(x=>x.gravity)).size,3);
+  for(const level of levels){
+    assert.ok(level.takeoffPoint.x>level.startPoint.x);
+    assert.ok(level.landingStartX>level.takeoffPoint.x);
+    assert.ok(level.inrunDurationSeconds>2);
+    const launch=physics.launchBike({level,progress:level.idealTakeoffProgress,power:1,wind:0});
+    assert.ok(launch.velocityX>0);
+    assert.ok(launch.velocityY<0);
+    assert.ok(physics.getLandingY(level,level.landingStartX)>level.takeoffPoint.y);
+    const flight={...level.takeoffPoint,...launch,angularVelocity:0,
+      controlEffort:0,flightTime:0};
+    assert.ok(Number.isFinite(flight.x)&&Number.isFinite(flight.y));
+    for(let i=0;i<30;i++)physics.integrateFlight({bike:flight,level,deltaSeconds:1/60,rotationInput:0,wind:0});
+    assert.ok(Number.isFinite(flight.x)&&Number.isFinite(flight.y));
+  }
+});
