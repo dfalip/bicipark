@@ -50,6 +50,10 @@ const elements = {
   countdown: document.getElementById("countdown"),
   jumpFeedback: document.getElementById("jumpFeedback"),
   flightHint: document.getElementById("flightHint"),
+  flightReadout: document.getElementById("flightReadout"),
+  flightDistance: document.getElementById("flightDistance"),
+  flightClearance: document.getElementById("flightClearance"),
+  airtimeBanner: document.getElementById("airtimeBanner"),
   jumpStars: document.getElementById("jumpStars"),
   gameSummary: document.getElementById("gameSummary"),
   gameSummaryTitle: document.getElementById("gameSummaryTitle"),
@@ -236,6 +240,8 @@ function resetAttempt() {
   state.phase = "ready";
   document.body.classList.remove("bike-jump-in-flight", "bike-jump-in-sweetspot");
   elements.flightHint.hidden = true;
+  elements.flightReadout.hidden = true;
+  elements.airtimeBanner.hidden = true;
   state.runStartedAt = null;
   state.chargeStartedAt = null;
   state.runProgress = 0;
@@ -338,6 +344,7 @@ function performLaunch() {
   elements.phasePill.textContent = "✦ EN VOL";
   elements.stageHint.textContent = "Equilibra la bici amb ← → o els botons de sota.";
   elements.flightHint.hidden = false;
+  elements.flightReadout.hidden = false;
   state.bike.velocityX = launch.velocityX;
   state.bike.velocityY = launch.velocityY;
   state.bike.rotation = launch.rotation;
@@ -416,6 +423,7 @@ function finishAttempt(){
   const story=landingStory(landing,state.bike);
   state.impact={landing,scores,story,elapsed:0,initial:{...state.bike},pose:null};
   state.phase="impact";
+  elements.airtimeBanner.hidden=true;
   document.body.classList.remove("bike-jump-in-flight","bike-jump-in-sweetspot");
   elements.phasePill.textContent=story.kind==="crash"?"⚠ CAIGUDA":"✦ ATERRATGE";
   elements.flightHint.hidden=true;
@@ -449,6 +457,7 @@ function finalizeAttempt(){
   if(state.phase!=="impact"||!state.impact)return;
   const {landing,scores,story}=state.impact;
   state.phase="result";
+  elements.flightReadout.hidden=true;
   state.bike.crashed=landing.crashed;
   elements.phasePill.textContent="✦ RESULTAT";
   syncControlMode();
@@ -580,6 +589,7 @@ function updateInrun(now) {
   state.bike.y = position.y;
   state.bike.rotation =
     0.33 + state.runProgress * 0.18;
+  state.bike.wheelSpin=state.runProgress*11;
 
   updatePowerDisplay();
   updateRunProgress();
@@ -622,14 +632,21 @@ function updateFlightHint() {
 }
 
 function updateFlight(deltaSeconds) {
+  // The short apex slowdown increases perceived hang-time, but the physics
+  // still advances with the SAME elapsed simulation time for every input.
+  // No artificial metres are credited to the score.
+  const apex=Math.abs(state.bike.velocityY)<45 && state.bike.flightTime>.25;
+  const motionSeconds=deltaSeconds*(apex?.78:1);
+  elements.airtimeBanner.hidden=!apex;
   integrateFlight({
     bike: state.bike,
     level,
-    deltaSeconds,
+    deltaSeconds:motionSeconds,
     rotationInput: state.rotationInput,
     wind: state.wind
   });
 
+  state.bike.wheelSpin+=(Math.abs(state.bike.velocityX)*motionSeconds)/11;
   state.flightTrail.push({x: state.bike.x, y: state.bike.y});
   if (state.flightTrail.length > 32) state.flightTrail.shift();
   updateFlightHint();
@@ -649,12 +666,12 @@ function updateFlight(deltaSeconds) {
   }
 
   if (
-    state.bike.x > canvas.width + 120 ||
-    state.bike.y > canvas.height + 120
+    state.bike.x > level.takeoffPoint.x + level.maximumDistanceMeters/level.distanceScale + 250 ||
+    state.bike.y > canvas.height + 380
   ) {
     state.bike.x = Math.min(
       state.bike.x,
-      canvas.width - 20
+      level.takeoffPoint.x + level.maximumDistanceMeters/level.distanceScale + 220
     );
 
     state.bike.y = getLandingY(
@@ -664,6 +681,19 @@ function updateFlight(deltaSeconds) {
 
     state.bike.rotation += 1.2;
     finishAttempt();
+  }
+}
+
+function updateCinematicCamera(deltaSeconds) {
+  if(state.phase==="result")return;
+  const target=cinematicCamera({phase:state.phase,bike:state.bike,level,
+    width:canvas.width,height:canvas.height});
+  state.camera=easeCamera(state.camera,target,deltaSeconds);
+  if(state.phase==="flight"||state.phase==="impact"){
+    const {distanceMeters,clearanceMeters}=flightReadout(level,state.bike);
+    elements.flightDistance.textContent=`${Math.round(distanceMeters)} m`;
+    elements.flightClearance.textContent=`${Math.round(clearanceMeters)} m`;
+    elements.flightReadout.hidden=false;
   }
 }
 
@@ -684,6 +714,7 @@ function update(now) {
   } else if (state.phase === "impact") {
     updateImpact(deltaSeconds);
   }
+  updateCinematicCamera(deltaSeconds);
 }
 
 function drawBackground() {
