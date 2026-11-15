@@ -1079,6 +1079,30 @@ function drawTakeoffBeacon() {
   context.restore();
 }
 
+function drawAirImpulse(){
+  if(state.phase!=="flight" || !state.bike.airHoldActive)return;
+  const bike=state.bike;
+  const shimmer=(bike.flightTime*14)%(Math.PI*2);
+  context.save();
+  context.lineCap="round";
+  for(let i=0;i<5;i++){
+    const offset=Math.sin(shimmer+i*1.8)*7;
+    const length=38+i*14;
+    const y=bike.y-12+i*8+offset;
+    context.beginPath();
+    context.moveTo(bike.x-30-length,y);
+    context.lineTo(bike.x-35-i*4,y+3);
+    context.strokeStyle=`rgba(144,255,225,${.55-i*.065})`;
+    context.lineWidth=4-i*.43;
+    context.stroke();
+  }
+  context.fillStyle="rgba(140,255,220,.15)";
+  context.beginPath();
+  context.ellipse(bike.x,bike.y-12,57,34,0,0,Math.PI*2);
+  context.fill();
+  context.restore();
+}
+
 function drawBike() {
   const bike = state.bike;
 
@@ -1155,10 +1179,18 @@ function drawBike() {
   context.lineTo(-12, -14);
   context.closePath();
   context.fill();
+  // The rider tucks forward while holding to extend the flight.
+  if(bike.airHoldActive && state.phase==="flight"){
+    context.strokeStyle="#fdb3cb";
+    context.lineWidth=5;
+    context.beginPath();
+    context.moveTo(-1,-22);context.lineTo(15,-21);context.stroke();
+  }
 
   context.fillStyle = "#bcfff1";
   context.beginPath();
-  context.arc(-6, -34, 7, 0, Math.PI * 2);
+  context.arc(bike.airHoldActive && state.phase==="flight"?1:-6,
+    bike.airHoldActive && state.phase==="flight"?-30:-34, 7, 0, Math.PI * 2);
   context.fill();
   }
   context.restore(); // suspension
@@ -1339,6 +1371,7 @@ function draw() {
   drawShadow();
   drawSpeedLines();
   drawTakeoffBeacon();
+  drawAirImpulse();
   if(state.impact?.pose && state.phase==="impact" && !prefersReducedMotion()){
     const shake=state.impact.pose.shake;
     context.translate(Math.sin(state.impact.elapsed*65)*shake,
