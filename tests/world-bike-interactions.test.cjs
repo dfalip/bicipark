@@ -323,3 +323,27 @@ test('Changing the city query while geocoding is in flight discards obsolete sug
     assert.equal(h.fetchCount,0,'Geocoding must never silently query Overpass');
   }finally{h.dom.window.close();}
 });
+
+test('Two overlapping place searches keep only the newest result and loading state',async()=>{
+  const h=await setup();
+  try{
+    const $=id=>h.window.document.getElementById(id);
+    const pending=[];
+    h.window.BiciParkGeocoder.search=()=>new Promise((resolve,reject)=>pending.push({resolve,reject}));
+    $('placeSearchInput').value='Amsterdam';
+    $('placeSearchForm').dispatchEvent(new h.window.Event('submit',{cancelable:true}));
+    $('placeSearchInput').value='Paris';
+    $('placeSearchForm').dispatchEvent(new h.window.Event('submit',{cancelable:true}));
+    assert.equal(pending.length,2);
+    pending[0].resolve([{lat:52.3676,lng:4.9041,label:'Amsterdam'}]);
+    await h.flush();
+    assert.equal($('placeSearchResults').children.length,0,'Older request cannot publish suggestions');
+    assert.equal($('placeSearchButton').disabled,true,'Older completion cannot enable button while newest request is pending');
+    pending[1].resolve([{lat:48.8566,lng:2.3522,label:'Paris'}]);
+    await h.flush();
+    assert.equal($('placeSearchResults').querySelectorAll('button').length,1);
+    assert.match($('placeSearchResults').textContent,/Paris/);
+    assert.equal($('placeSearchButton').disabled,false);
+    assert.equal(h.fetchCount,0);
+  }finally{h.dom.window.close();}
+});
