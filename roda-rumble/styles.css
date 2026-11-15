@@ -36,7 +36,7 @@
 .rr-result p:not(.rr-result-kicker){margin:0;color:#e2f6f5;max-width:430px}
 .rr-stars{font-size:2rem;letter-spacing:.16em;color:#f7e972}
 .rr-status{margin:10px 3px;font-weight:750;font-size:.86rem;min-height:21px;color:#d4f1ef}
-.rr-actions{display:grid;grid-template-columns:1.5fr 1.2fr 1fr 1fr;gap:10px}
+.rr-actions{display:grid;grid-template-columns:1.4fr 1.2fr 1fr .9fr 1fr;gap:10px}
 .rr-btn{min-height:53px;border-radius:12px;border:1px solid #6aafac90;padding:9px 15px;font-size:.9rem;font-weight:950;cursor:pointer;touch-action:manipulation}
 .rr-btn-primary{background:linear-gradient(110deg,#eafa79,#f2d65b);border-color:#fbf3a3;color:#18272c;box-shadow:0 4px 0 #a99538}
 .rr-btn-turbo{background:#1a7182;color:#fff;border-color:#85ecdb;box-shadow:0 4px 0 #0a3d50}
@@ -85,3 +85,7 @@
   .rr-trajectory-hint{left:6px;top:94px;max-width:50%;font-size:.5rem;padding:3px 5px}
 }
 @media(max-width:420px){.rr-trajectory-hint{display:none}}
+
+.rr-sound-toggle[aria-pressed="true"]{border-color:#a9fbe1;color:#e6ffba;background:#1b635c}
+.rr-sound-toggle{font-size:.73rem;letter-spacing:.01em}
+@media(max-width:760px){.rr-sound-toggle{grid-column:1/-1;min-height:34px}}
