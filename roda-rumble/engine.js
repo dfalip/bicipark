@@ -244,10 +244,20 @@ function collideProjectile(g,p,b){
   const impact=Math.max(0,(p.vx-b.vx)*-c.nx+(p.vy-b.vy)*-c.ny);
   p.x+=c.nx*(c.depth+.3);p.y+=c.ny*(c.depth+.3);
   const kick=Math.max(20,impact);
-  p.vx+=c.nx*kick*.65;p.vy+=c.ny*kick*.68;
-  b.vx-=c.nx*kick/(b.mass*2.3);b.vy-=c.ny*kick/(b.mass*2.3);
-  b.spin+=(-c.ny*(p.vx>0?1:-1))*kick/300;
-  damageBlock(g,b,impact*.68);
+  const drill=p.type==="drill" && p.turbo;
+  const heavy=p.type==="impact";
+  p.vx+=c.nx*kick*(drill?.19:.65);
+  p.vy+=c.ny*kick*(drill?.23:.68);
+  const force=kick*(heavy?1.35:drill?1.13:1);
+  b.vx-=c.nx*force/(b.mass*2.3);b.vy-=c.ny*force/(b.mass*2.3);
+  b.spin+=(-c.ny*(p.vx>0?1:-1))*force/230;
+  const materialBonus=drill&&b.material==="steel"?2.7:1;
+  damageBlock(g,b,impact*.68*(heavy?1.3:1)*materialBonus);
+  if(impact>92 && (!b.lastImpactAt || g.shotTime-b.lastImpactAt>.16)){
+    b.lastImpactAt=g.shotTime;
+    sparks(g,p.x,p.y,b.material==="glass"?"#baf8fa":"#ffe39e",5);
+    g.shake=Math.max(g.shake,3);
+  }
 }
 function collideBlocks(g){
   const blocks=g.blocks.filter(x=>!x.dead);
@@ -284,7 +294,7 @@ function updateBodies(g,dt){
   for(const b of g.blocks){
     if(b.dead)continue;
     b.vy+=660*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;
-    b.angle=clamp(b.angle+b.spin*dt,-.34,.34);
+    b.angle=clamp(b.angle+b.spin*dt,-.95,.95);
     b.spin*=Math.exp(-2*dt);b.vx*=Math.exp(-1.65*dt);
     if(b.y+b.h/2>=WORLD.ground){
       const impact=Math.abs(b.vy);
@@ -382,7 +392,7 @@ export function step(g,elapsed){
       if(g.robots.every(t=>t.dead)){
         g.phase="won";g.score+=g.shotsLeft*300;g.notice="NIVELL SUPERAT! 🎉";
         g.celebration=1.5;
-      }else if(g.shotTime>6.8 || (!g.projectile?.active && g.shotTime>.8)){
+      }else if(g.shotTime>5.15 || (!g.projectile?.active && g.shotTime>.8)){
         g.phase=g.shotsLeft>0?"between":"lost";
         g.notice=g.phase==="between"?"Prepara la següent roda!":"Sense rodes! Torna-ho a provar.";
       }
@@ -390,13 +400,15 @@ export function step(g,elapsed){
     if(g.phase==="flying"||g.phase==="won"||g.phase==="lost"||g.phase==="between"){
       updateDebris(g,dt);
     }
+    for(const ring of g.pulses)ring.elapsed+=dt;
+    g.pulses=g.pulses.filter(ring=>ring.elapsed<ring.duration);
     g.shake=Math.max(0,g.shake-30*dt);
     g.celebration=Math.max(0,g.celebration-dt);
   }
 }
 export function nextShot(g){
   if(g.phase!=="between")return false;
-  g.phase="aim";g.projectile=null;g.angle=42;g.power=77;g.combo=0;
+  g.phase="aim";g.projectile=null;g.angle=42;g.power=77;g.combo=0;g.pulses=[];
   g.notice="Apunta a les estructures i deixa anar la llançadora.";
   return true;
 }
