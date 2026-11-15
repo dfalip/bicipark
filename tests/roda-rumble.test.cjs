@@ -11,7 +11,7 @@ const engine=()=>import('data:text/javascript;base64,'+Buffer.from(src('roda-rum
 test('RodaRumble provides six original finite levels with distinct targets and materials',async()=>{
   const e=await engine();
   assert.equal(e.LEVELS.length,6);
-  assert.equal(new Set(e.LEVELS.map(x=>x.name)).size,4);
+  assert.equal(new Set(e.LEVELS.map(x=>x.name)).size,6);
   for(let i=0;i<6;i++){
     const g=e.newGame(i);
     assert.equal(g.levelIndex,i);
