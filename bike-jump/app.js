@@ -663,9 +663,14 @@ function drawBackground() {
     canvas.height
   );
 
-  gradient.addColorStop(0, "#104762");
-  gradient.addColorStop(0.48, "#32899b");
-  gradient.addColorStop(1, "#b0dbc9");
+  const sky=level.theme==="city"
+    ? ["#122044","#465a91","#b8cee3"]
+    : level.theme==="canyon"
+      ? ["#853858","#d87b65","#f4cf9d"]
+      : ["#104762","#32899b","#b0dbc9"];
+  gradient.addColorStop(0,sky[0]);
+  gradient.addColorStop(.48,sky[1]);
+  gradient.addColorStop(1,sky[2]);
 
   context.fillStyle = gradient;
   context.fillRect(0, 0, canvas.width, canvas.height);
@@ -677,7 +682,7 @@ function drawBackground() {
   sun.addColorStop(1, "rgba(255,206,134,0)");
   context.fillStyle = sun;
   context.fillRect(610, 0, 390, 325);
-  context.fillStyle = "#ffe8a3";
+  context.fillStyle = level.theme==="city"?"#e8f2ff":level.theme==="canyon"?"#ffca84":"#ffe8a3";
   context.beginPath();
   context.arc(800, 126, 42, 0, Math.PI * 2);
   context.fill();
@@ -701,6 +706,34 @@ function drawBackground() {
 }
 
 function drawMountains() {
+  if(level.theme==="city"){
+    // Two skyline depths, with the near buildings kept below the ramp.
+    const skyline=[[0,130,300],[105,75,245],[175,95,290],[252,112,225],[366,80,290],[463,110,255],[562,85,305],[642,145,224],[786,115,289],[895,118,240]];
+    context.fillStyle="#455b7a";
+    for(const [x,w,y] of skyline)context.fillRect(x,y,w,560-y);
+    context.fillStyle="#263f60";
+    for(const [x,w,y] of [[30,135,360],[210,125,380],[414,100,355],[592,122,380],[774,145,352],[928,90,385]])
+      context.fillRect(x,y,w,560-y);
+    return;
+  }
+  if(level.theme==="canyon"){
+    context.fillStyle="#9c4e60";
+    context.beginPath();
+    context.moveTo(0,355);
+    context.lineTo(85,330);context.lineTo(85,229);context.lineTo(199,229);
+    context.lineTo(206,340);context.lineTo(330,355);
+    context.lineTo(379,291);context.lineTo(505,291);context.lineTo(542,354);
+    context.lineTo(685,350);context.lineTo(716,222);context.lineTo(821,222);
+    context.lineTo(845,348);context.lineTo(1000,340);
+    context.lineTo(1000,560);context.lineTo(0,560);context.closePath();context.fill();
+    context.fillStyle="#743947";
+    context.beginPath();context.moveTo(0,421);context.lineTo(140,375);
+    context.lineTo(285,415);context.lineTo(450,387);
+    context.lineTo(615,418);context.lineTo(817,368);
+    context.lineTo(1000,411);context.lineTo(1000,560);
+    context.lineTo(0,560);context.closePath();context.fill();
+    return;
+  }
   context.fillStyle = "#527f89";
   context.beginPath();
   context.moveTo(0, 360);
@@ -732,6 +765,30 @@ function drawMountains() {
 // All objects are created procedurally in the canvas.
 function drawSceneryDetails() {
   context.save();
+  if(level.theme==="city"){
+    for(const [x,y,w,h] of [[20,360,135,200],[210,380,125,180],[414,355,100,205],[592,380,122,180],[774,352,145,208],[928,385,90,175]]){
+      context.fillStyle="rgba(238,229,162,.72)";
+      for(let wx=x+12;wx<x+w-10;wx+=19){
+        for(let wy=y+15;wy<y+h-12;wy+=27){
+          if(Math.floor((wx+wy)/19)%3!==0)context.fillRect(wx,wy,6,11);
+        }
+      }
+    }
+    context.restore();return;
+  }
+  if(level.theme==="canyon"){
+    context.strokeStyle="#315f57";
+    context.lineCap="round";
+    for(const [x,y,h] of [[55,417,42],[256,419,30],[695,430,35],[940,441,34]]){
+      context.lineWidth=9;
+      context.beginPath();context.moveTo(x,y);context.lineTo(x,y-h);context.stroke();
+      context.lineWidth=7;
+      context.beginPath();context.moveTo(x,y-h*.44);context.lineTo(x-13,y-h*.44);
+      context.lineTo(x-13,y-h*.72);context.moveTo(x,y-h*.62);
+      context.lineTo(x+14,y-h*.62);context.lineTo(x+14,y-h*.88);context.stroke();
+    }
+    context.restore();return;
+  }
   for (const [x, y, size] of [[42,419,27],[78,422,35],[430,440,22],[475,446,29],[920,429,24],[963,429,33]]) {
     context.strokeStyle = "#163d48";
     context.lineWidth = Math.max(2,size*.12);
@@ -819,7 +876,7 @@ function drawRamp() {
 }
 
 function drawLandingHill() {
-  context.fillStyle = "#d7eee5";
+  context.fillStyle = level.theme==="city"?"#71849c":level.theme==="canyon"?"#e2a475":"#d7eee5";
   context.beginPath();
   context.moveTo(level.landingStartX, getLandingY(level, level.landingStartX));
 
@@ -836,7 +893,7 @@ function drawLandingHill() {
   context.closePath();
   context.fill();
 
-  context.strokeStyle = "#65b7ac";
+  context.strokeStyle = level.theme==="city"?"#bdcbd8":level.theme==="canyon"?"#f5c08f":"#65b7ac";
   context.lineWidth = 3;
   context.beginPath();
 
@@ -856,17 +913,21 @@ function drawLandingHill() {
 
   context.stroke();
 
-  context.fillStyle = "#4f9080";
-
+  context.fillStyle = level.theme==="city"?"#d4e8e8":level.theme==="canyon"?"#c47959":"#4f9080";
   for (let x = 520; x < 980; x += 58) {
     const y = getLandingY(level, x);
-
-    context.beginPath();
-    context.moveTo(x, y - 18);
-    context.lineTo(x - 12, y + 6);
-    context.lineTo(x + 12, y + 6);
-    context.closePath();
-    context.fill();
+    if(level.theme==="city"){
+      context.fillRect(x-9,y-5,23,3);
+    }else if(level.theme==="canyon"){
+      context.beginPath();context.arc(x,y+1,7,Math.PI,Math.PI*2);context.fill();
+    }else{
+      context.beginPath();
+      context.moveTo(x, y - 18);
+      context.lineTo(x - 12, y + 6);
+      context.lineTo(x + 12, y + 6);
+      context.closePath();
+      context.fill();
+    }
   }
 }
 
