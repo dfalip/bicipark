@@ -240,7 +240,10 @@ function applyData(data,location){
   searchCircle=L.circle([location.lat,location.lng],{radius:SEARCH_RADIUS_METERS,
     color:"#0b7055",weight:2,fillOpacity:.04}).addTo(map);
   renderResults();
-  if(records.length===0)message("Consulta completada, però sense registres per aquesta zona. Les dades OSM poden ser incompletes.","success");
+  // The user can pan while the request is in flight. Never imply that an old
+  // query describes the newly displayed map area after its response arrives.
+  if(isNewArea())message("La consulta ha acabat per la zona anterior. El mapa és en una zona nova: prem «Buscar al centre» o tria una categoria per consultar-la.","info");
+  else if(records.length===0)message("Consulta completada, però sense registres per aquesta zona. Les dades OSM poden ser incompletes.","success");
   else message(`Consulta completada: ${records.length} registres OSM dins de 900 m (no verificats in situ).`,"success");
   hideAlternative();
 }
@@ -359,7 +362,11 @@ filters.forEach(button=>button.addEventListener("click",()=>{
   filters.forEach(item=>item.setAttribute("aria-pressed",String(item===button)));
   // A category tap is a user-initiated search if no results exist for this zone.
   // Otherwise it filters the already fetched results without a network call.
-  if(map&&!pending&&isNewArea())fetchAroundCenter();
+  // Keep the loading state visible; the latest selected category will be
+  // applied when this in-flight response is rendered. Do not erase spinner
+  // or display a false "no results" state while waiting for real data.
+  if(pending)return;
+  if(map&&isNewArea())fetchAroundCenter();
   else renderResults();
 }));
 ui.searchButton.addEventListener("click",()=>fetchAroundCenter());
