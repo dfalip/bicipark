@@ -192,6 +192,30 @@ test('World pilot switches core UI and local OSM record labels between four lang
   }finally{h.dom.window.close();}
 });
 
+test('World pilot privacy, geocoding and OSM attribution remain readable in all four languages',async()=>{
+  const h=await setup();
+  try{
+    const lang=h.window.document.getElementById('worldLanguage');
+    const cases=[
+      ['ca','demana permís de GPS','geocodificador'],
+      ['es','solicita permiso de GPS','geocodificador'],
+      ['en','asks for GPS permission','geocoder'],
+      ['fr',"demande l'accès GPS",'géocodeur']
+    ];
+    const link=h.window.document.querySelector('.wb-disclaimer a');
+    for(const [locale,privacy,geocode] of cases){
+      lang.value=locale;
+      lang.dispatchEvent(new h.window.Event('change'));
+      assert.match(h.window.document.querySelector('.wb-disclaimer').textContent,new RegExp(privacy));
+      assert.match(h.window.document.querySelector('.wb-place-search-note').textContent,new RegExp(geocode));
+      assert.equal(h.window.document.querySelector('.wb-disclaimer a'),link,'Provider attribution URL must survive language changes');
+      assert.equal(link.href,'https://overpass.private.coffee/');
+      assert.ok(h.window.document.querySelector('meta[name="description"]').content.length>30);
+    }
+    assert.equal(h.fetchCount,0,'Changing language never contacts the provider');
+  }finally{h.dom.window.close();}
+});
+
 test('World pilot localizes provider failures and denied GPS without masking the actual error',async()=>{
   const failed=await setup({failedFetch:true});
   try{
