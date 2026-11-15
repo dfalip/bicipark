@@ -183,6 +183,7 @@ function resetAttempt() {
   };
 
   elements.resultPanel.hidden = true;
+  document.body.classList.remove("bike-jump-show-result");
   elements.jumpFeedback.hidden = true;
   elements.gameSummary.hidden = true;
   elements.launchButton.disabled = false;
@@ -350,6 +351,7 @@ function finishAttempt() {
   elements.rotateLeftButton.disabled = true;
   elements.rotateRightButton.disabled = true;
   elements.resultPanel.hidden = false;
+  document.body.classList.add("bike-jump-show-result");
   elements.resultTitle.textContent = landing.label;
   const stars = landing.crashed ? 0 :
     landing.score === 2000 && scores.takeoffScore >= 750 ? 3 :
