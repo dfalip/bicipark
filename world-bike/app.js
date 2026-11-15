@@ -1,4 +1,7 @@
 import {SEARCH_RADIUS_METERS, SERVICE_TYPES, normalizeOverpassResponse, validateCoords} from "./services.js";
+// The translation helper stays optional in non-browser tests; the official page loads i18n.js.
+const t=(key,vars)=>window.BiciParkWorldI18n?.t(key,vars)??key;
+const categoryKey={bicycle_parking:"categoryParking",bicycle_repair_station:"categoryRepair",drinking_water:"categoryWater",bicycle_rental:"categoryRental",bicycle_shop:"categoryShop"};
 
 // Public, shared Overpass is for deliberately small manual pilot requests only.
 // DO NOT use this as the production backend at scale. A quota-limited service
@@ -85,7 +88,7 @@ function clearVisibleServices(){
   if(searchCircle&&map)map.removeLayer(searchCircle);
   searchCircle=null;
   ui.resultList.replaceChildren();
-  ui.resultCount.textContent="Cap consulta en aquesta zona";
+  ui.resultCount.textContent=t("noZone");
   ui.sourceStamp.textContent="Dades pendents · prem «Buscar al centre» o una categoria";
   hideAlternative();
 }
@@ -173,8 +176,8 @@ function createPlannerLink(item){
   }).toString();
   link.target="_blank";
   link.rel="noopener noreferrer";
-  link.title="Obre el planificador de BiciPark en una pestanya nova";
-  link.textContent="Planifica fins aquí ↗";
+  link.title=t("plannerTitle");
+  link.textContent=t("planner");
   return link;
 }
 function createOsmLink(item){
@@ -182,15 +185,14 @@ function createOsmLink(item){
   link.href=item.sourceUrl;
   link.target="_blank";
   link.rel="noopener noreferrer";
-  link.textContent="Fitxa OSM ↗";
+  link.textContent=t("sourceLink");
   return link;
 }
 function renderResults(){
   const visible=activeType==="all" ? records : records.filter(item=>item.type===activeType);
   ui.resultList.replaceChildren();
   ui.resultCount.textContent=searchedCentre?
-    `${visible.length} registres cartografiats${mayBeTruncated?" (llista limitada)":""}` :
-    "Cap consulta encara";
+    t("recordCount",{count:visible.length,limited:mayBeTruncated?t("limited"):""}) : t("none");
   ui.sourceStamp.textContent=searchedCentre?
     `OpenStreetMap · ${sourceProvider||"font no indicada"} · zona ${coords(searchedCentre)}${sourceTimestamp?" · dades del "+sourceTimestamp.slice(0,10):" · actualització no indicada"}` :
     "Font: OpenStreetMap · cobertura variable";
@@ -198,7 +200,7 @@ function renderResults(){
   if(visible.length===0&&searchedCentre){
     const item=document.createElement("li");
     item.className="wb-no-results";
-    item.textContent="No hi ha registres d'aquesta categoria en la consulta. Això no vol dir que no hi hagi serveis reals.";
+    item.textContent=t("noResults");
     ui.resultList.appendChild(item);
   }
   for(const place of visible){
@@ -207,11 +209,11 @@ function renderResults(){
     const heading=document.createElement("strong");
     heading.textContent=`${category.icon} ${place.name}`;
     const meta=document.createElement("span");
-    meta.textContent=category.label+" · registre comunitari";
+    meta.textContent=t(categoryKey[place.type])+" · "+t("community");
     const actions=document.createElement("div");
     const focus=document.createElement("button");
     focus.type="button";
-    focus.textContent="Veure al mapa";
+    focus.textContent=t("viewMap");
     focus.addEventListener("click",()=>{if(map)map.setView([place.lat,place.lng],17);});
     actions.append(focus,createPlannerLink(place),createOsmLink(place));
     li.append(heading,meta,actions);
@@ -221,7 +223,7 @@ function renderResults(){
     });
     const popup=document.createElement("div");
     const title=document.createElement("strong");title.textContent=place.name;
-    const type=document.createElement("p");type.textContent=category.label+" · OSM (no verificat)";
+    const type=document.createElement("p");type.textContent=t(categoryKey[place.type])+" · "+t("notVerified");
     popup.append(title,type,createPlannerLink(place),createOsmLink(place));
     marker.bindPopup(popup);
     markers.addLayer(marker);
@@ -242,7 +244,7 @@ function applyData(data,location){
   renderResults();
   // The user can pan while the request is in flight. Never imply that an old
   // query describes the newly displayed map area after its response arrives.
-  if(isNewArea())message("La consulta ha acabat per la zona anterior. El mapa és en una zona nova: prem «Buscar al centre» o tria una categoria per consultar-la.","info");
+  if(isNewArea())message(t("newArea"),"info");
   else if(records.length===0)message("Consulta completada, però sense registres per aquesta zona. Les dades OSM poden ser incompletes.","success");
   else message(`Consulta completada: ${records.length} registres OSM dins de 900 m (no verificats in situ).`,"success");
   hideAlternative();
@@ -369,6 +371,11 @@ filters.forEach(button=>button.addEventListener("click",()=>{
   if(map&&isNewArea())fetchAroundCenter();
   else renderResults();
 }));
+window.addEventListener("biciparkworldlanguagechange",()=>{
+  // Re-render only local data, without another provider or GPS request.
+  if(searchedCentre)renderResults();
+  else if(!pending){ui.resultCount.textContent=t("none");ui.sourceStamp.textContent=t("sourceNoteShort");}
+});
 ui.searchButton.addEventListener("click",()=>fetchAroundCenter());
 ui.alternateProviderButton.addEventListener("click",()=>{
   if(!pending&&lastErrorProvider!==null)fetchAroundCenter({alternative:true});
