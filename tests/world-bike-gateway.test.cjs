@@ -36,7 +36,7 @@ test('World gateway sends a bounded query server-side and returns attributable O
       assert.match(url,/^https:\/\/overpass\.private\.coffee\/api\/interpreter$/);
       assert.equal(opts.method,'POST');
       assert.match(String(opts.body),/data=/);
-      assert.match(new URLSearchParams(String(opts.body)).get('data'),/around:900,41\.38902,2\.16996/);
+      assert.match(new URLSearchParams(String(opts.body)).get('data'),/around:900,41\.389,2\.170/);
       return {
         ok:true,status:200,headers:{get:()=>null},
         text:async()=>JSON.stringify({
@@ -50,7 +50,7 @@ test('World gateway sends a bounded query server-side and returns attributable O
     assert.equal(res.data.ok,true);
     assert.equal(res.data.elements.length,1);
     assert.equal(res.data.provider,'Private.coffee');
-    assert.deepEqual(res.data.queriedCenter,{lat:41.38902,lng:2.16996});
+    assert.deepEqual(res.data.queriedCenter,{lat:41.389,lng:2.17});
     assert.match(res.headers['cache-control'],/s-maxage=600/);
     assert.equal(requests,1);
   }finally{global.fetch=previous;}
@@ -97,22 +97,27 @@ test('World gateway diagnostics never log exact or rounded user coordinates',asy
   }finally{global.fetch=previous;console.info=info;}
 });
 
-test('World gateway preserves distinct nearby search centres instead of aliasing 3-decimal buckets',async()=>{
+test('World gateway never forwards finer-than-3-decimal GPS coordinates to Overpass',async()=>{
   const previous=global.fetch;
-  const centres=[];
+  const queries=[];
   try{
     global.fetch=async (_url,opts)=>{
-      centres.push(new URLSearchParams(String(opts.body)).get('data'));
+      queries.push(new URLSearchParams(String(opts.body)).get('data'));
       return {ok:true,status:200,headers:{get:()=>null},text:async()=>JSON.stringify({elements:[]})};
     };
     const first=await invoke('/api/world-bike?lat=48.85661&lng=2.35221');
-    const second=await invoke('/api/world-bike?lat=48.85699&lng=2.35249');
-    assert.equal(first.statusCode,200);
-    assert.equal(second.statusCode,200);
-    assert.equal(centres.length,2);
-    assert.match(centres[0],/around:900,48\.85661,2\.35221/);
-    assert.match(centres[1],/around:900,48\.85699,2\.35249/);
-    assert.notDeepEqual(first.data.queriedCenter,second.data.queriedCenter);
+    const sameCell=await invoke('/api/world-bike?lat=48.85699&lng=2.35249');
+    const otherCell=await invoke('/api/world-bike?lat=48.85761&lng=2.35221');
+    assert.ok([first,sameCell,otherCell].every(r=>r.statusCode===200));
+    assert.equal(queries.length,3);
+    assert.match(queries[0],/around:900,48\.857,2\.352/);
+    assert.equal(queries[0],queries[1], 'Sub-cell GPS precision must not reach the provider');
+    assert.match(queries[2],/around:900,48\.858,2\.352/);
+    assert.notEqual(queries[0],queries[2], 'A different 3-decimal cell stays distinguishable');
+    assert.deepEqual(first.data.queriedCenter,{lat:48.857,lng:2.352});
+    assert.deepEqual(sameCell.data.queriedCenter,first.data.queriedCenter);
+    assert.deepEqual(otherCell.data.queriedCenter,{lat:48.858,lng:2.352});
+    assert.doesNotMatch(queries.join('\n'),/48\.85661|48\.85699|48\.85761|2\.35221|2\.35249/);
   }finally{global.fetch=previous;}
 });
 
@@ -190,7 +195,7 @@ test('World gateway caps concurrent distinct upstream calls per instance and per
         text:async()=>JSON.stringify({elements:[]})
       })));
     };
-    const pending=Array.from({length:4},(_,i)=>invoke('/api/world-bike?lat=12.'+(10000+i)+'&lng=30.12345'));
+    const pending=Array.from({length:4},(_,i)=>invoke('/api/world-bike?lat=12.'+(10000+i*100)+'&lng=30.12345'));
     await Promise.resolve();
     assert.equal(calls,4);
     const blocked=await invoke('/api/world-bike?lat=13.12345&lng=30.12345');
