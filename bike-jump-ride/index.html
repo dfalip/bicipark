@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1a2f">
+  <meta name="description" content="BikeJump Ride: condueix una bicicleta per un circuit continu de muntanya amb quatre grans salts, rampes, anelles i punts de control.">
+  <title>BikeJump Ride — BiciPark Play</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../explora/?category=games" class="brand"><span>✦</span> BICIPARK <b>PLAY</b></a>
+    <nav aria-label="Navegació"><a href="../bike-jump/">BikeJump clàssic</a><a href="../explora/?category=games">Tots els jocs</a></nav>
+  </header>
+  <main class="main">
+    <section class="intro">
+      <div><p class="eyebrow">JOC NOU · DESCENS · ACROBÀCIES</p>
+      <h1>BIKEJUMP <span>RIDE</span></h1>
+      <p>Un recorregut de veritat. Pedala, supera quatre barrancs, vola per sobre les rampes i arriba a meta.</p></div>
+      <div class="intro-actions">
+        <button id="restartButton" type="button" class="small-button">↺ Reinicia circuit</button>
+      </div>
+    </section>
+    <section class="stats" aria-label="Estadístiques de la cursa">
+      <div><span>VELOCITAT</span><strong id="speedValue">0 <small>km/h</small></strong></div>
+      <div><span>DISTÀNCIA</span><strong id="distanceValue">0 <small>m</small></strong></div>
+      <div><span>PUNTS</span><strong id="scoreValue">0</strong></div>
+      <div><span>CRONO</span><strong id="timeValue">00:00</strong></div>
+      <div><span>RÈCORD</span><strong id="bestValue">0</strong></div>
+    </section>
+    <section class="stage" aria-label="Circuit de bicicleta">
+      <div class="stage-heading"><span id="zoneLabel">PUNT DE SORTIDA</span><span id="stateLabel">PREPARAT</span></div>
+      <canvas id="gameCanvas" width="1000" height="560"
+        role="img" aria-label="Circuit de descens de muntanya en vista lateral. La càmera segueix el ciclista entre rampes, barrancs i la meta." aria-describedby="instructions statusText">
+        Aquest joc utilitza Canvas. Condueix també amb els botons de sota.
+      </canvas>
+      <div class="progress-rail" aria-label="Progrés del recorregut"><div id="progressBar"></div><span id="progressLabel">0%</span></div>
+      <div id="centerNotice" class="center-notice" aria-live="polite" hidden></div>
+      <div id="readyPanel" class="overlay">
+        <div class="overlay-card">
+          <p class="overlay-kicker">NOU CIRCUIT</p>
+          <h2>PREPARAT PER VOLAR?</h2>
+          <p>Comença pedalant, agafa velocitat i aprofita les rampes per superar els barrancs. Si caus, tornaràs a l'últim punt de control.</p>
+          <button id="playButton" type="button" class="play-button">▶ COMENÇA A PEDALAR</button>
+          <small>→ o D per accelerar · ← o A per frenar · Espai per preparar un salt · ↑ ↓ per equilibrar-te</small>
+        </div>
+      </div>
+      <div id="finishPanel" class="overlay" hidden>
+        <div class="overlay-card">
+          <p class="overlay-kicker">META CREUADA!</p><h2>CIRCUIT COMPLETAT!</h2>
+          <div id="finishStars" class="finish-stars">★★★</div>
+          <p id="finishSummary"></p>
+          <button id="playAgainButton" type="button" class="play-button">↺ TORNA A JUGAR</button>
+        </div>
+      </div>
+    </section>
+    <div id="statusText" class="status" role="status" aria-live="polite">Prem Comença a pedalar per iniciar el recorregut.</div>
+    <section class="touch-controls" aria-label="Controls de conducció">
+      <button type="button" id="brakeButton" class="control control-brake"><span>◀</span> FRENAR <small>← / A</small></button>
+      <button type="button" id="leanBackButton" class="control control-lean"><span>↶</span> ENRERE <small>↑</small></button>
+      <button type="button" id="jumpButton" class="control control-jump"><span>✦</span> SALT <small>ESPAI</small></button>
+      <button type="button" id="leanForwardButton" class="control control-lean"><span>↷</span> ENDAVANT <small>↓</small></button>
+      <button type="button" id="accelerateButton" class="control control-gas"><span>▶</span> PEDALAR <small>→ / D</small></button>
+    </section>
+    <div class="jump-meter" aria-label="Impuls per al salt"><span>CARREGA DE SALT</span><div class="meter-track"><div id="jumpMeterBar"></div></div><strong id="jumpMeterLabel">0%</strong></div>
+    <p id="instructions" class="help">La bicicleta avança només quan pedales. Mantén l'espai o SALT per carregar impuls i deixa'l anar per saltar; si arribes a una rampa, també sortiràs disparat automàticament. Corregeix l'angle durant el vol amb ↑/↓. Si caus, reapareixes al punt de control.</p>
+    <footer><a href="../bike-jump/">Tornar al BikeJump clàssic</a> · Joc arcade original BiciPark · Funciona sense connexió i només desa el rècord localment</footer>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
