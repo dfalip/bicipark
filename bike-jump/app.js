@@ -45,16 +45,25 @@ const elements = {
   jumpStars: document.getElementById("jumpStars"),
   gameSummary: document.getElementById("gameSummary"),
   gameSummaryTitle: document.getElementById("gameSummaryTitle"),
-  gameSummaryText: document.getElementById("gameSummaryText")
+  gameSummaryText: document.getElementById("gameSummaryText"),
+  phasePill: document.getElementById("phasePill"),
+  stageHint: document.getElementById("stageHint"),
+  launchButtonLabel: document.getElementById("launchButtonLabel"),
+  modeTapButton: document.getElementById("modeTapButton"),
+  modeHoldButton: document.getElementById("modeHoldButton"),
+  controlHelp: document.getElementById("controlHelp")
 };
 
 const STORAGE_KEY = "bicipark-bike-jump-high-score-v1";
 const level = levels[0];
 
-const safeStoredRecord = Number(localStorage.getItem(STORAGE_KEY) || 0);
+// Storage can be unavailable in private mode. Keep the game playable.
+let safeStoredRecord = 0;
+try { safeStoredRecord = Number(localStorage.getItem(STORAGE_KEY) || 0); } catch { /* in-memory record */ }
 
 const state = {
   phase: "ready",
+  controlMode: "tap",
   attempt: 1,
   totalScore: 0,
   highScore: Number.isFinite(safeStoredRecord) && safeStoredRecord >= 0 ? safeStoredRecord : 0,
@@ -72,6 +81,23 @@ const state = {
   flightTrail: [],
   animationFrameId: null
 };
+
+function setLaunchLabel(label) {
+  elements.launchButtonLabel.textContent = label;
+  elements.launchButton.setAttribute("aria-label", label);
+}
+
+function syncControlMode() {
+  const tap = state.controlMode === "tap";
+  const busy = state.phase === "inrun" || state.phase === "flight";
+  elements.modeTapButton.setAttribute("aria-pressed", String(tap));
+  elements.modeHoldButton.setAttribute("aria-pressed", String(!tap));
+  elements.modeTapButton.disabled = busy;
+  elements.modeHoldButton.disabled = busy;
+  elements.controlHelp.textContent = tap
+    ? "Toca una vegada per arrencar i un altre cop per saltar. En vol, corregeix l'angle amb ← → o amb els botons. També pots activar el mode «Mantén»."
+    : "Mantén premut per baixar el trampolí i deixa anar a la zona daurada. En vol, corregeix l'angle amb ← → o amb els botons.";
+}
 
 function randomWind() {
   return Math.round(
@@ -128,7 +154,7 @@ function resetAttempt() {
     state.animationFrameId = null;
   }
   state.phase = "ready";
-  document.body.classList.remove("bike-jump-in-flight");
+  document.body.classList.remove("bike-jump-in-flight", "bike-jump-in-sweetspot");
   elements.flightHint.hidden = true;
   state.runStartedAt = null;
   state.chargeStartedAt = null;
@@ -160,11 +186,17 @@ function resetAttempt() {
   elements.jumpFeedback.hidden = true;
   elements.gameSummary.hidden = true;
   elements.launchButton.disabled = false;
-  elements.launchButton.textContent = "Mantén per saltar";
+  setLaunchLabel(state.controlMode === "tap" ? "TOCA PER COMENÇAR" : "MANTÉN PER COMENÇAR");
+  elements.stageHint.textContent = state.controlMode === "tap"
+    ? "Toca una vegada per baixar. Torna a tocar a la zona daurada."
+    : "Mantén premut mentre baixes i deixa anar a la zona daurada.";
+  elements.phasePill.textContent = "● PREPARAT";
+  syncControlMode();
   elements.rotateLeftButton.disabled = true;
   elements.rotateRightButton.disabled = true;
-  elements.statusText.textContent =
-    "Mantén premut per baixar i deixa anar a la franja groga. Després, equilibra la bici.";
+  elements.statusText.textContent = state.controlMode === "tap"
+    ? "Toca per començar el descens; torna a tocar a la zona daurada per saltar."
+    : "Mantén premut per baixar; deixa anar a la zona daurada per saltar.";
 
   updateDashboard();
   updatePowerDisplay();
@@ -181,9 +213,13 @@ function startRun() {
   state.runStartedAt = performance.now();
   state.chargeStartedAt = state.runStartedAt;
   state.releaseRequested = false;
-  elements.launchButton.textContent = "Deixa anar!";
-  elements.statusText.textContent =
-    "La bicicleta baixa pel trampolí. Deixa anar a prop de la vora.";
+  setLaunchLabel(state.controlMode === "tap" ? "TOCA PER SALTAR!" : "DEIXA ANAR PER SALTAR");
+  elements.phasePill.textContent = "↘ DESCENS";
+  elements.stageHint.textContent = state.controlMode === "tap"
+    ? "Mira la barra daurada: torna a tocar just abans de la vora."
+    : "Mantén premut i deixa anar a la zona daurada.";
+  elements.statusText.textContent = "La bicicleta baixa. Prepara la sortida!";
+  syncControlMode();
 
   ensureAnimation();
 }
@@ -210,6 +246,9 @@ function performLaunch() {
 
   state.phase = "flight";
   document.body.classList.add("bike-jump-in-flight");
+  document.body.classList.remove("bike-jump-in-sweetspot");
+  elements.phasePill.textContent = "✦ EN VOL";
+  elements.stageHint.textContent = "Equilibra la bici amb ← → o els botons de sota.";
   elements.flightHint.hidden = false;
   state.bike.velocityX = launch.velocityX;
   state.bike.velocityY = launch.velocityY;
@@ -219,6 +258,7 @@ function performLaunch() {
   state.flightTrail = [{x: state.bike.x, y: state.bike.y}];
 
   elements.launchButton.disabled = true;
+  syncControlMode();
   elements.rotateLeftButton.disabled = false;
   elements.rotateRightButton.disabled = false;
   elements.statusText.textContent =
