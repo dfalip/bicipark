@@ -320,3 +320,16 @@ body {
     font-size: 0.88rem;
   }
 }
+
+/* Discoverability improvements for the module hub. */
+.hub-hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0}
+.hub-hero-action{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:12px 18px;border:1px solid #bdd8c8;border-radius:12px;color:#134d34;text-decoration:none;font-weight:800;background:#eaf6ef}
+.hub-hero-action-primary{background:#176b45;color:#fff;border-color:#176b45}
+.hub-hero-action:hover{filter:brightness(.94)}
+.hub-discovery-controls{display:grid;grid-template-columns:auto minmax(180px,1fr) auto;align-items:center;gap:12px;margin:0 0 22px;padding:14px 17px;background:#fff;border:1px solid var(--hub-border);border-radius:14px}
+.hub-discovery-controls label{font-size:.87rem;color:#475467;font-weight:800}
+.hub-discovery-controls input{min-width:0;width:100%;min-height:42px;padding:10px 12px;border:1px solid #bdc9c2;border-radius:9px;font:inherit;background:#fff;color:var(--hub-text)}
+.hub-discovery-controls span{font-size:.82rem;color:#475467;white-space:nowrap}
+:where(.hub-hero-action,.hub-discovery-controls input,.hub-category-button,.hub-module-link):focus-visible{outline:3px solid #145dc8;outline-offset:3px}
+@media(max-width:700px){.hub-discovery-controls{grid-template-columns:1fr;gap:7px}.hub-discovery-controls span{white-space:normal}}
+@media(prefers-reduced-motion:reduce){.hub-module-card{transition:none}}

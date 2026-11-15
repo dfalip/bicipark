@@ -9,10 +9,30 @@ const elements = {
   moduleGrid:
     document.getElementById("moduleGrid"),
   emptyMessage:
-    document.getElementById("emptyMessage")
+    document.getElementById("emptyMessage"),
+  moduleSearch: document.getElementById("moduleSearch"),
+  moduleResults: document.getElementById("moduleResults")
 };
 
-let activeCategory = "all";
+const parameters = new URLSearchParams(window.location.search);
+const requestedCategory = parameters.get("category");
+let activeCategory = moduleCategories.some(category => category.id === requestedCategory)
+  ? requestedCategory : "all";
+let searchTerm = parameters.get("q") || "";
+
+function normalizeSearch(value) {
+  return String(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("ca").trim();
+}
+
+function syncUrl() {
+  const url = new URL(window.location.href);
+  if (activeCategory === "all") url.searchParams.delete("category");
+  else url.searchParams.set("category", activeCategory);
+  if (searchTerm.trim()) url.searchParams.set("q", searchTerm.trim());
+  else url.searchParams.delete("q");
+  window.history.replaceState(null, "", url);
+}
 
 function createCategoryButton(category) {
   const button = document.createElement("button");
@@ -34,6 +54,7 @@ function createCategoryButton(category) {
     activeCategory = category.id;
     renderCategories();
     renderModules();
+    syncUrl();
   });
 
   return button;
@@ -86,7 +107,8 @@ function createModuleAction(module) {
   const link = document.createElement("a");
   link.className = "hub-module-link";
   link.href = module.href;
-  link.textContent = "Obrir mòdul";
+  link.textContent = module.category === "games" ? "Jugar ara" :
+    module.category === "routes" ? "Explorar ruta" : "Obrir mòdul";
   link.setAttribute(
     "aria-label",
     `Obrir ${module.title}`
@@ -134,13 +156,15 @@ function createModuleCard(module) {
 }
 
 function getVisibleModules() {
-  if (activeCategory === "all") {
-    return biciparkModules;
-  }
-
-  return biciparkModules.filter(
-    module => module.category === activeCategory
-  );
+  const terms = normalizeSearch(searchTerm);
+  return biciparkModules.filter(module => {
+    if (activeCategory !== "all" && module.category !== activeCategory) return false;
+    if (!terms) return true;
+    const content = normalizeSearch([
+      module.title, module.description, module.status, ...module.tags
+    ].join(" "));
+    return content.includes(terms);
+  });
 }
 
 function renderModules() {
@@ -150,9 +174,30 @@ function renderModules() {
     ...visibleModules.map(createModuleCard)
   );
 
-  elements.emptyMessage.hidden =
-    visibleModules.length !== 0;
+  elements.emptyMessage.hidden = visibleModules.length !== 0;
+  elements.emptyMessage.textContent = searchTerm.trim()
+    ? "Cap resultat. Prova una altra paraula o selecciona Tot."
+    : "No hi ha cap mòdul disponible en aquesta categoria.";
+  elements.moduleResults.textContent = `${visibleModules.length} opcions disponibles`;
 }
+
+elements.moduleSearch.value = searchTerm;
+elements.moduleSearch.addEventListener("input", event => {
+  searchTerm = event.target.value;
+  renderModules();
+  syncUrl();
+});
+
+window.addEventListener("popstate", () => {
+  const params = new URLSearchParams(window.location.search);
+  const category = params.get("category");
+  activeCategory = moduleCategories.some(item => item.id === category)
+    ? category : "all";
+  searchTerm = params.get("q") || "";
+  elements.moduleSearch.value = searchTerm;
+  renderCategories();
+  renderModules();
+});
 
 renderCategories();
 renderModules();
