@@ -48,7 +48,7 @@ test('Drill bonus applies to steel on contact; direct hammer has more knockback'
   }
   const plain=strike('impact',false),drill=strike('drill',true);
   assert.ok(drill.hp<plain.hp,'Drill takes more HP from steel when activated');
-  assert.ok(Math.abs(plain.vx)>Math.abs(drill.vx),'Hammer produces larger direct knockback');
+  assert.ok(Math.abs(plain.vx)>Math.abs(drill.vx),`Hammer knockback ${plain.vx}, drill ${drill.vx}; must be stronger`);
 });
 test('Predicted initial projectile trajectory and first target are finite and non-mutating',async()=>{
   const e=await engine(),g=e.newGame(0);
