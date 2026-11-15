@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="BikeJump de BiciPark: salta en dos tocs, controla el vol i busca l'aterratge perfecte. Joc gratuït de bicicleta per a mòbil i ordinador.">
   <meta name="theme-color" content="#09212c">
-  <title>BikeJump 3 — BiciPark Play</title>
+  <title>BikeJump FLOW — BiciPark Play</title>
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="../css/bicipark-nav.css">
 </head>
@@ -21,9 +21,9 @@
   <main class="bike-jump-main">
     <div class="bike-jump-intro">
       <div>
-        <p class="bike-jump-eyebrow">ARCADE · BICICLETA · PRECISIÓ</p>
+        <p class="bike-jump-eyebrow">FLOW · 1 TOC · VOL · ANELLES</p>
         <h1>BIKE<span>JUMP</span> <small>03</small></h1>
-        <p class="bike-jump-subtitle">Dos tocs per saltar. Mantén premut per volar més lluny. Clava l'aterratge.</p>
+        <p class="bike-jump-subtitle">Un toc i ja corres. La sortida és automàtica. Atrapa anelles i controla el vol!</p>
       </div>
       <div class="bike-jump-challenge" aria-label="Repte del joc">
         <span>EL TEU REPTE</span><strong id="challengeTitle">3 salts</strong><small id="challengeSubtitle">Supera el teu millor total.</small>
@@ -61,6 +61,9 @@
         <div><span>SEPARACIÓ APROX.</span><strong id="flightClearance">0 m</strong></div>
       </div>
       <div id="airtimeBanner" class="bike-jump-airtime" aria-hidden="true" hidden>✦ HANG TIME ✦</div>
+      <div id="flowRingHUD" class="bike-jump-flow-hud" hidden>
+        <span>ANELLES</span><strong id="flowRingCount">0 / 3</strong>
+      </div>
       <div id="airReserveDisplay" class="bike-jump-air-reserve" hidden>
         <div class="bike-jump-air-reserve-head"><span>IMPULS AERI</span><strong id="airReserveValue">100%</strong></div>
         <div id="airReserveTrack" class="bike-jump-air-reserve-track" role="progressbar"
@@ -77,9 +80,9 @@
       <div class="bike-jump-stage-dock" id="stageDock">
         <button id="launchButton" class="bike-jump-button bike-jump-button-primary bike-jump-launch" type="button">
           <span class="bike-jump-launch-icon" aria-hidden="true">⚡</span>
-          <span id="launchButtonLabel">TOCA PER COMENÇAR</span>
+          <span id="launchButtonLabel">⚡ JUGA FLOW · UN TOC</span>
         </button>
-        <p id="stageHint" class="bike-jump-stage-hint" aria-live="polite">Toca una vegada per baixar. Torna a tocar a la zona daurada.</p>
+        <p id="stageHint" class="bike-jump-stage-hint" aria-live="polite">Un toc: baixada ràpida i salt automàtic. En vol, atrapa les anelles!</p>
       </div>
 
       <section id="resultPanel" class="bike-jump-result" aria-label="Resultat del salt" hidden>
@@ -120,7 +123,7 @@
           </div>
         </div>
         <p class="bike-jump-zone-note">✦ Quan la barra entri a la zona daurada, salta!</p>
-        <p id="statusText" aria-live="polite">Toca per començar el descens; torna a tocar per saltar.</p>
+        <p id="statusText" aria-live="polite">Mode FLOW: un toc per iniciar el descens i el salt automàtic. Després recull anelles i mantén premut per prolongar el vol.</p>
       </div>
 
       <div class="bike-jump-rotation-controls" aria-label="Control en vol">
@@ -136,12 +139,13 @@
         </div>
         <div class="bike-jump-control-switch" role="group" aria-label="Com vols controlar el salt?">
           <span>CONTROLS</span>
-          <button id="modeTapButton" type="button" aria-pressed="true">Dos tocs</button>
+          <button id="modeFlowButton" type="button" aria-pressed="true">⚡ FLOW · 1 toc</button>
+          <button id="modeTapButton" type="button" aria-pressed="false">Dos tocs</button>
           <button id="modeHoldButton" type="button" aria-pressed="false">Mantén</button>
         </div>
         <button id="restartButton" class="bike-jump-button bike-jump-button-secondary" type="button">↺ Nova partida</button>
       </div>
-      <p class="bike-jump-help" id="controlHelp">Toca per començar i torna a tocar per saltar. En vol, mantén premut el ratolí sobre el joc, l'espai o el botó «MANTÉN PER VOLAR» per prolongar el salt mentre tens energia. Corregeix l'angle amb ← →.</p>
+      <p class="bike-jump-help" id="controlHelp">Mode FLOW: un toc inicia la baixada i el joc salta automàticament. Agafa les anelles daurades i mantén premut per prolongar el vol. Usa ← → per equilibrar-te. Els modes «Dos tocs» i «Mantén» conserven el repte de precisió.</p>
       <p class="bike-jump-mode-note" id="gameModeNote" aria-live="polite">Repte: tens 3 salts per superar el rècord. La pràctica és il·limitada i no modifica els rècords.</p>
     </section>
   </main>
