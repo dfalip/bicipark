@@ -26,13 +26,13 @@
         <p class="bike-jump-subtitle">Dos tocs. Un salt èpic. Clava l'aterratge.</p>
       </div>
       <div class="bike-jump-challenge" aria-label="Repte del joc">
-        <span>EL TEU REPTE</span><strong>3 salts</strong><small>Supera el teu millor total.</small>
+        <span>EL TEU REPTE</span><strong id="challengeTitle">3 salts</strong><small id="challengeSubtitle">Supera el teu millor total.</small>
       </div>
     </div>
 
     <section class="bike-jump-dashboard" aria-label="Puntuacions de la partida">
-      <article class="bike-jump-stat"><span>Salt</span><strong id="attemptValue">1 / 3</strong></article>
-      <article class="bike-jump-stat bike-jump-stat--highlight"><span>Punts</span><strong id="totalScoreValue">0</strong></article>
+      <article class="bike-jump-stat"><span id="attemptLabel">Salt</span><strong id="attemptValue">1 / 3</strong></article>
+      <article class="bike-jump-stat bike-jump-stat--highlight"><span id="scoreLabel">Punts</span><strong id="totalScoreValue">0</strong></article>
       <article class="bike-jump-stat"><span>Rècord</span><strong id="highScoreValue">0</strong></article>
       <article class="bike-jump-stat"><span>Vent</span><strong id="windValue">0,0 m/s</strong></article>
     </section>
@@ -102,6 +102,11 @@
       </div>
 
       <div class="bike-jump-settings">
+        <div class="bike-jump-play-mode" role="group" aria-label="Tipus de partida">
+          <span>MODE</span>
+          <button id="challengeModeButton" type="button" aria-pressed="true">🏆 Repte · 3 salts</button>
+          <button id="practiceModeButton" type="button" aria-pressed="false">∞ Pràctica</button>
+        </div>
         <div class="bike-jump-control-switch" role="group" aria-label="Com vols controlar el salt?">
           <span>CONTROLS</span>
           <button id="modeTapButton" type="button" aria-pressed="true">Dos tocs</button>
@@ -110,6 +115,7 @@
         <button id="restartButton" class="bike-jump-button bike-jump-button-secondary" type="button">↺ Nova partida</button>
       </div>
       <p class="bike-jump-help" id="controlHelp">Toca una vegada per arrencar i un altre cop per saltar. En vol, corregeix l'angle amb ← → o amb els botons. També pots activar el mode «Mantén».</p>
+      <p class="bike-jump-mode-note" id="gameModeNote" aria-live="polite">Repte: tens 3 salts per superar el rècord. La pràctica és il·limitada i no modifica els rècords.</p>
     </section>
   </main>
 
