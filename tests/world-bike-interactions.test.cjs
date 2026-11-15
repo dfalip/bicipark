@@ -305,3 +305,21 @@ test('World Bike clears stale nearby POIs when the user switches cities',async()
     assert.equal(h.fetchCount,1,'Switching the city must never silently refetch provider data');
   }finally{h.dom.window.close();}
 });
+
+test('Changing the city query while geocoding is in flight discards obsolete suggestions',async()=>{
+  const h=await setup();
+  try{
+    const $=id=>h.window.document.getElementById(id);
+    let complete;
+    h.window.BiciParkGeocoder.search=()=>new Promise(resolve=>{complete=resolve;});
+    $('placeSearchInput').value='Amsterdam';
+    $('placeSearchForm').dispatchEvent(new h.window.Event('submit',{cancelable:true}));
+    $('placeSearchInput').value='Paris';
+    complete([{lat:52.3676,lng:4.9041,label:'Amsterdam'}]);
+    await h.flush();
+    assert.equal($('placeSearchResults').children.length,0,
+      'Results for an obsolete query must not be offered as current');
+    assert.match($('placeSearchStatus').textContent,/cerca ha canviat/);
+    assert.equal(h.fetchCount,0,'Geocoding must never silently query Overpass');
+  }finally{h.dom.window.close();}
+});
