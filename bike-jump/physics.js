@@ -115,7 +115,10 @@ export function integrateFlight({
   wind,
   // Optional, limited arcade air-control. No actual helicopter-like thrust:
   // the rider briefly reduces effective descent while the reserve lasts.
-  airHold = false
+  airHold = false,
+  // FLOW mode only: stronger hands-off landing stabilization.
+  // Manual modes keep the original steering dynamics.
+  assist = false
 }) {
   const rotationAcceleration = 2.35;
   const damping = 0.958;
@@ -137,7 +140,8 @@ export function integrateFlight({
   // Keeps manual correction relevant while making first-time landings kinder.
   if (rotationInput === 0) {
     const error = normalizeAngle(getLandingAngle(level, bike.x) - bike.rotation);
-    bike.rotation += clamp(error, -0.35, 0.35) * deltaSeconds * 0.24;
+    bike.rotation += clamp(error, assist ? -0.75 : -0.35,
+      assist ? 0.75 : 0.35) * deltaSeconds * (assist ? 1.05 : 0.24);
   }
 
   // A short, one-use reserve makes holding the mouse, touch, or Space
