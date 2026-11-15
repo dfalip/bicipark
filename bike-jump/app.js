@@ -569,26 +569,27 @@ function drawBackground() {
     canvas.height
   );
 
-  gradient.addColorStop(0, "#bcddea");
-  gradient.addColorStop(0.62, "#eaf3ee");
-  gradient.addColorStop(1, "#d6e4d2");
+  gradient.addColorStop(0, "#104762");
+  gradient.addColorStop(0.48, "#32899b");
+  gradient.addColorStop(1, "#b0dbc9");
 
   context.fillStyle = gradient;
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   // Soft sun and distant atmosphere, all drawn locally on the canvas.
-  const sun = context.createRadialGradient(835, 104, 12, 835, 104, 115);
-  sun.addColorStop(0, "rgba(255,245,182,.92)");
-  sun.addColorStop(1, "rgba(255,245,182,0)");
+  const sun = context.createRadialGradient(800, 126, 8, 800, 126, 186);
+  sun.addColorStop(0, "rgba(255,237,151,1)");
+  sun.addColorStop(.36, "rgba(255,199,113,.55)");
+  sun.addColorStop(1, "rgba(255,206,134,0)");
   context.fillStyle = sun;
-  context.fillRect(700, 0, 300, 265);
-  context.fillStyle = "#fff2bd";
+  context.fillRect(610, 0, 390, 325);
+  context.fillStyle = "#ffe8a3";
   context.beginPath();
-  context.arc(835, 104, 34, 0, Math.PI * 2);
+  context.arc(800, 126, 42, 0, Math.PI * 2);
   context.fill();
 
-  context.fillStyle = "#ffffff";
-  context.globalAlpha = 0.76;
+  context.fillStyle = "#e0fcf8";
+  context.globalAlpha = 0.45;
 
   for (const cloud of [
     [155, 95, 38],
@@ -606,7 +607,7 @@ function drawBackground() {
 }
 
 function drawMountains() {
-  context.fillStyle = "#8cab9d";
+  context.fillStyle = "#527f89";
   context.beginPath();
   context.moveTo(0, 360);
   context.lineTo(115, 220);
@@ -622,7 +623,7 @@ function drawMountains() {
   context.closePath();
   context.fill();
 
-  context.fillStyle = "#6f927f";
+  context.fillStyle = "#245e6c";
   context.beginPath();
   context.moveTo(0, 430);
   context.quadraticCurveTo(250, 325, 490, 420);
@@ -633,9 +634,43 @@ function drawMountains() {
   context.fill();
 }
 
+// Small layered alpine silhouettes add depth without external assets.
+// All objects are created procedurally in the canvas.
+function drawSceneryDetails() {
+  context.save();
+  for (const [x, y, size] of [[42,419,27],[78,422,35],[430,440,22],[475,446,29],[920,429,24],[963,429,33]]) {
+    context.strokeStyle = "#163d48";
+    context.lineWidth = Math.max(2,size*.12);
+    context.beginPath();
+    context.moveTo(x,y);
+    context.lineTo(x,y-size*2);
+    context.stroke();
+    context.fillStyle = "#1c5360";
+    for (let j=0;j<3;j++) {
+      const tip=y-size*2.3 + j*size*.52;
+      context.beginPath();
+      context.moveTo(x,tip);
+      context.lineTo(x-size*(.46+j*.1),tip+size*.72);
+      context.lineTo(x+size*(.46+j*.1),tip+size*.72);
+      context.closePath();
+      context.fill();
+    }
+  }
+  context.strokeStyle="rgba(231,250,248,.47)";
+  context.lineWidth=2;
+  for(const [x,y] of [[62,124],[554,90],[607,125]]) {
+    context.beginPath();
+    context.moveTo(x-8,y);
+    context.quadraticCurveTo(x,y-6,x+8,y);
+    context.quadraticCurveTo(x+16,y-5,x+21,y-1);
+    context.stroke();
+  }
+  context.restore();
+}
+
 function drawRamp() {
-  context.strokeStyle = "#5e6570";
-  context.lineWidth = 18;
+  context.strokeStyle = "#173f52";
+  context.lineWidth = 21;
   context.lineCap = "round";
 
   context.beginPath();
@@ -656,11 +691,11 @@ function drawRamp() {
 
   context.stroke();
 
-  context.strokeStyle = "#f4f5f6";
+  context.strokeStyle = "#78f5dd";
   context.lineWidth = 8;
   context.stroke();
 
-  context.fillStyle = "#4a5058";
+  context.fillStyle = "#194354";
 
   for (let x = 120; x <= 350; x += 42) {
     const progress =
@@ -680,7 +715,7 @@ function drawRamp() {
     );
   }
 
-  context.fillStyle = "#d8dbde";
+  context.fillStyle = "#f2d764";
   context.fillRect(
     level.takeoffPoint.x - 6,
     level.takeoffPoint.y - 2,
@@ -690,7 +725,7 @@ function drawRamp() {
 }
 
 function drawLandingHill() {
-  context.fillStyle = "#f3f5f4";
+  context.fillStyle = "#d7eee5";
   context.beginPath();
   context.moveTo(level.landingStartX, getLandingY(level, level.landingStartX));
 
@@ -707,7 +742,7 @@ function drawLandingHill() {
   context.closePath();
   context.fill();
 
-  context.strokeStyle = "#c9d0cc";
+  context.strokeStyle = "#65b7ac";
   context.lineWidth = 3;
   context.beginPath();
 
@@ -727,7 +762,7 @@ function drawLandingHill() {
 
   context.stroke();
 
-  context.fillStyle = "#6b8f77";
+  context.fillStyle = "#4f9080";
 
   for (let x = 520; x < 980; x += 58) {
     const y = getLandingY(level, x);
@@ -768,13 +803,29 @@ function drawDistanceMarkers() {
   }
 }
 
+function drawTakeoffBeacon() {
+  if(state.phase!=="ready" && state.phase!=="inrun")return;
+  context.save();
+  const x=level.takeoffPoint.x+15, y=level.takeoffPoint.y-36;
+  const ready=state.phase==="inrun" && state.runProgress>=level.idealTakeoffProgress-.05;
+  context.fillStyle=ready?"rgba(116,255,177,.32)":"rgba(255,227,92,.24)";
+  context.beginPath();context.arc(x,y,ready?45:33,0,Math.PI*2);context.fill();
+  context.fillStyle=ready?"#b9ffd1":"#ffe779";
+  context.beginPath();context.moveTo(x,y-22);context.lineTo(x+11,y-4);context.lineTo(x,y+13);context.lineTo(x-11,y-4);context.closePath();context.fill();
+  context.font="bold 15px system-ui";
+  context.textAlign="center";
+  context.fillStyle="#fff7c3";
+  context.fillText(ready?"ARA!":"SORTIDA",x,y-33);
+  context.restore();
+}
+
 function drawBike() {
   const bike = state.bike;
 
   context.save();
   context.translate(bike.x, bike.y);
   context.rotate(bike.rotation);
-  context.scale(1.18, 1.18);
+  context.scale(1.52, 1.52);
 
   const wheelRadius = 11;
 
@@ -789,7 +840,7 @@ function drawBike() {
   context.arc(17, 9, wheelRadius, 0, Math.PI * 2);
   context.stroke();
 
-  context.strokeStyle = "#176b45";
+  context.strokeStyle = "#ffe46c";
   context.lineWidth = 4;
   context.beginPath();
   context.moveTo(-17, 9);
@@ -812,7 +863,7 @@ function drawBike() {
   context.stroke();
 
   // Rider jersey and a brighter helmet for readability on small screens.
-  context.fillStyle = "#ff8c3d";
+  context.fillStyle = "#ff6c8f";
   context.beginPath();
   context.moveTo(-7, -25);
   context.lineTo(8, -20);
@@ -821,7 +872,7 @@ function drawBike() {
   context.closePath();
   context.fill();
 
-  context.fillStyle = "#f4d719";
+  context.fillStyle = "#bcfff1";
   context.beginPath();
   context.arc(-6, -34, 7, 0, Math.PI * 2);
   context.fill();
@@ -857,10 +908,10 @@ function drawHud() {
 function drawFlightTrail() {
   if (state.flightTrail.length < 2) return;
   context.save();
-  context.strokeStyle = "rgba(18,111,95,.35)";
-  context.lineWidth = 3;
+  context.strokeStyle = "rgba(255,245,145,.82)";
+  context.lineWidth = 4;
   context.lineCap = "round";
-  context.setLineDash([5, 10]);
+  context.setLineDash([7, 8]);
   context.beginPath();
   state.flightTrail.forEach((point, index) => {
     if (index === 0) context.moveTo(point.x, point.y);
@@ -906,14 +957,17 @@ function draw() {
   context.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
   drawMountains();
+  drawSceneryDetails();
   drawRamp();
   drawLandingHill();
   drawDistanceMarkers();
   drawFlightTrail();
   drawSpeedLines();
+  drawTakeoffBeacon();
   drawBike();
   drawLandingEffect();
-  drawHud();
+  // Phase and level information now live in a sharp DOM HUD, not a tiny
+  // canvas rectangle that gets unreadable on mobile.
 }
 
 function frame(now) {
