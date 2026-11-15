@@ -329,7 +329,9 @@ function finishAttempt() {
   });
 
   state.phase = "result";
-  document.body.classList.remove("bike-jump-in-flight");
+  document.body.classList.remove("bike-jump-in-flight", "bike-jump-in-sweetspot");
+  elements.phasePill.textContent = "✦ RESULTAT";
+  syncControlMode();
   elements.flightHint.hidden = true;
   state.bike.crashed = landing.crashed;
   state.bike.rotation = landing.crashed
@@ -341,10 +343,8 @@ function finishAttempt() {
 
   if (state.totalScore > state.highScore) {
     state.highScore = state.totalScore;
-    localStorage.setItem(
-      STORAGE_KEY,
-      String(state.highScore)
-    );
+    try { localStorage.setItem(STORAGE_KEY, String(state.highScore)); }
+    catch { /* record remains visible in memory */ }
   }
 
   elements.rotateLeftButton.disabled = true;
@@ -399,7 +399,8 @@ function finishAttempt() {
 
   elements.statusText.textContent =
     `Salt completat: ${formatScore(scores.jumpScore)} punts.`;
-
+  elements.stageHint.textContent = "Pots continuar al panell de resultat.";
+  elements.nextAttemptButton.focus({preventScroll:true});
   updateDashboard();
 }
 
@@ -417,6 +418,7 @@ function nextAttempt() {
   }
 
   resetAttempt();
+  elements.launchButton.focus({preventScroll:true});
 }
 
 function restartGame() {
@@ -424,6 +426,7 @@ function restartGame() {
   state.totalScore = 0;
   state.gameStartingRecord = state.highScore;
   resetAttempt();
+  elements.launchButton.focus({preventScroll:true});
 }
 
 function updateInrun(now) {
@@ -458,9 +461,12 @@ function updateInrun(now) {
   updatePowerDisplay();
   updateRunProgress();
 
-  if (!state.idealZoneAnnounced && state.runProgress >= level.idealTakeoffProgress - 0.05) {
+  const sweetspot = state.runProgress >= level.idealTakeoffProgress - 0.05;
+  document.body.classList.toggle("bike-jump-in-sweetspot", sweetspot);
+  if (!state.idealZoneAnnounced && sweetspot) {
     state.idealZoneAnnounced = true;
-    elements.statusText.textContent = "Zona òptima: deixa anar ara per buscar una bona sortida!";
+    elements.stageHint.textContent = state.controlMode === "tap" ? "✦ ARA! TOCA PER SALTAR!" : "✦ ARA! DEIXA ANAR!";
+    elements.statusText.textContent = "Zona òptima: salta ara!";
   }
 
   if (state.releaseRequested) {
