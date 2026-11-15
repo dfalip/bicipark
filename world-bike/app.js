@@ -135,6 +135,10 @@ async function searchPlace(event){
           ui.placeSearchStatus.textContent="Espera que acabi la consulta abans de canviar de zona.";
           return;
         }
+        // Selecting an earlier suggestion invalidates any newer in-flight geocoder
+        // response, so it cannot repopulate choices for a different city.
+        placeSearchGeneration++;
+        ui.placeSearchButton.disabled=false;
         clearVisibleServices();
         map.setView([place.lat,place.lng],14,{animate:false});
         ui.placeSearchStatus.textContent=`Mapa centrat a ${place.label}. Tria una categoria per consultar serveis.`;
