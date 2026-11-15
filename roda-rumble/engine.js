@@ -83,7 +83,7 @@ export function fire(g){
 }
 export function turbo(g){
   const p=g.projectile;
-  if(g.phase!=="flying"||!p||p.turbo||g.shotTime<.08)return false;
+  if(g.phase!=="flying"||!p||p.turbo)return false;
   p.turbo=true;
   p.vx+=155;p.vy-=65;g.shake=Math.max(g.shake,5);
   g.notice="TURBO! Busca una reacció en cadena.";
