@@ -53,7 +53,7 @@ async function setup({storageDenied=false,initialRecord=null}={}){
     'const {landingStory,landingPose,flightReadout,cinematicCamera,easeCamera}=window.__cinematics;');
   assert.doesNotMatch(js,/\bimport\s*\{/);
   // Test-only accessor appended to the same evaluated module scope.
-  window.eval(js + '\nwindow.__rotationInputForTest=()=>state.rotationInput;window.__bikeForTest=()=>state.bike;window.__phaseForTest=()=>state.phase;window.__impactForTest=()=>state.impact;');
+  window.eval(js + '\nwindow.__rotationInputForTest=()=>state.rotationInput;window.__bikeForTest=()=>state.bike;window.__phaseForTest=()=>state.phase;window.__impactForTest=()=>state.impact;window.__airForTest=()=>({reserve:state.bike.airReserve,active:state.bike.airHoldActive,held:airSpaceHeld||activeAirPointers.size>0});');
   const $=id=>window.document.getElementById(id);
   function pointer(el,type){
     const event=new window.Event(type,{bubbles:true,cancelable:true});
@@ -524,4 +524,82 @@ test('Cinematic CSS and readout are present and respect reduced-motion',()=>{
   assert.match(js,/function drawShadow\(/);
   assert.match(js,/function drawTumblingRider\(/);
   assert.match(js,/function updateImpact\(/);
+});
+
+
+test('Second held mouse click bridges directly into the limited flight boost',async()=>{
+  const h=await setup();
+  try{
+    const launch=h.$('launchButton');
+    const now=h.window.performance.now();
+    h.pointer(launch,'pointerdown');h.pointer(launch,'pointerup');
+    h.frame(now+2350);
+    h.pointer(launch,'pointerdown'); // leave the second click held
+    h.frame(now+2390);
+    assert.equal(h.window.__phaseForTest(),'flight');
+    assert.equal(h.$('airHoldButton').hidden,false);
+    assert.equal(h.$('airReserveDisplay').hidden,false);
+    assert.equal(h.$('airHoldButton').getAttribute('aria-pressed'),'true');
+    for(let i=1;i<10;i++)h.frame(now+2390+i*32);
+    const less=h.window.__airForTest().reserve;
+    assert.ok(less<1 && less>0,'A held launch press already spends the air reserve');
+    h.pointer(launch,'pointerup');
+    assert.equal(h.$('airHoldButton').getAttribute('aria-pressed'),'false');
+    for(let i=10;i<14;i++)h.frame(now+2390+i*32);
+    assert.equal(h.window.__airForTest().reserve,less,'Releasing conserves the rest');
+  }finally{h.dom.window.close();}
+});
+
+test('Space can be held and released in flight independently of a canvas mouse press',async()=>{
+  const h=await setup();
+  try{
+    intoFlight(h);
+    h.pointer(h.$('launchButton'),'pointerup');
+    const key=(type)=>h.window.document.dispatchEvent(new h.window.KeyboardEvent(type,
+      {code:'Space',bubbles:true,cancelable:true}));
+    key('keydown');
+    assert.equal(h.$('airHoldButton').getAttribute('aria-pressed'),'true');
+    const at=h.window.performance.now()+2500;
+    h.frame(at);
+    const afterSpace=h.window.__airForTest().reserve;
+    assert.ok(afterSpace<1);
+    h.pointer(h.$('gameCanvas'),'pointerdown');
+    key('keyup');
+    assert.equal(h.$('airHoldButton').getAttribute('aria-pressed'),'true',
+      'One remaining held mouse/touch continues the boost');
+    h.frame(at+32);
+    assert.ok(h.window.__airForTest().reserve<afterSpace);
+    h.pointer(h.$('gameCanvas'),'pointerup');
+    assert.equal(h.$('airHoldButton').getAttribute('aria-pressed'),'false');
+  }finally{h.dom.window.close();}
+});
+
+test('Blur and replay remove held air inputs, showing a full reserve on the next jump',async()=>{
+  const h=await setup();
+  try{
+    intoFlight(h);
+    h.pointer(h.$('launchButton'),'pointerup');
+    h.pointer(h.$('airHoldButton'),'pointerdown');
+    assert.equal(h.$('airHoldButton').getAttribute('aria-pressed'),'true');
+    h.window.dispatchEvent(new h.window.Event('blur'));
+    assert.equal(h.$('airHoldButton').getAttribute('aria-pressed'),'false');
+    h.pointer(h.$('airHoldButton'),'pointerdown');
+    h.$('restartButton').click();
+    assert.equal(h.window.__phaseForTest(),'ready');
+    assert.equal(h.$('airHoldButton').hidden,true);
+    assert.equal(h.$('airReserveDisplay').hidden,true);
+    assert.equal(h.window.__airForTest().held,false);
+    assert.equal(h.window.__airForTest().reserve,1);
+  }finally{h.dom.window.close();}
+});
+
+test('Air boost button and progress reserve are accessible and never overlap the result view',()=>{
+  const html=text('index.html'),css=text('styles.css');
+  for(const id of ['airHoldButton','airReserveDisplay','airReserveTrack',
+    'airReserveBar','airReserveValue','airReserveHint'])assert.match(html,new RegExp('id="'+id+'"'));
+  assert.match(html,/aria-label="Reserva d'impuls aeri"/);
+  assert.match(css,/\.bike-jump-air-hold-button/);
+  assert.match(css,/\.bike-jump-air-hold-active/);
+  assert.match(css,/\.bike-jump-air-reserve/);
+  assert.match(css,/prefers-reduced-motion:reduce/);
 });
