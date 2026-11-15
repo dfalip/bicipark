@@ -193,6 +193,19 @@ export const biciparkModules = [
     enabled: true
   },
   {
+    id: "bike-jump-ride",
+    category: "games",
+    title: "BikeJump Ride · Circuit de muntanya",
+    description:
+      "Condueix la bicicleta per un recorregut continu de 1,2 km amb quatre rampes, barrancs, anelles, punts de control i meta.",
+    href: "../bike-jump-ride/",
+    icon: "🚵",
+    status: "Nou joc",
+    statusType: "new",
+    tags: ["Conducció", "Salt", "Circuit", "Muntanya", "Arcade"],
+    enabled: true
+  },
+  {
     id: "bike-jump",
     category: "games",
     title: "Bike Jump",
