@@ -39,6 +39,7 @@ test('Drill bonus applies to steel on contact; direct hammer has more knockback'
     const g=e.newGame(0);
     g.phase='flying';g.shotCount=1;g.shotTime=.3;g.shotsLeft--;
     const b=g.blocks[0];
+    for(const other of g.blocks){if(other!==b)other.dead=true;}
     b.material='steel';b.hp=145;b.mass=2.5;
     g.projectile={x:b.x-b.w/2-17,y:b.y,r:17,vx:380,vy:0,
       angle:0,spin:0,type,turbo,active:true,lowSpeed:0};
