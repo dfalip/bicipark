@@ -23,7 +23,7 @@
       <div>
         <p class="bike-jump-eyebrow">ARCADE · BICICLETA · PRECISIÓ</p>
         <h1>BIKE<span>JUMP</span> <small>03</small></h1>
-        <p class="bike-jump-subtitle">Dos tocs. Un salt èpic. Clava l'aterratge.</p>
+        <p class="bike-jump-subtitle">Dos tocs per saltar. Mantén premut per volar més lluny. Clava l'aterratge.</p>
       </div>
       <div class="bike-jump-challenge" aria-label="Repte del joc">
         <span>EL TEU REPTE</span><strong id="challengeTitle">3 salts</strong><small id="challengeSubtitle">Supera el teu millor total.</small>
@@ -61,6 +61,18 @@
         <div><span>SEPARACIÓ APROX.</span><strong id="flightClearance">0 m</strong></div>
       </div>
       <div id="airtimeBanner" class="bike-jump-airtime" aria-hidden="true" hidden>✦ HANG TIME ✦</div>
+      <div id="airReserveDisplay" class="bike-jump-air-reserve" hidden>
+        <div class="bike-jump-air-reserve-head"><span>IMPULS AERI</span><strong id="airReserveValue">100%</strong></div>
+        <div id="airReserveTrack" class="bike-jump-air-reserve-track" role="progressbar"
+             aria-label="Reserva d'impuls aeri" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div id="airReserveBar" class="bike-jump-air-reserve-bar"></div>
+        </div>
+        <small id="airReserveHint">Mantén premut per allargar el vol</small>
+      </div>
+      <button id="airHoldButton" class="bike-jump-air-hold-button" type="button" hidden
+              aria-label="Mantén premut per prolongar el vol; consumeix una reserva limitada">
+        <span aria-hidden="true">✦</span> MANTÉN PER VOLAR
+      </button>
 
       <div class="bike-jump-stage-dock" id="stageDock">
         <button id="launchButton" class="bike-jump-button bike-jump-button-primary bike-jump-launch" type="button">
@@ -129,7 +141,7 @@
         </div>
         <button id="restartButton" class="bike-jump-button bike-jump-button-secondary" type="button">↺ Nova partida</button>
       </div>
-      <p class="bike-jump-help" id="controlHelp">Toca una vegada per arrencar i un altre cop per saltar. En vol, corregeix l'angle amb ← → o amb els botons. També pots activar el mode «Mantén».</p>
+      <p class="bike-jump-help" id="controlHelp">Toca per començar i torna a tocar per saltar. En vol, mantén premut el ratolí sobre el joc, l'espai o el botó «MANTÉN PER VOLAR» per prolongar el salt mentre tens energia. Corregeix l'angle amb ← →.</p>
       <p class="bike-jump-mode-note" id="gameModeNote" aria-live="polite">Repte: tens 3 salts per superar el rècord. La pràctica és il·limitada i no modifica els rècords.</p>
     </section>
   </main>

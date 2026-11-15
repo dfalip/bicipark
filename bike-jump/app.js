@@ -51,6 +51,12 @@ const elements = {
   jumpFeedback: document.getElementById("jumpFeedback"),
   flightHint: document.getElementById("flightHint"),
   flightReadout: document.getElementById("flightReadout"),
+  airHoldButton: document.getElementById("airHoldButton"),
+  airReserveDisplay: document.getElementById("airReserveDisplay"),
+  airReserveValue: document.getElementById("airReserveValue"),
+  airReserveBar: document.getElementById("airReserveBar"),
+  airReserveTrack: document.getElementById("airReserveTrack"),
+  airReserveHint: document.getElementById("airReserveHint"),
   flightDistance: document.getElementById("flightDistance"),
   flightClearance: document.getElementById("flightClearance"),
   airtimeBanner: document.getElementById("airtimeBanner"),
@@ -124,8 +130,8 @@ function syncControlMode() {
   elements.modeTapButton.disabled = busy;
   elements.modeHoldButton.disabled = busy;
   elements.controlHelp.textContent = tap
-    ? "Toca una vegada per arrencar i un altre cop per saltar. En vol, corregeix l'angle amb ← → o amb els botons. També pots activar el mode «Mantén»."
-    : "Mantén premut per baixar el trampolí i deixa anar a la zona daurada. En vol, corregeix l'angle amb ← → o amb els botons.";
+    ? "Dos tocs per iniciar i saltar. En vol, mantén ESPAI, ratolí sobre el joc o el botó ✦ per gastar impuls aeri i prolongar el salt. Usa ← → per equilibrar la bici."
+    : "Mantén premut per baixar i deixa anar per saltar. Durant el vol, mantén ESPAI, clic sobre la pista o ✦ per activar l'impuls limitat.";
 }
 
 function syncCourse() {
@@ -244,6 +250,9 @@ function resetAttempt() {
   elements.flightHint.hidden = true;
   elements.flightReadout.hidden = true;
   elements.airtimeBanner.hidden = true;
+  elements.airHoldButton.hidden = true;
+  elements.airReserveDisplay.hidden = true;
+  clearAirHoldInputs();
   state.runStartedAt = null;
   state.chargeStartedAt = null;
   state.runProgress = 0;
@@ -272,7 +281,9 @@ function resetAttempt() {
     takeoffAccuracy: 0,
     crashed: false,
     wheelSpin:0,
-    compression:0
+    compression:0,
+    airReserve:1,
+    airHoldActive:false
   };
 
   elements.resultPanel.hidden = true;
@@ -348,6 +359,12 @@ function performLaunch() {
   elements.stageHint.textContent = "Equilibra la bici amb ← → o els botons de sota.";
   elements.flightHint.hidden = false;
   elements.flightReadout.hidden = false;
+  elements.airHoldButton.hidden = false;
+  elements.airHoldButton.disabled = false;
+  elements.airReserveDisplay.hidden = false;
+  state.bike.airReserve = 1;
+  state.bike.airHoldActive = false;
+  updateAirHoldUI();
   state.bike.velocityX = launch.velocityX;
   state.bike.velocityY = launch.velocityY;
   state.bike.rotation = launch.rotation;
@@ -362,13 +379,17 @@ function performLaunch() {
   elements.jumpFeedback.hidden=false;
   state.takeoffNoticeSeconds=.8;
 
+  const launchWasFocused=document.activeElement===elements.launchButton;
   elements.launchButton.disabled = true;
+  // Keyboard players can hold the second Space press seamlessly in flight,
+  // then keep using the now-visible button without a focus trap.
+  if(launchWasFocused)elements.airHoldButton.focus({preventScroll:true});
   syncControlMode();
   syncGameMode();
   elements.rotateLeftButton.disabled = false;
   elements.rotateRightButton.disabled = false;
   elements.statusText.textContent =
-    "En vol: ajusta la bicicleta a la pendent d’aterratge.";
+    "En vol: mantén l'ESPAI, el ratolí sobre la pista o el botó ✦ per prolongar el salt. Reserva limitada; ← → per equilibrar-te.";
 }
 
 function calculateScores(landing) {
@@ -439,6 +460,9 @@ function finishAttempt(){
   document.body.classList.add("bike-jump-impacting");
   document.body.classList.toggle("bike-jump-crashing",landing.crashed);
   elements.airtimeBanner.hidden=true;
+  elements.airHoldButton.hidden=true;
+  elements.airReserveDisplay.hidden=true;
+  clearAirHoldInputs();
   document.body.classList.remove("bike-jump-in-flight","bike-jump-in-sweetspot");
   elements.phasePill.textContent=story.kind==="crash"?"⚠ CAIGUDA":"✦ ATERRATGE";
   elements.flightHint.hidden=true;
@@ -663,8 +687,10 @@ function updateFlight(deltaSeconds) {
     level,
     deltaSeconds:motionSeconds,
     rotationInput: state.rotationInput,
-    wind: state.wind
+    wind: state.wind,
+    airHold:airSpaceHeld || activeAirPointers.size>0
   });
+  updateAirHoldUI();
 
   state.bike.wheelSpin+=(Math.abs(state.bike.velocityX)*motionSeconds)/11;
   state.flightTrail.push({x: state.bike.x, y: state.bike.y});
@@ -1057,6 +1083,30 @@ function drawTakeoffBeacon() {
   context.restore();
 }
 
+function drawAirImpulse(){
+  if(state.phase!=="flight" || !state.bike.airHoldActive)return;
+  const bike=state.bike;
+  const shimmer=(bike.flightTime*14)%(Math.PI*2);
+  context.save();
+  context.lineCap="round";
+  for(let i=0;i<5;i++){
+    const offset=Math.sin(shimmer+i*1.8)*7;
+    const length=38+i*14;
+    const y=bike.y-12+i*8+offset;
+    context.beginPath();
+    context.moveTo(bike.x-30-length,y);
+    context.lineTo(bike.x-35-i*4,y+3);
+    context.strokeStyle=`rgba(144,255,225,${.55-i*.065})`;
+    context.lineWidth=4-i*.43;
+    context.stroke();
+  }
+  context.fillStyle="rgba(140,255,220,.15)";
+  context.beginPath();
+  context.ellipse(bike.x,bike.y-12,57,34,0,0,Math.PI*2);
+  context.fill();
+  context.restore();
+}
+
 function drawBike() {
   const bike = state.bike;
 
@@ -1133,10 +1183,18 @@ function drawBike() {
   context.lineTo(-12, -14);
   context.closePath();
   context.fill();
+  // The rider tucks forward while holding to extend the flight.
+  if(bike.airHoldActive && state.phase==="flight"){
+    context.strokeStyle="#fdb3cb";
+    context.lineWidth=5;
+    context.beginPath();
+    context.moveTo(-1,-22);context.lineTo(15,-21);context.stroke();
+  }
 
   context.fillStyle = "#bcfff1";
   context.beginPath();
-  context.arc(-6, -34, 7, 0, Math.PI * 2);
+  context.arc(bike.airHoldActive && state.phase==="flight"?1:-6,
+    bike.airHoldActive && state.phase==="flight"?-30:-34, 7, 0, Math.PI * 2);
   context.fill();
   }
   context.restore(); // suspension
@@ -1317,6 +1375,7 @@ function draw() {
   drawShadow();
   drawSpeedLines();
   drawTakeoffBeacon();
+  drawAirImpulse();
   if(state.impact?.pose && state.phase==="impact" && !prefersReducedMotion()){
     const shake=state.impact.pose.shake;
     context.translate(Math.sin(state.impact.elapsed*65)*shake,
@@ -1351,6 +1410,69 @@ function ensureAnimation() {
       requestAnimationFrame(frame);
   }
 }
+
+// A Space hold and touch/mouse pointers contribute independently. A released
+// finger cannot cancel an overlapping key; losing focus clears all sources.
+const activeAirPointers=new Set();
+let airSpaceHeld=false;
+function updateAirHoldUI() {
+  const reserve=Math.max(0,Math.min(1,Number.isFinite(state.bike?.airReserve)?state.bike.airReserve:0));
+  const active=state.phase==="flight" && reserve>0 && (airSpaceHeld || activeAirPointers.size>0);
+  elements.airHoldButton.setAttribute("aria-pressed",String(active));
+  elements.airHoldButton.disabled=state.phase!=="flight" || reserve<=0;
+  elements.airReserveValue.textContent=`${Math.round(reserve*100)}%`;
+  elements.airReserveBar.style.width=`${Math.round(reserve*100)}%`;
+  elements.airReserveTrack.setAttribute("aria-valuenow",String(Math.round(reserve*100)));
+  elements.airReserveHint.textContent=reserve<=0?"Impuls esgotat fins al proper salt":
+    active?"IMPULS ACTIVAT · deixa anar per conservar-lo":"Mantén premut per prolongar el vol";
+  document.body.classList.toggle("bike-jump-air-hold-active",active);
+}
+function clearAirHoldInputs(){
+  activeAirPointers.clear();
+  airSpaceHeld=false;
+  document.body.classList.remove("bike-jump-air-hold-active");
+  elements.airHoldButton.setAttribute("aria-pressed","false");
+}
+function attachAirPointer(element){
+  element.addEventListener("pointerdown",event=>{
+    if(state.phase!=="flight" || state.bike.airReserve<=0 ||
+       (event.button!=null && event.button!==0))return;
+    event.preventDefault();
+    activeAirPointers.add(event.pointerId);
+    try{element.setPointerCapture(event.pointerId);}catch{/* gracefully fall back */}
+    updateAirHoldUI();
+  });
+  const release=event=>{
+    activeAirPointers.delete(event.pointerId);
+    updateAirHoldUI();
+  };
+  element.addEventListener("pointerup",release);
+  element.addEventListener("pointercancel",release);
+  element.addEventListener("lostpointercapture",release);
+}
+attachAirPointer(elements.airHoldButton);
+attachAirPointer(canvas);
+window.addEventListener("pointerup",event=>{
+  if(activeAirPointers.delete(event.pointerId))updateAirHoldUI();
+});
+window.addEventListener("pointercancel",event=>{
+  if(activeAirPointers.delete(event.pointerId))updateAirHoldUI();
+});
+elements.airHoldButton.addEventListener("keydown",event=>{
+  if((event.code==="Space"||event.code==="Enter")&&!event.repeat && state.phase==="flight"){
+    event.preventDefault();event.stopPropagation();
+    airSpaceHeld=true;updateAirHoldUI();
+  }
+});
+elements.airHoldButton.addEventListener("keyup",event=>{
+  if(event.code==="Space"||event.code==="Enter"){
+    event.preventDefault();event.stopPropagation();
+    airSpaceHeld=false;updateAirHoldUI();
+  }
+});
+elements.airHoldButton.addEventListener("blur",()=>{
+  airSpaceHeld=false;updateAirHoldUI();
+});
 
 function setRotationInput(value) {
   state.rotationInput = value;
@@ -1405,22 +1527,31 @@ function changeControlMode(next) {
 }
 
 function handleSpaceDown(event) {
-  if (event.code !== "Space" || event.repeat || isTypingTarget(event.target)) {
+  if(event.code!=="Space" || isTypingTarget(event.target))return;
+  if(state.phase==="flight"){
+    event.preventDefault();
+    if(!event.repeat){airSpaceHeld=true;updateAirHoldUI();}
     return;
   }
-
+  if(event.repeat)return;
   event.preventDefault();
-  if (state.controlMode === "tap") tapAction();
-  else startRun();
+  if(state.controlMode==="tap"){
+    const wasInrun=state.phase==="inrun";
+    tapAction();
+    // Holding the *second* Space press bridges seamlessly into flight.
+    if(wasInrun)airSpaceHeld=true;
+  } else startRun();
 }
 
 function handleSpaceUp(event) {
-  if (event.code !== "Space" || isTypingTarget(event.target)) {
-    return;
+  if(event.code!=="Space")return;
+  if(airSpaceHeld){
+    event.preventDefault();
+    airSpaceHeld=false;updateAirHoldUI();
   }
-
+  if(isTypingTarget(event.target))return;
   event.preventDefault();
-  if (state.controlMode === "hold") requestLaunch();
+  if(state.controlMode==="hold")requestLaunch();
 }
 
 document.addEventListener("keydown", event => {
@@ -1441,11 +1572,13 @@ document.addEventListener("keyup", event => {
 });
 window.addEventListener("blur", () => {
   clearAllRotationControls();
+  clearAirHoldInputs();
   if (state.phase === "inrun") requestLaunch();
 });
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     clearAllRotationControls();
+    clearAirHoldInputs();
     if (state.phase === "inrun") requestLaunch();
   }
 });
@@ -1454,8 +1587,11 @@ document.addEventListener("visibilitychange", () => {
 elements.launchButton.addEventListener("keydown", event => {
   if ((event.code === "Space" || event.code === "Enter") && !event.repeat) {
     event.preventDefault();
-    if (state.controlMode === "tap") tapAction();
-    else startRun();
+    if (state.controlMode === "tap") {
+      const wasInrun=state.phase==="inrun";
+      tapAction();
+      if(wasInrun)airSpaceHeld=true;
+    } else startRun();
   }
 });
 elements.launchButton.addEventListener("keyup", event => {
@@ -1467,8 +1603,12 @@ elements.launchButton.addEventListener("keyup", event => {
 elements.launchButton.addEventListener("pointerdown", event => {
   if (event.button != null && event.button !== 0) return;
   event.preventDefault();
-  if (state.controlMode === "tap") tapAction();
-  else {
+  if (state.controlMode === "tap"){
+    const wasInrun=state.phase==="inrun";
+    tapAction();
+    // A long second click spends air reserve only after takeoff.
+    if(wasInrun)activeAirPointers.add(event.pointerId);
+  } else {
     try { elements.launchButton.setPointerCapture(event.pointerId); }
     catch { /* fallback if pointer capture is unavailable */ }
     startRun();
@@ -1476,12 +1616,18 @@ elements.launchButton.addEventListener("pointerdown", event => {
 });
 elements.launchButton.addEventListener("pointerup", event => {
   event.preventDefault();
+  activeAirPointers.delete(event.pointerId);
+  if(state.phase==="flight")updateAirHoldUI();
   if (state.controlMode === "hold") requestLaunch();
 });
-elements.launchButton.addEventListener("pointercancel", () => {
+elements.launchButton.addEventListener("pointercancel", event => {
+  activeAirPointers.delete(event.pointerId);
+  if(state.phase==="flight")updateAirHoldUI();
   if (state.controlMode === "hold") requestLaunch();
 });
-elements.launchButton.addEventListener("lostpointercapture", () => {
+elements.launchButton.addEventListener("lostpointercapture", event => {
+  activeAirPointers.delete(event.pointerId);
+  if(state.phase==="flight")updateAirHoldUI();
   if (state.controlMode === "hold") requestLaunch();
 });
 elements.modeTapButton.addEventListener("click", () => changeControlMode("tap"));

@@ -53,3 +53,15 @@ La CI no equival a una prova física en dispositiu. Les dades de rendiment i sat
 Arquitectura: `cinematics.js` és un mòdul pur i determinista per als estats visuals; `app.js` integra el dibuix sense modificar les fórmules de punts; `tests/bike-jump-cinematics.test.cjs` i les proves d'interacció cobreixen caigudes, distància i transicions de resultats.
 
 **Limitació explícita:** les escales, la suspensió i els efectes són arcade; no constitueixen un model de dinàmica de bicicletes real. Cal comprovar visualment Chrome Android, Safari iPhone, qualitat del dibuix de les tres pistes, 30–60 fps en dispositius modestos, controls tàctils i llegibilitat abans de considerar el joc visualment acabat.
+
+
+## BikeJump — impuls aeri en mantenir premut (iteració següent)
+Ara, després de fer el salt, pots **mantenir premut el ratolí sobre el canvas, l'espai, o el botó tàctil ✦** per prolongar breument el vol. En mode «dos tocs», també es pot **mantenir premut el segon toc de salt** perquè l'impuls s'activi de seguida quan la bici entra en vol. Deixar anar el botó conserva la reserva per utilitzar-la després del mateix salt. La reserva només dura **1,45 segons acumulats**, no es recarrega en vol i torna al 100% al proper intent.
+
+- La gravetat efectiva baixa un 40% només mentre es consumeix energia; la resistència horitzontal baixa un 28% mentre està activa. No hi ha un impuls vertical infinit ni una teletransportació.
+- La pista mostra el botó i la barra de reserva, amb percentatge i avís d'esgotament. Es veu el ciclista més recollit i un flux d'aire al voltant de la bici.
+- Ratolí, tacte, tecles i controls de direcció es gestionen de forma independent. `pointerup`, `pointercancel`, pèrdua de focus i reinici alliberen l'acció. Les preferències de moviment reduït es respecten.
+- La distància i la puntuació continuen calculant-se a partir de la trajectòria real del motor del joc. Aquest és un **impuls arcade deliberadament limitat**, no una simulació aerodinàmica realista.
+- Proves: `tests/bike-jump-air-hold.test.cjs` i casos d'interacció a `tests/bike-jump-interactions.test.cjs`, cobrint benefici finit, gestos continuats, energia, solapament d'inputs i reinici.
+
+Validació de qualitat pendent: provar sensació de control al mòbil i escriptori. Les proves automàtiques no garanteixen que el nou botó sigui prou còmode o que el joc sigui divertit per a tots els jugadors.

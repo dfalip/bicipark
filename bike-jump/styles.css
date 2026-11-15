@@ -200,3 +200,44 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){
   .bike-jump-airtime,.bike-jump-impacting .bike-jump-phase-pill{animation:none!important}
 }
+
+/* Limited air-hold: press and hold (mouse, touch or Space) to spend reserve.
+   The button is visible only during flight and never blocks the angle controls. */
+.bike-jump-air-reserve{position:absolute;left:16px;top:146px;z-index:7;
+  min-width:224px;max-width:min(300px,calc(100% - 32px));padding:9px 12px 8px;
+  border:1px solid rgba(126,246,221,.6);border-radius:12px;
+  background:rgba(5,30,42,.88);color:#f6fffd;box-shadow:0 6px 22px #031a2380;
+  pointer-events:none}
+.bike-jump-air-reserve[hidden],.bike-jump-air-hold-button[hidden]{display:none!important}
+.bike-jump-air-reserve-head{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:.64rem;letter-spacing:.09em;font-weight:900;color:#aaf3e8}
+.bike-jump-air-reserve-head strong{font-size:.89rem;color:#fff3a7;font-variant-numeric:tabular-nums}
+.bike-jump-air-reserve-track{height:11px;background:#092633;border-radius:999px;border:1px solid #629a9a70;
+  overflow:hidden;margin:6px 0 4px}
+.bike-jump-air-reserve-bar{height:100%;width:100%;
+  background:linear-gradient(90deg,#39d5e3,#8af9b5);border-radius:999px;
+  transition:width .06s linear}
+.bike-jump-air-reserve small{font-size:.66rem;color:#d1e8e7}
+.bike-jump-air-hold-button{position:absolute;z-index:8;bottom:17px;left:50%;
+  transform:translateX(-50%);min-height:58px;min-width:min(305px,calc(100% - 26px));
+  padding:10px 21px;border-radius:18px;border:2px solid #afffed;
+  background:linear-gradient(115deg,#0c5e70,#178f90);color:#fff;
+  box-shadow:0 5px 0 #073747,0 12px 28px #071827a3;font-weight:1000;font-size:1.03rem;
+  letter-spacing:.035em;touch-action:none;user-select:none;cursor:pointer}
+.bike-jump-air-hold-button:active:not(:disabled),.bike-jump-air-hold-button[aria-pressed="true"]{
+  background:linear-gradient(115deg,#79f7c7,#e6fa94);color:#153c38;
+  border-color:#fff8b8;box-shadow:0 2px 0 #568a6e,0 6px 18px #71ffb24d}
+.bike-jump-air-hold-button:disabled{cursor:default;opacity:.67;filter:saturate(.5)}
+.bike-jump-air-hold-active .bike-jump-phase-pill{border-color:#b1ffe1;
+  background:rgba(23,112,103,.92);color:#eaffbf}
+.bike-jump-air-hold-active .bike-jump-flight-readout strong{color:#b2ffce}
+.bike-jump-air-hold-active .bike-jump-air-reserve-track{box-shadow:0 0 9px #61ffb575}
+@media(max-width:760px){
+  .bike-jump-air-reserve{top:89px;left:7px;min-width:0;width:min(184px,49%);padding:6px 8px}
+  .bike-jump-air-reserve-head{font-size:.51rem;letter-spacing:0}
+  .bike-jump-air-reserve-head strong{font-size:.7rem}
+  .bike-jump-air-reserve small{font-size:.58rem}
+  .bike-jump-air-hold-button{bottom:7px;min-height:42px;min-width:min(240px,82%);
+    padding:6px 12px;font-size:.77rem;border-radius:11px;box-shadow:0 3px 0 #073747}
+}
+@media(prefers-reduced-motion:reduce){.bike-jump-air-reserve-bar{transition:none}}

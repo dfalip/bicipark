@@ -112,7 +112,10 @@ export function integrateFlight({
   level,
   deltaSeconds,
   rotationInput,
-  wind
+  wind,
+  // Optional, limited arcade air-control. No actual helicopter-like thrust:
+  // the rider briefly reduces effective descent while the reserve lasts.
+  airHold = false
 }) {
   const rotationAcceleration = 2.35;
   const damping = 0.958;
@@ -137,17 +140,29 @@ export function integrateFlight({
     bike.rotation += clamp(error, -0.35, 0.35) * deltaSeconds * 0.24;
   }
 
+  // A short, one-use reserve makes holding the mouse, touch, or Space
+  // meaningful without allowing endless flight. It is an arcade mechanic,
+  // not a realistic aerodynamic lift model.
+  const reserve=clamp(Number.isFinite(bike.airReserve)?bike.airReserve:1,0,1);
+  const active=Boolean(airHold && reserve>0 && bike.flightTime>=0);
+  const used=active?Math.min(deltaSeconds,reserve*1.45):0;
+  bike.airReserve=clamp(reserve-used/1.45,0,1);
+  bike.airHoldActive=used>0;
+
   const dragX =
     bike.velocityX *
     level.airResistance *
-    deltaSeconds;
+    deltaSeconds * (bike.airHoldActive ? 0.72 : 1);
 
   bike.velocityX +=
     wind * 0.42 * deltaSeconds -
     dragX;
 
-  bike.velocityY +=
-    level.gravity * deltaSeconds;
+  // 40% less downward acceleration while the limited reserve is spent.
+  // Split integration if reserve is exhausted mid-frame, so frame rate
+  // cannot change how much lift a press creates.
+  bike.velocityY += level.gravity *
+    (deltaSeconds - used * 0.4);
 
   bike.x += bike.velocityX * deltaSeconds;
   bike.y += bike.velocityY * deltaSeconds;
