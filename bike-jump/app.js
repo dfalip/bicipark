@@ -238,7 +238,8 @@ function resetAttempt() {
     state.animationFrameId = null;
   }
   state.phase = "ready";
-  document.body.classList.remove("bike-jump-in-flight", "bike-jump-in-sweetspot");
+  document.body.classList.remove("bike-jump-in-flight", "bike-jump-in-sweetspot",
+    "bike-jump-impacting", "bike-jump-crashing");
   elements.flightHint.hidden = true;
   elements.flightReadout.hidden = true;
   elements.airtimeBanner.hidden = true;
@@ -423,6 +424,9 @@ function finishAttempt(){
   const story=landingStory(landing,state.bike);
   state.impact={landing,scores,story,elapsed:0,initial:{...state.bike},pose:null};
   state.phase="impact";
+  state.bike.crashed=landing.crashed;
+  document.body.classList.add("bike-jump-impacting");
+  document.body.classList.toggle("bike-jump-crashing",landing.crashed);
   elements.airtimeBanner.hidden=true;
   document.body.classList.remove("bike-jump-in-flight","bike-jump-in-sweetspot");
   elements.phasePill.textContent=story.kind==="crash"?"⚠ CAIGUDA":"✦ ATERRATGE";
@@ -457,6 +461,7 @@ function finalizeAttempt(){
   if(state.phase!=="impact"||!state.impact)return;
   const {landing,scores,story}=state.impact;
   state.phase="result";
+  document.body.classList.remove("bike-jump-impacting","bike-jump-crashing");
   elements.flightReadout.hidden=true;
   state.bike.crashed=landing.crashed;
   elements.phasePill.textContent="✦ RESULTAT";
