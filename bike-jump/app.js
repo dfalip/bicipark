@@ -58,15 +58,26 @@ const elements = {
   launchButtonLabel: document.getElementById("launchButtonLabel"),
   modeTapButton: document.getElementById("modeTapButton"),
   modeHoldButton: document.getElementById("modeHoldButton"),
-  controlHelp: document.getElementById("controlHelp")
+  controlHelp: document.getElementById("controlHelp"),
+  courseSelect: document.getElementById("courseSelect"),
+  courseHint: document.getElementById("courseHint"),
+  courseTag: document.getElementById("courseTag")
 };
 
 const STORAGE_KEY = "bicipark-bike-jump-high-score-v1";
-const level = levels[0];
+let level = levels[0];
 
-// Storage can be unavailable in private mode. Keep the game playable.
-let safeStoredRecord = 0;
-try { safeStoredRecord = Number(localStorage.getItem(STORAGE_KEY) || 0); } catch { /* in-memory record */ }
+function scoreStorageKey(course=level){
+  // Keep the original K90 local high score compatible with previous versions.
+  return course.id===levels[0].id?STORAGE_KEY:`${STORAGE_KEY}-${course.id}`;
+}
+function readCourseRecord(course=level){
+  try{
+    const value=Number(localStorage.getItem(scoreStorageKey(course))||0);
+    return Number.isFinite(value)&&value>=0?value:0;
+  }catch{return 0;}
+}
+const safeStoredRecord=readCourseRecord(level);
 
 const state = {
   phase: "ready",
@@ -109,9 +120,34 @@ function syncControlMode() {
     : "Mantén premut per baixar el trampolí i deixa anar a la zona daurada. En vol, corregeix l'angle amb ← → o amb els botons.";
 }
 
+function syncCourse() {
+  elements.courseSelect.value=level.id;
+  elements.courseTag.textContent=level.tag;
+  elements.courseHint.textContent=level.description;
+}
+function changeCourse(id){
+  if(state.phase==="inrun" || state.phase==="flight"){
+    elements.courseSelect.value=level.id;
+    return;
+  }
+  const next=levels.find(course=>course.id===id);
+  if(!next || next.id===level.id){
+    elements.courseSelect.value=level.id;
+    return;
+  }
+  level=next;
+  state.highScore=readCourseRecord(next);
+  state.gameStartingRecord=state.highScore;
+  state.attempt=1;
+  state.totalScore=0;
+  state.practiceJumps=0;
+  state.practiceLastScore=0;
+  resetAttempt();
+}
 function syncGameMode() {
   const practice=state.gameMode==="practice";
   const busy=state.phase==="inrun" || state.phase==="flight";
+  elements.courseSelect.disabled=busy;
   elements.practiceModeButton.setAttribute("aria-pressed",String(practice));
   elements.challengeModeButton.setAttribute("aria-pressed",String(!practice));
   elements.practiceModeButton.disabled=busy;
@@ -140,9 +176,8 @@ function changeGameMode(next) {
 }
 
 function randomWind() {
-  return Math.round(
-    (-2.2 + Math.random() * 4.4) * 10
-  ) / 10;
+  const range=level.windRange||2.2;
+  return Math.round((-range + Math.random()*2*range)*10)/10;
 }
 
 function formatScore(value) {
@@ -236,6 +271,7 @@ function resetAttempt() {
   elements.phasePill.textContent = "● PREPARAT";
   syncControlMode();
   syncGameMode();
+  syncCourse();
   elements.rotateLeftButton.disabled = true;
   elements.rotateRightButton.disabled = true;
   elements.statusText.textContent = state.controlMode === "tap"
@@ -394,7 +430,7 @@ function finishAttempt() {
     state.totalScore+=scores.jumpScore;
     if(state.totalScore>state.highScore){
       state.highScore=state.totalScore;
-      try{localStorage.setItem(STORAGE_KEY,String(state.highScore));}
+      try{localStorage.setItem(scoreStorageKey(),String(state.highScore));}
       catch{/* record remains visible in memory */}
     }
   }
@@ -627,9 +663,14 @@ function drawBackground() {
     canvas.height
   );
 
-  gradient.addColorStop(0, "#104762");
-  gradient.addColorStop(0.48, "#32899b");
-  gradient.addColorStop(1, "#b0dbc9");
+  const sky=level.theme==="city"
+    ? ["#122044","#465a91","#b8cee3"]
+    : level.theme==="canyon"
+      ? ["#853858","#d87b65","#f4cf9d"]
+      : ["#104762","#32899b","#b0dbc9"];
+  gradient.addColorStop(0,sky[0]);
+  gradient.addColorStop(.48,sky[1]);
+  gradient.addColorStop(1,sky[2]);
 
   context.fillStyle = gradient;
   context.fillRect(0, 0, canvas.width, canvas.height);
@@ -641,7 +682,7 @@ function drawBackground() {
   sun.addColorStop(1, "rgba(255,206,134,0)");
   context.fillStyle = sun;
   context.fillRect(610, 0, 390, 325);
-  context.fillStyle = "#ffe8a3";
+  context.fillStyle = level.theme==="city"?"#e8f2ff":level.theme==="canyon"?"#ffca84":"#ffe8a3";
   context.beginPath();
   context.arc(800, 126, 42, 0, Math.PI * 2);
   context.fill();
@@ -665,6 +706,34 @@ function drawBackground() {
 }
 
 function drawMountains() {
+  if(level.theme==="city"){
+    // Two skyline depths, with the near buildings kept below the ramp.
+    const skyline=[[0,130,300],[105,75,245],[175,95,290],[252,112,225],[366,80,290],[463,110,255],[562,85,305],[642,145,224],[786,115,289],[895,118,240]];
+    context.fillStyle="#455b7a";
+    for(const [x,w,y] of skyline)context.fillRect(x,y,w,560-y);
+    context.fillStyle="#263f60";
+    for(const [x,w,y] of [[30,135,360],[210,125,380],[414,100,355],[592,122,380],[774,145,352],[928,90,385]])
+      context.fillRect(x,y,w,560-y);
+    return;
+  }
+  if(level.theme==="canyon"){
+    context.fillStyle="#9c4e60";
+    context.beginPath();
+    context.moveTo(0,355);
+    context.lineTo(85,330);context.lineTo(85,229);context.lineTo(199,229);
+    context.lineTo(206,340);context.lineTo(330,355);
+    context.lineTo(379,291);context.lineTo(505,291);context.lineTo(542,354);
+    context.lineTo(685,350);context.lineTo(716,222);context.lineTo(821,222);
+    context.lineTo(845,348);context.lineTo(1000,340);
+    context.lineTo(1000,560);context.lineTo(0,560);context.closePath();context.fill();
+    context.fillStyle="#743947";
+    context.beginPath();context.moveTo(0,421);context.lineTo(140,375);
+    context.lineTo(285,415);context.lineTo(450,387);
+    context.lineTo(615,418);context.lineTo(817,368);
+    context.lineTo(1000,411);context.lineTo(1000,560);
+    context.lineTo(0,560);context.closePath();context.fill();
+    return;
+  }
   context.fillStyle = "#527f89";
   context.beginPath();
   context.moveTo(0, 360);
@@ -696,6 +765,30 @@ function drawMountains() {
 // All objects are created procedurally in the canvas.
 function drawSceneryDetails() {
   context.save();
+  if(level.theme==="city"){
+    for(const [x,y,w,h] of [[20,360,135,200],[210,380,125,180],[414,355,100,205],[592,380,122,180],[774,352,145,208],[928,385,90,175]]){
+      context.fillStyle="rgba(238,229,162,.72)";
+      for(let wx=x+12;wx<x+w-10;wx+=19){
+        for(let wy=y+15;wy<y+h-12;wy+=27){
+          if(Math.floor((wx+wy)/19)%3!==0)context.fillRect(wx,wy,6,11);
+        }
+      }
+    }
+    context.restore();return;
+  }
+  if(level.theme==="canyon"){
+    context.strokeStyle="#315f57";
+    context.lineCap="round";
+    for(const [x,y,h] of [[55,417,42],[256,419,30],[695,430,35],[940,441,34]]){
+      context.lineWidth=9;
+      context.beginPath();context.moveTo(x,y);context.lineTo(x,y-h);context.stroke();
+      context.lineWidth=7;
+      context.beginPath();context.moveTo(x,y-h*.44);context.lineTo(x-13,y-h*.44);
+      context.lineTo(x-13,y-h*.72);context.moveTo(x,y-h*.62);
+      context.lineTo(x+14,y-h*.62);context.lineTo(x+14,y-h*.88);context.stroke();
+    }
+    context.restore();return;
+  }
   for (const [x, y, size] of [[42,419,27],[78,422,35],[430,440,22],[475,446,29],[920,429,24],[963,429,33]]) {
     context.strokeStyle = "#163d48";
     context.lineWidth = Math.max(2,size*.12);
@@ -783,7 +876,7 @@ function drawRamp() {
 }
 
 function drawLandingHill() {
-  context.fillStyle = "#d7eee5";
+  context.fillStyle = level.theme==="city"?"#71849c":level.theme==="canyon"?"#e2a475":"#d7eee5";
   context.beginPath();
   context.moveTo(level.landingStartX, getLandingY(level, level.landingStartX));
 
@@ -800,7 +893,7 @@ function drawLandingHill() {
   context.closePath();
   context.fill();
 
-  context.strokeStyle = "#65b7ac";
+  context.strokeStyle = level.theme==="city"?"#bdcbd8":level.theme==="canyon"?"#f5c08f":"#65b7ac";
   context.lineWidth = 3;
   context.beginPath();
 
@@ -820,17 +913,21 @@ function drawLandingHill() {
 
   context.stroke();
 
-  context.fillStyle = "#4f9080";
-
+  context.fillStyle = level.theme==="city"?"#d4e8e8":level.theme==="canyon"?"#c47959":"#4f9080";
   for (let x = 520; x < 980; x += 58) {
     const y = getLandingY(level, x);
-
-    context.beginPath();
-    context.moveTo(x, y - 18);
-    context.lineTo(x - 12, y + 6);
-    context.lineTo(x + 12, y + 6);
-    context.closePath();
-    context.fill();
+    if(level.theme==="city"){
+      context.fillRect(x-9,y-5,23,3);
+    }else if(level.theme==="canyon"){
+      context.beginPath();context.arc(x,y+1,7,Math.PI,Math.PI*2);context.fill();
+    }else{
+      context.beginPath();
+      context.moveTo(x, y - 18);
+      context.lineTo(x - 12, y + 6);
+      context.lineTo(x + 12, y + 6);
+      context.closePath();
+      context.fill();
+    }
   }
 }
 
@@ -1186,6 +1283,7 @@ elements.modeTapButton.addEventListener("click", () => changeControlMode("tap"))
 elements.modeHoldButton.addEventListener("click", () => changeControlMode("hold"));
 elements.challengeModeButton.addEventListener("click",()=>changeGameMode("challenge"));
 elements.practiceModeButton.addEventListener("click",()=>changeGameMode("practice"));
+elements.courseSelect.addEventListener("change",()=>changeCourse(elements.courseSelect.value));
 
 function addRotationPointerControl(button,value) {
   // Track each pointer independently, including two simultaneous touches.

@@ -1,67 +1,43 @@
-﻿# Bike Jump
+# BikeJump — BiciPark Play
 
-Joc independent de Bicipark.
+Mini-joc arcade original de salts amb bicicleta. No fa servir serveis remots ni dades de localització; els rècords són locals al navegador.
 
-## Mecànica
+## Com jugar (v3.2)
+1. Selecciona un circuit: **Alpine K90**, **Skyline Sprint** o **Red Canyon**.
+2. Tria el **Repte** (3 salts) o **Pràctica** (salts il·limitats que no modifiquen els rècords).
+3. El control predeterminat és **dos tocs**: un per iniciar el descens i un altre per saltar a la zona daurada. Opcionalment, activa **Mantén**.
+4. Durant el vol, utilitza **← →** o els botons tàctils d'equilibri; els controls simultanis es combinen sense enganxar-se.
+5. Després de cada aterratge, consulta el resultat i continua.
 
-1. Mantén premut el botó o la barra espai.
-2. La bicicleta baixa automàticament pel trampolí.
-3. Deixa anar prop de la vora.
-4. Ajusta la inclinació amb les fletxes o els botons.
-5. Alinea la bicicleta amb la pendent.
+## Circuits i física
+Els tres circuits són **ficticis**, amb geometries i ambientacions originals diferents: alpí, ciutat i canyó. Cada circuit té configuració pròpia de gravetat, temps de descens, pendent, resistència i vent. El primer circuit preserva la clau de rècord històrica `bicipark-bike-jump-high-score-v1`. Els altres guarden un rècord separat, amb sufix de l'identificador de circuit. Si `localStorage` no està disponible, el joc continua sense fallar i el rècord de la sessió roman en memòria.
 
 ## Puntuació
-
 - Distància: fins a 5.000 punts.
-- Sortida: fins a 1.000 punts.
-- Control: fins a 1.000 punts.
-- Aterratge: fins a 2.000 punts.
-- Caiguda: penalització de 2.500 punts.
+- Sortida: fins a 1.000.
+- Control: fins a 1.000.
+- Aterratge: fins a 2.000.
+- Penalització per caiguda: 2.500.
 
-Tres salts per partida.
+El **Repte** suma tres intents; la **Pràctica** mostra el resultat de l'últim salt, però mai suma al repte ni guarda nous rècords.
 
 ## Arquitectura
+- `index.html`: escenari, controls i elements accessibles.
+- `app.js`: gestió de modes, circuits, inputs, feedback i il·lustració Canvas.
+- `levels.js`: definicions dels tres circuits ficticis.
+- `physics.js`: física i puntuació comunes.
+- `styles.css`: presentació i controls responsive.
+- `tests/bike-jump-interactions.test.cjs`: simulació de controls, vols, canvi de circuits, rècords i fallades d'emmagatzematge.
 
-- `app.js`: estat, interfície, dibuix i controls.
-- `physics.js`: física i avaluació.
-- `levels.js`: configuració dels trampolins.
-- `styles.css`: estils exclusius.
+## Validació
+Des de l'arrel del repositori executa `npm test`. El CI cobreix la física, transicions de mode, salts de tots els circuits, aïllament dels rècords, entrades simultànies, alternativa accessible i error de `localStorage`.
 
-No importa cap fitxer del web principal.
+Abans d'aprovar la qualitat visual final, comprova en Android, Safari i ordinador:
+- La selecció de circuits i la seva il·lustració sense retalls al canvas.
+- Els dos tocs i el mode Mantén, inclosa la zona òptima.
+- El control tàctil de dues mans, teclat Tab/Enter/Espai i pèrdua de focus.
+- Pràctica il·limitada i rècord de repte independent per circuit.
+- Lector de pantalla: alt textual del Canvas, informació de progrés i resultats.
+- Formats 320–430 px, 760 px i escriptori; moviment reduït.
 
-## Iniciar
-
-```powershell
-cd C:\projectes\bicipark\bike-jump
-powershell -ExecutionPolicy Bypass -File .\start-local.ps1
-```
-
-## Ampliar
-
-Per crear més trampolins, afegeix objectes a `levels.js`.
-
-
-## BikeJump v2 · millores experimentals (PR #44)
-
-- Controls arcade: mantén premut per baixar el trampolí; deixa anar a la franja groga; equilibra la bici en vol. Botó i barra espai; fletxes o botons tàctils.
-- Corba de control suavitzada i ajuda d'estabilització molt lleu; els aterratges continuen depenent de l'angle final.
-- Valoració visual d'1–3 estrelles, estela de vol, efecte d'impacte i resum final de tres salts amb rècord guardat localment.
-- El canvi visual només afecta aquest joc, sense dependències d'imatges externes.
-
-### Comprovar
-
-Des de l'arrel del repositori:
-
-```bash
-npm test
-```
-
-Comprovar manualment en navegador d'escriptori i mòbil abans de fusionar/publicar:
-1. Mantén i deixa anar aviat, a la zona groga i tard; verifica que el resultat canvia.
-2. Corregeix la bici en vol amb tecles i botons tàctils; prova també Tab i Enter/Espai amb botons enfocats.
-3. Canvia de pestanya o finestra durant descens/vol; comprova que no queda cap control enganxat.
-4. Reinicia a mig descens i a mig vol; confirma que dibuixa una partida nova immediatament.
-5. Completa els tres salts, comprova estrelles, puntuació acumulada i rècord, i prem «Torna-hi!».
-6. Valida a 320–390 px que el canvas, les dades i els controls siguin utilitzables sense desplaçament horitzontal de la pàgina.
-
-**Estat:** proves automàtiques i sintaxi via CI. La validació visual i tàctil real encara és necessària; la PR continua en esborrany.
+La CI no equival a una prova física en dispositiu. Les dades de rendiment i satisfacció reals encara no estan acreditades.
