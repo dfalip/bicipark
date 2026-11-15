@@ -379,7 +379,11 @@ function performLaunch() {
   elements.jumpFeedback.hidden=false;
   state.takeoffNoticeSeconds=.8;
 
+  const launchWasFocused=document.activeElement===elements.launchButton;
   elements.launchButton.disabled = true;
+  // Keyboard players can hold the second Space press seamlessly in flight,
+  // then keep using the now-visible button without a focus trap.
+  if(launchWasFocused)elements.airHoldButton.focus({preventScroll:true});
   syncControlMode();
   syncGameMode();
   elements.rotateLeftButton.disabled = false;
