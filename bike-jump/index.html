@@ -30,6 +30,16 @@
       </div>
     </div>
 
+    <section class="bike-jump-course-picker" aria-label="Selecció de circuit">
+      <label for="courseSelect">CIRCUIT</label>
+      <select id="courseSelect" aria-describedby="courseHint">
+        <option value="alpine-k90">⛰ Alpine K90 · iniciació</option>
+        <option value="city-skyline">🌆 Skyline Sprint · precisió</option>
+        <option value="red-canyon">🏜 Red Canyon · vol llarg</option>
+      </select>
+      <p id="courseHint" aria-live="polite">Pendent equilibrada · ideal per començar</p>
+    </section>
+
     <section class="bike-jump-dashboard" aria-label="Puntuacions de la partida">
       <article class="bike-jump-stat"><span id="attemptLabel">Salt</span><strong id="attemptValue">1 / 3</strong></article>
       <article class="bike-jump-stat bike-jump-stat--highlight"><span id="scoreLabel">Punts</span><strong id="totalScoreValue">0</strong></article>
@@ -39,7 +49,7 @@
 
     <section class="bike-jump-game-shell" aria-label="Zona de joc">
       <div class="bike-jump-stage-header" aria-hidden="true">
-        <span class="bike-jump-location">⛰ ALPINE RUN · K90</span>
+        <span class="bike-jump-location" id="courseTag">⛰ ALPINE RUN · K90</span>
         <span id="phasePill" class="bike-jump-phase-pill">● PREPARAT</span>
       </div>
       <canvas id="gameCanvas" width="1000" height="560" role="img" aria-label="Escenari BikeJump: bicicleta que baixa un trampolí alpí i salta. El progrés, les instruccions i els resultats també apareixen en text." aria-describedby="statusText controlHelp">El joc mostra una bicicleta que salta des d'un trampolí. Utilitza el botó gran per començar i saltar, els controls de direcció per equilibrar-te i consulta els resultats en text. Si no es mostra el joc, utilitza un navegador compatible amb Canvas.</canvas>
