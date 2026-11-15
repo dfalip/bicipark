@@ -192,6 +192,31 @@ test('World pilot switches core UI and local OSM record labels between four lang
   }finally{h.dom.window.close();}
 });
 
+test('World pilot localizes provider failures and denied GPS without masking the actual error',async()=>{
+  const failed=await setup({failedFetch:true});
+  try{
+    const lang=failed.window.document.getElementById('worldLanguage');
+    lang.value='en';
+    lang.dispatchEvent(new failed.window.Event('change'));
+    failed.map.setView([41.39,2.17],15);
+    failed.window.document.getElementById('searchButton').click();
+    await failed.flush();
+    assert.match(failed.window.document.getElementById('status').textContent,/rate-limited the request/);
+    assert.match(failed.window.document.getElementById('resultCount').textContent,/Could not load results/);
+    assert.equal(failed.window.document.getElementById('status').dataset.kind,'error');
+  }finally{failed.dom.window.close();}
+  const gps=await setup({withGPS:true,denyGPS:true});
+  try{
+    const lang=gps.window.document.getElementById('worldLanguage');
+    lang.value='fr';
+    lang.dispatchEvent(new gps.window.Event('change'));
+    gps.window.document.getElementById('locateButton').click();
+    await gps.flush();
+    assert.match(gps.window.document.getElementById('status').textContent,/Accès à la position refusé/);
+    assert.equal(gps.fetchCount,0);
+  }finally{gps.dom.window.close();}
+});
+
 test('GPS action explicitly searches nearby after user permits geolocation',async()=>{
   const h=await setup({withGPS:true});
   try{
