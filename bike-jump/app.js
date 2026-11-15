@@ -11,6 +11,7 @@ import {
   integrateFlight,
   evaluateLanding
 } from "./physics.js";
+import {landingStory, landingPose, flightReadout, cinematicCamera, easeCamera} from "./cinematics.js";
 
 const canvas = document.getElementById("gameCanvas");
 const context = canvas.getContext("2d");
@@ -100,6 +101,8 @@ const state = {
   releaseRequested: false,
   idealZoneAnnounced: false,
   flightTrail: [],
+  impact: null,
+  camera: {x:500,y:280,zoom:1},
   animationFrameId: null
 };
 
@@ -110,7 +113,7 @@ function setLaunchLabel(label) {
 
 function syncControlMode() {
   const tap = state.controlMode === "tap";
-  const busy = state.phase === "inrun" || state.phase === "flight";
+  const busy = ["inrun","flight","impact"].includes(state.phase);
   elements.modeTapButton.setAttribute("aria-pressed", String(tap));
   elements.modeHoldButton.setAttribute("aria-pressed", String(!tap));
   elements.modeTapButton.disabled = busy;
@@ -126,7 +129,7 @@ function syncCourse() {
   elements.courseHint.textContent=level.description;
 }
 function changeCourse(id){
-  if(state.phase==="inrun" || state.phase==="flight"){
+  if(["inrun","flight","impact"].includes(state.phase)){
     elements.courseSelect.value=level.id;
     return;
   }
@@ -146,7 +149,7 @@ function changeCourse(id){
 }
 function syncGameMode() {
   const practice=state.gameMode==="practice";
-  const busy=state.phase==="inrun" || state.phase==="flight";
+  const busy=["inrun","flight","impact"].includes(state.phase);
   elements.courseSelect.disabled=busy;
   elements.practiceModeButton.setAttribute("aria-pressed",String(practice));
   elements.challengeModeButton.setAttribute("aria-pressed",String(!practice));
@@ -164,7 +167,7 @@ function syncGameMode() {
 
 function changeGameMode(next) {
   if(next!=="practice" && next!=="challenge")return;
-  if(state.phase==="inrun" || state.phase==="flight")return;
+  if(["inrun","flight","impact"].includes(state.phase))return;
   if(state.gameMode===next)return;
   state.gameMode=next;
   state.attempt=1;
@@ -240,6 +243,8 @@ function resetAttempt() {
   state.releaseRequested = false;
   state.idealZoneAnnounced = false;
   state.flightTrail = [];
+  state.impact = null;
+  state.camera = {x:canvas.width/2,y:canvas.height/2,zoom:1};
   clearAllRotationControls();
   state.lastFrameAt = null;
   state.wind = randomWind();
@@ -256,7 +261,9 @@ function resetAttempt() {
     flightTime: 0,
     controlEffort: 0,
     takeoffAccuracy: 0,
-    crashed: false
+    crashed: false,
+    wheelSpin:0,
+    compression:0
   };
 
   elements.resultPanel.hidden = true;
@@ -400,28 +407,54 @@ function calculateScores(landing) {
   };
 }
 
-function finishAttempt() {
-  if (state.phase !== "flight") {
-    return;
-  }
-
-  const landing = evaluateLanding({
-    bike: state.bike,
-    level
-  });
-
-  state.phase = "result";
-  document.body.classList.remove("bike-jump-in-flight", "bike-jump-in-sweetspot");
-  elements.phasePill.textContent = "✦ RESULTAT";
+function finishAttempt(){
+  if(state.phase!=="flight")return;
+  const landing=evaluateLanding({bike:state.bike,level});
+  // Physical scoring is fixed on first contact. The subsequent tumble
+  // affects only the visual pose, not ranking, distance or score.
+  const scores=calculateScores(landing);
+  const story=landingStory(landing,state.bike);
+  state.impact={landing,scores,story,elapsed:0,initial:{...state.bike},pose:null};
+  state.phase="impact";
+  document.body.classList.remove("bike-jump-in-flight","bike-jump-in-sweetspot");
+  elements.phasePill.textContent=story.kind==="crash"?"⚠ CAIGUDA":"✦ ATERRATGE";
+  elements.flightHint.hidden=true;
+  elements.stageHint.textContent=story.kind==="crash"
+    ?"La bici ha perdut el control. Mira com acaba la caiguda."
+    :"Mira com la bicicleta absorbeix l'aterratge.";
+  elements.statusText.textContent=story.label;
+  clearAllRotationControls();
+  elements.launchButton.disabled=true;
+  elements.rotateLeftButton.disabled=true;
+  elements.rotateRightButton.disabled=true;
   syncControlMode();
   syncGameMode();
-  elements.flightHint.hidden = true;
-  state.bike.crashed = landing.crashed;
-  state.bike.rotation = landing.crashed
-    ? landing.slopeAngle + 0.82
-    : landing.slopeAngle;
+}
 
-  const scores = calculateScores(landing);
+function updateImpact(deltaSeconds){
+  if(!state.impact)return;
+  const impact=state.impact;
+  impact.elapsed+=deltaSeconds;
+  impact.pose=landingPose({level,story:impact.story,initial:impact.initial,elapsed:impact.elapsed});
+  const pose=impact.pose;
+  state.bike.x=pose.x;
+  state.bike.y=pose.y;
+  state.bike.rotation=pose.rotation;
+  state.bike.wheelSpin=pose.wheelSpin;
+  state.bike.compression=pose.compression;
+  if(impact.elapsed>=impact.story.duration)finalizeAttempt();
+}
+
+function finalizeAttempt(){
+  if(state.phase!=="impact"||!state.impact)return;
+  const {landing,scores,story}=state.impact;
+  state.phase="result";
+  state.bike.crashed=landing.crashed;
+  elements.phasePill.textContent="✦ RESULTAT";
+  syncControlMode();
+  syncGameMode();
+  elements.resultPanel.hidden=false;
+  document.body.classList.add("bike-jump-show-result");
   if(state.gameMode==="practice"){
     // Practice scores are informational; never update the three-jump total,
     // localStorage or the official best score.
@@ -438,9 +471,8 @@ function finishAttempt() {
   clearAllRotationControls();
   elements.rotateLeftButton.disabled = true;
   elements.rotateRightButton.disabled = true;
-  elements.resultPanel.hidden = false;
-  document.body.classList.add("bike-jump-show-result");
-  elements.resultTitle.textContent = landing.label;
+  // Results open after the cinematic impact, not at the first contact.
+  elements.resultTitle.textContent = story.label;
   const stars = landing.crashed ? 0 :
     landing.score === 2000 && scores.takeoffScore >= 750 ? 3 :
     landing.score >= 1450 ? 2 : 1;
@@ -451,10 +483,7 @@ function finishAttempt() {
   elements.jumpFeedback.textContent = landing.crashed ? "Ui! Torna-ho a provar" :
     stars === 3 ? "SALT PERFECTE!" : stars === 2 ? "MOLT BÉ!" : "BON SALT!";
 
-  elements.resultDescription.textContent =
-    landing.crashed
-      ? "La bicicleta no estava alineada amb la pendent. Ajusta abans l’angle en el proper salt."
-      : "Has completat el salt. La distància i la qualitat tècnica determinen la puntuació.";
+  elements.resultDescription.textContent = story.description;
 
   elements.distanceResult.textContent =
     `${scores.distanceMeters.toLocaleString("ca-ES", {
@@ -652,6 +681,8 @@ function update(now) {
     updateInrun(now);
   } else if (state.phase === "flight") {
     updateFlight(deltaSeconds);
+  } else if (state.phase === "impact") {
+    updateImpact(deltaSeconds);
   }
 }
 
@@ -1131,7 +1162,8 @@ function frame(now) {
 
   if (
     state.phase === "inrun" ||
-    state.phase === "flight"
+    state.phase === "flight" ||
+    state.phase === "impact"
   ) {
     state.animationFrameId =
       requestAnimationFrame(frame);
