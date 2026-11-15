@@ -51,6 +51,12 @@ const elements = {
   jumpFeedback: document.getElementById("jumpFeedback"),
   flightHint: document.getElementById("flightHint"),
   flightReadout: document.getElementById("flightReadout"),
+  airHoldButton: document.getElementById("airHoldButton"),
+  airReserveDisplay: document.getElementById("airReserveDisplay"),
+  airReserveValue: document.getElementById("airReserveValue"),
+  airReserveBar: document.getElementById("airReserveBar"),
+  airReserveTrack: document.getElementById("airReserveTrack"),
+  airReserveHint: document.getElementById("airReserveHint"),
   flightDistance: document.getElementById("flightDistance"),
   flightClearance: document.getElementById("flightClearance"),
   airtimeBanner: document.getElementById("airtimeBanner"),
@@ -124,8 +130,8 @@ function syncControlMode() {
   elements.modeTapButton.disabled = busy;
   elements.modeHoldButton.disabled = busy;
   elements.controlHelp.textContent = tap
-    ? "Toca una vegada per arrencar i un altre cop per saltar. En vol, corregeix l'angle amb ← → o amb els botons. També pots activar el mode «Mantén»."
-    : "Mantén premut per baixar el trampolí i deixa anar a la zona daurada. En vol, corregeix l'angle amb ← → o amb els botons.";
+    ? "Dos tocs per iniciar i saltar. En vol, mantén ESPAI, ratolí sobre el joc o el botó ✦ per gastar impuls aeri i prolongar el salt. Usa ← → per equilibrar la bici."
+    : "Mantén premut per baixar i deixa anar per saltar. Durant el vol, mantén ESPAI, clic sobre la pista o ✦ per activar l'impuls limitat.";
 }
 
 function syncCourse() {
@@ -244,6 +250,9 @@ function resetAttempt() {
   elements.flightHint.hidden = true;
   elements.flightReadout.hidden = true;
   elements.airtimeBanner.hidden = true;
+  elements.airHoldButton.hidden = true;
+  elements.airReserveDisplay.hidden = true;
+  clearAirHoldInputs();
   state.runStartedAt = null;
   state.chargeStartedAt = null;
   state.runProgress = 0;
@@ -272,7 +281,9 @@ function resetAttempt() {
     takeoffAccuracy: 0,
     crashed: false,
     wheelSpin:0,
-    compression:0
+    compression:0,
+    airReserve:1,
+    airHoldActive:false
   };
 
   elements.resultPanel.hidden = true;
@@ -348,6 +359,12 @@ function performLaunch() {
   elements.stageHint.textContent = "Equilibra la bici amb ← → o els botons de sota.";
   elements.flightHint.hidden = false;
   elements.flightReadout.hidden = false;
+  elements.airHoldButton.hidden = false;
+  elements.airHoldButton.disabled = false;
+  elements.airReserveDisplay.hidden = false;
+  state.bike.airReserve = 1;
+  state.bike.airHoldActive = false;
+  updateAirHoldUI();
   state.bike.velocityX = launch.velocityX;
   state.bike.velocityY = launch.velocityY;
   state.bike.rotation = launch.rotation;
@@ -368,7 +385,7 @@ function performLaunch() {
   elements.rotateLeftButton.disabled = false;
   elements.rotateRightButton.disabled = false;
   elements.statusText.textContent =
-    "En vol: ajusta la bicicleta a la pendent d’aterratge.";
+    "En vol: mantén l'ESPAI, el ratolí sobre la pista o el botó ✦ per prolongar el salt. Reserva limitada; ← → per equilibrar-te.";
 }
 
 function calculateScores(landing) {
@@ -439,6 +456,9 @@ function finishAttempt(){
   document.body.classList.add("bike-jump-impacting");
   document.body.classList.toggle("bike-jump-crashing",landing.crashed);
   elements.airtimeBanner.hidden=true;
+  elements.airHoldButton.hidden=true;
+  elements.airReserveDisplay.hidden=true;
+  clearAirHoldInputs();
   document.body.classList.remove("bike-jump-in-flight","bike-jump-in-sweetspot");
   elements.phasePill.textContent=story.kind==="crash"?"⚠ CAIGUDA":"✦ ATERRATGE";
   elements.flightHint.hidden=true;
@@ -663,8 +683,10 @@ function updateFlight(deltaSeconds) {
     level,
     deltaSeconds:motionSeconds,
     rotationInput: state.rotationInput,
-    wind: state.wind
+    wind: state.wind,
+    airHold:airSpaceHeld || activeAirPointers.size>0
   });
+  updateAirHoldUI();
 
   state.bike.wheelSpin+=(Math.abs(state.bike.velocityX)*motionSeconds)/11;
   state.flightTrail.push({x: state.bike.x, y: state.bike.y});
