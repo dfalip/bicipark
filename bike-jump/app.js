@@ -106,6 +106,7 @@ const state = {
   idealZoneAnnounced: false,
   flightTrail: [],
   impact: null,
+  takeoffNoticeSeconds: 0,
   camera: {x:500,y:280,zoom:1},
   animationFrameId: null
 };
@@ -251,6 +252,7 @@ function resetAttempt() {
   state.idealZoneAnnounced = false;
   state.flightTrail = [];
   state.impact = null;
+  state.takeoffNoticeSeconds = 0;
   state.camera = {x:canvas.width/2,y:canvas.height/2,zoom:1};
   clearAllRotationControls();
   state.lastFrameAt = null;
@@ -352,6 +354,13 @@ function performLaunch() {
   state.bike.angularVelocity = launch.angularVelocity;
   state.bike.takeoffAccuracy = launch.takeoffAccuracy;
   state.flightTrail = [{x: state.bike.x, y: state.bike.y}];
+  const timingError=state.runProgress-level.idealTakeoffProgress;
+  const takeoffLabel=timingError<-.075?"MASSA AVIAT!"
+    :timingError>.055?"MASSA TARD!":"SORTIDA PERFECTA!";
+  elements.jumpFeedback.textContent=takeoffLabel;
+  elements.jumpFeedback.classList.remove("bike-jump-feedback--crash");
+  elements.jumpFeedback.hidden=false;
+  state.takeoffNoticeSeconds=.8;
 
   elements.launchButton.disabled = true;
   syncControlMode();
@@ -424,6 +433,8 @@ function finishAttempt(){
   const story=landingStory(landing,state.bike);
   state.impact={landing,scores,story,elapsed:0,initial:{...state.bike},pose:null};
   state.phase="impact";
+  state.takeoffNoticeSeconds=0;
+  elements.jumpFeedback.hidden=true;
   state.bike.crashed=landing.crashed;
   document.body.classList.add("bike-jump-impacting");
   document.body.classList.toggle("bike-jump-crashing",landing.crashed);
@@ -637,6 +648,10 @@ function updateFlightHint() {
 }
 
 function updateFlight(deltaSeconds) {
+  if(state.takeoffNoticeSeconds>0){
+    state.takeoffNoticeSeconds=Math.max(0,state.takeoffNoticeSeconds-deltaSeconds);
+    if(state.takeoffNoticeSeconds===0)elements.jumpFeedback.hidden=true;
+  }
   // The short apex slowdown increases perceived hang-time, but the physics
   // still advances with the SAME elapsed simulation time for every input.
   // No artificial metres are credited to the score.
