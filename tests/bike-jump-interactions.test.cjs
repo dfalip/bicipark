@@ -127,3 +127,86 @@ test('Switching control mode is rejected while a run is active',async()=>{
     assert.equal(h.$('modeTapButton').getAttribute('aria-pressed'),'true');
   }finally{h.dom.window.close();}
 });
+
+
+function playFullJump(h){
+  const start=h.window.performance.now();
+  const launch=h.$('launchButton');
+  h.pointer(launch,'pointerdown');
+  h.frame(start+2490);
+  h.pointer(launch,'pointerdown');
+  h.frame(start+2530);
+  for(let i=1;i<=500;i++){
+    if(h.$('phasePill').textContent.includes('RESULTAT'))break;
+    h.frame(start+2530+i*32);
+  }
+  assert.match(h.$('phasePill').textContent,/RESULTAT/,'The physics simulation should reach landing');
+  assert.equal(h.$('resultPanel').hidden,false);
+}
+
+test('Unlimited practice keeps record and official three-jump score untouched',async()=>{
+  const h=await setup();
+  try{
+    const key='bicipark-bike-jump-high-score-v1';
+    assert.equal(h.window.localStorage.getItem(key),null);
+    h.$('practiceModeButton').click();
+    assert.equal(h.$('practiceModeButton').getAttribute('aria-pressed'),'true');
+    assert.equal(h.$('attemptValue').textContent,'1 / ∞');
+    assert.equal(h.$('scoreLabel').textContent,'Últim salt');
+    assert.match(h.$('gameModeNote').textContent,/no modifiquen el rècord/);
+    playFullJump(h);
+    assert.equal(h.$('totalScoreValue').textContent,h.$('jumpScoreResult').textContent);
+    assert.match(h.$('nextAttemptButton').textContent,/PRACTICAR/);
+    assert.equal(h.window.localStorage.getItem(key),null,'Practice must never persist high scores');
+    assert.equal(h.$('highScoreValue').textContent,'0');
+    h.$('nextAttemptButton').click();
+    assert.equal(h.$('attemptValue').textContent,'2 / ∞');
+    playFullJump(h);
+    assert.match(h.$('nextAttemptButton').textContent,/PRACTICAR/);
+    assert.equal(h.window.localStorage.getItem(key),null);
+    h.$('nextAttemptButton').click();
+    assert.equal(h.$('attemptValue').textContent,'3 / ∞');
+    h.$('restartButton').click();
+    assert.equal(h.$('attemptValue').textContent,'1 / ∞','Practice reset should restart practice counter');
+    assert.equal(h.$('totalScoreValue').textContent,'0','Reset clears the last practice score');
+    assert.equal(h.$('highScoreValue').textContent,'0');
+  }finally{h.dom.window.close();}
+});
+
+test('Switching out of practice creates a clean three-jump challenge',async()=>{
+  const h=await setup();
+  try{
+    h.$('practiceModeButton').click();
+    playFullJump(h);
+    h.$('challengeModeButton').click();
+    assert.equal(h.$('challengeModeButton').getAttribute('aria-pressed'),'true');
+    assert.equal(h.$('attemptValue').textContent,'1 / 3');
+    assert.equal(h.$('scoreLabel').textContent,'Punts');
+    assert.equal(h.$('totalScoreValue').textContent,'0');
+    assert.equal(h.$('resultPanel').hidden,true);
+    assert.equal(h.window.document.body.classList.contains('bike-jump-practice-mode'),false);
+    playFullJump(h);
+    assert.equal(h.$('attemptValue').textContent,'1 / 3');
+    assert.equal(h.$('totalScoreValue').textContent,h.$('jumpScoreResult').textContent,
+      'Challenge scores, unlike practice scores, count towards the total');
+    assert.equal(h.$('nextAttemptButton').textContent,'Següent salt');
+    h.$('nextAttemptButton').click();
+    assert.equal(h.$('attemptValue').textContent,'2 / 3');
+  }finally{h.dom.window.close();}
+});
+
+test('Game mode cannot change in mid-flight or during launch',async()=>{
+  const h=await setup();
+  try{
+    h.$('practiceModeButton').click();
+    h.pointer(h.$('launchButton'),'pointerdown');
+    assert.equal(h.$('challengeModeButton').disabled,true);
+    h.$('challengeModeButton').click();
+    assert.equal(h.$('practiceModeButton').getAttribute('aria-pressed'),'true');
+    h.pointer(h.$('launchButton'),'pointerdown');
+    const at=h.window.performance.now();
+    h.frame(at+50);
+    assert.equal(h.$('challengeModeButton').disabled,true);
+    assert.equal(h.$('totalScoreValue').textContent,'0');
+  }finally{h.dom.window.close();}
+});
