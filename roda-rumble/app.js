@@ -8,7 +8,7 @@ const el={
   shots:$("shotsValue"),targets:$("targetsValue"),score:$("scoreValue"),best:$("bestValue"),
   level:$("levelSelect"),subtitle:$("levelSubtitle"),stageName:$("stageName"),
   phase:$("phaseLabel"),tip:$("stageTip"),notice:$("impactNotice"),status:$("gameStatus"),
-  fire:$("fireButton"),turbo:$("turboButton"),next:$("nextButton"),retry:$("retryButton"),
+  fire:$("fireButton"),turbo:$("turboButton"),next:$("nextButton"),retry:$("retryButton"),sound:$("soundToggle"),
   angle:$("angleInput"),power:$("powerInput"),angleValue:$("angleValue"),
   powerValue:$("powerValue"),result:$("resultPanel"),resultTitle:$("resultTitle"),
   resultDescription:$("resultDescription"),resultIcon:$("resultIcon"),
@@ -38,6 +38,40 @@ function setBest(index,score){
   try{localStorage.setItem(bestKey(index),String(score));}catch{/* private browsing */}
 }
 function format(n){return Math.round(n).toLocaleString("ca-ES");}
+let soundEnabled=false,audioContext=null;
+function sound(kind){
+  // Procedural effects only; no soundtrack or copyrighted audio samples.
+  if(!soundEnabled)return;
+  try{
+    const Audio=window.AudioContext||window.webkitAudioContext;
+    if(!Audio)return;
+    if(!audioContext)audioContext=new Audio();
+    if(audioContext.state==="suspended")audioContext.resume().catch(()=>{});
+    const oscillator=audioContext.createOscillator();
+    const volume=audioContext.createGain();
+    const now=audioContext.currentTime;
+    const duration=kind==="win"?.28:kind==="impact"?.19:.12;
+    const startFrequency=kind==="win"?480:kind==="launch"?240:kind==="ability"?400:145;
+    const endFrequency=kind==="win"?730:kind==="launch"?410:kind==="ability"?125:65;
+    oscillator.type=kind==="impact"?"sawtooth":"triangle";
+    oscillator.frequency.setValueAtTime(startFrequency,now);
+    oscillator.frequency.exponentialRampToValueAtTime(endFrequency,now+duration);
+    volume.gain.setValueAtTime(.0001,now);
+    volume.gain.linearRampToValueAtTime(kind==="impact"?.065:.04,now+.012);
+    volume.gain.exponentialRampToValueAtTime(.0001,now+duration);
+    oscillator.connect(volume);volume.connect(audioContext.destination);
+    oscillator.start(now);oscillator.stop(now+duration+.01);
+  }catch{/* Sound is strictly optional: never break the game. */}
+}
+function fireAction(){
+  if(fire(game))sound("launch");
+  syncUI();
+}
+function specialAction(){
+  if(turbo(game))sound("ability");
+  syncUI();
+}
+
 function currentDescription(){
   if(game.phase==="aim")return "Arrossega la roda enrere i deixa-la anar, o ajusta angle i potència.";
   if(game.phase==="flying"){
@@ -108,11 +142,13 @@ function reset(index=game.levelIndex){
 function announce(){
   const phase=game.phase;
   if(game.score>prevScore){
+    sound("impact");
     el.notice.textContent=game.combo>1?"COMBO!":"BOOM!";
     el.notice.hidden=false;noticeAge=.64;
   }
   if(phase!==previousPhase){
     if(phase==="won"){
+      sound("win");
       if(game.score>storedBest(game.levelIndex))setBest(game.levelIndex,game.score);
       el.notice.textContent="NIVELL SUPERAT!";el.notice.hidden=false;noticeAge=1.1;
     }else if(phase==="lost") {
@@ -147,7 +183,7 @@ function release(event){
   event.preventDefault();
   dragging=false;pointerId=null;
   if(event.type==="pointercancel"){syncUI();return;}
-  fire(game);syncUI();
+  fireAction();
 }
 canvas.addEventListener("pointerdown",grab);
 canvas.addEventListener("pointermove",move);
@@ -156,10 +192,16 @@ canvas.addEventListener("pointercancel",release);
 canvas.addEventListener("lostpointercapture",event=>{
   if(dragging&&event.pointerId===pointerId){dragging=false;pointerId=null;syncUI();}
 });
-el.fire.addEventListener("click",()=>{fire(game);syncUI();});
-el.turbo.addEventListener("click",()=>{turbo(game);syncUI();});
+el.fire.addEventListener("click",fireAction);
+el.turbo.addEventListener("click",specialAction);
 el.next.addEventListener("click",()=>{nextShot(game);syncUI();});
 el.retry.addEventListener("click",()=>reset());
+el.sound.addEventListener("click",()=>{
+  soundEnabled=!soundEnabled;
+  el.sound.setAttribute("aria-pressed",String(soundEnabled));
+  el.sound.textContent=soundEnabled?"🔊 SO ACTIVAT":"🔇 SO DESACTIVAT";
+  if(soundEnabled)sound("ability");
+});
 el.level.addEventListener("change",()=>reset(Number(el.level.value)));
 el.angle.addEventListener("input",()=>{setAim(game,Number(el.angle.value),game.power);syncUI();});
 el.power.addEventListener("input",()=>{setAim(game,game.angle,Number(el.power.value));syncUI();});
@@ -174,8 +216,8 @@ window.addEventListener("keydown",event=>{
     if(event.code==="ArrowDown")setAim(game,game.angle-2,game.power);
     if(event.code==="ArrowRight")setAim(game,game.angle,game.power+3);
     if(event.code==="ArrowLeft")setAim(game,game.angle,game.power-3);
-    if(event.code==="Space"&&!event.repeat)fire(game);
-  }else if(game.phase==="flying"&&event.code==="Space"&&!event.repeat)turbo(game);
+    if(event.code==="Space"&&!event.repeat)fireAction();
+  }else if(game.phase==="flying"&&event.code==="Space"&&!event.repeat)specialAction();
   else if(game.phase==="between"&&event.code==="Space"&&!event.repeat)nextShot(game);
   else if((game.phase==="won"||game.phase==="lost")&&event.code==="Space"&&!event.repeat)
     reset(game.phase==="won"&&game.levelIndex<LEVELS.length-1?game.levelIndex+1:game.levelIndex);
