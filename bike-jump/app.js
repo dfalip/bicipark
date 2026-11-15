@@ -58,15 +58,26 @@ const elements = {
   launchButtonLabel: document.getElementById("launchButtonLabel"),
   modeTapButton: document.getElementById("modeTapButton"),
   modeHoldButton: document.getElementById("modeHoldButton"),
-  controlHelp: document.getElementById("controlHelp")
+  controlHelp: document.getElementById("controlHelp"),
+  courseSelect: document.getElementById("courseSelect"),
+  courseHint: document.getElementById("courseHint"),
+  courseTag: document.getElementById("courseTag")
 };
 
 const STORAGE_KEY = "bicipark-bike-jump-high-score-v1";
-const level = levels[0];
+let level = levels[0];
 
-// Storage can be unavailable in private mode. Keep the game playable.
-let safeStoredRecord = 0;
-try { safeStoredRecord = Number(localStorage.getItem(STORAGE_KEY) || 0); } catch { /* in-memory record */ }
+function scoreStorageKey(course=level){
+  // Keep the original K90 local high score compatible with previous versions.
+  return course.id===levels[0].id?STORAGE_KEY:`${STORAGE_KEY}-${course.id}`;
+}
+function readCourseRecord(course=level){
+  try{
+    const value=Number(localStorage.getItem(scoreStorageKey(course))||0);
+    return Number.isFinite(value)&&value>=0?value:0;
+  }catch{return 0;}
+}
+const safeStoredRecord=readCourseRecord(level);
 
 const state = {
   phase: "ready",
@@ -109,9 +120,34 @@ function syncControlMode() {
     : "Mantén premut per baixar el trampolí i deixa anar a la zona daurada. En vol, corregeix l'angle amb ← → o amb els botons.";
 }
 
+function syncCourse() {
+  elements.courseSelect.value=level.id;
+  elements.courseTag.textContent=level.tag;
+  elements.courseHint.textContent=level.description;
+}
+function changeCourse(id){
+  if(state.phase==="inrun" || state.phase==="flight"){
+    elements.courseSelect.value=level.id;
+    return;
+  }
+  const next=levels.find(course=>course.id===id);
+  if(!next || next.id===level.id){
+    elements.courseSelect.value=level.id;
+    return;
+  }
+  level=next;
+  state.highScore=readCourseRecord(next);
+  state.gameStartingRecord=state.highScore;
+  state.attempt=1;
+  state.totalScore=0;
+  state.practiceJumps=0;
+  state.practiceLastScore=0;
+  resetAttempt();
+}
 function syncGameMode() {
   const practice=state.gameMode==="practice";
   const busy=state.phase==="inrun" || state.phase==="flight";
+  elements.courseSelect.disabled=busy;
   elements.practiceModeButton.setAttribute("aria-pressed",String(practice));
   elements.challengeModeButton.setAttribute("aria-pressed",String(!practice));
   elements.practiceModeButton.disabled=busy;
@@ -140,9 +176,8 @@ function changeGameMode(next) {
 }
 
 function randomWind() {
-  return Math.round(
-    (-2.2 + Math.random() * 4.4) * 10
-  ) / 10;
+  const range=level.windRange||2.2;
+  return Math.round((-range + Math.random()*2*range)*10)/10;
 }
 
 function formatScore(value) {
@@ -236,6 +271,7 @@ function resetAttempt() {
   elements.phasePill.textContent = "● PREPARAT";
   syncControlMode();
   syncGameMode();
+  syncCourse();
   elements.rotateLeftButton.disabled = true;
   elements.rotateRightButton.disabled = true;
   elements.statusText.textContent = state.controlMode === "tap"
@@ -394,7 +430,7 @@ function finishAttempt() {
     state.totalScore+=scores.jumpScore;
     if(state.totalScore>state.highScore){
       state.highScore=state.totalScore;
-      try{localStorage.setItem(STORAGE_KEY,String(state.highScore));}
+      try{localStorage.setItem(scoreStorageKey(),String(state.highScore));}
       catch{/* record remains visible in memory */}
     }
   }
@@ -1186,6 +1222,7 @@ elements.modeTapButton.addEventListener("click", () => changeControlMode("tap"))
 elements.modeHoldButton.addEventListener("click", () => changeControlMode("hold"));
 elements.challengeModeButton.addEventListener("click",()=>changeGameMode("challenge"));
 elements.practiceModeButton.addEventListener("click",()=>changeGameMode("practice"));
+elements.courseSelect.addEventListener("change",()=>changeCourse(elements.courseSelect.value));
 
 function addRotationPointerControl(button,value) {
   // Track each pointer independently, including two simultaneous touches.
