@@ -112,9 +112,16 @@ export function turbo(g){
   if(g.phase!=="flying"||!p||p.turbo)return false;
   p.turbo=true;
   if(p.type==="pulse"){
-    shockwave(g,p.x,p.y,145);
-    p.vx*=.83;p.vy*=.83;
-    g.notice="ONA EXPANSIVA! Mira com cauen les torres.";
+    if(p.x<440){
+      // New players may press early: arm the pulse and fire it automatically
+      // when the wheel reaches the scrapyard. Never waste an input at spawn.
+      p.pulseArmed=true;
+      g.notice="ONA ARMADA! S'activarà quan la roda arribi a les torres.";
+    }else{
+      shockwave(g,p.x,p.y,145);
+      p.vx*=.83;p.vy*=.83;
+      g.notice="ONA EXPANSIVA! Mira com cauen les torres.";
+    }
   }else if(p.type==="drill"){
     p.vx+=205;p.vy-=25;g.shake=Math.max(g.shake,7);
     g.notice="TREPANT ACTIVAT! Travessa les defenses.";
@@ -349,6 +356,12 @@ function updateProjectile(g,dt){
   p.vy+=650*dt;p.vx*=Math.exp(-.045*dt);
   p.x+=p.vx*dt;p.y+=p.vy*dt;
   p.angle+=p.vx*dt/p.r;
+  if(p.pulseArmed && p.x>=450){
+    p.pulseArmed=false;
+    shockwave(g,p.x,p.y,145);
+    p.vx*=.83;p.vy*=.83;
+    g.notice="ONA EXPANSIVA! Detonació automàtica a la zona de ferralla.";
+  }
   if(p.y+p.r>WORLD.ground){
     p.y=WORLD.ground-p.r;
     p.vy=Math.abs(p.vy)>65?-p.vy*.33:0;
