@@ -17,6 +17,11 @@ const context = canvas.getContext("2d");
 
 const elements = {
   attemptValue: document.getElementById("attemptValue"),
+  attemptLabel: document.getElementById("attemptLabel"),
+  scoreLabel: document.getElementById("scoreLabel"),
+  challengeModeButton: document.getElementById("challengeModeButton"),
+  practiceModeButton: document.getElementById("practiceModeButton"),
+  gameModeNote: document.getElementById("gameModeNote"),
   totalScoreValue: document.getElementById("totalScoreValue"),
   highScoreValue: document.getElementById("highScoreValue"),
   windValue: document.getElementById("windValue"),
@@ -64,6 +69,9 @@ try { safeStoredRecord = Number(localStorage.getItem(STORAGE_KEY) || 0); } catch
 const state = {
   phase: "ready",
   controlMode: "tap",
+  gameMode: "challenge",
+  practiceJumps: 0,
+  practiceLastScore: 0,
   attempt: 1,
   totalScore: 0,
   highScore: Number.isFinite(safeStoredRecord) && safeStoredRecord >= 0 ? safeStoredRecord : 0,
@@ -99,6 +107,34 @@ function syncControlMode() {
     : "Mantén premut per baixar el trampolí i deixa anar a la zona daurada. En vol, corregeix l'angle amb ← → o amb els botons.";
 }
 
+function syncGameMode() {
+  const practice=state.gameMode==="practice";
+  const busy=state.phase==="inrun" || state.phase==="flight";
+  elements.practiceModeButton.setAttribute("aria-pressed",String(practice));
+  elements.challengeModeButton.setAttribute("aria-pressed",String(!practice));
+  elements.practiceModeButton.disabled=busy;
+  elements.challengeModeButton.disabled=busy;
+  elements.scoreLabel.textContent=practice?"Últim salt":"Punts";
+  elements.attemptLabel.textContent=practice?"Pràctica":"Salt";
+  elements.gameModeNote.textContent=practice
+    ? "Pràctica: salts il·limitats. Les puntuacions no es sumen al repte ni modifiquen el rècord."
+    : "Repte: tres salts puntuables. La pràctica és il·limitada i no modifica els rècords.";
+  document.body.classList.toggle("bike-jump-practice-mode",practice);
+}
+
+function changeGameMode(next) {
+  if(next!=="practice" && next!=="challenge")return;
+  if(state.phase==="inrun" || state.phase==="flight")return;
+  if(state.gameMode===next)return;
+  state.gameMode=next;
+  state.attempt=1;
+  state.totalScore=0;
+  state.practiceJumps=0;
+  state.practiceLastScore=0;
+  state.gameStartingRecord=state.highScore;
+  resetAttempt();
+}
+
 function randomWind() {
   return Math.round(
     (-2.2 + Math.random() * 4.4) * 10
@@ -110,11 +146,13 @@ function formatScore(value) {
 }
 
 function updateDashboard() {
-  elements.attemptValue.textContent =
-    `${state.attempt} / ${level.attempts}`;
+  elements.attemptValue.textContent = state.gameMode==="practice"
+    ? `${state.practiceJumps+1} / ∞`
+    : `${state.attempt} / ${level.attempts}`;
 
-  elements.totalScoreValue.textContent =
-    formatScore(state.totalScore);
+  elements.totalScoreValue.textContent = formatScore(
+    state.gameMode==="practice"?state.practiceLastScore:state.totalScore
+  );
 
   elements.highScoreValue.textContent =
     formatScore(state.highScore);
@@ -193,6 +231,7 @@ function resetAttempt() {
     : "Mantén premut mentre baixes i deixa anar a la zona daurada.";
   elements.phasePill.textContent = "● PREPARAT";
   syncControlMode();
+  syncGameMode();
   elements.rotateLeftButton.disabled = true;
   elements.rotateRightButton.disabled = true;
   elements.statusText.textContent = state.controlMode === "tap"
@@ -211,6 +250,7 @@ function startRun() {
   }
 
   state.phase = "inrun";
+  syncGameMode();
   state.runStartedAt = performance.now();
   state.chargeStartedAt = state.runStartedAt;
   state.releaseRequested = false;
@@ -260,6 +300,7 @@ function performLaunch() {
 
   elements.launchButton.disabled = true;
   syncControlMode();
+  syncGameMode();
   elements.rotateLeftButton.disabled = false;
   elements.rotateRightButton.disabled = false;
   elements.statusText.textContent =
@@ -333,6 +374,7 @@ function finishAttempt() {
   document.body.classList.remove("bike-jump-in-flight", "bike-jump-in-sweetspot");
   elements.phasePill.textContent = "✦ RESULTAT";
   syncControlMode();
+  syncGameMode();
   elements.flightHint.hidden = true;
   state.bike.crashed = landing.crashed;
   state.bike.rotation = landing.crashed
@@ -340,12 +382,17 @@ function finishAttempt() {
     : landing.slopeAngle;
 
   const scores = calculateScores(landing);
-  state.totalScore += scores.jumpScore;
-
-  if (state.totalScore > state.highScore) {
-    state.highScore = state.totalScore;
-    try { localStorage.setItem(STORAGE_KEY, String(state.highScore)); }
-    catch { /* record remains visible in memory */ }
+  if(state.gameMode==="practice"){
+    // Practice scores are informational; never update the three-jump total,
+    // localStorage or the official best score.
+    state.practiceLastScore=scores.jumpScore;
+  }else{
+    state.totalScore+=scores.jumpScore;
+    if(state.totalScore>state.highScore){
+      state.highScore=state.totalScore;
+      try{localStorage.setItem(STORAGE_KEY,String(state.highScore));}
+      catch{/* record remains visible in memory */}
+    }
   }
 
   elements.rotateLeftButton.disabled = true;
@@ -386,11 +433,11 @@ function finishAttempt() {
   elements.jumpScoreResult.textContent =
     formatScore(scores.jumpScore);
 
-  const isLastAttempt = state.attempt >= level.attempts;
-
-  elements.nextAttemptButton.textContent = isLastAttempt
-    ? "Torna-hi!"
-    : "Següent salt";
+  const isPractice=state.gameMode==="practice";
+  const isLastAttempt=!isPractice && state.attempt>=level.attempts;
+  elements.nextAttemptButton.textContent = isPractice
+    ? "TORNA A PRACTICAR ↻"
+    : isLastAttempt?"Torna-hi!":"Següent salt";
 
   elements.gameSummary.hidden = !isLastAttempt;
   if (isLastAttempt) {
@@ -411,12 +458,14 @@ function nextAttempt() {
     return;
   }
 
-  if (state.attempt >= level.attempts) {
-    state.attempt = 1;
-    state.totalScore = 0;
-    state.gameStartingRecord = state.highScore;
-  } else {
-    state.attempt += 1;
+  if(state.gameMode==="practice"){
+    state.practiceJumps+=1;
+  }else if(state.attempt>=level.attempts){
+    state.attempt=1;
+    state.totalScore=0;
+    state.gameStartingRecord=state.highScore;
+  }else{
+    state.attempt+=1;
   }
 
   resetAttempt();
@@ -426,6 +475,8 @@ function nextAttempt() {
 function restartGame() {
   state.attempt = 1;
   state.totalScore = 0;
+  state.practiceJumps=0;
+  state.practiceLastScore=0;
   state.gameStartingRecord = state.highScore;
   resetAttempt();
   elements.launchButton.focus({preventScroll:true});
@@ -1114,6 +1165,8 @@ elements.launchButton.addEventListener("lostpointercapture", () => {
 });
 elements.modeTapButton.addEventListener("click", () => changeControlMode("tap"));
 elements.modeHoldButton.addEventListener("click", () => changeControlMode("hold"));
+elements.challengeModeButton.addEventListener("click",()=>changeGameMode("challenge"));
+elements.practiceModeButton.addEventListener("click",()=>changeGameMode("practice"));
 
 function addRotationPointerControl(button, value) {
   button.addEventListener("pointerdown", event => {
