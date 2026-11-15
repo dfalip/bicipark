@@ -64,9 +64,8 @@ test('Drag and release aims then fires on desktop and touch pointer semantics',(
     assert.equal(h.$('fireButton').disabled,true);
     assert.equal(h.$('turboButton').disabled,false);
     h.$('turboButton').click();
-    assert.equal(h.w.__gameForTest().projectile.turbo,false,'Turbo is gated until first simulated flight step');
+    assert.equal(h.w.__gameForTest().projectile.turbo,true,'Turbo must respond immediately to the player');
     h.frame(16);h.frame(180);
-    h.$('turboButton').click();
     assert.equal(h.w.__gameForTest().projectile.turbo,true);
   }finally{h.dom.window.close();}
 });
