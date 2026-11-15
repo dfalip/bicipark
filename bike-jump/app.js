@@ -1374,6 +1374,69 @@ function ensureAnimation() {
   }
 }
 
+// A Space hold and touch/mouse pointers contribute independently. A released
+// finger cannot cancel an overlapping key; losing focus clears all sources.
+const activeAirPointers=new Set();
+let airSpaceHeld=false;
+function updateAirHoldUI() {
+  const reserve=Math.max(0,Math.min(1,Number.isFinite(state.bike?.airReserve)?state.bike.airReserve:0));
+  const active=state.phase==="flight" && reserve>0 && (airSpaceHeld || activeAirPointers.size>0);
+  elements.airHoldButton.setAttribute("aria-pressed",String(active));
+  elements.airHoldButton.disabled=state.phase!=="flight" || reserve<=0;
+  elements.airReserveValue.textContent=`${Math.round(reserve*100)}%`;
+  elements.airReserveBar.style.width=`${Math.round(reserve*100)}%`;
+  elements.airReserveTrack.setAttribute("aria-valuenow",String(Math.round(reserve*100)));
+  elements.airReserveHint.textContent=reserve<=0?"Impuls esgotat fins al proper salt":
+    active?"IMPULS ACTIVAT · deixa anar per conservar-lo":"Mantén premut per prolongar el vol";
+  document.body.classList.toggle("bike-jump-air-hold-active",active);
+}
+function clearAirHoldInputs(){
+  activeAirPointers.clear();
+  airSpaceHeld=false;
+  document.body.classList.remove("bike-jump-air-hold-active");
+  elements.airHoldButton.setAttribute("aria-pressed","false");
+}
+function attachAirPointer(element){
+  element.addEventListener("pointerdown",event=>{
+    if(state.phase!=="flight" || state.bike.airReserve<=0 ||
+       (event.button!=null && event.button!==0))return;
+    event.preventDefault();
+    activeAirPointers.add(event.pointerId);
+    try{element.setPointerCapture(event.pointerId);}catch{/* gracefully fall back */}
+    updateAirHoldUI();
+  });
+  const release=event=>{
+    activeAirPointers.delete(event.pointerId);
+    updateAirHoldUI();
+  };
+  element.addEventListener("pointerup",release);
+  element.addEventListener("pointercancel",release);
+  element.addEventListener("lostpointercapture",release);
+}
+attachAirPointer(elements.airHoldButton);
+attachAirPointer(canvas);
+window.addEventListener("pointerup",event=>{
+  if(activeAirPointers.delete(event.pointerId))updateAirHoldUI();
+});
+window.addEventListener("pointercancel",event=>{
+  if(activeAirPointers.delete(event.pointerId))updateAirHoldUI();
+});
+elements.airHoldButton.addEventListener("keydown",event=>{
+  if((event.code==="Space"||event.code==="Enter")&&!event.repeat && state.phase==="flight"){
+    event.preventDefault();event.stopPropagation();
+    airSpaceHeld=true;updateAirHoldUI();
+  }
+});
+elements.airHoldButton.addEventListener("keyup",event=>{
+  if(event.code==="Space"||event.code==="Enter"){
+    event.preventDefault();event.stopPropagation();
+    airSpaceHeld=false;updateAirHoldUI();
+  }
+});
+elements.airHoldButton.addEventListener("blur",()=>{
+  airSpaceHeld=false;updateAirHoldUI();
+});
+
 function setRotationInput(value) {
   state.rotationInput = value;
 }
@@ -1427,22 +1490,27 @@ function changeControlMode(next) {
 }
 
 function handleSpaceDown(event) {
-  if (event.code !== "Space" || event.repeat || isTypingTarget(event.target)) {
+  if(event.code!=="Space" || isTypingTarget(event.target))return;
+  if(state.phase==="flight"){
+    event.preventDefault();
+    if(!event.repeat){airSpaceHeld=true;updateAirHoldUI();}
     return;
   }
-
+  if(event.repeat)return;
   event.preventDefault();
-  if (state.controlMode === "tap") tapAction();
+  if(state.controlMode==="tap")tapAction();
   else startRun();
 }
 
 function handleSpaceUp(event) {
-  if (event.code !== "Space" || isTypingTarget(event.target)) {
-    return;
+  if(event.code!=="Space")return;
+  if(airSpaceHeld){
+    event.preventDefault();
+    airSpaceHeld=false;updateAirHoldUI();
   }
-
+  if(isTypingTarget(event.target))return;
   event.preventDefault();
-  if (state.controlMode === "hold") requestLaunch();
+  if(state.controlMode==="hold")requestLaunch();
 }
 
 document.addEventListener("keydown", event => {
@@ -1463,11 +1531,13 @@ document.addEventListener("keyup", event => {
 });
 window.addEventListener("blur", () => {
   clearAllRotationControls();
+  clearAirHoldInputs();
   if (state.phase === "inrun") requestLaunch();
 });
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     clearAllRotationControls();
+    clearAirHoldInputs();
     if (state.phase === "inrun") requestLaunch();
   }
 });
