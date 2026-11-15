@@ -212,15 +212,38 @@ function updateBodies(g,dt){
 function updateTargets(g,dt){
   for(const t of g.robots){
     if(t.dead)continue;
-    // Slight autonomous wobble; targets remain fixed until struck by debris.
     t.blink=(t.blink+dt)%2.7;
+    // Robots ride platforms and fall if their support is broken: no floating
+    // targets left behind after a satisfying tower demolition.
+    let supportY=WORLD.ground-t.r;
+    let platform=null;
     for(const b of g.blocks){
       if(b.dead)continue;
+      const top=b.y-b.h/2;
+      const bottom=t.y+t.r;
+      if(Math.abs(t.x-b.x)<b.w/2+t.r*.4 &&
+         bottom<=top+14 && top-t.r<supportY){
+        supportY=top-t.r;platform=b;
+      }
       const cx=clamp(t.x,b.x-b.w/2,b.x+b.w/2);
       const cy=clamp(t.y,b.y-b.h/2,b.y+b.h/2);
-      const distance=Math.hypot(t.x-cx,t.y-cy);
-      if(distance<t.r*.85 && Math.hypot(b.vx,b.vy)>60)eliminateRobot(g,t);
+      const dist=Math.hypot(t.x-cx,t.y-cy);
+      if(dist<t.r*.85 && Math.hypot(b.vx,b.vy)>72){
+        eliminateRobot(g,t);break;
+      }
     }
+    if(t.dead)continue;
+    t.vy+=660*dt;
+    t.x+=t.vx*dt;t.y+=t.vy*dt;
+    t.vx*=Math.exp(-1.3*dt);
+    if(t.y>=supportY){
+      const impact=Math.abs(t.vy);
+      t.y=supportY;t.vy=0;
+      if(impact>230){eliminateRobot(g,t);continue;}
+      if(platform&&Math.abs(platform.vx)>30)t.vx=platform.vx*.85;
+    }
+    t.x=clamp(t.x,305,975);
+    if(t.y>WORLD.ground+60)eliminateRobot(g,t);
   }
 }
 function updateProjectile(g,dt){
