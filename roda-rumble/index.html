@@ -27,6 +27,8 @@
           <option value="1">02 · La fàbrica</option>
           <option value="2">03 · Efecte dominó</option>
           <option value="3">04 · Castell circular</option>
+          <option value="4">05 · Pont de ferralla</option>
+          <option value="5">06 · Gran demolició</option>
         </select>
         <small id="levelSubtitle">Aprèn a trencar la torre de ferralla</small>
       </div>
@@ -46,6 +48,12 @@
         Utilitza els controls d'angle i potència i el botó Llança per jugar sense arrossegar.
       </canvas>
       <div id="stageTip" class="rr-stage-tip">Arrossega la roda de la llançadora cap enrere, apunta i deixa-la anar.</div>
+      <div id="wheelCard" class="rr-wheel-card" aria-label="Pròxim projectil">
+        <span id="wheelIcon" aria-hidden="true">●</span>
+        <div><small>RODA PREPARADA</small><strong id="wheelName">RODA MARTELL</strong>
+        <p id="wheelHelp">Impacte potent contra fusta i vidre</p></div>
+      </div>
+      <div id="trajectoryHint" class="rr-trajectory-hint" aria-live="off">La línia marca el possible primer impacte.</div>
       <div id="impactNotice" class="rr-impact-notice" aria-hidden="true" hidden>BOOM!</div>
       <div id="resultPanel" class="rr-result" hidden>
         <div class="rr-result-icon" id="resultIcon" aria-hidden="true">🏁</div>
@@ -59,7 +67,7 @@
     <p id="gameStatus" class="rr-status" role="status" aria-live="polite">Arrossega cap enrere per preparar el llançament.</p>
     <section class="rr-actions" aria-label="Controls del joc">
       <button id="fireButton" class="rr-btn rr-btn-primary" type="button">🎯 LLANÇA LA RODA</button>
-      <button id="turboButton" class="rr-btn rr-btn-turbo" type="button" disabled>✦ TURBO EN VOL</button>
+      <button id="turboButton" class="rr-btn rr-btn-turbo" type="button" disabled>✦ HABILITAT ESPECIAL</button>
       <button id="nextButton" class="rr-btn rr-btn-secondary" type="button" hidden>↻ SEGÜENT RODA</button>
       <button id="retryButton" class="rr-btn rr-btn-secondary" type="button">↺ REINICIA</button>
     </section>
@@ -73,8 +81,8 @@
         <input type="range" id="powerInput" min="15" max="100" value="77" step="1">
       </div>
     </section>
-    <p id="gameInstructions" class="rr-help">**ARROSSEGA** la roda cap enrere i deixa-la anar per disparar. També pots ajustar l'angle i la potència i prémer <b>Espai</b>. Durant el vol, prem <b>Espai</b> o <b>Turbo</b> una sola vegada per accelerar. Les caixes de vidre cauen fàcilment, l'acer resisteix i els bidons vermells exploten.</p>
-    <footer class="rr-footer">Joc original de BiciPark · Quatre nivells · Sense anuncis · Sense dades personals · Marques guardades al navegador</footer>
+    <p id="gameInstructions" class="rr-help"><b>ARROSSEGA</b> la roda cap enrere i deixa-la anar. La línia de punts prediu el primer impacte, sense turbo. També pots ajustar l'angle i la potència i prémer <b>Espai</b>. Durant el vol, prem <b>Espai</b> o <b>Habilitat especial</b> per activar-la una sola vegada: roda martell, ona expansiva o trepant. L'acer és resistent, el vidre fràgil i els bidons vermells exploten.</p>
+    <footer class="rr-footer">Joc original de BiciPark · Sis nivells · Sense anuncis · Sense dades personals · Marques guardades al navegador</footer>
   </main>
   <script type="module" src="./app.js"></script>
 </body>
