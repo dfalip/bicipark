@@ -48,7 +48,8 @@ function hideAlternative(){
   ui.alternateProviderButton.hidden=true;
   lastErrorProvider=null;
 }
-const num=value=>Number(value).toLocaleString("ca-ES",{maximumFractionDigits:3});
+// Display coordinates in the selected language; API queries remain numeric and unchanged.
+const num=value=>Number(value).toLocaleString(({ca:"ca-ES",es:"es-ES",en:"en-US",fr:"fr-FR"})[window.BiciParkWorldI18n?.language]||"ca-ES",{maximumFractionDigits:3});
 const coords=centre=>`${num(centre.lat)}°, ${num(centre.lng)}°`;
 // The browser and gateway both use a 0.001-degree cell (~111m latitude).
 // Repeated searches inside the same cell must reuse the same documented area.
