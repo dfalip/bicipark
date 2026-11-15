@@ -946,13 +946,37 @@ function isTypingTarget(target) {
   return target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(target.tagName));
 }
 
+// Two-tap mode makes the first touch start the descent (instead of launching
+// immediately on release) and the second touch trigger the jump.
+// Press-and-hold remains available as an explicit alternative.
+function tapAction() {
+  if (state.phase === "ready") startRun();
+  else if (state.phase === "inrun") requestLaunch();
+}
+function changeControlMode(next) {
+  if (state.phase === "inrun" || state.phase === "flight") return;
+  if (next !== "tap" && next !== "hold") return;
+  state.controlMode = next;
+  if (state.phase === "ready") {
+    setLaunchLabel(next === "tap" ? "TOCA PER COMENÇAR" : "MANTÉN PER COMENÇAR");
+    elements.stageHint.textContent = next === "tap"
+      ? "Toca una vegada per baixar. Torna a tocar a la zona daurada."
+      : "Mantén premut mentre baixes i deixa anar a la zona daurada.";
+    elements.statusText.textContent = next === "tap"
+      ? "Toca per començar el descens; torna a tocar per saltar."
+      : "Mantén premut per baixar i deixa anar a la zona daurada.";
+  }
+  syncControlMode();
+}
+
 function handleSpaceDown(event) {
   if (event.code !== "Space" || event.repeat || isTypingTarget(event.target)) {
     return;
   }
 
   event.preventDefault();
-  startRun();
+  if (state.controlMode === "tap") tapAction();
+  else startRun();
 }
 
 function handleSpaceUp(event) {
@@ -961,7 +985,7 @@ function handleSpaceUp(event) {
   }
 
   event.preventDefault();
-  requestLaunch();
+  if (state.controlMode === "hold") requestLaunch();
 }
 
 document.addEventListener("keydown", event => {
@@ -998,43 +1022,42 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-// Keyboard support when the main game button itself has focus.
+// Keyboard controls work both with and without the stage button focused.
 elements.launchButton.addEventListener("keydown", event => {
   if ((event.code === "Space" || event.code === "Enter") && !event.repeat) {
     event.preventDefault();
-    startRun();
+    if (state.controlMode === "tap") tapAction();
+    else startRun();
   }
 });
 elements.launchButton.addEventListener("keyup", event => {
   if (event.code === "Space" || event.code === "Enter") {
     event.preventDefault();
-    requestLaunch();
+    if (state.controlMode === "hold") requestLaunch();
   }
 });
-
-elements.launchButton.addEventListener(
-  "pointerdown",
-  event => {
-    event.preventDefault();
-    elements.launchButton.setPointerCapture(
-      event.pointerId
-    );
+elements.launchButton.addEventListener("pointerdown", event => {
+  if (event.button != null && event.button !== 0) return;
+  event.preventDefault();
+  if (state.controlMode === "tap") tapAction();
+  else {
+    try { elements.launchButton.setPointerCapture(event.pointerId); }
+    catch { /* fallback if pointer capture is unavailable */ }
     startRun();
   }
-);
-
-elements.launchButton.addEventListener(
-  "pointerup",
-  event => {
-    event.preventDefault();
-    requestLaunch();
-  }
-);
-
-elements.launchButton.addEventListener(
-  "pointercancel",
-  requestLaunch
-);
+});
+elements.launchButton.addEventListener("pointerup", event => {
+  event.preventDefault();
+  if (state.controlMode === "hold") requestLaunch();
+});
+elements.launchButton.addEventListener("pointercancel", () => {
+  if (state.controlMode === "hold") requestLaunch();
+});
+elements.launchButton.addEventListener("lostpointercapture", () => {
+  if (state.controlMode === "hold") requestLaunch();
+});
+elements.modeTapButton.addEventListener("click", () => changeControlMode("tap"));
+elements.modeHoldButton.addEventListener("click", () => changeControlMode("hold"));
 
 function addRotationPointerControl(button, value) {
   button.addEventListener("pointerdown", event => {
