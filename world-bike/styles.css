@@ -62,3 +62,9 @@
 .wb-place-search-results button{width:100%;text-align:left;padding:10px;border:1px solid #c4dbce;border-radius:8px;font:inherit;font-size:.82rem;color:#164b39;background:#fff;cursor:pointer;overflow-wrap:anywhere}
 .wb-place-search-results button:hover{background:#e5f4e9}
 @media(max-width:410px){.wb-place-search-row{flex-direction:column}.wb-place-search-row .wb-button{width:100%}}
+
+/* Shareable CA/ES/EN/FR language selection, keyboard and mobile friendly. */
+.wb-language{display:flex;align-items:center;gap:8px;font-size:.8rem;font-weight:800}
+.wb-language label{color:#fff}
+.wb-language select{font:inherit;font-size:.82rem;border-radius:8px;border:1px solid #cce1d5;padding:7px 10px;color:#123d2f;background:#fff}
+.wb-language select:focus-visible{outline:3px solid #a7d3ff;outline-offset:2px}
