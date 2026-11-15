@@ -138,3 +138,15 @@ html{scroll-behavior:smooth}
 
 /* Keep the mobile result sheet above the lower control deck. */
 .bike-jump-show-result .bike-jump-game-shell{z-index:60;overflow:visible}
+
+/* Practice is a separate non-scoring session; expose the distinction clearly. */
+.bike-jump-play-mode{display:flex;align-items:center;gap:6px;flex-wrap:wrap;max-width:100%}
+.bike-jump-play-mode>span{font-size:.65rem;letter-spacing:.08em;color:#a4ced0;font-weight:900;margin-right:4px}
+.bike-jump-play-mode button{min-height:43px;padding:7px 11px;background:#193b4d;color:#d0f5ed;border:1px solid #49747c;border-radius:9px;font-size:.77rem;font-weight:850;cursor:pointer}
+.bike-jump-play-mode button[aria-pressed="true"]{background:var(--bj-acid);border-color:var(--bj-acid);color:#122b32}
+.bike-jump-play-mode button:disabled{opacity:.53;cursor:not-allowed}
+.bike-jump-practice-mode .bike-jump-challenge{border-color:rgba(92,242,230,.4);background:rgba(92,242,230,.07)}
+.bike-jump-mode-note{grid-column:1/-1;margin:0 4px;color:#b2e7de;font-size:.76rem;line-height:1.45}
+@media(max-width:1000px){.bike-jump-settings{flex-wrap:wrap}}
+@media(max-width:760px){.bike-jump-play-mode{width:100%}.bike-jump-play-mode button{flex:1 1 auto}}
+@media(max-width:420px){.bike-jump-play-mode button{font-size:.74rem;padding:7px}}
