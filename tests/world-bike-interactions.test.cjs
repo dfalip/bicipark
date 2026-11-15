@@ -347,3 +347,29 @@ test('Two overlapping place searches keep only the newest result and loading sta
     assert.equal(h.fetchCount,0);
   }finally{h.dom.window.close();}
 });
+
+test('Editing a city search clears existing choices and invalidates a pending response',async()=>{
+  const h=await setup();
+  try{
+    const $=id=>h.window.document.getElementById(id);
+    $('placeSearchInput').value='Amsterdam';
+    $('placeSearchForm').dispatchEvent(new h.window.Event('submit',{cancelable:true}));
+    await h.flush();
+    assert.equal($('placeSearchResults').querySelectorAll('button').length,2);
+    $('placeSearchInput').value='Paris';
+    $('placeSearchInput').dispatchEvent(new h.window.Event('input',{bubbles:true}));
+    assert.equal($('placeSearchResults').children.length,0,'Stale city buttons must disappear immediately');
+    assert.match($('placeSearchStatus').textContent,/cerca ha canviat/);
+    assert.equal(h.fetchCount,0,'Editing search never requests OSM services');
+
+    let finish;
+    h.window.BiciParkGeocoder.search=()=>new Promise(resolve=>{finish=resolve;});
+    $('placeSearchForm').dispatchEvent(new h.window.Event('submit',{cancelable:true}));
+    $('placeSearchInput').value='Berlin';
+    $('placeSearchInput').dispatchEvent(new h.window.Event('input',{bubbles:true}));
+    finish([{lat:48.8566,lng:2.3522,label:'Paris'}]);
+    await h.flush();
+    assert.equal($('placeSearchResults').children.length,0,'Late geocoder response cannot restore stale choices');
+    assert.equal($('placeSearchButton').disabled,false);
+  }finally{h.dom.window.close();}
+});
