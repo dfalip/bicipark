@@ -937,6 +937,10 @@ function drawRamp() {
   );
 }
 
+function landingHorizonX(){
+  return level.takeoffPoint.x + level.maximumDistanceMeters/level.distanceScale + 340;
+}
+
 function drawLandingHill() {
   context.fillStyle = level.theme==="city"?"#71849c":level.theme==="canyon"?"#e2a475":"#d7eee5";
   context.beginPath();
@@ -944,14 +948,14 @@ function drawLandingHill() {
 
   for (
     let x = level.landingStartX;
-    x <= canvas.width;
+    x <= landingHorizonX();
     x += 8
   ) {
     context.lineTo(x, getLandingY(level, x));
   }
 
-  context.lineTo(canvas.width, canvas.height);
-  context.lineTo(level.landingStartX, canvas.height);
+  context.lineTo(landingHorizonX(), canvas.height + 1400);
+  context.lineTo(level.landingStartX, canvas.height + 1400);
   context.closePath();
   context.fill();
 
@@ -961,7 +965,7 @@ function drawLandingHill() {
 
   for (
     let x = level.landingStartX;
-    x <= canvas.width;
+    x <= landingHorizonX();
     x += 8
   ) {
     const y = getLandingY(level, x);
@@ -976,7 +980,7 @@ function drawLandingHill() {
   context.stroke();
 
   context.fillStyle = level.theme==="city"?"#d4e8e8":level.theme==="canyon"?"#c47959":"#4f9080";
-  for (let x = 520; x < 980; x += 58) {
+  for (let x = 520; x < landingHorizonX(); x += 58) {
     const y = getLandingY(level, x);
     if(level.theme==="city"){
       context.fillRect(x-9,y-5,23,3);
@@ -1002,10 +1006,7 @@ function drawDistanceMarkers() {
       level.takeoffPoint.x +
       meters / level.distanceScale;
 
-    if (x >= canvas.width) {
-      break;
-    }
-
+    // Markers beyond the first screen remain visible when the camera pans.
     const y = getLandingY(level, x);
 
     context.strokeStyle = "#7f8c85";
@@ -1154,6 +1155,55 @@ function drawSpeedLines() {
   context.restore();
 }
 
+function prefersReducedMotion(){
+  return Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches);
+}
+
+function drawShadow(){
+  if(state.phase!=="flight" && state.phase!=="impact")return;
+  const bike=state.bike;
+  const sx=Math.max(level.landingStartX,bike.x);
+  const sy=getLandingY(level,sx);
+  const height=Math.max(0,sy-bike.y);
+  const opacity=clamp(.47-height/900,.13,.49);
+  context.save();
+  context.strokeStyle="rgba(223,249,245,.3)";
+  context.lineWidth=2;
+  context.setLineDash([5,11]);
+  context.beginPath();
+  context.moveTo(bike.x,bike.y+14);
+  context.lineTo(sx,sy);
+  context.stroke();
+  context.setLineDash([]);
+  context.fillStyle=`rgba(1,32,39,${opacity})`;
+  context.beginPath();
+  context.ellipse(sx,sy+4,22+height*.12,7+height*.025,0,0,Math.PI*2);
+  context.fill();
+  context.restore();
+}
+
+function drawTumblingRider(){
+  const pose=state.phase==="impact"?state.impact?.pose:null;
+  if(!pose?.rider)return;
+  const rider=pose.rider;
+  context.save();
+  context.translate(rider.x,rider.y);
+  context.rotate(rider.rotation);
+  // A separate pilot in a wipeout: no longer stuck to the bike frame.
+  context.strokeStyle="#14343c";
+  context.lineWidth=5;
+  context.lineCap="round";
+  context.beginPath();context.moveTo(-12,-3);context.lineTo(10,14);
+  context.moveTo(0,6);context.lineTo(-20,14);
+  context.moveTo(0,6);context.lineTo(15,-6);
+  context.stroke();
+  context.fillStyle="#fa6d90";
+  context.beginPath();context.ellipse(0,-9,13,17,-.3,0,Math.PI*2);context.fill();
+  context.fillStyle="#c4fff1";
+  context.beginPath();context.arc(1,-29,10,0,Math.PI*2);context.fill();
+  context.restore();
+}
+
 function drawLandingEffect() {
   if (state.phase !== "result") return;
   context.save();
@@ -1171,21 +1221,51 @@ function drawLandingEffect() {
 }
 
 function draw() {
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.clearRect(0,0,canvas.width,canvas.height);
   drawBackground();
-  drawMountains();
+  // Far background drifts slower than the bike, making the valley feel deep.
+  context.save();
+  const parallax=-(state.camera.x-canvas.width/2)*.18;
+  context.translate(parallax,0);
+  for(let step=-1;step<=2;step++){
+    context.save();
+    context.translate(step*1000,0);
+    drawMountains();
+    context.restore();
+  }
+  context.restore();
+
+  // Near scenery, ramp, hillside, rider and their shadow share one camera
+  // projection. This is deliberately cosmetic: the physics stays in world
+  // coordinates and the metres shown are never increased by camera zoom.
+  context.save();
+  const camera=state.camera;
+  context.translate(canvas.width/2,canvas.height/2);
+  context.scale(camera.zoom,camera.zoom);
+  context.translate(-camera.x,-camera.y);
   drawSceneryDetails();
+  context.save();
+  context.translate(1000,0);
+  drawSceneryDetails();
+  context.restore();
   drawRamp();
   drawLandingHill();
   drawDistanceMarkers();
   drawFlightTrail();
+  drawShadow();
   drawSpeedLines();
   drawTakeoffBeacon();
+  if(state.impact?.pose && state.phase==="impact" && !prefersReducedMotion()){
+    const shake=state.impact.pose.shake;
+    context.translate(Math.sin(state.impact.elapsed*65)*shake,
+      Math.cos(state.impact.elapsed*44)*shake*.58);
+  }
   drawBike();
   drawLandingEffect();
-  // Phase and level information now live in a sharp DOM HUD, not a tiny
-  // canvas rectangle that gets unreadable on mobile.
+  drawTumblingRider();
+  context.restore();
 }
+
 
 function frame(now) {
   update(now);
