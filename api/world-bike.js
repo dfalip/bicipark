@@ -102,7 +102,7 @@ async function requestOverpass(provider,lat,lng){
       if(Buffer.byteLength(raw,"utf8")>MAX_BODY_BYTES)return {ok:false,code:"UPSTREAM_TOO_LARGE",status:502};
     }
     const body=JSON.parse(raw);
-    if(!Array.isArray(body.elements))return {ok:false,code:"UPSTREAM_INVALID_DATA",status:502};
+    // Overpass can return HTTP 200 with a runtime/error remark and an empty\n    // elements array. Treat it as provider failure, never as verified zero POIs.\n    if(typeof body.remark==="string" && body.remark.trim())\n      return {ok:false,code:"UPSTREAM_REMARK",status:502};\n    if(!Array.isArray(body.elements))return {ok:false,code:"UPSTREAM_INVALID_DATA",status:502};
     return {ok:true,elements:body.elements.slice(0,MAX_ELEMENTS),
       osm3s:body.osm3s&&typeof body.osm3s==="object"?
         {timestamp_osm_base:body.osm3s.timestamp_osm_base}:null,
