@@ -18,6 +18,16 @@ const el={
 };
 let game=newGame(0),lastFrame=null,dragging=false,pointerId=null,previousPhase="aim";
 let noticeAge=0,prevScore=0;
+let previewCacheKey=null,previewCache=null;
+function cachedPrediction(){
+  // Recalculate only when aim or shot changes, not every animation frame.
+  const key=[game.levelIndex,game.shotCount,game.angle.toFixed(1),game.power.toFixed(1)].join("|");
+  if(previewCacheKey!==key){
+    previewCacheKey=key;
+    previewCache=predictShot(game);
+  }
+  return previewCache;
+}
 const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||false;
 const bestKey=index=>`bicipark-roda-rumble-best-${index}-v1`;
 function storedBest(index){
@@ -92,6 +102,7 @@ function syncUI(){
 function reset(index=game.levelIndex){
   game=newGame(index);dragging=false;pointerId=null;previousPhase=game.phase;
   prevScore=0;noticeAge=0;el.notice.hidden=true;
+  previewCacheKey=null;previewCache=null;
   syncUI();draw();
 }
 function announce(){
@@ -238,7 +249,7 @@ function drawAim(){
   ctx.strokeStyle="#744b64";ctx.lineWidth=6;ctx.lineCap="round";
   ctx.beginPath();ctx.moveTo(a.x-29,a.y-24);ctx.lineTo(px,py);
   ctx.lineTo(a.x+20,a.y-35);ctx.stroke();
-  const prediction=predictShot(game);
+  const prediction=cachedPrediction();
   for(let i=1;i<prediction.points.length;i++){
     const point=prediction.points[i];
     ctx.fillStyle=`rgba(255,250,190,${Math.max(.22,.9-i*.017)})`;
