@@ -74,8 +74,8 @@ function updateView() {
   // when the user pans/zooms the map.
   if(!pending&&!locating&&isNewArea()&&ui.status.dataset.kind!=="error"&&ui.status.dataset.kind!=="loading"){
     message(searchedCentre
-      ? "El mapa mostra una zona nova. Els punts visibles són de l'última consulta; prem «Buscar al centre» per actualitzar-los."
-      : "Tria un tipus de servei o prem «Buscar al centre» per consultar aquesta zona.");
+      ? t("mapChanged")
+      : t("choose"));
   }
 }
 function clearVisibleServices(){
@@ -89,7 +89,7 @@ function clearVisibleServices(){
   searchCircle=null;
   ui.resultList.replaceChildren();
   ui.resultCount.textContent=t("noZone");
-  ui.sourceStamp.textContent="Dades pendents · prem «Buscar al centre» o una categoria";
+  ui.sourceStamp.textContent=t("sourcePending");
   hideAlternative();
 }
 async function searchPlace(event){
@@ -98,36 +98,36 @@ async function searchPlace(event){
   const generation=++placeSearchGeneration;
   const name=ui.placeSearchInput.value.trim();
   if(name.length<3){
-    ui.placeSearchStatus.textContent="Escriu almenys tres caràcters.";
+    ui.placeSearchStatus.textContent=t("min3");
     return;
   }
   if(pending){
-    ui.placeSearchStatus.textContent="Espera que acabi la consulta de serveis abans de canviar de zona.";
+    ui.placeSearchStatus.textContent=t("waitServices");
     return;
   }
   if(!map||typeof window.BiciParkGeocoder?.search!=="function"){
-    ui.placeSearchStatus.textContent="El cercador de ciutats no està disponible. Pots moure el mapa manualment.";
+    ui.placeSearchStatus.textContent=t("geocoderUnavailable");
     return;
   }
   ui.placeSearchButton.disabled=true;
   ui.placeSearchResults.replaceChildren();
-  ui.placeSearchStatus.textContent="Buscant llocs...";
+  ui.placeSearchStatus.textContent=t("searchingPlaces");
   try{
     const suggestions=await window.BiciParkGeocoder.search(name);
     // A slow geocoder must never show suggestions for text the user has since changed.
     if(generation!==placeSearchGeneration)return;
     if(ui.placeSearchInput.value.trim()!==name){
-      ui.placeSearchStatus.textContent="La cerca ha canviat. Prem «Cerca ciutat» per actualitzar els resultats.";
+      ui.placeSearchStatus.textContent=t("searchChanged");
       return;
     }
     const places=Array.isArray(suggestions)?suggestions
       .filter(p=>validateCoords(p?.lat,p?.lng)&&typeof p.label==="string"&&p.label.trim())
       .slice(0,5):[];
     if(!places.length){
-      ui.placeSearchStatus.textContent="No s'ha trobat cap lloc. Prova una localitat més concreta.";
+      ui.placeSearchStatus.textContent=t("noPlace");
       return;
     }
-    ui.placeSearchStatus.textContent=`${places.length} llocs trobats. Selecciona'n un per centrar el mapa.`;
+    ui.placeSearchStatus.textContent=t("foundPlaces",{count:places.length});
     for(const place of places){
       const li=document.createElement("li");
       const button=document.createElement("button");
@@ -135,7 +135,7 @@ async function searchPlace(event){
       button.textContent=place.label;
       button.addEventListener("click",()=>{
         if(pending){
-          ui.placeSearchStatus.textContent="Espera que acabi la consulta abans de canviar de zona.";
+          ui.placeSearchStatus.textContent=t("waitSelect");
           return;
         }
         // Selecting an earlier suggestion invalidates any newer in-flight geocoder
@@ -144,9 +144,9 @@ async function searchPlace(event){
         ui.placeSearchButton.disabled=false;
         clearVisibleServices();
         map.setView([place.lat,place.lng],14,{animate:false});
-        ui.placeSearchStatus.textContent=`Mapa centrat a ${place.label}. Tria una categoria per consultar serveis.`;
+        ui.placeSearchStatus.textContent=t("centred",{name:place.label});
         ui.placeSearchResults.replaceChildren();
-        message("Lloc seleccionat. Prem «Buscar al centre» o tria una categoria per carregar dades.");
+        message(t("placeSelected"));
       });
       li.appendChild(button);
       ui.placeSearchResults.appendChild(li);
@@ -154,8 +154,8 @@ async function searchPlace(event){
   }catch(error){
     if(generation!==placeSearchGeneration)return;
     ui.placeSearchStatus.textContent=error?.name==="AbortError"?
-      "La cerca de ciutats ha trigat massa. Prova-ho de nou.":
-      "No s'ha pogut cercar aquesta localitat. Pots moure el mapa manualment.";
+      t("searchTimeout"):
+      t("searchFailed");
   }finally{
     if(generation===placeSearchGeneration)ui.placeSearchButton.disabled=false;
   }
@@ -166,7 +166,7 @@ ui.placeSearchInput.addEventListener("input",()=>{
   placeSearchGeneration++;
   ui.placeSearchResults.replaceChildren();
   ui.placeSearchButton.disabled=false;
-  ui.placeSearchStatus.textContent="La cerca ha canviat. Prem «Cerca ciutat» per actualitzar els resultats.";
+  ui.placeSearchStatus.textContent=t("searchChanged");
 });
 ui.placeSearchForm.addEventListener("submit",searchPlace);
 function createPlannerLink(item){
@@ -194,8 +194,9 @@ function renderResults(){
   ui.resultCount.textContent=searchedCentre?
     t("recordCount",{count:visible.length,limited:mayBeTruncated?t("limited"):""}) : t("none");
   ui.sourceStamp.textContent=searchedCentre?
-    `OpenStreetMap · ${sourceProvider||"font no indicada"} · zona ${coords(searchedCentre)}${sourceTimestamp?" · dades del "+sourceTimestamp.slice(0,10):" · actualització no indicada"}` :
-    "Font: OpenStreetMap · cobertura variable";
+    t("sourceArea",{provider:sourceProvider||"font no indicada",area:coords(searchedCentre),
+      date:sourceTimestamp?t("sourceDate",{date:sourceTimestamp.slice(0,10)}):t("sourceNoDate")}) :
+    t("sourceDefault");
   if(markers)markers.clearLayers();
   if(visible.length===0&&searchedCentre){
     const item=document.createElement("li");
@@ -207,7 +208,9 @@ function renderResults(){
     const category=SERVICE_TYPES[place.type];
     const li=document.createElement("li");
     const heading=document.createElement("strong");
-    heading.textContent=`${category.icon} ${place.name}`;
+    // Translate only synthetic category fallbacks. Preserve real OSM names verbatim.
+    const displayName=place.name===category.label?t(categoryKey[place.type]):place.name;
+    heading.textContent=`${category.icon} ${displayName}`;
     const meta=document.createElement("span");
     meta.textContent=t(categoryKey[place.type])+" · "+t("community");
     const actions=document.createElement("div");
@@ -222,7 +225,7 @@ function renderResults(){
       radius:8,color:"#0b5c46",weight:2,fillColor:"#39bc8f",fillOpacity:.9
     });
     const popup=document.createElement("div");
-    const title=document.createElement("strong");title.textContent=place.name;
+    const title=document.createElement("strong");title.textContent=displayName;
     const type=document.createElement("p");type.textContent=t(categoryKey[place.type])+" · "+t("notVerified");
     popup.append(title,type,createPlannerLink(place),createOsmLink(place));
     marker.bindPopup(popup);
@@ -245,8 +248,8 @@ function applyData(data,location){
   // The user can pan while the request is in flight. Never imply that an old
   // query describes the newly displayed map area after its response arrives.
   if(isNewArea())message(t("newArea"),"info");
-  else if(records.length===0)message("Consulta completada, però sense registres per aquesta zona. Les dades OSM poden ser incompletes.","success");
-  else message(`Consulta completada: ${records.length} registres OSM dins de 900 m (no verificats in situ).`,"success");
+  else if(records.length===0)message(t("emptySuccess"),"success");
+  else message(t("loaded",{count:records.length}),"success");
   hideAlternative();
 }
 async function fetchAroundCenter({alternative=false}={}){
@@ -264,25 +267,25 @@ async function fetchAroundCenter({alternative=false}={}){
   if(!alternative&&cache.has(key)){
     const saved=cache.get(key);
     applyData(saved.data,saved.centre);
-    message("Resultats reutilitzats de la consulta anterior en aquesta zona.");
+    message(t("reused"));
     return;
   }
   const now=Date.now();
   if(now<limitedUntil[providerIndex]){
     // The cooldown isn't the original failure; don't overwrite its diagnosis.
-    if(lastErrorProvider===null)message(`${provider.label}: cal esperar abans de tornar a consultar aquest servidor.`,"error");
+    if(lastErrorProvider===null)message(t("providerPause",{provider:provider.label}),"error");
     return;
   }
   if(now-lastRequestAt[providerIndex]<COOLDOWN_MS){
     // Preserve the actual upstream reason and the alternative-provider action.
-    if(lastErrorProvider===null)message(`${provider.label}: espera uns segons abans de repetir la consulta.`,"error");
+    if(lastErrorProvider===null)message(t("providerCooldown",{provider:provider.label}),"error");
     return;
   }
   lastRequestAt[providerIndex]=now;
   pending=true;
   ui.searchButton.disabled=true;
-  ui.resultCount.textContent="Buscant serveis cartografiats...";
-  message(`Consultant ${provider.label} per a un radi de 900 m...`,"loading");
+  ui.resultCount.textContent=t("loading");
+  message(t("requesting",{provider:provider.label}),"loading");
   const controller=new AbortController();
   const timeout=setTimeout(()=>controller.abort(),16000);
   try{
@@ -325,34 +328,34 @@ async function fetchAroundCenter({alternative=false}={}){
     if(cache.size>CACHE_MAX_ENTRIES)cache.delete(cache.keys().next().value);
     applyData(parsed,queriedCenter);
   }catch(error){
-    ui.resultCount.textContent="No s'han pogut carregar els resultats";
+    ui.resultCount.textContent=t("failedResults");
     if(searchedCentre){
-      ui.sourceStamp.textContent=`Mostrant punts de la consulta anterior (${coords(searchedCentre)}), no de la zona nova.`;
+      ui.sourceStamp.textContent=t("previousArea",{area:coords(searchedCentre)});
     }
     const msg=String(error?.message||"");
     let explanation;
     if(error?.name==="AbortError"){
-      explanation="La consulta ha superat el temps màxim de 16 segons.";
+      explanation=t("timeout");
     }else if(error?.upstreamStatus===406||error?.upstreamStatus===429){
       limitedUntil[providerIndex]=Date.now()+PROVIDER_LIMIT_PAUSE_MS;
-      explanation=`El proveïdor ha limitat la petició (HTTP ${error.upstreamStatus}).`;
+      explanation=t("limitedProvider",{status:error.upstreamStatus});
     }else if(["UPSTREAM_HTTP","UPSTREAM_TIMEOUT","UPSTREAM_NETWORK","UPSTREAM_INVALID_DATA","UPSTREAM_TOO_LARGE"].includes(error?.code)){
-      explanation=`La font de dades no està disponible (${error.code}${error.upstreamStatus?"/ HTTP "+error.upstreamStatus:""}).`;
+      explanation=t("upstreamUnavailable",{reason:error.code+(error.upstreamStatus?"/ HTTP "+error.upstreamStatus:"")});
     }else if(error?.code==="RECENT_FAILURE"){
-      explanation="Aquest servidor continua en pausa després d'un error recent.";
+      explanation=t("recentFailure");
     }else if(error?.httpStatus===404){
-      explanation="El servei intermedi de BiciPark no està disponible (HTTP 404).";
+      explanation=t("missingGateway");
     }else if(error?.code==="INVALID_GATEWAY_RESPONSE"){
-      explanation=`El servei intermedi no ha retornat dades JSON vàlides (HTTP ${error.httpStatus||"desconegut"}).`;
+      explanation=t("malformedGateway",{status:error.httpStatus||"desconegut"});
     }else if(error?.name==="TypeError"){
-      explanation="No s'ha pogut connectar amb el servidor de BiciPark.";
+      explanation=t("disconnected");
     }else{
-      explanation="La resposta del servei no és vàlida o la connexió ha fallat.";
+      explanation=t("invalidResponse");
     }
-    message(`Error de ${provider.label}: ${explanation} Pots provar l'altre servidor una sola vegada, manualment.`,"error");
+    message(t("errorAlternative",{provider:provider.label,explanation}),"error");
     lastErrorProvider=providerIndex;
     ui.alternateProviderButton.hidden=false;
-    ui.alternateProviderButton.textContent=`🔄 Provar ${PROVIDERS[1-providerIndex].label}`;
+    ui.alternateProviderButton.textContent=t("retryNamed",{provider:PROVIDERS[1-providerIndex].label});
   }finally{
     clearTimeout(timeout);
     pending=false;
@@ -383,18 +386,18 @@ ui.alternateProviderButton.addEventListener("click",()=>{
 ui.locateButton.addEventListener("click",()=>{
   if(!map)return;
   if(!navigator.geolocation){
-    message("Aquest navegador no permet accedir al GPS. Mou el mapa i prem «Buscar aquí».");
+    message(t("gpsNotAvailable"));
     return;
   }
   locating=true;
   ui.locateButton.disabled=true;
-  message("Esperant permís del GPS... En confirmar-lo, cercarem serveis a prop teu.");
+  message(t("gpsAwait"));
   navigator.geolocation.getCurrentPosition(position=>{
     locating=false;
     ui.locateButton.disabled=false;
     const lat=position.coords.latitude,lng=position.coords.longitude;
     if(!validateCoords(lat,lng)){
-      message("La ubicació GPS no és vàlida. Mou el mapa manualment.");
+      message(t("gpsInvalid"));
       return;
     }
     map.setView([lat,lng],15,{animate:false});
@@ -403,15 +406,15 @@ ui.locateButton.addEventListener("click",()=>{
   },error=>{
     locating=false;
     ui.locateButton.disabled=false;
-    if(error?.code===1)message("Permís de localització denegat. Pots moure el mapa i prémer «Buscar aquí».");
-    else if(error?.code===3)message("No s'ha pogut obtenir la ubicació a temps. Mou el mapa o torna-ho a provar.");
-    else message("No s'ha pogut obtenir la ubicació. Pots cercar directament al centre del mapa.");
+    if(error?.code===1)message(t("gpsDenied"));
+    else if(error?.code===3)message(t("gpsTimeout"));
+    else message(t("gpsFailed"));
   },{
     enableHighAccuracy:false,maximumAge:60000,timeout:12000
   });
 });
 if(typeof window.L==="undefined"){
-  message("No s'ha pogut carregar el mapa. Revisa la connexió.");
+  message(t("mapUnavailable"));
   ui.searchButton.disabled=true;
   ui.locateButton.disabled=true;
 }else{
@@ -430,7 +433,7 @@ if(typeof window.L==="undefined"){
   map.on("click",event=>{
     if(map.getZoom()<12){
       map.setView(event.latlng,14,{animate:false});
-      message("Zona seleccionada. Tria una categoria o prem «Buscar aquí».");
+      message(t("areaSelected"));
     }
   });
   updateView();
