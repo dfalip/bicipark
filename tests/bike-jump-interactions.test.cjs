@@ -38,12 +38,22 @@ async function setup({storageDenied=false,initialRecord=null}={}){
   const [levels,physics]=await modules;
   window.__levels=levels;
   window.__physics=physics;
-  // Evaluate only local code after replacing the two known static imports.
+  // Browser ESM has native imports; the jsdom fixture executes the equivalent
+  // local modules without network or a bundler.
+  let cinema=text('cinematics.js')
+    .replace(/import\s*\{[^}]*\}\s*from\s*"\.\/physics\.js";/,
+      'const {clamp,getLandingY,normalizeAngle}=window.__physics;')
+    .replace(/^export /gm,'');
+  assert.doesNotMatch(cinema,/\bimport\s*\{/);
+  window.eval(cinema+'\nwindow.__cinematics={landingStory,landingPose,flightReadout,cinematicCamera,easeCamera};');
+  // Evaluate only local code after replacing the three known static imports.
   let js=sourceApp.replace(/^\uFEFF?import\s*\{[\s\S]*?\}\s*from\s*"\.\/levels\.js";/,'const {levels}=window.__levels;');
   js=js.replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/physics\.js";/,'const {clamp,getInrunPosition,getLandingY,getLandingAngle,launchBike,integrateFlight,evaluateLanding}=window.__physics;');
+  js=js.replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/cinematics\.js";/,
+    'const {landingStory,landingPose,flightReadout,cinematicCamera,easeCamera}=window.__cinematics;');
   assert.doesNotMatch(js,/\bimport\s*\{/);
   // Test-only accessor appended to the same evaluated module scope.
-  window.eval(js + '\nwindow.__rotationInputForTest=()=>state.rotationInput;');
+  window.eval(js + '\nwindow.__rotationInputForTest=()=>state.rotationInput;window.__bikeForTest=()=>state.bike;window.__phaseForTest=()=>state.phase;window.__impactForTest=()=>state.impact;');
   const $=id=>window.document.getElementById(id);
   function pointer(el,type){
     const event=new window.Event(type,{bubbles:true,cancelable:true});
@@ -414,4 +424,104 @@ test('All three course definitions have valid geometry and distinct flight physi
     for(let i=0;i<30;i++)physics.integrateFlight({bike:flight,level,deltaSeconds:1/60,rotationInput:0,wind:0});
     assert.ok(Number.isFinite(flight.x)&&Number.isFinite(flight.y));
   }
+});
+
+
+test('A nose-first crash remains visible before the result appears, including a detached rider',async()=>{
+  const h=await setup();
+  try{
+    intoFlight(h);
+    const [l,p]=await modules;const level=l.levels[0];
+    const bike=h.window.__bikeForTest();
+    const ground=p.getLandingY(level,620);
+    bike.x=620;
+    bike.y=ground-5;
+    bike.velocityX=220;
+    bike.velocityY=220;
+    bike.rotation=p.getLandingAngle(level,620)+.85;
+    const at=h.window.performance.now()+3500;
+    h.frame(at);
+    assert.equal(h.window.__phaseForTest(),'impact');
+    assert.equal(h.$('resultPanel').hidden,true,'Do not hide the crash with an instant result modal');
+    assert.equal(h.window.document.body.classList.contains('bike-jump-crashing'),true);
+    assert.match(h.$('phasePill').textContent,/CAIGUDA/);
+    assert.match(h.window.__impactForTest().story.label,/morro/);
+    assert.equal(h.$('flightReadout').hidden,false,'Keep the HUD visible during the collision');
+    h.frame(at+34);
+    const first=h.window.__impactForTest().pose;
+    assert.ok(first.rider&&Number.isFinite(first.rider.y),'Rider must be visibly separated from bicycle');
+    assert.equal(h.$('resultPanel').hidden,true);
+    for(let i=2;i<120;i++){
+      if(h.window.__phaseForTest()==='result')break;
+      h.frame(at+i*34);
+    }
+    assert.equal(h.window.__phaseForTest(),'result');
+    assert.equal(h.$('resultPanel').hidden,false);
+    assert.match(h.$('resultTitle').textContent,/morro/);
+    assert.match(h.$('resultDescription').textContent,/roda davantera/);
+    assert.equal(h.$('jumpStars').textContent,'☆☆☆');
+    assert.equal(h.window.document.body.classList.contains('bike-jump-crashing'),false);
+    assert.equal(h.$('flightReadout').hidden,true);
+    assert.equal(Number(h.$('jumpScoreResult').textContent.replace(/\D/g,'')),h.window.__impactForTest().scores.jumpScore,
+      'Presentation must not change the frozen physical score');
+  }finally{h.dom.window.close();}
+});
+
+test('Rearward crash and hard landing produce distinct physics-driven feedback',async()=>{
+  for(const [delta,expected,kind] of [[-.84,/enrere/,'crash'],[.41,/inestable/,'rough']]){
+    const h=await setup();
+    try{
+      intoFlight(h);
+      const [l,p]=await modules;const level=l.levels[0];
+      const bike=h.window.__bikeForTest();
+      bike.x=650;
+      bike.y=p.getLandingY(level,650)-4;
+      bike.velocityX=210;
+      bike.velocityY=200;
+      bike.rotation=p.getLandingAngle(level,650)+delta;
+      const at=h.window.performance.now()+3400;
+      h.frame(at);
+      assert.equal(h.window.__phaseForTest(),'impact');
+      assert.equal(h.window.__impactForTest().story.kind,kind);
+      for(let i=1;i<100;i++){
+        if(h.window.__phaseForTest()==='result')break;
+        h.frame(at+i*34);
+      }
+      assert.match(h.$('resultTitle').textContent,expected);
+      assert.equal(h.$('resultPanel').hidden,false);
+    }finally{h.dom.window.close();}
+  }
+});
+
+test('Restarting in an impact animation clears all cinematic state',async()=>{
+  const h=await setup();
+  try{
+    intoFlight(h);
+    const [l,p]=await modules;const level=l.levels[0];
+    const bike=h.window.__bikeForTest();
+    bike.x=640;bike.y=p.getLandingY(level,640)-4;bike.velocityY=180;
+    bike.rotation=p.getLandingAngle(level,640)+.88;
+    h.frame(h.window.performance.now()+3500);
+    assert.equal(h.window.__phaseForTest(),'impact');
+    h.$('restartButton').click();
+    assert.equal(h.window.__phaseForTest(),'ready');
+    assert.equal(h.window.__impactForTest(),null);
+    assert.equal(h.window.document.body.classList.contains('bike-jump-impacting'),false);
+    assert.equal(h.$('flightReadout').hidden,true);
+    assert.equal(h.$('resultPanel').hidden,true);
+    assert.match(h.$('phasePill').textContent,/PREPARAT/);
+  }finally{h.dom.window.close();}
+});
+
+test('Cinematic CSS and readout are present and respect reduced-motion',()=>{
+  const html=text('index.html'),css=text('styles.css'),js=text('app.js');
+  for(const id of ['flightReadout','flightDistance','flightClearance','airtimeBanner']){
+    assert.match(html,new RegExp('id="'+id+'"'));
+  }
+  assert.match(css,/\.bike-jump-crashing/);
+  assert.match(css,/\.bike-jump-impacting \.bike-jump-stage-dock/);
+  assert.match(css,/prefers-reduced-motion:reduce/);
+  assert.match(js,/function drawShadow\(/);
+  assert.match(js,/function drawTumblingRider\(/);
+  assert.match(js,/function updateImpact\(/);
 });

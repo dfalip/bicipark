@@ -41,3 +41,15 @@ Abans d'aprovar la qualitat visual final, comprova en Android, Safari i ordinado
 - Formats 320–430 px, 760 px i escriptori; moviment reduït.
 
 La CI no equival a una prova física en dispositiu. Les dades de rendiment i satisfacció reals encara no estan acreditades.
+
+## Cinemàtica 3.1: vol, distància i impactes visibles
+
+- **Càmera**: seguiment horitzontal i vertical interpolat, obertura de camp durant el vol i decoració llunyana amb parallax. El zoom només afecta el dibuix; les dades de distància continuen sortint de la física original (`distanceScale`).
+- **Vol**: línies de velocitat, rodes animades, ombra projectada sobre la pendent amb traç guia, metres de distància i separació **aproximada** en el HUD, i un breu alentiment al punt més alt.
+- **Caigudes**: `landingStory` classifica l'angle real del contacte (morro/enrere); `landingPose` anima rebot/suspensió, bicicleta que gira, pilot separat i partícules. La modal de resultat no es mostra fins que acaba la seqüència d'impacte.
+- **Precisió**: el score i els metres oficials es congelen al primer contacte físic. L'animació posterior, el zoom, l'ombra i el pilot que surt projectat **no** alteren puntuació, física de col·lisió ni rècords.
+- **Usabilitat**: avís «massa aviat / massa tard / sortida perfecta» derivat del mateix `idealTakeoffProgress`, i reinici que neteja tot l'estat de l'animació. `prefers-reduced-motion` elimina el sotrac de càmera i les animacions CSS repetitives.
+
+Arquitectura: `cinematics.js` és un mòdul pur i determinista per als estats visuals; `app.js` integra el dibuix sense modificar les fórmules de punts; `tests/bike-jump-cinematics.test.cjs` i les proves d'interacció cobreixen caigudes, distància i transicions de resultats.
+
+**Limitació explícita:** les escales, la suspensió i els efectes són arcade; no constitueixen un model de dinàmica de bicicletes real. Cal comprovar visualment Chrome Android, Safari iPhone, qualitat del dibuix de les tres pistes, 30–60 fps en dispositius modestos, controls tàctils i llegibilitat abans de considerar el joc visualment acabat.
