@@ -38,12 +38,22 @@ async function setup({storageDenied=false,initialRecord=null}={}){
   const [levels,physics]=await modules;
   window.__levels=levels;
   window.__physics=physics;
-  // Evaluate only local code after replacing the two known static imports.
+  // Browser ESM has native imports; the jsdom fixture executes the equivalent
+  // local modules without network or a bundler.
+  let cinema=text('cinematics.js')
+    .replace(/import\s*\{[^}]*\}\s*from\s*"\.\/physics\.js";/,
+      'const {clamp,getLandingY,normalizeAngle}=window.__physics;')
+    .replace(/^export /gm,'');
+  assert.doesNotMatch(cinema,/\bimport\s*\{/);
+  window.eval(cinema+'\nwindow.__cinematics={landingStory,landingPose,flightReadout,cinematicCamera,easeCamera};');
+  // Evaluate only local code after replacing the three known static imports.
   let js=sourceApp.replace(/^\uFEFF?import\s*\{[\s\S]*?\}\s*from\s*"\.\/levels\.js";/,'const {levels}=window.__levels;');
   js=js.replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/physics\.js";/,'const {clamp,getInrunPosition,getLandingY,getLandingAngle,launchBike,integrateFlight,evaluateLanding}=window.__physics;');
+  js=js.replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/cinematics\.js";/,
+    'const {landingStory,landingPose,flightReadout,cinematicCamera,easeCamera}=window.__cinematics;');
   assert.doesNotMatch(js,/\bimport\s*\{/);
   // Test-only accessor appended to the same evaluated module scope.
-  window.eval(js + '\nwindow.__rotationInputForTest=()=>state.rotationInput;');
+  window.eval(js + '\nwindow.__rotationInputForTest=()=>state.rotationInput;window.__bikeForTest=()=>state.bike;window.__phaseForTest=()=>state.phase;window.__impactForTest=()=>state.impact;');
   const $=id=>window.document.getElementById(id);
   function pointer(el,type){
     const event=new window.Event(type,{bubbles:true,cancelable:true});
