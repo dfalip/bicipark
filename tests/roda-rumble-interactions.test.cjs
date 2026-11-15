@@ -44,7 +44,7 @@ test('Accessible arcade initializes with level, score, target count and ready st
   try{
     assert.equal(h.$('shotsValue').textContent,'4');
     assert.equal(h.$('targetsValue').textContent,'2');
-    assert.equal(h.$('levelSelect').options.length,4);
+    assert.equal(h.$('levelSelect').options.length,6);
     assert.equal(h.$('fireButton').disabled,false);
     assert.equal(h.$('turboButton').disabled,true);
     assert.equal(h.$('resultPanel').hidden,true);
