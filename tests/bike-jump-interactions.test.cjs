@@ -603,3 +603,25 @@ test('Air boost button and progress reserve are accessible and never overlap the
   assert.match(css,/\.bike-jump-air-reserve/);
   assert.match(css,/prefers-reduced-motion:reduce/);
 });
+
+test('Holding the second Space press enters air boost without an extra keypress',async()=>{
+  const h=await setup();
+  try{
+    const launch=h.$('launchButton');
+    const space=(target,type)=>target.dispatchEvent(new h.window.KeyboardEvent(type,
+      {code:'Space',bubbles:true,cancelable:true}));
+    launch.focus();
+    space(launch,'keydown');space(launch,'keyup');
+    const at=h.window.performance.now();
+    h.frame(at+2400);
+    space(launch,'keydown');
+    h.frame(at+2440);
+    assert.equal(h.window.__phaseForTest(),'flight');
+    assert.equal(h.$('airHoldButton').getAttribute('aria-pressed'),'true');
+    assert.equal(h.window.document.activeElement,h.$('airHoldButton'));
+    h.frame(at+2474);
+    assert.ok(h.window.__airForTest().reserve<1);
+    space(h.$('airHoldButton'),'keyup');
+    assert.equal(h.$('airHoldButton').getAttribute('aria-pressed'),'false');
+  }finally{h.dom.window.close();}
+});
