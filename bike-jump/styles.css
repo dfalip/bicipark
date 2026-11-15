@@ -150,3 +150,11 @@ html{scroll-behavior:smooth}
 @media(max-width:1000px){.bike-jump-settings{flex-wrap:wrap}}
 @media(max-width:760px){.bike-jump-play-mode{width:100%}.bike-jump-play-mode button{flex:1 1 auto}}
 @media(max-width:420px){.bike-jump-play-mode button{font-size:.74rem;padding:7px}}
+
+/* Three concise fictional courses, selectable without obscuring gameplay. */
+.bike-jump-course-picker{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-1px 1px 12px;padding:10px 15px;background:rgba(16,48,65,.75);border:1px solid var(--bj-outline);border-radius:14px}
+.bike-jump-course-picker label{font-size:.69rem;font-weight:950;letter-spacing:.11em;color:var(--bj-cyan)}
+.bike-jump-course-picker select{min-height:42px;border-radius:10px;border:1px solid #568c91;background:#123848;color:#f8fffd;font:inherit;font-size:.88rem;font-weight:850;padding:8px 32px 8px 12px;max-width:100%;cursor:pointer}
+.bike-jump-course-picker select:disabled{opacity:.55;cursor:not-allowed}
+.bike-jump-course-picker p{margin:0;color:#b5d8d8;font-size:.76rem;font-weight:650;line-height:1.4}
+@media(max-width:600px){.bike-jump-course-picker{padding:9px;gap:7px}.bike-jump-course-picker select{flex:1;min-width:0;font-size:.78rem}.bike-jump-course-picker p{flex:1 1 100%;font-size:.71rem}}
