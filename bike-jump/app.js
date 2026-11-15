@@ -1498,8 +1498,12 @@ function handleSpaceDown(event) {
   }
   if(event.repeat)return;
   event.preventDefault();
-  if(state.controlMode==="tap")tapAction();
-  else startRun();
+  if(state.controlMode==="tap"){
+    const wasInrun=state.phase==="inrun";
+    tapAction();
+    // Holding the *second* Space press bridges seamlessly into flight.
+    if(wasInrun)airSpaceHeld=true;
+  } else startRun();
 }
 
 function handleSpaceUp(event) {
@@ -1546,8 +1550,11 @@ document.addEventListener("visibilitychange", () => {
 elements.launchButton.addEventListener("keydown", event => {
   if ((event.code === "Space" || event.code === "Enter") && !event.repeat) {
     event.preventDefault();
-    if (state.controlMode === "tap") tapAction();
-    else startRun();
+    if (state.controlMode === "tap") {
+      const wasInrun=state.phase==="inrun";
+      tapAction();
+      if(wasInrun)airSpaceHeld=true;
+    } else startRun();
   }
 });
 elements.launchButton.addEventListener("keyup", event => {
@@ -1559,8 +1566,12 @@ elements.launchButton.addEventListener("keyup", event => {
 elements.launchButton.addEventListener("pointerdown", event => {
   if (event.button != null && event.button !== 0) return;
   event.preventDefault();
-  if (state.controlMode === "tap") tapAction();
-  else {
+  if (state.controlMode === "tap"){
+    const wasInrun=state.phase==="inrun";
+    tapAction();
+    // A long second click spends air reserve only after takeoff.
+    if(wasInrun)activeAirPointers.add(event.pointerId);
+  } else {
     try { elements.launchButton.setPointerCapture(event.pointerId); }
     catch { /* fallback if pointer capture is unavailable */ }
     startRun();
@@ -1568,12 +1579,18 @@ elements.launchButton.addEventListener("pointerdown", event => {
 });
 elements.launchButton.addEventListener("pointerup", event => {
   event.preventDefault();
+  activeAirPointers.delete(event.pointerId);
+  if(state.phase==="flight")updateAirHoldUI();
   if (state.controlMode === "hold") requestLaunch();
 });
-elements.launchButton.addEventListener("pointercancel", () => {
+elements.launchButton.addEventListener("pointercancel", event => {
+  activeAirPointers.delete(event.pointerId);
+  if(state.phase==="flight")updateAirHoldUI();
   if (state.controlMode === "hold") requestLaunch();
 });
-elements.launchButton.addEventListener("lostpointercapture", () => {
+elements.launchButton.addEventListener("lostpointercapture", event => {
+  activeAirPointers.delete(event.pointerId);
+  if(state.phase==="flight")updateAirHoldUI();
   if (state.controlMode === "hold") requestLaunch();
 });
 elements.modeTapButton.addEventListener("click", () => changeControlMode("tap"));
