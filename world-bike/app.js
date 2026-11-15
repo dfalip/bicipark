@@ -376,6 +376,8 @@ filters.forEach(button=>button.addEventListener("click",()=>{
   else renderResults();
 }));
 window.addEventListener("biciparkworldlanguagechange",()=>{
+  // Refresh the visible coordinate label as well as records, without any network request.
+  if(map)updateView();
   // Re-render only local data, without another provider or GPS request.
   if(searchedCentre)renderResults();
   else if(!pending){ui.resultCount.textContent=t("none");ui.sourceStamp.textContent=t("sourceNoteShort");}
