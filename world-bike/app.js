@@ -108,6 +108,11 @@ async function searchPlace(event){
   ui.placeSearchStatus.textContent="Buscant llocs...";
   try{
     const suggestions=await window.BiciParkGeocoder.search(name);
+    // A slow geocoder must never show suggestions for text the user has since changed.
+    if(ui.placeSearchInput.value.trim()!==name){
+      ui.placeSearchStatus.textContent="La cerca ha canviat. Prem «Cerca ciutat» per actualitzar els resultats.";
+      return;
+    }
     const places=Array.isArray(suggestions)?suggestions
       .filter(p=>validateCoords(p?.lat,p?.lng)&&typeof p.label==="string"&&p.label.trim())
       .slice(0,5):[];
