@@ -172,6 +172,59 @@ function explode(g,b){
     if(other!==b && !other.dead && centerDist(other,b)<150)explode(g,other);
   }
 }
+function shockwave(g,x,y,radius=145){
+  g.pulses.push({x,y,radius,elapsed:0,duration:.65});
+  g.shake=Math.max(g.shake,9);
+  sparks(g,x,y,"#98ffed",22);
+  for(const b of g.blocks){
+    if(b.dead)continue;
+    const dx=b.x-x,dy=b.y-y,dist=Math.hypot(dx,dy);
+    const reach=radius+Math.max(b.w,b.h)*.28;
+    if(dist>reach)continue;
+    const intensity=1-clamp(dist/reach,0,1);
+    const impact=58+intensity*180;
+    b.vx+=(dx/(dist||1))*impact/b.mass;
+    b.vy+=(dy/(dist||1))*impact/b.mass-48*intensity;
+    b.spin+=Math.sign(dx||1)*intensity*2.1;
+    damageBlock(g,b,impact*(b.material==="steel"?.55:1.15));
+  }
+  for(const t of g.robots){
+    if(t.dead)continue;
+    const d=Math.hypot(t.x-x,t.y-y);
+    if(d<radius*.54)eliminateRobot(g,t);
+    else if(d<radius){t.vx+=(t.x-x)/(d||1)*190;t.vy-=190;}
+  }
+  for(const b of g.bombs){
+    if(!b.dead&&Math.hypot(b.x-x,b.y-y)<radius*.78)explode(g,b);
+  }
+}
+export function predictShot(g){
+  if(g.phase!=="aim")return {points:[],hit:null};
+  const theta=g.angle*Math.PI/180,velocity=115+g.power*5.1;
+  let x=WORLD.anchor.x,y=WORLD.anchor.y,
+    vx=Math.cos(theta)*velocity,vy=-Math.sin(theta)*velocity;
+  const points=[{x,y}];
+  for(let i=1;i<=250;i++){
+    const dt=1/120;
+    vy+=650*dt;vx*=Math.exp(-.045*dt);
+    x+=vx*dt;y+=vy*dt;
+    if(i%6===0)points.push({x,y});
+    if(x>WORLD.width+20||y>WORLD.ground-18||y<-90)break;
+    const circle={x,y,r:18};
+    let hit=null;
+    for(const b of g.blocks){
+      if(!b.dead && circleBox(circle,b)){hit={x,y,kind:"block",material:b.material};break;}
+    }
+    if(!hit)for(const t of g.robots){
+      if(!t.dead&&Math.hypot(x-t.x,y-t.y)<18+t.r){hit={x,y,kind:"robot"};break;}
+    }
+    if(!hit)for(const b of g.bombs){
+      if(!b.dead&&Math.hypot(x-b.x,y-b.y)<18+b.r){hit={x,y,kind:"bomb"};break;}
+    }
+    if(hit){points.push({x,y});return {points,hit};}
+  }
+  return {points,hit:null};
+}
 function circleBox(p,b){
   const nearestX=clamp(p.x,b.x-b.w/2,b.x+b.w/2);
   const nearestY=clamp(p.y,b.y-b.h/2,b.y+b.h/2);
