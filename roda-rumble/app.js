@@ -1,5 +1,5 @@
 import {WORLD,LEVELS,newGame,setAim,aimFromPointer,fire,turbo,step,nextShot,
-  aliveTargets,starsFor,clamp} from "./engine.js";
+  aliveTargets,starsFor,clamp,SHOT_TYPES,upcomingShot,predictShot} from "./engine.js";
 
 const canvas=document.getElementById("gameCanvas");
 const ctx=canvas.getContext("2d");
@@ -8,14 +8,26 @@ const el={
   shots:$("shotsValue"),targets:$("targetsValue"),score:$("scoreValue"),best:$("bestValue"),
   level:$("levelSelect"),subtitle:$("levelSubtitle"),stageName:$("stageName"),
   phase:$("phaseLabel"),tip:$("stageTip"),notice:$("impactNotice"),status:$("gameStatus"),
-  fire:$("fireButton"),turbo:$("turboButton"),next:$("nextButton"),retry:$("retryButton"),
+  fire:$("fireButton"),turbo:$("turboButton"),next:$("nextButton"),retry:$("retryButton"),sound:$("soundToggle"),
   angle:$("angleInput"),power:$("powerInput"),angleValue:$("angleValue"),
   powerValue:$("powerValue"),result:$("resultPanel"),resultTitle:$("resultTitle"),
   resultDescription:$("resultDescription"),resultIcon:$("resultIcon"),
-  resultKicker:$("resultKicker"),stars:$("resultStars"),resultButton:$("resultButton")
+  resultKicker:$("resultKicker"),stars:$("resultStars"),resultButton:$("resultButton"),
+  wheelCard:$("wheelCard"),wheelIcon:$("wheelIcon"),wheelName:$("wheelName"),
+  wheelHelp:$("wheelHelp"),trajectoryHint:$("trajectoryHint")
 };
 let game=newGame(0),lastFrame=null,dragging=false,pointerId=null,previousPhase="aim";
 let noticeAge=0,prevScore=0;
+let previewCacheKey=null,previewCache=null;
+function cachedPrediction(){
+  // Recalculate only when aim or shot changes, not every animation frame.
+  const key=[game.levelIndex,game.shotCount,game.angle.toFixed(1),game.power.toFixed(1)].join("|");
+  if(previewCacheKey!==key){
+    previewCacheKey=key;
+    previewCache=predictShot(game);
+  }
+  return previewCache;
+}
 const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||false;
 const bestKey=index=>`bicipark-roda-rumble-best-${index}-v1`;
 function storedBest(index){
@@ -26,9 +38,48 @@ function setBest(index,score){
   try{localStorage.setItem(bestKey(index),String(score));}catch{/* private browsing */}
 }
 function format(n){return Math.round(n).toLocaleString("ca-ES");}
+let soundEnabled=false,audioContext=null;
+function sound(kind){
+  // Procedural effects only; no soundtrack or copyrighted audio samples.
+  if(!soundEnabled)return;
+  try{
+    const Audio=window.AudioContext||window.webkitAudioContext;
+    if(!Audio)return;
+    if(!audioContext)audioContext=new Audio();
+    if(audioContext.state==="suspended")audioContext.resume().catch(()=>{});
+    const oscillator=audioContext.createOscillator();
+    const volume=audioContext.createGain();
+    const now=audioContext.currentTime;
+    const duration=kind==="win"?.28:kind==="impact"?.19:.12;
+    const startFrequency=kind==="win"?480:kind==="launch"?240:kind==="ability"?400:145;
+    const endFrequency=kind==="win"?730:kind==="launch"?410:kind==="ability"?125:65;
+    oscillator.type=kind==="impact"?"sawtooth":"triangle";
+    oscillator.frequency.setValueAtTime(startFrequency,now);
+    oscillator.frequency.exponentialRampToValueAtTime(endFrequency,now+duration);
+    volume.gain.setValueAtTime(.0001,now);
+    volume.gain.linearRampToValueAtTime(kind==="impact"?.065:.04,now+.012);
+    volume.gain.exponentialRampToValueAtTime(.0001,now+duration);
+    oscillator.connect(volume);volume.connect(audioContext.destination);
+    oscillator.start(now);oscillator.stop(now+duration+.01);
+  }catch{/* Sound is strictly optional: never break the game. */}
+}
+function fireAction(){
+  if(fire(game))sound("launch");
+  syncUI();
+}
+function specialAction(){
+  if(turbo(game))sound("ability");
+  syncUI();
+}
+
 function currentDescription(){
   if(game.phase==="aim")return "Arrossega la roda enrere i deixa-la anar, o ajusta angle i potència.";
-  if(game.phase==="flying")return game.projectile?.turbo?"Turbo utilitzat. Mira què cau!":"Prem Turbo o Espai una vegada en vol.";
+  if(game.phase==="flying"){
+    if(game.projectile?.turbo)return "Habilitat especial utilitzada. Mira la reacció en cadena!";
+    return game.projectile?.type==="pulse"?"Prem ✦ o Espai prop d'una torre: ona expansiva!":
+      game.projectile?.type==="drill"?"Prem ✦ o Espai: turbo perforador d'acer!":
+      "Prem ✦ o Espai: martell d'impacte!";
+  }
   if(game.phase==="between")return "Tens més rodes! Prepara el següent llançament.";
   if(game.phase==="won")return "Nivell superat! Mira les estrelles i continua.";
   return "Se t'han acabat les rodes. Reintenta el nivell.";
@@ -45,6 +96,18 @@ function syncUI(){
   el.status.textContent=game.notice;
   el.fire.disabled=game.phase!=="aim";
   el.turbo.disabled=game.phase!=="flying"||Boolean(game.projectile?.turbo);
+  const wheel=game.phase==="flying"?SHOT_TYPES.find(w=>w.id===game.projectile?.type):
+    upcomingShot(game);
+  if(wheel){
+    el.wheelCard.style.setProperty("--wheel-color",wheel.color);
+    el.wheelIcon.textContent=wheel.icon;
+    el.wheelName.textContent=wheel.label;
+    el.wheelHelp.textContent=wheel.help;
+    el.turbo.textContent=wheel.id==="pulse"?"✦ ONA EXPANSIVA":
+      wheel.id==="drill"?"◆ TURBO TREPANT":"● TURBO MARTELL";
+  }
+  el.wheelCard.hidden=game.phase==="won"||game.phase==="lost";
+  el.trajectoryHint.hidden=game.phase!=="aim";
   el.next.hidden=game.phase!=="between";
   el.angle.disabled=game.phase!=="aim";
   el.power.disabled=game.phase!=="aim";
@@ -73,16 +136,19 @@ function syncUI(){
 function reset(index=game.levelIndex){
   game=newGame(index);dragging=false;pointerId=null;previousPhase=game.phase;
   prevScore=0;noticeAge=0;el.notice.hidden=true;
+  previewCacheKey=null;previewCache=null;
   syncUI();draw();
 }
 function announce(){
   const phase=game.phase;
   if(game.score>prevScore){
+    sound("impact");
     el.notice.textContent=game.combo>1?"COMBO!":"BOOM!";
     el.notice.hidden=false;noticeAge=.64;
   }
   if(phase!==previousPhase){
     if(phase==="won"){
+      sound("win");
       if(game.score>storedBest(game.levelIndex))setBest(game.levelIndex,game.score);
       el.notice.textContent="NIVELL SUPERAT!";el.notice.hidden=false;noticeAge=1.1;
     }else if(phase==="lost") {
@@ -117,7 +183,7 @@ function release(event){
   event.preventDefault();
   dragging=false;pointerId=null;
   if(event.type==="pointercancel"){syncUI();return;}
-  fire(game);syncUI();
+  fireAction();
 }
 canvas.addEventListener("pointerdown",grab);
 canvas.addEventListener("pointermove",move);
@@ -126,10 +192,16 @@ canvas.addEventListener("pointercancel",release);
 canvas.addEventListener("lostpointercapture",event=>{
   if(dragging&&event.pointerId===pointerId){dragging=false;pointerId=null;syncUI();}
 });
-el.fire.addEventListener("click",()=>{fire(game);syncUI();});
-el.turbo.addEventListener("click",()=>{turbo(game);syncUI();});
+el.fire.addEventListener("click",fireAction);
+el.turbo.addEventListener("click",specialAction);
 el.next.addEventListener("click",()=>{nextShot(game);syncUI();});
 el.retry.addEventListener("click",()=>reset());
+el.sound.addEventListener("click",()=>{
+  soundEnabled=!soundEnabled;
+  el.sound.setAttribute("aria-pressed",String(soundEnabled));
+  el.sound.textContent=soundEnabled?"🔊 SO ACTIVAT":"🔇 SO DESACTIVAT";
+  if(soundEnabled)sound("ability");
+});
 el.level.addEventListener("change",()=>reset(Number(el.level.value)));
 el.angle.addEventListener("input",()=>{setAim(game,Number(el.angle.value),game.power);syncUI();});
 el.power.addEventListener("input",()=>{setAim(game,game.angle,Number(el.power.value));syncUI();});
@@ -144,8 +216,8 @@ window.addEventListener("keydown",event=>{
     if(event.code==="ArrowDown")setAim(game,game.angle-2,game.power);
     if(event.code==="ArrowRight")setAim(game,game.angle,game.power+3);
     if(event.code==="ArrowLeft")setAim(game,game.angle,game.power-3);
-    if(event.code==="Space"&&!event.repeat)fire(game);
-  }else if(game.phase==="flying"&&event.code==="Space"&&!event.repeat)turbo(game);
+    if(event.code==="Space"&&!event.repeat)fireAction();
+  }else if(game.phase==="flying"&&event.code==="Space"&&!event.repeat)specialAction();
   else if(game.phase==="between"&&event.code==="Space"&&!event.repeat)nextShot(game);
   else if((game.phase==="won"||game.phase==="lost")&&event.code==="Space"&&!event.repeat)
     reset(game.phase==="won"&&game.levelIndex<LEVELS.length-1?game.levelIndex+1:game.levelIndex);
@@ -219,23 +291,29 @@ function drawAim(){
   ctx.strokeStyle="#744b64";ctx.lineWidth=6;ctx.lineCap="round";
   ctx.beginPath();ctx.moveTo(a.x-29,a.y-24);ctx.lineTo(px,py);
   ctx.lineTo(a.x+20,a.y-35);ctx.stroke();
-  for(let i=1;i<=23;i++){
-    const t=i*.09;
-    const x=a.x+Math.cos(theta)*force*t;
-    const y=a.y-Math.sin(theta)*force*t+.5*650*t*t;
-    if(x>995||y>WORLD.ground-10)break;
-    ctx.fillStyle=`rgba(255,250,190,${.78-i*.026})`;
-    ctx.beginPath();ctx.arc(x,y,Math.max(2,6-i*.12),0,Math.PI*2);ctx.fill();
+  const prediction=cachedPrediction();
+  for(let i=1;i<prediction.points.length;i++){
+    const point=prediction.points[i];
+    ctx.fillStyle=`rgba(255,250,190,${Math.max(.22,.9-i*.017)})`;
+    ctx.beginPath();ctx.arc(point.x,point.y,Math.max(2,5-i*.06),0,Math.PI*2);ctx.fill();
   }
-  drawWheel(px,py,-theta,.95);
+  if(prediction.hit){
+    const {x,y,kind}=prediction.hit;
+    ctx.strokeStyle=kind==="bomb"?"#fa6043":kind==="robot"?"#f0fd55":"#e9f8ef";
+    ctx.lineWidth=4;ctx.beginPath();ctx.arc(x,y,18,0,Math.PI*2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x-24,y);ctx.lineTo(x+24,y);
+    ctx.moveTo(x,y-24);ctx.lineTo(x,y+24);ctx.stroke();
+  }
+  drawWheel(px,py,-theta,.95,upcomingShot(game).id);
   ctx.fillStyle="#123a50";ctx.font="900 15px system-ui";ctx.textAlign="center";
   ctx.fillText(`${Math.round(game.angle)}° · ${Math.round(game.power)}%`,a.x+90,a.y-92);
   ctx.restore();
 }
-function drawWheel(x,y,rotation=0,size=1){
+function drawWheel(x,y,rotation=0,size=1,type="impact"){
   ctx.save();ctx.translate(x,y);ctx.rotate(rotation);ctx.scale(size,size);
   ctx.fillStyle="#182f44";ctx.beginPath();ctx.arc(0,0,19,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle="#9ee6ed";ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,14,0,Math.PI*2);ctx.stroke();
+  const wheelColor=SHOT_TYPES.find(kind=>kind.id===type)?.color||"#9ee6ed";
+  ctx.strokeStyle=wheelColor;ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,14,0,Math.PI*2);ctx.stroke();
   ctx.strokeStyle="#d3ffe2";ctx.lineWidth=2;
   for(let i=0;i<8;i++){let a=i*Math.PI/4;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(a)*13,Math.sin(a)*13);ctx.stroke();}
   ctx.fillStyle="#f9e868";ctx.beginPath();ctx.arc(0,0,6,0,Math.PI*2);ctx.fill();
@@ -281,6 +359,20 @@ function drawBomb(b){
   ctx.fillStyle="#ffee9b";ctx.font="1000 18px system-ui";ctx.textAlign="center";ctx.fillText("✶",0,7);
   ctx.strokeStyle="#ffe0a8";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(-12,-8);ctx.lineTo(12,-8);ctx.stroke();ctx.restore();
 }
+function drawShockwaves(){
+  for(const ring of game.pulses){
+    const t=clamp(ring.elapsed/ring.duration,0,1);
+    ctx.save();
+    ctx.strokeStyle=`rgba(139,255,228,${1-t})`;
+    ctx.lineWidth=(1-t)*8+2;
+    ctx.beginPath();
+    ctx.arc(ring.x,ring.y,ring.radius*(.13+.87*t),0,Math.PI*2);
+    ctx.stroke();
+    ctx.fillStyle=`rgba(132,250,234,${.2*(1-t)})`;
+    ctx.beginPath();ctx.arc(ring.x,ring.y,ring.radius*(.13+.87*t),0,Math.PI*2);ctx.fill();
+    ctx.restore();
+  }
+}
 function drawDebris(){
   for(const d of game.debris){
     ctx.save();ctx.globalAlpha=clamp(d.life/d.maxLife,0,1);
@@ -298,10 +390,11 @@ function draw(){
   for(const b of game.blocks){if(!b.dead)drawBlock(b);}
   for(const b of game.bombs){if(!b.dead)drawBomb(b);}
   for(const r of game.robots){if(!r.dead)drawRobot(r);}
+  drawShockwaves();
   drawSling();
   drawAim();
   const p=game.projectile;
-  if(p&&p.active)drawWheel(p.x,p.y,p.angle);
+  if(p&&p.active)drawWheel(p.x,p.y,p.angle,1,p.type);
   drawDebris();
   if(game.phase==="won"&&!reducedMotion){
     const t=game.celebration;
