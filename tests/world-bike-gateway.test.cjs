@@ -212,3 +212,18 @@ test('World gateway caps concurrent distinct upstream calls per instance and per
     assert.equal((await next).statusCode,200);
   }finally{global.fetch=previous;}
 });
+
+
+test('World gateway rejects Overpass HTTP 200 runtime remarks instead of showing zero POIs',async()=>{
+  const previous=global.fetch;
+  try{
+    global.fetch=async()=>({ok:true,status:200,headers:{get:()=>null},text:async()=>JSON.stringify({
+      remark:'runtime error: Query timed out',elements:[]
+    })});
+    const res=await invoke('/api/world-bike?lat=48.857&lng=2.352');
+    assert.equal(res.statusCode,503);
+    assert.equal(res.data.ok,false);
+    assert.equal(res.data.code,'UPSTREAM_REMARK');
+    assert.equal(res.headers['cache-control'],'no-store');
+  }finally{global.fetch=previous;}
+});
