@@ -12,9 +12,16 @@ const modules=Promise.all(['levels.js','physics.js'].map(file=>
   import('data:text/javascript;base64,'+Buffer.from(text(file)).toString('base64'))
 ));
 
-async function setup(){
+async function setup({storageDenied=false,initialRecord=null}={}){
   const dom=new JSDOM(text('index.html'),{url:'https://bicipark.com/bike-jump/',runScripts:'outside-only',pretendToBeVisual:true});
   const {window}=dom;
+  if(storageDenied){
+    Object.defineProperty(window,'localStorage',{
+      configurable:true,get(){throw new Error('SecurityError: storage disabled');}
+    });
+  }else if(initialRecord!==null){
+    window.localStorage.setItem('bicipark-bike-jump-high-score-v1',String(initialRecord));
+  }
   const fakeGradient={addColorStop(){}};
   const ctx=new Proxy({},{
     get(target,key){
@@ -285,4 +292,50 @@ test('Space/Enter on focused steering buttons and blur are balanced',async()=>{
     dispatchKey(h,'Enter','keyup',button);
     assert.equal(input(),0);
   }finally{h.dom.window.close();}
+});
+
+
+test('Canvas presents a meaningful accessible alternative without hiding game controls',()=>{
+  const html=text('index.html');
+  const m=html.match(/<canvas\b([^>]*)>([\s\S]*?)<\/canvas>/i);
+  assert.ok(m,'Accessible canvas exists');
+  assert.match(m[1],/role="img"/);
+  assert.match(m[1],/aria-label="[^"]+"/);
+  assert.match(m[1],/aria-describedby="statusText controlHelp"/);
+  assert.match(m[2],/Utilitza el botó/);
+  assert.match(html,/id="statusText" aria-live="polite"/);
+  assert.match(html,/id="controlHelp"/);
+  assert.match(html,/id="resultPanel"/);
+});
+
+test('Scores remain playable and visible when browser storage throws on every access',async()=>{
+  const h=await setup({storageDenied:true});
+  try{
+    assert.equal(h.$('highScoreValue').textContent,'0');
+    playFullJump(h);
+    assert.equal(h.$('resultPanel').hidden,false);
+    assert.equal(h.$('highScoreValue').textContent,h.$('totalScoreValue').textContent);
+    h.$('nextAttemptButton').click();
+    assert.equal(h.$('attemptValue').textContent,'2 / 3');
+    h.$('restartButton').click();
+    assert.equal(h.$('attemptValue').textContent,'1 / 3');
+  }finally{h.dom.window.close();}
+});
+
+test('Invalid saved records do not corrupt displayed scores',async()=>{
+  for(const value of ['NaN','-5','Infinity']){
+    const h=await setup({initialRecord:value});
+    try{
+      assert.equal(h.$('highScoreValue').textContent,'0');
+    }finally{h.dom.window.close();}
+  }
+  const valid=await setup({initialRecord:'777'});
+  try{
+    assert.equal(valid.$('highScoreValue').textContent,'777');
+    valid.$('practiceModeButton').click();
+    playFullJump(valid);
+    assert.equal(valid.$('highScoreValue').textContent,'777',
+      'Practice never overwrites an existing valid record');
+    assert.equal(valid.window.localStorage.getItem('bicipark-bike-jump-high-score-v1'),'777');
+  }finally{valid.dom.window.close();}
 });
