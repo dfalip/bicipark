@@ -114,6 +114,48 @@ test('Initial search works at world zoom; category button loads OSM data then fi
   }finally{h.dom.window.close();}
 });
 
+test('Changing a category during an in-flight query keeps loading and shows selected results',async()=>{
+  const h=await setup();
+  try{
+    h.map.setView([41.39,2.17],15);
+    let finish;
+    let calls=0;
+    h.window.fetch=()=>{calls++;return new Promise(resolve=>{finish=resolve;});};
+    const $=id=>h.window.document.getElementById(id);
+    h.window.document.querySelector('[data-type="bicycle_parking"]').click();
+    assert.equal(calls,1);
+    assert.match($('resultCount').textContent,/Buscant serveis/);
+    h.window.document.querySelector('[data-type="drinking_water"]').click();
+    assert.equal(calls,1,'Switching filters must never duplicate a pending provider query');
+    assert.match($('resultCount').textContent,/Buscant serveis/,'Do not replace loading with empty state');
+    assert.equal($('status').dataset.kind,'loading');
+    finish({ok:true,status:200,json:async()=>({...sampleData,ok:true})});
+    await h.flush();
+    assert.match($('resultCount').textContent,/1 registres/);
+    assert.match($('resultList').textContent,/Aigua potable/);
+    assert.equal(h.window.document.querySelector('[data-type="drinking_water"]').getAttribute('aria-pressed'),'true');
+  }finally{h.dom.window.close();}
+});
+
+test('A late area response is clearly marked stale when the map moved before completion',async()=>{
+  const h=await setup();
+  try{
+    h.map.setView([41.39,2.17],15);
+    let finish;
+    h.window.fetch=()=>new Promise(resolve=>{finish=resolve;});
+    const $=id=>h.window.document.getElementById(id);
+    $('searchButton').click();
+    assert.equal($('status').dataset.kind,'loading');
+    h.map.setView([48.857,2.352],15);
+    finish({ok:true,status:200,json:async()=>({...sampleData,ok:true})});
+    await h.flush();
+    assert.match($('status').textContent,/zona anterior/);
+    assert.match($('status').textContent,/zona nova/);
+    assert.doesNotMatch($('status').textContent,/Consulta completada: 2 registres/);
+    assert.match($('sourceStamp').textContent,/41,39/,'Result source remains the actual queried centre');
+  }finally{h.dom.window.close();}
+});
+
 test('GPS action explicitly searches nearby after user permits geolocation',async()=>{
   const h=await setup({withGPS:true});
   try{
