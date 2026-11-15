@@ -373,3 +373,28 @@ test('Editing a city search clears existing choices and invalidates a pending re
     assert.equal($('placeSearchButton').disabled,false);
   }finally{h.dom.window.close();}
 });
+
+test('Selecting a city invalidates an overlapping geocoder request',async()=>{
+  const h=await setup();
+  try{
+    const $=id=>h.window.document.getElementById(id);
+    $('placeSearchInput').value='Amsterdam';
+    $('placeSearchForm').dispatchEvent(new h.window.Event('submit',{cancelable:true}));
+    await h.flush();
+    const original=$('placeSearchResults').querySelector('button');
+    assert.ok(original);
+    let finish;
+    h.window.BiciParkGeocoder.search=()=>new Promise(resolve=>{finish=resolve;});
+    $('placeSearchInput').value='Paris';
+    $('placeSearchForm').dispatchEvent(new h.window.Event('submit',{cancelable:true}));
+    original.click();
+    assert.match($('placeSearchStatus').textContent,/Mapa centrat a Amsterdam/);
+    finish([{lat:48.8566,lng:2.3522,label:'Paris'}]);
+    await h.flush();
+    assert.equal($('placeSearchResults').children.length,0,
+      'Late Paris results cannot replace the selected Amsterdam city');
+    assert.match($('placeSearchStatus').textContent,/Mapa centrat a Amsterdam/);
+    assert.equal($('placeSearchButton').disabled,false);
+    assert.equal(h.fetchCount,0,'No implicit Overpass requests');
+  }finally{h.dom.window.close();}
+});
