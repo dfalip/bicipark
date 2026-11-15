@@ -223,6 +223,11 @@ function updateRunProgress() {
   elements.runProgressValue.textContent = `${percent}%`;
   elements.runProgressBar.style.width = `${percent}%`;
   elements.runProgressTrack.setAttribute("aria-valuenow", String(percent));
+  // Announce the timing cue to screen-reader players without creating a live region per frame.
+  const inTakeoffZone = state.runProgress >= level.idealTakeoffProgress - 0.05
+    && state.runProgress <= level.idealTakeoffProgress + 0.05;
+  elements.runProgressTrack.setAttribute("aria-valuetext",
+    inTakeoffZone ? `${percent}%. Zona òptima: salta ara!` : `${percent}% del trampolí`);
 }
 
 function resetAttempt() {

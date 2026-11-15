@@ -415,3 +415,18 @@ test('All three course definitions have valid geometry and distinct flight physi
     assert.ok(Number.isFinite(flight.x)&&Number.isFinite(flight.y));
   }
 });
+
+
+test('Takeoff progress exposes a non-live accessible timing cue',async()=>{
+  const h=await setup();
+  try{
+    const meter=h.$('runProgressTrack');
+    assert.equal(meter.getAttribute('aria-valuenow'),'0');
+    assert.match(meter.getAttribute('aria-valuetext'),/0% del trampolí/);
+    const base=h.window.performance.now();
+    h.pointer(h.$('launchButton'),'pointerdown');
+    h.frame(base+2570);
+    assert.match(meter.getAttribute('aria-valuetext'),/Zona òptima: salta ara!/);
+    assert.equal(meter.hasAttribute('aria-live'),false,'Progress must not announce every frame');
+  }finally{h.dom.window.close();}
+});
