@@ -11,7 +11,7 @@ test('Four different downhill tracks have progressively more slalom and wildlife
  for(let i=0;i<4;i++){
   const c=e.makeCourse(i),repeat=e.makeCourse(i);
   assert.deepEqual(c,repeat,'course generation must be deterministic');
-  assert.equal(c.gates.length,c.gates);assert.equal(c.animals.length,c.animals);
+  assert.equal(c.gates.length,e.COURSES[i].gates);assert.equal(c.animals.length,e.COURSES[i].animals);
   assert.ok(c.gates.length>=9&&c.animals.length>=9);
   assert.ok(c.gates.every(x=>x.at>0&&x.at<c.length));
   assert.ok(c.animals.every(x=>x.at>0&&x.at<c.length));
