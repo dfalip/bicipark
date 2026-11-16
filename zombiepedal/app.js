@@ -1,4 +1,4 @@
-import {WORLD,ZONES,clamp,makeGame,start,togglePause,jump,fire,step} from "./engine.js";
+import {WORLD,ZONES,clamp,makeGame,start,togglePause,jump,fire,dash,step} from "./engine.js";
 const $=id=>document.getElementById(id);
 const canvas=$("gameCanvas"),ctx=canvas.getContext("2d");
 const ui={score:$("scoreValue"),speed:$("speedValue"),distance:$("distanceValue"),
@@ -10,9 +10,9 @@ const ui={score:$("scoreValue"),speed:$("speedValue"),distance:$("distanceValue"
  ready:$("readyPanel"),finish:$("finishPanel"),lost:$("lostPanel"),
  pause:$("pausePanel"),finishStars:$("finishStars"),
  finishSummary:$("finishSummary"),lostReason:$("lostReason"),
- zones:$("zoneList"),flash:$("impactFlash")};
+ zones:$("zoneList"),flash:$("impactFlash"),dash:$("dashValue")};
 const touch={pedal:$("pedalButton"),brake:$("brakeButton"),
- jump:$("jumpButton"),paint:$("paintButton")};
+ jump:$("jumpButton"),paint:$("paintButton"),dash:$("dashButton")};
 const RECORD="bicipark-zombiepedal-best-v1";
 function loadBest(){
  try{const value=JSON.parse(localStorage.getItem(RECORD)||"null");
@@ -57,6 +57,17 @@ function eventEffects(event){
   ui.notice.classList.add("notice--damage");
   document.querySelector(".stage")?.classList.add("is-hit");
   ui.hearts.parentElement?.classList.add("is-damaged");
+ }else if(type==="dash"){
+  fx.flash=.22;fx.color="#a7fce6";
+  burst(242,road-45,"#9defff",37,1.6);
+  fx.circles.push({x:242,y:road-46,r:19,life:.65,color:"#a5f9ef"});
+  textSplash("ESPRINT!",265,road-150,"#e2fff2");
+  ui.notice.classList.add("notice--reward");
+ }else if(type==="dash-dodge"){
+  burst(242,road-65,"#ffff9c",48,1.4);
+  textSplash("ESPRINT! +"+event.points,295,road-161,"#fff7b0");
+  fx.circles.push({x:242,y:road-65,r:24,life:.7,color:"#f4ffaf"});
+  ui.notice.classList.add("notice--reward");
  }else if(type==="paint-shot"){
   burst(273,road-73-game.altitude,"#ffe39a",12,.9);
   fx.circles.push({x:284,y:road-71-game.altitude,r:8,life:.29,color:"#fff6b2"});
@@ -180,14 +191,16 @@ function refresh(){
  ui.ammo.textContent=`${game.ammo} / ${game.maxAmmo}`;
  ui.hearts.textContent="♥ ".repeat(game.hearts).trim()||"0";
  ui.combo.textContent="×"+game.combo;
+ ui.dash.textContent=game.dashCharges+" / "+game.maxDashCharges+(game.dashTime>0?" ⚡":"");
  ui.zone.textContent=ZONES[game.zone].name.toUpperCase();
- ui.phase.textContent=({ready:"PREPARAT",running:"FUGINT",paused:"PAUSA",finished:"ESCAPAT",lost:"CAPTURAT"})[game.phase];
+ ui.phase.textContent=({ready:"PREPARAT",running:game.dashTime>0?"⚡ ESPRINT":"FUGINT",paused:"PAUSA",finished:"ESCAPAT",lost:"CAPTURAT"})[game.phase];
  const pct=Math.round(game.distance/WORLD.length*100);
  ui.progress.style.width=pct+"%";ui.progressLabel.textContent=pct+"%";
  ui.journey.style.width=pct+"%";ui.journeyValue.textContent=pct+"%";
  ui.horde.style.width=game.horde+"%";ui.hordeValue.textContent=Math.round(game.horde)+"%";
  ui.record.textContent=best?`MILLOR PUNTUACIÓ: ${best.score.toLocaleString("ca-ES")} · ${best.distance} m`:"MILLOR PUNTUACIÓ: —";
  touch.paint.disabled=game.phase!=="running"||game.ammo===0||game.fireCooldown>0;
+ touch.dash.disabled=game.phase!=="running"||game.dashCharges<1||game.dashTime>0||game.stagger>0;
 }
 function reset(){
  game=makeGame();lastFrame=null;lastEvent="";lastPhase="ready";noticeLeft=0;
@@ -208,7 +221,7 @@ function validKeyTarget(event){
  return !(event.target instanceof HTMLElement&&["BUTTON","INPUT","TEXTAREA","SELECT","A"].includes(event.target.tagName));
 }
 document.addEventListener("keydown",event=>{
- if(!["ArrowRight","ArrowLeft","ArrowUp","KeyD","KeyA","KeyW","Space","KeyX","KeyF","KeyP"].includes(event.code))return;
+ if(!["ArrowRight","ArrowLeft","ArrowUp","KeyD","KeyA","KeyW","Space","KeyX","KeyF","KeyC","KeyP"].includes(event.code))return;
  if(!validKeyTarget(event))return;
  event.preventDefault();
  if(event.code==="KeyP"&&!event.repeat){pauseGame();return;}
@@ -216,6 +229,7 @@ document.addEventListener("keydown",event=>{
  keys.add(event.code);
  if(!event.repeat&&["Space","ArrowUp","KeyW"].includes(event.code))jump(game);
  if(!event.repeat&&["KeyX","KeyF"].includes(event.code))fire(game);
+ if(event.code==="KeyC"&&!event.repeat)dash(game);
 });
 document.addEventListener("keyup",event=>{if(keys.delete(event.code))event.preventDefault();});
 function held(action){
@@ -231,6 +245,14 @@ for(const [action,button] of Object.entries(touch)){
   try{button.setPointerCapture(event.pointerId);}catch{/* browser support */}
   if(action==="jump")jump(game);
   if(action==="paint")fire(game);
+  if(action==="dash")dash(game);
+ });
+ button.addEventListener("click",event=>{
+  if(event.detail!==0)return; // Pointer actions already run on pointerdown.
+  if(game.phase==="ready")launch();
+  if(action==="jump")jump(game);
+  if(action==="paint")fire(game);
+  if(action==="dash")dash(game);
  });
  const release=event=>{
   if(pointers.get(event.pointerId)!==action)return;
@@ -279,7 +301,7 @@ function feedback(dt){
   if(game.phase==="finished"){
    persist();ui.finish.hidden=false;
    ui.finishStars.textContent="★".repeat(game.finishStars)+"☆".repeat(3-game.finishStars);
-   ui.finishSummary.textContent=`${Math.round(game.distance)} m · ${Math.round(game.time)} s · ${game.stuns} zombis frenats · ${game.dodges} esquivats · combo màxim ×${game.bestCombo} · ${Math.round(game.score).toLocaleString("ca-ES")} punts.`;
+   ui.finishSummary.textContent=`${Math.round(game.distance)} m · ${Math.round(game.time)} s · ${game.stuns} zombis frenats · ${game.dodges} esquivats · ${game.dashDodges} amb esprint · combo màxim ×${game.bestCombo} · ${Math.round(game.score).toLocaleString("ca-ES")} punts.`;
   }else if(game.phase==="lost"){
    persist();ui.lost.hidden=false;ui.lostReason.textContent=game.gameOverReason;
   }
@@ -479,6 +501,20 @@ function drawCityRush(){
   ctx.fillRect(x,463,34+game.speed*.6,3);
  }
 }
+function drawDashTrail(){
+ if(game.dashTime<=0)return;
+ const x=242,y=WORLD.roadY-game.altitude;
+ ctx.save();ctx.globalAlpha=Math.min(.75,.25+game.dashTime*.8);
+ for(let i=0;i<15;i++){
+  const yy=y-15-(i*23%177),dx=i*17+game.time*37%90;
+  ctx.strokeStyle=i%3===0?"#fff8a8":"#8cf1ec";
+  ctx.lineWidth=2+i%3;
+  ctx.beginPath();ctx.moveTo(x-50-dx,yy);ctx.lineTo(x-150-dx,yy+6);ctx.stroke();
+ }
+ ctx.strokeStyle="#fff5a3";ctx.lineWidth=4;ctx.beginPath();
+ ctx.ellipse(x,y-72,79,106,0,0,Math.PI*2);ctx.stroke();
+ ctx.restore();
+}
 function drawCyclist(){
  const x=242,y=WORLD.roadY-game.altitude;
  // Four pre-illustrated pedal poses, animated by actual game cadence.
@@ -600,7 +636,7 @@ function paint(){
   ctx.translate(Math.sin(fx.clock*79)*fx.shake,Math.cos(fx.clock*103)*fx.shake*.5);
  drawBackground();drawCityRush();
  for(const enemy of game.enemies)drawObstacle(enemy);
- drawPickups();drawPaintballs();drawCyclist();drawFx();
+ drawPickups();drawPaintballs();drawDashTrail();drawCyclist();drawFx();
  ctx.restore();
  ctx.fillStyle="#102f3bc9";ctx.fillRect(0,510,960,30);
  ctx.textAlign="left";ctx.font="900 14px system-ui";ctx.fillStyle="#ecffe0";
