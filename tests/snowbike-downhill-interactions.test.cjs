@@ -170,6 +170,7 @@ test('360 trick timing works with touch and updates the visible skill hint',()=>
   assert.match(h.$('styleValue').textContent,/K|360/);
   h.pointer('trickButton','pointerdown',17);
   assert.equal(g.trickUsed,true);
+  h.frame(27*16);
   assert.equal(h.$('trickButton').getAttribute('aria-disabled'),'true');
   h.pointer('trickButton','pointerup',17);
   for(let i=27;i<90;i++)h.frame(i*16);
