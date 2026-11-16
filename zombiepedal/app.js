@@ -323,33 +323,93 @@ function drawObstacle(enemy){
  if(x<-100||x>1080)return;
  ctx.save();ctx.translate(x,y);
  if(enemy.type==="barrier"){
-  ctx.fillStyle="#f3aa72";ctx.beginPath();ctx.moveTo(0,-46);ctx.lineTo(-19,0);ctx.lineTo(19,0);ctx.closePath();ctx.fill();
-  ctx.fillStyle="#fff9ca";ctx.fillRect(-10,-23,20,7);
-  ctx.fillStyle="#de6f53";ctx.fillRect(-27,-5,54,9);ctx.restore();return;
+  // A tangible roadside barricade, with cast shadow and reflective panels.
+  ctx.fillStyle="#0c253760";ctx.beginPath();ctx.ellipse(3,4,34,8,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#e59a56";ctx.beginPath();ctx.moveTo(0,-50);ctx.lineTo(-19,-1);ctx.lineTo(20,-1);ctx.closePath();ctx.fill();
+  ctx.fillStyle="#fff0c4";ctx.fillRect(-13,-24,26,8);
+  ctx.fillStyle="#d36243";ctx.fillRect(-30,-7,60,8);
+  ctx.strokeStyle="#ffdf91";ctx.lineWidth=2;ctx.strokeRect(-28,-7,56,7);
+  ctx.restore();return;
  }
  const size=enemy.type==="big"?1.35:enemy.type==="runner"?.93:1;
+ const pace=enemy.type==="runner"?17:enemy.type==="big"?7:10;
+ const stride=enemy.stunned?0:Math.sin(game.time*pace+enemy.id*.82);
+ const lurch=enemy.stunned?.35:Math.sin(game.time*pace*.5+enemy.id)*.065;
  ctx.scale(size,size);
- if(enemy.stunned){ctx.globalAlpha=.78;ctx.translate(0,8+Math.sin(fx.clock*14)*3);}
- ctx.fillStyle="#162f3f75";ctx.beginPath();ctx.ellipse(0,3,24,7,0,0,Math.PI*2);ctx.fill();
- const swing=Math.sin(game.time*11+enemy.id)*5;
- ctx.strokeStyle="#294447";ctx.lineWidth=6;ctx.lineCap="round";
- ctx.beginPath();ctx.moveTo(-7,-24);ctx.lineTo(-9+swing,-3);
- ctx.moveTo(8,-24);ctx.lineTo(12-swing,-3);ctx.stroke();
- ctx.fillStyle=enemy.type==="helmet"?"#71648b":enemy.type==="runner"?"#b47757":"#5e9c73";
- ctx.fillRect(-14,-61,28,37);
- ctx.strokeStyle="#57835f";ctx.lineWidth=6;ctx.beginPath();
- ctx.moveTo(-12,-51);ctx.lineTo(-25,-37+swing);
- ctx.moveTo(12,-51);ctx.lineTo(24,-39-swing);ctx.stroke();
- ctx.fillStyle="#8abda0";ctx.beginPath();ctx.arc(0,-75,17,0,Math.PI*2);ctx.fill();
- if(enemy.type==="helmet"){ctx.fillStyle="#57637f";ctx.beginPath();ctx.arc(0,-81,20,Math.PI,Math.PI*2);ctx.fill();}
- ctx.fillStyle="#244641";ctx.fillRect(-9,-78,6,4);ctx.fillRect(5,-78,6,4);
+ ctx.translate(0,enemy.stunned?8+Math.sin(fx.clock*14)*2:0);
+ ctx.rotate(enemy.stunned?.27:lurch);
+ ctx.fillStyle="#091c2a7d";ctx.beginPath();ctx.ellipse(0,4,25,7,0,0,Math.PI*2);ctx.fill();
+ // Bent knees, boots, and ripped trousers move in opposition.
+ for(const side of [-1,1]){
+  const kneeX=side*11+stride*side*5,kneeY=-19+stride*side*4;
+  const footX=side*13+stride*side*13;
+  ctx.lineCap="round";ctx.lineJoin="round";ctx.strokeStyle="#26393b";ctx.lineWidth=12;
+  ctx.beginPath();ctx.moveTo(side*9,-35);ctx.lineTo(kneeX,kneeY);ctx.lineTo(footX,-4);ctx.stroke();
+  ctx.strokeStyle="#718779";ctx.lineWidth=2.5;ctx.beginPath();
+  ctx.moveTo(kneeX-4,-13);ctx.lineTo(kneeX+5,-14);ctx.stroke();
+  ctx.fillStyle="#152c35";ctx.beginPath();ctx.ellipse(footX+side*3,-2,12,5,side*.12,0,Math.PI*2);ctx.fill();
+ }
+ // Irregular jacket silhouette, rather than a flat rectangular enemy.
+ const coat=ctx.createLinearGradient(-22,-78,20,-21);
+ coat.addColorStop(0,enemy.type==="helmet"?"#817c98":enemy.type==="runner"?"#a47c58":"#688a70");
+ coat.addColorStop(.58,enemy.type==="helmet"?"#535b74":enemy.type==="runner"?"#80543c":"#3e6659");
+ coat.addColorStop(1,"#263e49");
+ ctx.fillStyle="#172d36";ctx.beginPath();ctx.moveTo(-18,-65);ctx.lineTo(15,-69);
+ ctx.lineTo(22,-32);ctx.lineTo(10,-29);ctx.lineTo(3,-34);ctx.lineTo(-10,-29);ctx.lineTo(-22,-39);ctx.closePath();ctx.fill();
+ ctx.fillStyle=coat;ctx.beginPath();ctx.moveTo(-15,-65);ctx.quadraticCurveTo(2,-73,18,-63);
+ ctx.lineTo(18,-39);ctx.lineTo(9,-36);ctx.lineTo(2,-42);ctx.lineTo(-7,-35);
+ ctx.lineTo(-17,-39);ctx.closePath();ctx.fill();
+ ctx.strokeStyle="#acb49e";ctx.lineWidth=2;ctx.beginPath();
+ ctx.moveTo(-2,-64);ctx.lineTo(0,-41);ctx.moveTo(9,-53);ctx.lineTo(16,-46);ctx.stroke();
+ // Forward-reaching arms: shoulders and elbows articulate independently.
+ for(const side of [-1,1]){
+  const shoulderX=side*17,shoulderY=-62;
+  const elbowX=side*(25+stride*3),elbowY=-47+stride*side*6;
+  const handX=side*(34+stride*3),handY=-36-stride*side*4;
+  ctx.strokeStyle="#233d42";ctx.lineWidth=11;ctx.beginPath();
+  ctx.moveTo(shoulderX,shoulderY);ctx.lineTo(elbowX,elbowY);ctx.lineTo(handX,handY);ctx.stroke();
+  ctx.strokeStyle="#638c78";ctx.lineWidth=6;ctx.beginPath();
+  ctx.moveTo(shoulderX,shoulderY);ctx.lineTo(elbowX,elbowY);ctx.stroke();
+  ctx.fillStyle="#93b69d";ctx.beginPath();ctx.ellipse(handX,handY,6,5,side*.22,0,Math.PI*2);ctx.fill();
+ }
+ // Neck, ears, jaw, uneven hairline, sunken eyes and visible mouth.
+ ctx.fillStyle="#6c9b88";ctx.fillRect(-6,-75,12,12);
+ ctx.save();ctx.rotate(stride*.055);
+ const skin=ctx.createLinearGradient(-15,-99,15,-72);
+ skin.addColorStop(0,"#c5d6a9");skin.addColorStop(.6,"#8bad93");skin.addColorStop(1,"#5d8c83");
+ ctx.fillStyle=skin;ctx.beginPath();
+ ctx.moveTo(-15,-96);ctx.quadraticCurveTo(-21,-79,-11,-71);
+ ctx.quadraticCurveTo(0,-63,12,-73);ctx.quadraticCurveTo(20,-91,10,-100);
+ ctx.quadraticCurveTo(-3,-106,-15,-96);ctx.fill();
+ ctx.fillStyle="#6f9680";for(const side of [-1,1]){
+  ctx.beginPath();ctx.ellipse(side*16,-86,5,8,side*.2,0,Math.PI*2);ctx.fill();
+ }
+ ctx.fillStyle="#263d42";ctx.beginPath();
+ ctx.moveTo(-16,-95);ctx.lineTo(-9,-106);ctx.lineTo(-4,-101);ctx.lineTo(2,-108);
+ ctx.lineTo(8,-101);ctx.lineTo(16,-98);ctx.lineTo(11,-93);ctx.lineTo(0,-97);ctx.lineTo(-9,-91);ctx.fill();
+ for(const side of [-1,1]){
+  ctx.fillStyle="#294443";ctx.beginPath();ctx.ellipse(side*7,-86,5.6,4.5,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=enemy.stunned?"#e8e87f":"#ffcf89";
+  ctx.beginPath();ctx.ellipse(side*7,-86,2.1,2,0,0,Math.PI*2);ctx.fill();
+ }
+ ctx.fillStyle="#364d4d";ctx.beginPath();ctx.moveTo(-6,-77);ctx.quadraticCurveTo(0,-72,8,-77);
+ ctx.quadraticCurveTo(0,-70,-6,-77);ctx.fill();
+ ctx.strokeStyle="#e5e4c8";ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(-3,-75);ctx.lineTo(5,-75);ctx.stroke();
+ if(enemy.type==="helmet"){
+  ctx.fillStyle="#394c5b";ctx.beginPath();ctx.arc(0,-96,21,Math.PI,Math.PI*2);ctx.closePath();ctx.fill();
+  ctx.fillStyle="#c2b466";ctx.beginPath();ctx.roundRect(-19,-97,38,6,3);ctx.fill();
+  ctx.strokeStyle="#abb9ba";ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,-96,17,Math.PI*1.12,Math.PI*1.87);ctx.stroke();
+ }
+ ctx.restore();
  if(enemy.stunned){
-  ctx.fillStyle="#e8ce64";ctx.font="900 29px system-ui";ctx.textAlign="center";ctx.fillText("✦",0,-100);
-  ctx.fillStyle="#c4f58bb8";ctx.beginPath();ctx.arc(0,-47,33,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#effc96";ctx.beginPath();ctx.arc(-12,-63,10,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(10,-41,7,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#d5ff9d";ctx.font="1000 20px system-ui";ctx.textAlign="center";
-  ctx.fillText("✦",0,-100);
+  ctx.fillStyle="#d9ff72";ctx.globalAlpha=.25;ctx.beginPath();ctx.ellipse(0,-51,34,48,0,0,Math.PI*2);ctx.fill();
+  ctx.globalAlpha=1;ctx.fillStyle="#eaff8e";ctx.font="900 25px system-ui";ctx.textAlign="center";
+  ctx.fillText("✦",0,-120);
+  for(let i=0;i<4;i++){
+   const a=fx.clock*3+i*Math.PI/2;
+   ctx.fillStyle=i%2?"#d0fc72":"#72e3bf";
+   ctx.beginPath();ctx.arc(Math.cos(a)*30,-91+Math.sin(a)*12,4,0,Math.PI*2);ctx.fill();
+  }
  }
  ctx.restore();
 }
