@@ -103,7 +103,7 @@ function animalStep(g,a,dt,previousDistance){
   a.progress+=a.speed*dt;
   a.x=animalPosition(a);
  }
- if(g.distance>=a.at-5 && previousDistance<=a.at+11 && !a.collision && g.invulnerability<=0){
+ if(g.distance>=a.at-5 && previousDistance<=a.at+11 && !a.collision && !a.jumped && g.invulnerability<=0){
   // Check approximate proximity at the rider's downhill crossing.
   const distanceGap=Math.abs(a.at-g.distance);
   if(distanceGap<=12&&Math.abs(g.lane-a.x)<a.radius+.12){
