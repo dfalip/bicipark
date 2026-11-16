@@ -2,7 +2,7 @@
 
 **Missió:** construir una eina ciclista que ajudi a **trobar, planificar, pedalar i divertir-se** a qualsevol lloc del món. Això és un objectiu de producte, no una afirmació de cobertura o superioritat actual.
 
-**Base revisada:** repositori `main` i PR obertes el 14/11/2026. No es confon codi existent, proves automatitzades, desplegaments preview, i experiència validada amb dades reals. La revisió anterior continua a `COMPETITOR-REVIEW-2026-11-01.md`.
+**Base revisada:** repositori `main` i PR obertes el 14/11/2026; estat de release contrastat amb el commit de `main` del 16/11/2026. No es confon codi existent, proves automatitzades, desplegaments preview, i experiència validada amb dades reals. La revisió anterior continua a `COMPETITOR-REVIEW-2026-11-01.md`.
 
 ## Referents competitius verificats
 
@@ -26,7 +26,7 @@
 
 **Existència de codi a main:** planificador de rutes BRouter, importació i exportació GPX, aparcaments, PWA parcial, perfil personal i joc BikeJump. La cobertura mundial completa, mapes offline exhaustius, qualitat de rutes i navegació real a tots els dispositius **no estan certificades**.
 
-**En desenvolupament:** `#43` elevació amb procedència (draft), `#45` GeoSprint/Explora (draft), `#46` BiciPark World (draft, incidència real en captura d'usuari: cap dada de serveis retornada). `#47–49` BikeJump accessibilitat/estabilitat (draft). No marcar cap d'aquestes funcionalitats com a publicada.
+**Estat revisat 16/11/2026:** GeoSprint `#45` i BikeJump v3 `#51–55` s'han integrat anteriorment; `#47–49` es van tancar per substitució. La release `#69` s'ha fusionat a `main` al commit `f79ca01969306627951527e54c7b9652dd94e7bd`, integrant SnowBike Downhill, ZombiePedal, BiciPark Puzzle (12 reptes), RodaRumble (10 fases) i missions BikeJump Ride. Les PR `#65–68` es van tancar en favor de `#69`: no tornar-les a fusionar. La validació de producció READY i HTTP 200 dels recursos consta a l'historial de release, però **no equival a playtesting real** de controls tàctils, qualitat visual, so o rendiment en dispositius. `#46` World Bike continua bloquejada per la consulta LIVE, les quotes i la cache globals, la privacitat i les comprovacions de proveïdor. `#43` elevació requereix gates de navegador i de procedència abans de publicar-se. No confondre estat del codi amb validació de l'experiència.
 
 **Risc de rendiment per investigar:** `data/barcelona/parkings.json` ocupa ~7,9 MB al repositori. Mesurar si es descarrega tot durant la primera càrrega; no afirmar que sí fins a inspeccionar xarxa en navegador. Prefereix paginació/retalls espacials i cache al client sense perdre POIs.
 
@@ -37,7 +37,7 @@
 | P0 — WORLD-01 | «A prop meu» retorna aparcaments/fonts/tallers reals quan la font en té, o error exacte amb recuperació. | Consulta REAL en navegador a 3 regions, cap resultat inventat, OSM source/atribució, endpoint backend amb quotes agregades/cache, privacitat, 4 idiomes. PR #46, NO merge fins superar gates. |
 | P0 — ROUTE-01 | Planificar origen → destí i exportar GPX amb geometria real i informació de confiança. | Comparar ruta amb geometria retornada, casos de fallada/timeout, desnivell absent explicitat, camps revisats, prova mòbil. |
 | P0 — UX-01 | Trobar aparcament/planificar en menys passos i sense confusió entre mode mapa i resultat. | Prova de navegació real a 320/390/768/1440 px, teclat i lector de pantalla; sense botons inerts ni errors amagats. |
-| P1 — PLAY-01 | BikeJump v3 com a arcade curt, senzill, divertit i responsive; GeoSprint rejugable. | Partida completa en dispositiu real, feedback de salt/aterratge entenedor, reinici sense regressions, controls tàctils visibles, no falsejar rècords. |
+| P1 — PLAY-01 | Auditar en mòbil els jocs ja publicats, especialment BikeJump Ride, SnowBike, ZombiePedal, Puzzle i RodaRumble; iterar sobre fricció i qualitat real. | Partida completa en dispositiu real, feedback de salt/aterratge entenedor, reinici sense regressions, controls tàctils visibles, no falsejar rècords. |
 | P1 — PERF-01 | Càrrega progressiva i àgil de mapes/POIs, sense descarregar dades innecessàries. | Mesurar bytes i peticions de xarxa, reduir transferència inicial i dibuix redundant, mantenir atributs OSM i errors. |
 | P1 — OFFLINE-01 | Ruta guardada i GPX accessibles sense xarxa quan realment estan desats. | Prova desconnectat a mòbil; no prometre offline de tiles/navegació no descarregats. |
 | P1 — GLOBAL-01 | Qualsevol zona es pot consultar amb informació de font i cobertura coneguda. | Proveïdor escalable, quota global, cache compartida, validesa de dades, llicència/ODbL, temps de resposta i fallback mesurats. |
