@@ -374,37 +374,122 @@ function drawPaintballs(){
   ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
  }
 }
+
+function drawCityRush(){
+ if(reducedMotion||game.phase!=="running")return;
+ const rush=clamp((game.speed-26)/40,0,1);
+ if(rush<=0)return;
+ ctx.save();ctx.strokeStyle="#d5fff08a";ctx.lineWidth=1.4+rush*2;
+ ctx.globalAlpha=.19+rush*.22;
+ for(let i=0;i<26;i++){
+  const depth=i%3;
+  const x=((i*193-game.distance*(.7+depth*.5))%1220+1220)%1220-120;
+  const y=390+((i*47+13)%120);
+  ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-25-rush*70-depth*25,y);ctx.stroke();
+ }
+ ctx.restore();
+ // The road flows under the wheels faster than the distant skyline.
+ ctx.fillStyle="#ecf7be70";
+ for(let i=0;i<10;i++){
+  const x=((i*135-game.distance*2.4)%1280+1280)%1280-110;
+  ctx.fillRect(x,463,34+game.speed*.6,3);
+ }
+}
 function drawCyclist(){
  const x=242,y=WORLD.roadY-game.altitude;
+ const cadence=game.time*game.speed*.092;
+ const pedal=Math.sin(cadence),pedalOther=Math.cos(cadence);
  ctx.save();ctx.translate(x,y);
- if(game.invulnerable>0&&Math.floor(fx.clock*18)%2===0)ctx.globalAlpha=.48;
+ if(game.invulnerable>0&&Math.floor(fx.clock*18)%2===0)ctx.globalAlpha=.42;
  ctx.rotate((game.stagger>0?Math.sin(fx.clock*31)*.24*game.stagger/.75:0)+
-  (game.grounded?0:clamp(game.vy/1400,-.19,.16)));
- if(game.speed>45){
-  ctx.strokeStyle="#92ffd176";ctx.lineWidth=4;
-  for(let i=0;i<4;i++){ctx.beginPath();ctx.moveTo(-50-i*21,-20-i*9);ctx.lineTo(-86-i*29,-22-i*9);ctx.stroke();}
- }
- ctx.fillStyle="#162e3c";ctx.lineWidth=4;ctx.strokeStyle="#152d40";
- for(const dx of [-29,30]){
-  ctx.beginPath();ctx.arc(dx,-15,20,0,Math.PI*2);ctx.fill();ctx.stroke();
-  ctx.strokeStyle="#d5f4c6";ctx.lineWidth=2;
-  for(let k=0;k<4;k++){
-   const a=k*Math.PI/4+game.time*game.speed*.08;
-   ctx.beginPath();ctx.moveTo(dx-Math.cos(a)*16,-15-Math.sin(a)*16);
-   ctx.lineTo(dx+Math.cos(a)*16,-15+Math.sin(a)*16);ctx.stroke();
+  (game.grounded?0:clamp(game.vy/1400,-.17,.2)));
+ // Racing posture changes with acceleration and speed.
+ const rush=clamp((game.speed-20)/46,0,1);
+ const bikeTilt=game.grounded?Math.sin(cadence)*.018:-.12;
+ ctx.rotate(bikeTilt);ctx.translate(0,Math.sin(cadence*2)*.9);
+ // Ground shadow, tyre spray and glowing tail lights.
+ ctx.save();ctx.globalAlpha=.34;ctx.fillStyle="#081d2b";
+ ctx.beginPath();ctx.ellipse(3,4,82,10,0,0,Math.PI*2);ctx.fill();ctx.restore();
+ if(game.grounded&&game.speed>30){
+  ctx.strokeStyle="#b5dddc88";ctx.lineWidth=2;
+  for(let i=0;i<8;i++){
+   const dx=(i*19+game.time*game.speed*2)%135;
+   ctx.beginPath();ctx.moveTo(-53-dx,-2-i%4*5);
+   ctx.lineTo(-76-dx-(game.speed-20)*.7,-4-i%4*5);ctx.stroke();
   }
-  ctx.strokeStyle="#152d40";ctx.lineWidth=4;
  }
- ctx.strokeStyle="#f7d77c";ctx.lineWidth=5;ctx.beginPath();
- ctx.moveTo(-29,-15);ctx.lineTo(-6,-43);ctx.lineTo(30,-15);ctx.lineTo(2,-15);
- ctx.lineTo(-29,-15);ctx.moveTo(-6,-43);ctx.lineTo(2,-15);ctx.stroke();
- ctx.strokeStyle="#25374c";ctx.lineWidth=6;ctx.lineCap="round";
- ctx.beginPath();ctx.moveTo(2,-44);ctx.lineTo(17,-58);ctx.lineTo(28,-32);
- ctx.moveTo(-4,-42);ctx.lineTo(-15,-30);ctx.stroke();
- ctx.fillStyle="#f6a7a1";ctx.beginPath();ctx.ellipse(-6,-67,15,20,-.3,0,Math.PI*2);ctx.fill();
- ctx.fillStyle="#bfeb91";ctx.beginPath();ctx.arc(-1,-95,13,0,Math.PI*2);ctx.fill();
- ctx.fillStyle="#264a51";ctx.beginPath();ctx.arc(4,-98,4,0,Math.PI*2);ctx.fill();
- ctx.fillStyle="#1a4f5d";ctx.fillRect(19,-50,20,8);
+ // Tyres, rims, hubs and speed-responsive spokes.
+ for(const dx of [-44,48]){
+  ctx.fillStyle="#091f30";ctx.strokeStyle="#152d3b";ctx.lineWidth=8;
+  ctx.beginPath();ctx.arc(dx,-29,27,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.strokeStyle="#9fe9de";ctx.lineWidth=3;
+  ctx.beginPath();ctx.arc(dx,-29,19,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle="#83b4be";ctx.lineWidth=1.4;
+  for(let k=0;k<8;k++){
+   const a=k*Math.PI/4+cadence*.9;
+   ctx.beginPath();ctx.moveTo(dx,-29);
+   ctx.lineTo(dx+Math.cos(a)*19,-29+Math.sin(a)*19);ctx.stroke();
+  }
+  ctx.fillStyle="#ecf9ed";ctx.beginPath();ctx.arc(dx,-29,4,0,Math.PI*2);ctx.fill();
+ }
+ // A believable double-triangle mountain-bike frame.
+ ctx.strokeStyle="#051f2d";ctx.lineWidth=9;ctx.lineJoin="round";ctx.lineCap="round";
+ ctx.beginPath();ctx.moveTo(-44,-29);ctx.lineTo(-12,-62);ctx.lineTo(12,-28);
+ ctx.lineTo(-44,-29);ctx.moveTo(-12,-62);ctx.lineTo(36,-64);
+ ctx.lineTo(12,-28);ctx.moveTo(36,-64);ctx.lineTo(48,-29);ctx.stroke();
+ const frameColor=ctx.createLinearGradient(-40,-58,48,-25);
+ frameColor.addColorStop(0,"#35f4c3");frameColor.addColorStop(.55,"#f3ee8f");frameColor.addColorStop(1,"#38a8cd");
+ ctx.strokeStyle=frameColor;ctx.lineWidth=5.3;ctx.stroke();
+ ctx.strokeStyle="#b0f0fb";ctx.lineWidth=3;
+ ctx.beginPath();ctx.moveTo(36,-64);ctx.lineTo(48,-29);ctx.stroke();
+ ctx.fillStyle="#f4ef9e";ctx.beginPath();ctx.arc(12,-28,8,0,Math.PI*2);ctx.fill();
+ // Saddle, handlebars, front-mounted toy paint launcher.
+ ctx.strokeStyle="#132b37";ctx.lineWidth=5;
+ ctx.beginPath();ctx.moveTo(-12,-62);ctx.lineTo(-18,-75);ctx.moveTo(37,-65);ctx.lineTo(41,-78);ctx.stroke();
+ ctx.fillStyle="#102d43";ctx.beginPath();ctx.roundRect(-32,-76,32,6,3);ctx.fill();
+ ctx.strokeStyle="#bed6de";ctx.lineWidth=5;
+ ctx.beginPath();ctx.moveTo(39,-78);ctx.lineTo(57,-81);ctx.stroke();
+ ctx.save();ctx.translate(49,-78);
+ ctx.fillStyle="#174454";ctx.beginPath();ctx.roundRect(0,-5,33,12,4);ctx.fill();
+ ctx.fillStyle="#eefa85";ctx.beginPath();ctx.roundRect(29,-3,12,8,3);ctx.fill();
+ ctx.restore();
+ // Rider's moving legs and shoes are connected to the rotating crank.
+ const hipX=-12,hipY=-96;
+ const crankX=12,crankY=-28;
+ for(const [phase,color] of [[pedal,"#143a56"],[-pedal,"#234f65"]]){
+  const kneeX=-2+(phase>0?7:-9),kneeY=-65+phase*7;
+  const footX=crankX+(phase>0?14:-14),footY=crankY+phase*11;
+  ctx.lineWidth=10;ctx.lineCap="round";ctx.strokeStyle=color;
+  ctx.beginPath();ctx.moveTo(hipX,hipY);ctx.lineTo(kneeX,kneeY);ctx.lineTo(footX,footY);ctx.stroke();
+  ctx.strokeStyle="#0a2236";ctx.lineWidth=7;ctx.beginPath();
+  ctx.moveTo(footX-3,footY);ctx.lineTo(footX+12,footY-2);ctx.stroke();
+ }
+ // Aerodynamic torso with jacket panels and shoulder articulation.
+ ctx.save();ctx.translate(-13,-107);ctx.rotate(-.27-rush*.09);
+ ctx.fillStyle="#112e43";ctx.beginPath();ctx.roundRect(-17,-30,42,51,13);ctx.fill();
+ const jersey=ctx.createLinearGradient(-18,-30,26,18);
+ jersey.addColorStop(0,"#c6f9d6");jersey.addColorStop(.5,"#2fe2b5");jersey.addColorStop(1,"#1089a1");
+ ctx.fillStyle=jersey;ctx.beginPath();ctx.roundRect(-14,-27,36,45,11);ctx.fill();
+ ctx.fillStyle="#edf891";ctx.fillRect(11,-17,5,29);
+ ctx.fillStyle="#16384e";ctx.beginPath();ctx.ellipse(-2,10,17,9,0,0,Math.PI*2);ctx.fill();
+ ctx.restore();
+ // Both arms grip the handlebar, with gloves and highlights.
+ ctx.strokeStyle="#122f44";ctx.lineWidth=10;ctx.beginPath();
+ ctx.moveTo(4,-128);ctx.lineTo(26,-104);ctx.lineTo(50,-81);ctx.stroke();
+ ctx.strokeStyle="#65e2bc";ctx.lineWidth=6;ctx.beginPath();
+ ctx.moveTo(6,-126);ctx.lineTo(25,-106);ctx.stroke();
+ ctx.fillStyle="#ffdcaf";ctx.beginPath();ctx.arc(50,-81,5,0,Math.PI*2);ctx.fill();
+ // Helmet/visor with a chin line and tiny trailing aerodynamic stripe.
+ ctx.fillStyle="#ffdbb0";ctx.beginPath();ctx.arc(4,-148,17,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle="#0d3141";ctx.lineWidth=4;ctx.beginPath();
+ ctx.arc(4,-148,17,-.02,Math.PI*.87);ctx.stroke();
+ const helmet=ctx.createLinearGradient(-15,-170,28,-139);
+ helmet.addColorStop(0,"#e4fca4");helmet.addColorStop(.6,"#66ecb5");helmet.addColorStop(1,"#178ea6");
+ ctx.fillStyle=helmet;ctx.beginPath();
+ ctx.arc(3,-154,21,Math.PI*1.05,Math.PI*1.96);
+ ctx.lineTo(26,-152);ctx.lineTo(17,-141);ctx.lineTo(-12,-143);ctx.closePath();ctx.fill();
+ ctx.fillStyle="#0d3444";ctx.beginPath();ctx.roundRect(7,-153,22,8,4);ctx.fill();
+ ctx.fillStyle="#c7f5ea";ctx.fillRect(9,-151,13,3);
  ctx.restore();
 }
 function paint(){
@@ -413,7 +498,7 @@ function paint(){
  ctx.save();
  if(fx.shake>0&&!reducedMotion)
   ctx.translate(Math.sin(fx.clock*79)*fx.shake,Math.cos(fx.clock*103)*fx.shake*.5);
- drawBackground();
+ drawBackground();drawCityRush();
  for(const enemy of game.enemies)drawObstacle(enemy);
  drawPickups();drawPaintballs();drawCyclist();drawFx();
  ctx.restore();
