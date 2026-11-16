@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="230" viewBox="0 0 720 230" role="img" aria-label="Four family-friendly illustrated zombie gait and clothing poses"><defs><linearGradient id="coat" x2="1" y2="1"><stop stop-color="#b2bda4"/><stop offset=".25" stop-color="#668e74"/><stop offset=".8" stop-color="#385c5c"/><stop offset="1" stop-color="#273a49"/></linearGradient><linearGradient id="skin" x2=".8" y2="1"><stop stop-color="#c9dab4"/><stop offset=".55" stop-color="#8ead96"/><stop offset="1" stop-color="#648881"/></linearGradient><linearGradient id="helmet" x2="1" y2=".8"><stop stop-color="#acb3bc"/><stop offset=".5" stop-color="#67758c"/><stop offset="1" stop-color="#323d5e"/></linearGradient></defs><g transform="translate(90 218)">
+ <ellipse cx="0" cy="3" rx="28" ry="7" fill="#081a27" opacity=".3"/>
+ <g transform="rotate(-4 0 -87)">
+  <!-- Jointed legs and torn trousers -->
+  <g>
+  <path d="M-13 -69 L-16 -35 L-31 -7" fill="none" stroke="#1c363b" stroke-width="17" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M-13 -68 L-16 -35" fill="none" stroke="#687a70" stroke-width="8" stroke-linecap="round"/>
+  <path d="M-40 -7 L-20 -7" stroke="#132839" stroke-width="11" stroke-linecap="round"/>
+  </g><g>
+  <path d="M13 -69 L10 -35 L5 -7" fill="none" stroke="#1c363b" stroke-width="17" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M13 -68 L10 -35" fill="none" stroke="#687a70" stroke-width="8" stroke-linecap="round"/>
+  <path d="M-4 -7 L16 -7" stroke="#132839" stroke-width="11" stroke-linecap="round"/>
+  </g>
+  <!-- Damaged asymmetrical coat -->
+  <path d="M-22 -126 Q-8 -136 13 -130 Q23 -116 26 -96 L21 -57 L8 -65 L0 -55 L-14 -61 L-26 -73Z" fill="#203b43" stroke="#182e3d" stroke-width="4"/>
+  <path d="M-21 -125 Q0 -134 20 -125 L22 -93 L17 -75 L8 -82 L-2 -70 L-19 -76Z" fill="url(#coat)" />
+  <path d="M-2 -124 L1 -79 M11 -113 L17 -103 M-13 -92 L-7 -85" stroke="#c3c69d" stroke-width="2.5" fill="none"/>
+  <path d="M-22 -79 Q-6 -72 3 -73" stroke="#1d3c45" stroke-width="7" fill="none"/>
+  <!-- Two articulated arms reaching outwards -->
+  <g>
+   <path d="M-21 -116 L-34 -96 L-47 -75" fill="none" stroke="#1c4146" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>
+   <path d="M-22 -116 L-34 -96" stroke="#678d7d" stroke-width="9" stroke-linecap="round"/>
+   <ellipse cx="-47" cy="-75" rx="8" ry="6" fill="url(#skin)"/>
+   <path d="M-49 -73 l-6 -6" stroke="#b5cead" stroke-width="1.5" fill="none"/>
+   </g><g>
+   <path d="M21 -116 L28 -96 L33 -75" fill="none" stroke="#1c4146" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>
+   <path d="M22 -116 L28 -96" stroke="#678d7d" stroke-width="9" stroke-linecap="round"/>
+   <ellipse cx="33" cy="-75" rx="8" ry="6" fill="url(#skin)"/>
+   <path d="M35 -73 l6 -6" stroke="#b5cead" stroke-width="1.5" fill="none"/>
+   </g>
+  <path d="M-9 -135 L-9 -122 L8 -122 L7 -137Z" fill="#789e89"/>
+  <!-- Skull shape with cheekbones, nose, teeth and eye sockets -->
+  <path d="M-20 -165 Q-20 -193 -2 -195 Q23 -191 23 -168 L19 -151 Q12 -139 -6 -140 Q-17 -145 -20 -165Z" fill="url(#skin)" stroke="#385c5c" stroke-width="3"/>
+  <path d="M-20 -185 L-12 -197 L-4 -190 L3 -200 L14 -193 L22 -182 Q6 -186 -4 -179 L-14 -184Z" fill="#2b4045"/>
+  <path d="M-17 -163 L-7 -170 L-4 -158 L-12 -154Z M6 -169 L17 -165 L13 -154 L5 -158Z" fill="#2c4b4c"/>
+  <circle cx="-10" cy="-163" r="2.3" fill="#efdb91"/><circle cx="10" cy="-162" r="2.3" fill="#efdb91"/>
+  <path d="M1 -162 L-2 -150 L5 -151" fill="none" stroke="#537872" stroke-width="2"/>
+  <path d="M-8 -148 L9 -147 L8 -140 L-4 -141Z" fill="#324b50" />
+  <path d="M-6 -147 L-5 -143 M-1 -148 L0 -142 M5 -147 L5 -142" stroke="#e0e1b7" stroke-width="2"/>
+  
+ </g>
+ </g>
+<g transform="translate(270 218)">
+ <ellipse cx="0" cy="3" rx="28" ry="7" fill="#081a27" opacity=".3"/>
+ <g transform="rotate(5 0 -87)">
+  <!-- Jointed legs and torn trousers -->
+  <g>
+  <path d="M-13 -69 L-10 -35 L-5 -7" fill="none" stroke="#1c363b" stroke-width="17" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M-13 -68 L-10 -35" fill="none" stroke="#687a70" stroke-width="8" stroke-linecap="round"/>
+  <path d="M-14 -7 L6 -7" stroke="#132839" stroke-width="11" stroke-linecap="round"/>
+  </g><g>
+  <path d="M13 -69 L16 -35 L31 -7" fill="none" stroke="#1c363b" stroke-width="17" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M13 -68 L16 -35" fill="none" stroke="#687a70" stroke-width="8" stroke-linecap="round"/>
+  <path d="M22 -7 L42 -7" stroke="#132839" stroke-width="11" stroke-linecap="round"/>
+  </g>
+  <!-- Damaged asymmetrical coat -->
+  <path d="M-22 -126 Q-8 -136 13 -130 Q23 -116 26 -96 L21 -57 L8 -65 L0 -55 L-14 -61 L-26 -73Z" fill="#203b43" stroke="#182e3d" stroke-width="4"/>
+  <path d="M-21 -125 Q0 -134 20 -125 L22 -93 L17 -75 L8 -82 L-2 -70 L-19 -76Z" fill="url(#coat)" />
+  <path d="M-2 -124 L1 -79 M11 -113 L17 -103 M-13 -92 L-7 -85" stroke="#c3c69d" stroke-width="2.5" fill="none"/>
+  <path d="M-22 -79 Q-6 -72 3 -73" stroke="#1d3c45" stroke-width="7" fill="none"/>
+  <!-- Two articulated arms reaching outwards -->
+  <g>
+   <path d="M-21 -116 L-28 -96 L-33 -75" fill="none" stroke="#1c4146" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>
+   <path d="M-22 -116 L-28 -96" stroke="#678d7d" stroke-width="9" stroke-linecap="round"/>
+   <ellipse cx="-33" cy="-75" rx="8" ry="6" fill="url(#skin)"/>
+   <path d="M-35 -73 l-6 -6" stroke="#b5cead" stroke-width="1.5" fill="none"/>
+   </g><g>
+   <path d="M21 -116 L34 -96 L47 -75" fill="none" stroke="#1c4146" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>
+   <path d="M22 -116 L34 -96" stroke="#678d7d" stroke-width="9" stroke-linecap="round"/>
+   <ellipse cx="47" cy="-75" rx="8" ry="6" fill="url(#skin)"/>
+   <path d="M49 -73 l6 -6" stroke="#b5cead" stroke-width="1.5" fill="none"/>
+   </g>
+  <path d="M-9 -135 L-9 -122 L8 -122 L7 -137Z" fill="#789e89"/>
+  <!-- Skull shape with cheekbones, nose, teeth and eye sockets -->
+  <path d="M-20 -165 Q-20 -193 -2 -195 Q23 -191 23 -168 L19 -151 Q12 -139 -6 -140 Q-17 -145 -20 -165Z" fill="url(#skin)" stroke="#385c5c" stroke-width="3"/>
+  <path d="M-20 -185 L-12 -197 L-4 -190 L3 -200 L14 -193 L22 -182 Q6 -186 -4 -179 L-14 -184Z" fill="#2b4045"/>
+  <path d="M-17 -163 L-7 -170 L-4 -158 L-12 -154Z M6 -169 L17 -165 L13 -154 L5 -158Z" fill="#2c4b4c"/>
+  <circle cx="-10" cy="-163" r="2.3" fill="#efdb91"/><circle cx="10" cy="-162" r="2.3" fill="#efdb91"/>
+  <path d="M1 -162 L-2 -150 L5 -151" fill="none" stroke="#537872" stroke-width="2"/>
+  <path d="M-8 -148 L9 -147 L8 -140 L-4 -141Z" fill="#324b50" />
+  <path d="M-6 -147 L-5 -143 M-1 -148 L0 -142 M5 -147 L5 -142" stroke="#e0e1b7" stroke-width="2"/>
+  
+ </g>
+ </g>
+<g transform="translate(450 218)">
+ <ellipse cx="0" cy="3" rx="28" ry="7" fill="#081a27" opacity=".3"/>
+ <g transform="rotate(13 0 -87)">
+  <!-- Jointed legs and torn trousers -->
+  <g>
+  <path d="M-13 -69 L-8.95 -35 L-0.4499999999999993 -7" fill="none" stroke="#1c363b" stroke-width="17" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M-13 -68 L-8.95 -35" fill="none" stroke="#687a70" stroke-width="8" stroke-linecap="round"/>
+  <path d="M-9.45 -7 L10.55 -7" stroke="#132839" stroke-width="11" stroke-linecap="round"/>
+  </g><g>
+  <path d="M13 -69 L17.05 -35 L35.55 -7" fill="none" stroke="#1c363b" stroke-width="17" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M13 -68 L17.05 -35" fill="none" stroke="#687a70" stroke-width="8" stroke-linecap="round"/>
+  <path d="M26.549999999999997 -7 L46.55 -7" stroke="#132839" stroke-width="11" stroke-linecap="round"/>
+  </g>
+  <!-- Damaged asymmetrical coat -->
+  <path d="M-22 -126 Q-8 -136 13 -130 Q23 -116 26 -96 L21 -57 L8 -65 L0 -55 L-14 -61 L-26 -73Z" fill="#203b43" stroke="#182e3d" stroke-width="4"/>
+  <path d="M-21 -125 Q0 -134 20 -125 L22 -93 L17 -75 L8 -82 L-2 -70 L-19 -76Z" fill="#966b53" />
+  <path d="M-2 -124 L1 -79 M11 -113 L17 -103 M-13 -92 L-7 -85" stroke="#c3c69d" stroke-width="2.5" fill="none"/>
+  <path d="M-22 -79 Q-6 -72 3 -73" stroke="#1d3c45" stroke-width="7" fill="none"/>
+  <!-- Two articulated arms reaching outwards -->
+  <g>
+   <path d="M-21 -116 L-26.95 -96 L-30.549999999999997 -75" fill="none" stroke="#1c4146" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>
+   <path d="M-22 -116 L-26.95 -96" stroke="#678d7d" stroke-width="9" stroke-linecap="round"/>
+   <ellipse cx="-30.549999999999997" cy="-75" rx="8" ry="6" fill="url(#skin)"/>
+   <path d="M-32.55 -73 l-6 -6" stroke="#b5cead" stroke-width="1.5" fill="none"/>
+   </g><g>
+   <path d="M21 -116 L35.05 -96 L49.45 -75" fill="none" stroke="#1c4146" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>
+   <path d="M22 -116 L35.05 -96" stroke="#678d7d" stroke-width="9" stroke-linecap="round"/>
+   <ellipse cx="49.45" cy="-75" rx="8" ry="6" fill="url(#skin)"/>
+   <path d="M51.45 -73 l6 -6" stroke="#b5cead" stroke-width="1.5" fill="none"/>
+   </g>
+  <path d="M-9 -135 L-9 -122 L8 -122 L7 -137Z" fill="#789e89"/>
+  <!-- Skull shape with cheekbones, nose, teeth and eye sockets -->
+  <path d="M-20 -165 Q-20 -193 -2 -195 Q23 -191 23 -168 L19 -151 Q12 -139 -6 -140 Q-17 -145 -20 -165Z" fill="url(#skin)" stroke="#385c5c" stroke-width="3"/>
+  <path d="M-20 -185 L-12 -197 L-4 -190 L3 -200 L14 -193 L22 -182 Q6 -186 -4 -179 L-14 -184Z" fill="#2b4045"/>
+  <path d="M-17 -163 L-7 -170 L-4 -158 L-12 -154Z M6 -169 L17 -165 L13 -154 L5 -158Z" fill="#2c4b4c"/>
+  <circle cx="-10" cy="-163" r="2.3" fill="#efdb91"/><circle cx="10" cy="-162" r="2.3" fill="#efdb91"/>
+  <path d="M1 -162 L-2 -150 L5 -151" fill="none" stroke="#537872" stroke-width="2"/>
+  <path d="M-8 -148 L9 -147 L8 -140 L-4 -141Z" fill="#324b50" />
+  <path d="M-6 -147 L-5 -143 M-1 -148 L0 -142 M5 -147 L5 -142" stroke="#e0e1b7" stroke-width="2"/>
+  
+ </g>
+ </g>
+<g transform="translate(630 218)">
+ <ellipse cx="0" cy="3" rx="28" ry="7" fill="#081a27" opacity=".3"/>
+ <g transform="rotate(-7 0 -87)">
+  <!-- Jointed legs and torn trousers -->
+  <g>
+  <path d="M-13 -69 L-15.4 -35 L-28.4 -7" fill="none" stroke="#1c363b" stroke-width="17" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M-13 -68 L-15.4 -35" fill="none" stroke="#687a70" stroke-width="8" stroke-linecap="round"/>
+  <path d="M-37.4 -7 L-17.4 -7" stroke="#132839" stroke-width="11" stroke-linecap="round"/>
+  </g><g>
+  <path d="M13 -69 L10.6 -35 L7.6 -7" fill="none" stroke="#1c363b" stroke-width="17" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M13 -68 L10.6 -35" fill="none" stroke="#687a70" stroke-width="8" stroke-linecap="round"/>
+  <path d="M-1.4000000000000004 -7 L18.6 -7" stroke="#132839" stroke-width="11" stroke-linecap="round"/>
+  </g>
+  <!-- Damaged asymmetrical coat -->
+  <path d="M-22 -126 Q-8 -136 13 -130 Q23 -116 26 -96 L21 -57 L8 -65 L0 -55 L-14 -61 L-26 -73Z" fill="#203b43" stroke="#182e3d" stroke-width="4"/>
+  <path d="M-21 -125 Q0 -134 20 -125 L22 -93 L17 -75 L8 -82 L-2 -70 L-19 -76Z" fill="url(#coat)" />
+  <path d="M-2 -124 L1 -79 M11 -113 L17 -103 M-13 -92 L-7 -85" stroke="#c3c69d" stroke-width="2.5" fill="none"/>
+  <path d="M-22 -79 Q-6 -72 3 -73" stroke="#1d3c45" stroke-width="7" fill="none"/>
+  <!-- Two articulated arms reaching outwards -->
+  <g>
+   <path d="M-21 -116 L-33.4 -96 L-45.6 -75" fill="none" stroke="#1c4146" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>
+   <path d="M-22 -116 L-33.4 -96" stroke="#678d7d" stroke-width="9" stroke-linecap="round"/>
+   <ellipse cx="-45.6" cy="-75" rx="8" ry="6" fill="url(#skin)"/>
+   <path d="M-47.6 -73 l-6 -6" stroke="#b5cead" stroke-width="1.5" fill="none"/>
+   </g><g>
+   <path d="M21 -116 L28.6 -96 L34.4 -75" fill="none" stroke="#1c4146" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>
+   <path d="M22 -116 L28.6 -96" stroke="#678d7d" stroke-width="9" stroke-linecap="round"/>
+   <ellipse cx="34.4" cy="-75" rx="8" ry="6" fill="url(#skin)"/>
+   <path d="M36.4 -73 l6 -6" stroke="#b5cead" stroke-width="1.5" fill="none"/>
+   </g>
+  <path d="M-9 -135 L-9 -122 L8 -122 L7 -137Z" fill="#789e89"/>
+  <!-- Skull shape with cheekbones, nose, teeth and eye sockets -->
+  <path d="M-20 -165 Q-20 -193 -2 -195 Q23 -191 23 -168 L19 -151 Q12 -139 -6 -140 Q-17 -145 -20 -165Z" fill="url(#skin)" stroke="#385c5c" stroke-width="3"/>
+  <path d="M-20 -185 L-12 -197 L-4 -190 L3 -200 L14 -193 L22 -182 Q6 -186 -4 -179 L-14 -184Z" fill="#2b4045"/>
+  <path d="M-17 -163 L-7 -170 L-4 -158 L-12 -154Z M6 -169 L17 -165 L13 -154 L5 -158Z" fill="#2c4b4c"/>
+  <circle cx="-10" cy="-163" r="2.3" fill="#efdb91"/><circle cx="10" cy="-162" r="2.3" fill="#efdb91"/>
+  <path d="M1 -162 L-2 -150 L5 -151" fill="none" stroke="#537872" stroke-width="2"/>
+  <path d="M-8 -148 L9 -147 L8 -140 L-4 -141Z" fill="#324b50" />
+  <path d="M-6 -147 L-5 -143 M-1 -148 L0 -142 M5 -147 L5 -142" stroke="#e0e1b7" stroke-width="2"/>
+  <path d="M-23 -178 Q-19 -205 0 -206 Q20 -202 24 -178 L21 -173 L-23 -173Z" fill="url(#helmet)" stroke="#25394b" stroke-width="3"/><path d="M-18 -181 L18 -181" stroke="#f2e7aa" stroke-width="4"/><path d="M-15 -196 Q0 -206 14 -194" stroke="#d3e4db" stroke-width="2" fill="none"/>
+ </g>
+ </g></svg>

@@ -1,0 +1,275 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="260" viewBox="0 0 960 260" role="img" aria-label="Four illustrated skiing bicycle rider poses; neutral, left, right, jump"><defs>
+ <linearGradient id="ski" x2=".8" y2="1"><stop stop-color="#e6fdff"/><stop offset=".27" stop-color="#44dcda"/><stop offset=".62" stop-color="#18809f"/><stop offset="1" stop-color="#092f50"/></linearGradient>
+ <linearGradient id="frame" x2="1" y2="1"><stop stop-color="#f4fbdb"/><stop offset=".38" stop-color="#5ae5d4"/><stop offset="1" stop-color="#006b93"/></linearGradient>
+ <linearGradient id="jacket" x2="1" y2="1"><stop stop-color="#baf8e1"/><stop offset=".38" stop-color="#35bbaf"/><stop offset=".78" stop-color="#0876a0"/><stop offset="1" stop-color="#093b67"/></linearGradient>
+ <linearGradient id="pants" x2=".2" y2="1"><stop stop-color="#355976"/><stop offset="1" stop-color="#081e39"/></linearGradient>
+ <radialGradient id="helmet"><stop stop-color="#fffbcc"/><stop offset=".46" stop-color="#f6d47d"/><stop offset=".84" stop-color="#49adbd"/><stop offset="1" stop-color="#164f74"/></radialGradient>
+ <linearGradient id="glass" x2="1" y2="1"><stop stop-color="#c0edfe"/><stop offset=".5" stop-color="#3889b2"/><stop offset="1" stop-color="#102a4d"/></linearGradient>
+</defs><g transform="translate(120 229)">
+   <g transform="rotate(0 0 -73)">
+    <ellipse cx="0" cy="15" rx="53" ry="11" fill="#09364b" opacity=".18"/>
+    
+ <g transform="translate(-37 0) rotate(-1.3)">
+ <path d="M-10 16 Q-18 -22 -15 -60 L-11 -152 Q-12 -181 -2 -190 Q6 -188 11 -157 L14 -58 Q18 -14 10 17 Q0 25 -10 16Z" fill="#072c46" stroke="#05263c" stroke-width="3"/>
+ <path d="M-6 10 Q-11 -24 -9 -72 L-6 -163 Q-5 -181 1 -180 Q8 -170 6 -153 L9 -69 Q13 -21 5 10Z" fill="url(#ski)"/>
+ <path d="M-8 -104 L7 -102 M-7 -88 L8 -86 M-5 -32 L6 -30" stroke="#d9ffef" stroke-width="2.5" opacity=".9"/>
+ <path d="M-14 -27 L14 -27 L12 -13 L-12 -13Z" fill="#133a4f" stroke="#9cd6dc" stroke-width="2"/>
+ <rect x="-10" y="-23" width="20" height="6" rx="2" fill="#e6f8ef"/>
+ <circle cx="-6" cy="-20" r="2" fill="#12364e"/><circle cx="6" cy="-20" r="2" fill="#12364e"/>
+ </g>
+ <g transform="translate(37 0) rotate(1.3)">
+ <path d="M-10 16 Q-18 -22 -15 -60 L-11 -152 Q-12 -181 -2 -190 Q6 -188 11 -157 L14 -58 Q18 -14 10 17 Q0 25 -10 16Z" fill="#072c46" stroke="#05263c" stroke-width="3"/>
+ <path d="M-6 10 Q-11 -24 -9 -72 L-6 -163 Q-5 -181 1 -180 Q8 -170 6 -153 L9 -69 Q13 -21 5 10Z" fill="url(#ski)"/>
+ <path d="M-8 -104 L7 -102 M-7 -88 L8 -86 M-5 -32 L6 -30" stroke="#d9ffef" stroke-width="2.5" opacity=".9"/>
+ <path d="M-14 -27 L14 -27 L12 -13 L-12 -13Z" fill="#133a4f" stroke="#9cd6dc" stroke-width="2"/>
+ <rect x="-10" y="-23" width="20" height="6" rx="2" fill="#e6f8ef"/>
+ <circle cx="-6" cy="-20" r="2" fill="#12364e"/><circle cx="6" cy="-20" r="2" fill="#12364e"/>
+ </g>
+    <!-- mechanically plausible front/rear fork and damped strut between ski mounts -->
+    <g stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-36 -25 L-21 -65 L0 -38 L21 -65 L36 -25" fill="none" stroke="#0c2f48" stroke-width="15"/>
+      <path d="M-36 -25 L-21 -65 L0 -38 L21 -65 L36 -25" fill="none" stroke="url(#frame)" stroke-width="7"/>
+      <path d="M0 -38 L0 -82" stroke="#092e43" stroke-width="11"/><path d="M0 -38 L0 -82" stroke="#c3f8f0" stroke-width="4"/>
+      <path d="M-18 -44 L-18 -9 M18 -44 L18 -9" stroke="#bedadd" stroke-width="5"/>
+      <path d="M-24 -42 L-14 -42 M-23 -32 L-13 -32 M14 -42 L24 -42 M13 -32 L23 -32" stroke="#0e5166" stroke-width="3"/>
+      <path d="M-40 -91 L40 -91" stroke="#0b2b41" stroke-width="11"/><path d="M-40 -92 L40 -92" stroke="#e7f4e2" stroke-width="3"/>
+    </g>
+    <rect x="-18" y="-51" width="36" height="11" rx="5" fill="#122c3b"/><path d="M-14 -48 L15 -48" stroke="#a1bbc6" stroke-width="2"/>
+    <!-- separate boots and articulated legs -->
+    <g transform="translate(-20 0)">
+      <path d="M13 -63 Q5 -45 0 -11" fill="none" stroke="#0b243d" stroke-width="24" stroke-linecap="round"/>
+      <path d="M11 -63 Q5 -47 0 -13" fill="none" stroke="url(#pants)" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-9 -19 Q-11 -11 -8 8 L8 8 Q13 -8 8 -19Z" fill="#102e41" stroke="#071b32" stroke-width="3"/>
+      <path d="M-7 -12 L8 -12 M-6 -6 L7 -6" stroke="#d8eef1" stroke-width="2"/>
+     </g><g transform="translate(20 0)">
+      <path d="M-13 -63 Q-5 -45 0 -11" fill="none" stroke="#0b243d" stroke-width="24" stroke-linecap="round"/>
+      <path d="M-11 -63 Q-5 -47 0 -13" fill="none" stroke="url(#pants)" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-9 -19 Q-11 -11 -8 8 L8 8 Q13 -8 8 -19Z" fill="#102e41" stroke="#071b32" stroke-width="3"/>
+      <path d="M-7 -12 L8 -12 M-6 -6 L7 -6" stroke="#d8eef1" stroke-width="2"/>
+     </g>
+    <!-- windbreaker body in a forward athletic tuck, spine and fabric folds -->
+    <path d="M-37 -127 Q-28 -138 -19 -136 L18 -136 Q32 -128 37 -108 L28 -72 Q15 -60 -14 -61 L-32 -77Z" fill="#092b47" stroke="#0a2338" stroke-width="5"/>
+    <path d="M-34 -124 Q-20 -139 0 -137 Q25 -139 34 -116 L24 -77 Q6 -70 -17 -77Z" fill="url(#jacket)"/>
+    <path d="M-2 -134 Q5 -110 2 -78" fill="none" stroke="#e8ee98" stroke-width="5"/>
+    <path d="M-25 -111 Q-14 -93 -19 -80 M23 -116 Q14 -97 19 -82" stroke="#b5ffdd" stroke-width="2.5" opacity=".8"/>
+    <path d="M-27 -81 Q-5 -69 26 -80" stroke="#082e44" stroke-width="5" fill="none"/>
+    <!-- dynamic elbow and hand alignment -->
+    <g>
+      <path d="M-28 -125 Q-41 -109 -43 -98 L-38 -92" fill="none" stroke="#0b314d" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-29 -122 Q-37 -108 -41 -100" fill="none" stroke="#67c8c6" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="-39" cy="-91" rx="9" ry="7" fill="#18354b" stroke="#d1f1e5" stroke-width="2"/>
+      </g><g>
+      <path d="M28 -125 Q41 -109 43 -98 L38 -92" fill="none" stroke="#0b314d" stroke-width="17" stroke-linecap="round"/>
+      <path d="M29 -122 Q37 -108 41 -100" fill="none" stroke="#67c8c6" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="39" cy="-91" rx="9" ry="7" fill="#18354b" stroke="#d1f1e5" stroke-width="2"/>
+      </g>
+    <!-- aerodynamic helmet, goggles, vents, ear protectors -->
+    <ellipse cx="0" cy="-155" rx="31" ry="36" fill="#09283b" stroke="#133b50" stroke-width="4"/>
+    <ellipse cx="0" cy="-157" rx="27" ry="31" fill="url(#helmet)"/>
+    <path d="M-27 -164 Q0 -179 27 -164 L22 -149 Q0 -144 -22 -149Z" fill="url(#glass)" stroke="#13364c" stroke-width="4"/>
+    <path d="M-20 -161 Q-3 -164 17 -159" fill="none" stroke="#d3ffff" stroke-width="3" opacity=".9"/>
+    <path d="M-18 -183 Q0 -191 18 -182 M-11 -178 L-9 -171 M10 -178 L10 -171" stroke="#eff9e3" stroke-width="3" fill="none"/>
+    <path d="M-26 -146 Q0 -131 26 -147" fill="none" stroke="#18384e" stroke-width="5"/>
+   </g>
+ </g>
+<g transform="translate(360 229)">
+   <g transform="rotate(-10 0 -73)">
+    <ellipse cx="0" cy="15" rx="53" ry="11" fill="#09364b" opacity=".18"/>
+    
+ <g transform="translate(-37 0) rotate(-1.3)">
+ <path d="M-10 16 Q-18 -22 -15 -60 L-11 -152 Q-12 -181 -2 -190 Q6 -188 11 -157 L14 -58 Q18 -14 10 17 Q0 25 -10 16Z" fill="#072c46" stroke="#05263c" stroke-width="3"/>
+ <path d="M-6 10 Q-11 -24 -9 -72 L-6 -163 Q-5 -181 1 -180 Q8 -170 6 -153 L9 -69 Q13 -21 5 10Z" fill="url(#ski)"/>
+ <path d="M-8 -104 L7 -102 M-7 -88 L8 -86 M-5 -32 L6 -30" stroke="#d9ffef" stroke-width="2.5" opacity=".9"/>
+ <path d="M-14 -27 L14 -27 L12 -13 L-12 -13Z" fill="#133a4f" stroke="#9cd6dc" stroke-width="2"/>
+ <rect x="-10" y="-23" width="20" height="6" rx="2" fill="#e6f8ef"/>
+ <circle cx="-6" cy="-20" r="2" fill="#12364e"/><circle cx="6" cy="-20" r="2" fill="#12364e"/>
+ </g>
+ <g transform="translate(37 0) rotate(1.3)">
+ <path d="M-10 16 Q-18 -22 -15 -60 L-11 -152 Q-12 -181 -2 -190 Q6 -188 11 -157 L14 -58 Q18 -14 10 17 Q0 25 -10 16Z" fill="#072c46" stroke="#05263c" stroke-width="3"/>
+ <path d="M-6 10 Q-11 -24 -9 -72 L-6 -163 Q-5 -181 1 -180 Q8 -170 6 -153 L9 -69 Q13 -21 5 10Z" fill="url(#ski)"/>
+ <path d="M-8 -104 L7 -102 M-7 -88 L8 -86 M-5 -32 L6 -30" stroke="#d9ffef" stroke-width="2.5" opacity=".9"/>
+ <path d="M-14 -27 L14 -27 L12 -13 L-12 -13Z" fill="#133a4f" stroke="#9cd6dc" stroke-width="2"/>
+ <rect x="-10" y="-23" width="20" height="6" rx="2" fill="#e6f8ef"/>
+ <circle cx="-6" cy="-20" r="2" fill="#12364e"/><circle cx="6" cy="-20" r="2" fill="#12364e"/>
+ </g>
+    <!-- mechanically plausible front/rear fork and damped strut between ski mounts -->
+    <g stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-36 -25 L-21 -65 L0 -38 L21 -65 L36 -25" fill="none" stroke="#0c2f48" stroke-width="15"/>
+      <path d="M-36 -25 L-21 -65 L0 -38 L21 -65 L36 -25" fill="none" stroke="url(#frame)" stroke-width="7"/>
+      <path d="M0 -38 L0 -82" stroke="#092e43" stroke-width="11"/><path d="M0 -38 L0 -82" stroke="#c3f8f0" stroke-width="4"/>
+      <path d="M-18 -44 L-18 -9 M18 -44 L18 -9" stroke="#bedadd" stroke-width="5"/>
+      <path d="M-24 -42 L-14 -42 M-23 -32 L-13 -32 M14 -42 L24 -42 M13 -32 L23 -32" stroke="#0e5166" stroke-width="3"/>
+      <path d="M-40 -91 L40 -91" stroke="#0b2b41" stroke-width="11"/><path d="M-40 -92 L40 -92" stroke="#e7f4e2" stroke-width="3"/>
+    </g>
+    <rect x="-18" y="-51" width="36" height="11" rx="5" fill="#122c3b"/><path d="M-14 -48 L15 -48" stroke="#a1bbc6" stroke-width="2"/>
+    <!-- separate boots and articulated legs -->
+    <g transform="translate(-21.75 0)">
+      <path d="M13 -63 Q5 -45 0 -11" fill="none" stroke="#0b243d" stroke-width="24" stroke-linecap="round"/>
+      <path d="M11 -63 Q5 -47 0 -13" fill="none" stroke="url(#pants)" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-9 -19 Q-11 -11 -8 8 L8 8 Q13 -8 8 -19Z" fill="#102e41" stroke="#071b32" stroke-width="3"/>
+      <path d="M-7 -12 L8 -12 M-6 -6 L7 -6" stroke="#d8eef1" stroke-width="2"/>
+     </g><g transform="translate(21.75 0)">
+      <path d="M-13 -63 Q-5 -45 0 -11" fill="none" stroke="#0b243d" stroke-width="24" stroke-linecap="round"/>
+      <path d="M-11 -63 Q-5 -47 0 -13" fill="none" stroke="url(#pants)" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-9 -19 Q-11 -11 -8 8 L8 8 Q13 -8 8 -19Z" fill="#102e41" stroke="#071b32" stroke-width="3"/>
+      <path d="M-7 -12 L8 -12 M-6 -6 L7 -6" stroke="#d8eef1" stroke-width="2"/>
+     </g>
+    <!-- windbreaker body in a forward athletic tuck, spine and fabric folds -->
+    <path d="M-37 -127 Q-28 -138 -19 -136 L18 -136 Q32 -128 37 -108 L28 -72 Q15 -60 -14 -61 L-32 -77Z" fill="#092b47" stroke="#0a2338" stroke-width="5"/>
+    <path d="M-34 -124 Q-20 -139 0 -137 Q25 -139 34 -116 L24 -77 Q6 -70 -17 -77Z" fill="url(#jacket)"/>
+    <path d="M-2 -134 Q5 -110 2 -78" fill="none" stroke="#e8ee98" stroke-width="5"/>
+    <path d="M-25 -111 Q-14 -93 -19 -80 M23 -116 Q14 -97 19 -82" stroke="#b5ffdd" stroke-width="2.5" opacity=".8"/>
+    <path d="M-27 -81 Q-5 -69 26 -80" stroke="#082e44" stroke-width="5" fill="none"/>
+    <!-- dynamic elbow and hand alignment -->
+    <g>
+      <path d="M-28 -125 Q-40.15 -109 -43 -98 L-38 -92" fill="none" stroke="#0b314d" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-29 -122 Q-37 -108 -41 -100" fill="none" stroke="#67c8c6" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="-39" cy="-91" rx="9" ry="7" fill="#18354b" stroke="#d1f1e5" stroke-width="2"/>
+      </g><g>
+      <path d="M28 -125 Q40.15 -109 43 -98 L38 -92" fill="none" stroke="#0b314d" stroke-width="17" stroke-linecap="round"/>
+      <path d="M29 -122 Q37 -108 41 -100" fill="none" stroke="#67c8c6" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="39" cy="-91" rx="9" ry="7" fill="#18354b" stroke="#d1f1e5" stroke-width="2"/>
+      </g>
+    <!-- aerodynamic helmet, goggles, vents, ear protectors -->
+    <ellipse cx="0" cy="-155" rx="31" ry="36" fill="#09283b" stroke="#133b50" stroke-width="4"/>
+    <ellipse cx="0" cy="-157" rx="27" ry="31" fill="url(#helmet)"/>
+    <path d="M-27 -164 Q0 -179 27 -164 L22 -149 Q0 -144 -22 -149Z" fill="url(#glass)" stroke="#13364c" stroke-width="4"/>
+    <path d="M-20 -161 Q-3 -164 17 -159" fill="none" stroke="#d3ffff" stroke-width="3" opacity=".9"/>
+    <path d="M-18 -183 Q0 -191 18 -182 M-11 -178 L-9 -171 M10 -178 L10 -171" stroke="#eff9e3" stroke-width="3" fill="none"/>
+    <path d="M-26 -146 Q0 -131 26 -147" fill="none" stroke="#18384e" stroke-width="5"/>
+   </g>
+ </g>
+<g transform="translate(600 229)">
+   <g transform="rotate(10 0 -73)">
+    <ellipse cx="0" cy="15" rx="53" ry="11" fill="#09364b" opacity=".18"/>
+    
+ <g transform="translate(-37 0) rotate(-1.3)">
+ <path d="M-10 16 Q-18 -22 -15 -60 L-11 -152 Q-12 -181 -2 -190 Q6 -188 11 -157 L14 -58 Q18 -14 10 17 Q0 25 -10 16Z" fill="#072c46" stroke="#05263c" stroke-width="3"/>
+ <path d="M-6 10 Q-11 -24 -9 -72 L-6 -163 Q-5 -181 1 -180 Q8 -170 6 -153 L9 -69 Q13 -21 5 10Z" fill="url(#ski)"/>
+ <path d="M-8 -104 L7 -102 M-7 -88 L8 -86 M-5 -32 L6 -30" stroke="#d9ffef" stroke-width="2.5" opacity=".9"/>
+ <path d="M-14 -27 L14 -27 L12 -13 L-12 -13Z" fill="#133a4f" stroke="#9cd6dc" stroke-width="2"/>
+ <rect x="-10" y="-23" width="20" height="6" rx="2" fill="#e6f8ef"/>
+ <circle cx="-6" cy="-20" r="2" fill="#12364e"/><circle cx="6" cy="-20" r="2" fill="#12364e"/>
+ </g>
+ <g transform="translate(37 0) rotate(1.3)">
+ <path d="M-10 16 Q-18 -22 -15 -60 L-11 -152 Q-12 -181 -2 -190 Q6 -188 11 -157 L14 -58 Q18 -14 10 17 Q0 25 -10 16Z" fill="#072c46" stroke="#05263c" stroke-width="3"/>
+ <path d="M-6 10 Q-11 -24 -9 -72 L-6 -163 Q-5 -181 1 -180 Q8 -170 6 -153 L9 -69 Q13 -21 5 10Z" fill="url(#ski)"/>
+ <path d="M-8 -104 L7 -102 M-7 -88 L8 -86 M-5 -32 L6 -30" stroke="#d9ffef" stroke-width="2.5" opacity=".9"/>
+ <path d="M-14 -27 L14 -27 L12 -13 L-12 -13Z" fill="#133a4f" stroke="#9cd6dc" stroke-width="2"/>
+ <rect x="-10" y="-23" width="20" height="6" rx="2" fill="#e6f8ef"/>
+ <circle cx="-6" cy="-20" r="2" fill="#12364e"/><circle cx="6" cy="-20" r="2" fill="#12364e"/>
+ </g>
+    <!-- mechanically plausible front/rear fork and damped strut between ski mounts -->
+    <g stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-36 -25 L-21 -65 L0 -38 L21 -65 L36 -25" fill="none" stroke="#0c2f48" stroke-width="15"/>
+      <path d="M-36 -25 L-21 -65 L0 -38 L21 -65 L36 -25" fill="none" stroke="url(#frame)" stroke-width="7"/>
+      <path d="M0 -38 L0 -82" stroke="#092e43" stroke-width="11"/><path d="M0 -38 L0 -82" stroke="#c3f8f0" stroke-width="4"/>
+      <path d="M-18 -44 L-18 -9 M18 -44 L18 -9" stroke="#bedadd" stroke-width="5"/>
+      <path d="M-24 -42 L-14 -42 M-23 -32 L-13 -32 M14 -42 L24 -42 M13 -32 L23 -32" stroke="#0e5166" stroke-width="3"/>
+      <path d="M-40 -91 L40 -91" stroke="#0b2b41" stroke-width="11"/><path d="M-40 -92 L40 -92" stroke="#e7f4e2" stroke-width="3"/>
+    </g>
+    <rect x="-18" y="-51" width="36" height="11" rx="5" fill="#122c3b"/><path d="M-14 -48 L15 -48" stroke="#a1bbc6" stroke-width="2"/>
+    <!-- separate boots and articulated legs -->
+    <g transform="translate(-21.75 0)">
+      <path d="M13 -63 Q5 -45 0 -11" fill="none" stroke="#0b243d" stroke-width="24" stroke-linecap="round"/>
+      <path d="M11 -63 Q5 -47 0 -13" fill="none" stroke="url(#pants)" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-9 -19 Q-11 -11 -8 8 L8 8 Q13 -8 8 -19Z" fill="#102e41" stroke="#071b32" stroke-width="3"/>
+      <path d="M-7 -12 L8 -12 M-6 -6 L7 -6" stroke="#d8eef1" stroke-width="2"/>
+     </g><g transform="translate(21.75 0)">
+      <path d="M-13 -63 Q-5 -45 0 -11" fill="none" stroke="#0b243d" stroke-width="24" stroke-linecap="round"/>
+      <path d="M-11 -63 Q-5 -47 0 -13" fill="none" stroke="url(#pants)" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-9 -19 Q-11 -11 -8 8 L8 8 Q13 -8 8 -19Z" fill="#102e41" stroke="#071b32" stroke-width="3"/>
+      <path d="M-7 -12 L8 -12 M-6 -6 L7 -6" stroke="#d8eef1" stroke-width="2"/>
+     </g>
+    <!-- windbreaker body in a forward athletic tuck, spine and fabric folds -->
+    <path d="M-37 -127 Q-28 -138 -19 -136 L18 -136 Q32 -128 37 -108 L28 -72 Q15 -60 -14 -61 L-32 -77Z" fill="#092b47" stroke="#0a2338" stroke-width="5"/>
+    <path d="M-34 -124 Q-20 -139 0 -137 Q25 -139 34 -116 L24 -77 Q6 -70 -17 -77Z" fill="url(#jacket)"/>
+    <path d="M-2 -134 Q5 -110 2 -78" fill="none" stroke="#e8ee98" stroke-width="5"/>
+    <path d="M-25 -111 Q-14 -93 -19 -80 M23 -116 Q14 -97 19 -82" stroke="#b5ffdd" stroke-width="2.5" opacity=".8"/>
+    <path d="M-27 -81 Q-5 -69 26 -80" stroke="#082e44" stroke-width="5" fill="none"/>
+    <!-- dynamic elbow and hand alignment -->
+    <g>
+      <path d="M-28 -125 Q-41.85 -109 -43 -98 L-38 -92" fill="none" stroke="#0b314d" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-29 -122 Q-37 -108 -41 -100" fill="none" stroke="#67c8c6" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="-39" cy="-91" rx="9" ry="7" fill="#18354b" stroke="#d1f1e5" stroke-width="2"/>
+      </g><g>
+      <path d="M28 -125 Q41.85 -109 43 -98 L38 -92" fill="none" stroke="#0b314d" stroke-width="17" stroke-linecap="round"/>
+      <path d="M29 -122 Q37 -108 41 -100" fill="none" stroke="#67c8c6" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="39" cy="-91" rx="9" ry="7" fill="#18354b" stroke="#d1f1e5" stroke-width="2"/>
+      </g>
+    <!-- aerodynamic helmet, goggles, vents, ear protectors -->
+    <ellipse cx="0" cy="-155" rx="31" ry="36" fill="#09283b" stroke="#133b50" stroke-width="4"/>
+    <ellipse cx="0" cy="-157" rx="27" ry="31" fill="url(#helmet)"/>
+    <path d="M-27 -164 Q0 -179 27 -164 L22 -149 Q0 -144 -22 -149Z" fill="url(#glass)" stroke="#13364c" stroke-width="4"/>
+    <path d="M-20 -161 Q-3 -164 17 -159" fill="none" stroke="#d3ffff" stroke-width="3" opacity=".9"/>
+    <path d="M-18 -183 Q0 -191 18 -182 M-11 -178 L-9 -171 M10 -178 L10 -171" stroke="#eff9e3" stroke-width="3" fill="none"/>
+    <path d="M-26 -146 Q0 -131 26 -147" fill="none" stroke="#18384e" stroke-width="5"/>
+   </g>
+ </g>
+<g transform="translate(840 239)">
+   <g transform="rotate(-4 0 -73)">
+    <ellipse cx="0" cy="15" rx="53" ry="11" fill="#09364b" opacity=".18"/>
+    
+ <g transform="translate(-37 0) rotate(-5)">
+ <path d="M-10 16 Q-18 -22 -15 -60 L-11 -152 Q-12 -181 -2 -190 Q6 -188 11 -157 L14 -58 Q18 -14 10 17 Q0 25 -10 16Z" fill="#072c46" stroke="#05263c" stroke-width="3"/>
+ <path d="M-6 10 Q-11 -24 -9 -72 L-6 -163 Q-5 -181 1 -180 Q8 -170 6 -153 L9 -69 Q13 -21 5 10Z" fill="url(#ski)"/>
+ <path d="M-8 -104 L7 -102 M-7 -88 L8 -86 M-5 -32 L6 -30" stroke="#d9ffef" stroke-width="2.5" opacity=".9"/>
+ <path d="M-14 -27 L14 -27 L12 -13 L-12 -13Z" fill="#133a4f" stroke="#9cd6dc" stroke-width="2"/>
+ <rect x="-10" y="-23" width="20" height="6" rx="2" fill="#e6f8ef"/>
+ <circle cx="-6" cy="-20" r="2" fill="#12364e"/><circle cx="6" cy="-20" r="2" fill="#12364e"/>
+ </g>
+ <g transform="translate(37 0) rotate(5)">
+ <path d="M-10 16 Q-18 -22 -15 -60 L-11 -152 Q-12 -181 -2 -190 Q6 -188 11 -157 L14 -58 Q18 -14 10 17 Q0 25 -10 16Z" fill="#072c46" stroke="#05263c" stroke-width="3"/>
+ <path d="M-6 10 Q-11 -24 -9 -72 L-6 -163 Q-5 -181 1 -180 Q8 -170 6 -153 L9 -69 Q13 -21 5 10Z" fill="url(#ski)"/>
+ <path d="M-8 -104 L7 -102 M-7 -88 L8 -86 M-5 -32 L6 -30" stroke="#d9ffef" stroke-width="2.5" opacity=".9"/>
+ <path d="M-14 -27 L14 -27 L12 -13 L-12 -13Z" fill="#133a4f" stroke="#9cd6dc" stroke-width="2"/>
+ <rect x="-10" y="-23" width="20" height="6" rx="2" fill="#e6f8ef"/>
+ <circle cx="-6" cy="-20" r="2" fill="#12364e"/><circle cx="6" cy="-20" r="2" fill="#12364e"/>
+ </g>
+    <!-- mechanically plausible front/rear fork and damped strut between ski mounts -->
+    <g stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-36 -25 L-21 -65 L0 -38 L21 -65 L36 -25" fill="none" stroke="#0c2f48" stroke-width="15"/>
+      <path d="M-36 -25 L-21 -65 L0 -38 L21 -65 L36 -25" fill="none" stroke="url(#frame)" stroke-width="7"/>
+      <path d="M0 -38 L0 -82" stroke="#092e43" stroke-width="11"/><path d="M0 -38 L0 -82" stroke="#c3f8f0" stroke-width="4"/>
+      <path d="M-18 -44 L-18 -9 M18 -44 L18 -9" stroke="#bedadd" stroke-width="5"/>
+      <path d="M-24 -42 L-14 -42 M-23 -32 L-13 -32 M14 -42 L24 -42 M13 -32 L23 -32" stroke="#0e5166" stroke-width="3"/>
+      <path d="M-40 -91 L40 -91" stroke="#0b2b41" stroke-width="11"/><path d="M-40 -92 L40 -92" stroke="#e7f4e2" stroke-width="3"/>
+    </g>
+    <rect x="-18" y="-51" width="36" height="11" rx="5" fill="#122c3b"/><path d="M-14 -48 L15 -48" stroke="#a1bbc6" stroke-width="2"/>
+    <!-- separate boots and articulated legs -->
+    <g transform="translate(-22.45 -5)">
+      <path d="M13 -63 Q5 -45 0 -11" fill="none" stroke="#0b243d" stroke-width="24" stroke-linecap="round"/>
+      <path d="M11 -63 Q5 -47 0 -13" fill="none" stroke="url(#pants)" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-9 -19 Q-11 -11 -8 8 L8 8 Q13 -8 8 -19Z" fill="#102e41" stroke="#071b32" stroke-width="3"/>
+      <path d="M-7 -12 L8 -12 M-6 -6 L7 -6" stroke="#d8eef1" stroke-width="2"/>
+     </g><g transform="translate(22.45 -5)">
+      <path d="M-13 -63 Q-5 -45 0 -11" fill="none" stroke="#0b243d" stroke-width="24" stroke-linecap="round"/>
+      <path d="M-11 -63 Q-5 -47 0 -13" fill="none" stroke="url(#pants)" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-9 -19 Q-11 -11 -8 8 L8 8 Q13 -8 8 -19Z" fill="#102e41" stroke="#071b32" stroke-width="3"/>
+      <path d="M-7 -12 L8 -12 M-6 -6 L7 -6" stroke="#d8eef1" stroke-width="2"/>
+     </g>
+    <!-- windbreaker body in a forward athletic tuck, spine and fabric folds -->
+    <path d="M-37 -127 Q-28 -138 -19 -136 L18 -136 Q32 -128 37 -108 L28 -72 Q15 -60 -14 -61 L-32 -77Z" fill="#092b47" stroke="#0a2338" stroke-width="5"/>
+    <path d="M-34 -124 Q-20 -139 0 -137 Q25 -139 34 -116 L24 -77 Q6 -70 -17 -77Z" fill="url(#jacket)"/>
+    <path d="M-2 -134 Q5 -110 2 -78" fill="none" stroke="#e8ee98" stroke-width="5"/>
+    <path d="M-25 -111 Q-14 -93 -19 -80 M23 -116 Q14 -97 19 -82" stroke="#b5ffdd" stroke-width="2.5" opacity=".8"/>
+    <path d="M-27 -81 Q-5 -69 26 -80" stroke="#082e44" stroke-width="5" fill="none"/>
+    <!-- dynamic elbow and hand alignment -->
+    <g>
+      <path d="M-28 -125 Q-42.19 -109 -43 -98 L-38 -92" fill="none" stroke="#0b314d" stroke-width="17" stroke-linecap="round"/>
+      <path d="M-29 -122 Q-37 -108 -41 -100" fill="none" stroke="#67c8c6" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="-39" cy="-91" rx="9" ry="7" fill="#18354b" stroke="#d1f1e5" stroke-width="2"/>
+      </g><g>
+      <path d="M28 -125 Q42.19 -109 43 -98 L38 -92" fill="none" stroke="#0b314d" stroke-width="17" stroke-linecap="round"/>
+      <path d="M29 -122 Q37 -108 41 -100" fill="none" stroke="#67c8c6" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="39" cy="-91" rx="9" ry="7" fill="#18354b" stroke="#d1f1e5" stroke-width="2"/>
+      </g>
+    <!-- aerodynamic helmet, goggles, vents, ear protectors -->
+    <ellipse cx="0" cy="-155" rx="31" ry="36" fill="#09283b" stroke="#133b50" stroke-width="4"/>
+    <ellipse cx="0" cy="-157" rx="27" ry="31" fill="url(#helmet)"/>
+    <path d="M-27 -164 Q0 -179 27 -164 L22 -149 Q0 -144 -22 -149Z" fill="url(#glass)" stroke="#13364c" stroke-width="4"/>
+    <path d="M-20 -161 Q-3 -164 17 -159" fill="none" stroke="#d3ffff" stroke-width="3" opacity=".9"/>
+    <path d="M-18 -183 Q0 -191 18 -182 M-11 -178 L-9 -171 M10 -178 L10 -171" stroke="#eff9e3" stroke-width="3" fill="none"/>
+    <path d="M-26 -146 Q0 -131 26 -147" fill="none" stroke="#18384e" stroke-width="5"/>
+   </g>
+ </g></svg>
