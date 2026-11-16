@@ -8,11 +8,11 @@ const root=path.resolve(__dirname,'..');
 const src=p=>readFileSync(path.join(root,p),'utf8');
 const engine=()=>import('data:text/javascript;base64,'+Buffer.from(src('roda-rumble/engine.js')).toString('base64'));
 
-test('RodaRumble provides six original finite levels with distinct targets and materials',async()=>{
+test('RodaRumble provides ten original finite levels with distinct targets and materials',async()=>{
   const e=await engine();
-  assert.equal(e.LEVELS.length,6);
-  assert.equal(new Set(e.LEVELS.map(x=>x.name)).size,6);
-  for(let i=0;i<6;i++){
+  assert.equal(e.LEVELS.length,10);
+  assert.equal(new Set(e.LEVELS.map(x=>x.name)).size,10);
+  for(let i=0;i<10;i++){
     const g=e.newGame(i);
     assert.equal(g.levelIndex,i);
     assert.ok(g.robots.length>=2);

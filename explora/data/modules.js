@@ -180,16 +180,55 @@ export const biciparkModules = [
     enabled: true
   },
   {
+    id: "zombiepedal",
+    category: "games",
+    title: "ZombiePedal · Escapa de la ciutat",
+    description:
+      "Pedala davant d'una horda de zombis en 4 zones arcade, salta obstacles i llança pintura per frenar-los sense fer-los mal. Recull estrelles i aconsegueix combos!",
+    href: "../zombiepedal/",
+    icon: "🧟",
+    status: "Nou joc",
+    statusType: "new",
+    tags: ["Arcade", "Persecució", "Salts", "Zombis", "4 zones", "Paintball"],
+    enabled: true
+  },
+  {
+    id: "snowbike-downhill",
+    category: "games",
+    title: "SnowBike Downhill · Descens alpí",
+    description:
+      "Competeix en quatre proves de descens amb una bicicleta d'esquí. Porta l'eslàlom al límit, esquiva animals que creuen la pista i bat el cronòmetre.",
+    href: "../snowbike-downhill/",
+    icon: "⛷️",
+    status: "Nou joc",
+    statusType: "new",
+    tags: ["Descens", "Arcade", "Esquí", "Animals", "Contrarellotge", "4 pistes"],
+    enabled: true
+  },
+  {
+    id: "bike-parking-puzzle",
+    category: "games",
+    title: "BiciPark Puzzle · Aparca-les!",
+    description:
+      "Dotze nivells de lògica en quatre capítols: mou bicicletes, allibera passadissos i aparca-les amb moviments limitats. Pistes reals i desfés!",
+    href: "../bike-parking-puzzle/",
+    icon: "🧩",
+    status: "Nou joc",
+    statusType: "new",
+    tags: ["Lògica", "Aparcament", "Bicicletes", "12 nivells", "Estratègia"],
+    enabled: true
+  },
+  {
     id: "roda-rumble",
     category: "games",
     title: "RodaRumble · Destrueix les torres",
     description:
-      "Apunta una llançadora, dispara rodes i fes caure estructures de fusta, vidre i acer. Quatre nivells de física i explosions!",
+      "Apunta una llançadora, dispara rodes i fes caure estructures de fusta, vidre i acer. Deu nivells de física i explosions!",
     href: "../roda-rumble/",
     icon: "💥",
     status: "Nou joc",
     statusType: "new",
-    tags: ["Demolició", "Arcade", "Física", "4 nivells", "Puzle"],
+    tags: ["Demolició", "Arcade", "Física", "10 nivells", "Puzle"],
     enabled: true
   },
   {

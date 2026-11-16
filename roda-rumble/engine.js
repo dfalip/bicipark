@@ -49,7 +49,44 @@ export const LEVELS=Object.freeze([
     ["glass",613,334,143,20],["wood",794,482,49,60],["glass",854,482,49,60],
     ["steel",917,480,51,62],["wood",851,427,177,22],
     ["glass",809,384,48,65],["wood",882,386,45,62],["steel",850,337,142,20]
-   ],robots:[[609,300],[851,303],[746,487],[950,486]],bombs:[[715,491],[774,492]]}
+   ],robots:[[609,300],[851,303],[746,487],[950,486]],bombs:[[715,491],[774,492]]},
+  {name:"Dues vies",subtitle:"Dues torres separades: decideix quina atacar primer",shots:5,
+   blocks:[
+    ["wood",527,482,52,56],["glass",593,479,51,62],
+    ["wood",561,427,136,22],["steel",560,385,48,67],
+    ["glass",738,482,53,56],["wood",804,483,52,55],
+    ["steel",872,481,48,59],["wood",804,431,180,22],
+    ["glass",761,391,48,61],["wood",849,388,51,65]
+   ],robots:[[561,348],[805,395],[918,488]],bombs:[[685,493]]},
+  {name:"Reacció en cadena",subtitle:"Tres bidons i un pont: planifica una explosió doble",shots:5,
+   blocks:[
+    ["wood",540,480,49,58],["glass",602,481,53,55],
+    ["wood",572,429,136,20],["steel",574,381,46,70],
+    ["glass",735,480,46,62],["steel",792,481,45,60],
+    ["wood",764,430,126,22],["glass",767,386,52,64],
+    ["wood",895,479,49,59],["glass",944,481,43,56],
+    ["wood",919,430,92,21]
+   ],robots:[[571,344],[767,353],[920,394],[842,486]],bombs:[[675,490],[856,493],[975,491]]},
+  {name:"Torre de cristall",subtitle:"Protegeix les rodes i apunta als pilars fràgils",shots:6,
+   blocks:[
+    ["glass",580,481,48,60],["glass",639,481,48,60],
+    ["wood",610,430,142,20],["glass",575,383,47,69],
+    ["glass",646,383,47,69],["steel",610,334,155,23],
+    ["steel",804,481,48,60],["glass",863,481,48,60],
+    ["wood",834,430,153,22],["glass",794,385,42,68],
+    ["glass",878,383,43,70],["wood",834,334,156,22]
+   ],robots:[[609,298],[834,300],[720,488],[944,486]],bombs:[[750,492]]},
+  {name:"El cap final",subtitle:"Quatre robots, dues cadenes i una torre central reforçada",shots:6,
+   blocks:[
+    ["steel",525,482,49,60],["wood",590,481,51,60],
+    ["glass",558,428,145,21],["wood",556,383,46,67],
+    ["steel",677,481,48,61],["glass",737,481,48,61],
+    ["wood",707,427,150,23],["steel",703,380,49,73],
+    ["glass",703,327,129,20],["steel",817,480,46,64],
+    ["wood",879,482,49,60],["glass",846,427,133,22],
+    ["glass",814,385,42,66],["steel",882,384,48,66],
+    ["wood",851,335,166,21]
+   ],robots:[[559,350],[706,290],[849,298],[930,486]],bombs:[[641,491],[793,490],[957,489]]}
 ]);
 export const SHOT_TYPES=Object.freeze([
   {id:"impact",label:"RODA MARTELL",icon:"●",color:"#ffe16a",help:"Impacte potent contra fusta i vidre"},

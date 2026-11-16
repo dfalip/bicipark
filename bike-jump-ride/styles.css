@@ -57,3 +57,22 @@ footer{text-align:center;margin:27px 0 0;padding:16px 0;border-top:1px solid var
 }
 @media(max-width:390px){.brand{font-size:.78rem}.brand b{font-size:.5rem}.intro h1{font-size:2.4rem}.control{font-size:.5rem}.control small{font-size:.39rem}}
 @media(prefers-reduced-motion:reduce){.progress-rail>div{transition:none}}
+
+/* Original progression challenges: no third-party assets or tracking. */
+.ride-challenge-panel{margin:12px 0 14px;padding:15px 17px;background:linear-gradient(140deg,#173f52,#102a3d);border:1px solid #9be7cf64;border-radius:14px}
+.challenge-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.challenge-panel-head h2{font-size:clamp(.92rem,1.7vw,1.16rem);font-weight:1000;letter-spacing:-.03em;margin:3px 0 0}
+.challenge-panel-head .eyebrow{font-size:.58rem}
+.challenge-panel-head>span{font-size:.79rem;font-weight:950;color:var(--yellow);white-space:nowrap;border:1px solid #fff09b6c;border-radius:999px;padding:7px 12px;background:#0c3344}
+.challenge-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.challenge-item{display:grid;grid-template-columns:26px minmax(0,1fr);align-items:center;column-gap:7px;row-gap:4px;padding:9px 9px;background:#0b2b3e;border:1px solid #80c8c267;border-radius:11px;min-height:72px}
+.challenge-item--achieved{border-color:#f4e78c;background:#314e48}
+.challenge-item--earned{border-color:#8deccf}
+.challenge-icon{font-size:1.2rem;grid-row:1/3;text-align:center;color:var(--yellow)}
+.challenge-item strong{font-size:.71rem;color:#f3fffb;line-height:1.18}
+.challenge-item small{font-size:.59rem;color:#b7dbe0;line-height:1.3}
+.challenge-item--achieved strong{color:#fff4ad}
+.challenge-note{color:#a8cad1;font-size:.68rem;line-height:1.45;margin:10px 0 0}
+.finish-medal-summary{font-weight:950;color:#f4e7a1!important}
+@media(max-width:850px){.challenge-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:520px){.ride-challenge-panel{padding:10px}.challenge-panel-head{gap:6px}.challenge-panel-head>span{font-size:.64rem;padding:5px 8px}.challenge-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.challenge-item{min-height:61px;padding:7px 6px;grid-template-columns:20px minmax(0,1fr);gap:3px}.challenge-icon{font-size:1rem}.challenge-item strong{font-size:.64rem}.challenge-item small{font-size:.54rem}}
