@@ -350,6 +350,53 @@ function drawGates(){
   ctx.restore();
  }
 }
+
+function drawAlpineAnimal(a){
+ const species=a.emoji==="🐇"?"rabbit":a.emoji==="🦊"?"fox":a.emoji==="🦌"?"deer":"goat";
+ const palette={
+  rabbit:["#e6e0d5","#b8b2aa","#ffe8ce"],
+  fox:["#d58e52","#9e4c33","#fff0d3"],
+  deer:["#a97752","#724d3d","#f7d8a4"],
+  goat:["#c2c7bd","#72878a","#f5e8cf"]
+ }[species];
+ const wiggle=Math.sin(game.time*10+a.id*2)*3;
+ ctx.save();ctx.translate(wiggle,0);
+ // Four hooves move in opposing phases as animals cross the piste.
+ ctx.strokeStyle="#384856";ctx.lineWidth=5;ctx.lineCap="round";
+ for(const side of [-1,1]){
+  const phase=Math.sin(game.time*11+a.id+side)*5;
+  ctx.beginPath();ctx.moveTo(side*11,-3);ctx.lineTo(side*15+phase,10);
+  ctx.moveTo(side*11,1);ctx.lineTo(side*17-phase,13);ctx.stroke();
+ }
+ // Body with back shading and small reflective highlights.
+ const fur=ctx.createLinearGradient(-26,-20,29,21);
+ fur.addColorStop(0,palette[2]);fur.addColorStop(.44,palette[0]);fur.addColorStop(1,palette[1]);
+ ctx.fillStyle=fur;ctx.strokeStyle="#42515a";ctx.lineWidth=2;
+ ctx.beginPath();ctx.ellipse(-3,-13,species==="rabbit"?18:25,16,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ // Tail changes shape depending on the species.
+ ctx.fillStyle=species==="fox"?"#fff0de":palette[0];
+ ctx.beginPath();ctx.ellipse(-25,-18,species==="fox"?13:8,7,-.3,0,Math.PI*2);ctx.fill();
+ // The head points in the direction of crossing.
+ const face=18;ctx.fillStyle=palette[0];ctx.strokeStyle="#48515b";
+ ctx.beginPath();ctx.ellipse(face,-24,species==="deer"?14:12,13,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ // Ears, antlers or horns distinguish the silhouettes without Unicode emoji.
+ for(const side of [-1,1]){
+  const height=species==="rabbit"?31:species==="deer"?26:species==="goat"?23:15;
+  const ex=face+side*8;
+  ctx.strokeStyle=species==="deer"?"#785a43":species==="goat"?"#e9dcb5":palette[1];
+  ctx.lineWidth=species==="deer"?4:7;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(ex,-32);ctx.lineTo(ex+side*6,-32-height);
+  if(species==="deer"){
+   ctx.lineTo(ex+side*12,-32-height+7);
+   ctx.moveTo(ex+side*6,-32-height+10);ctx.lineTo(ex+side*16,-32-height+8);
+  }
+  ctx.stroke();
+ }
+ ctx.fillStyle="#132d3a";ctx.beginPath();ctx.arc(face+7,-27,2.8,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#ffffffa0";ctx.beginPath();ctx.arc(face+6.1,-28,1,0,Math.PI*2);ctx.fill();
+ if(species==="fox"){ctx.fillStyle="#fff1d9";ctx.beginPath();ctx.ellipse(27,-16,9,5,-.2,0,Math.PI*2);ctx.fill();}
+ ctx.restore();
+}
 function drawAnimals(){
  const animals=game.course.animals.filter(a=>!a.passed&&screenY(a.at)>-40&&screenY(a.at)<570).sort((a,b)=>b.at-a.at);
  for(const a of animals){
@@ -357,19 +404,17 @@ function drawAnimals(){
   const x=center(a.at)+a.x*192;
   const scale=clamp(.55+y/750,.55,1.18);
   ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
-  ctx.fillStyle="#31567e3a";ctx.beginPath();ctx.ellipse(0,12,25,7,0,0,Math.PI*2);ctx.fill();
-  ctx.shadowColor="#273a5870";ctx.shadowBlur=13;
-  ctx.font="48px system-ui";ctx.textAlign="center";
-  ctx.fillText(a.emoji,0,8);ctx.shadowBlur=0;
-  if(a.phase==="crossing"&&Math.abs(a.at-game.distance)<85){
-   ctx.fillStyle="#f8bf65";ctx.beginPath();
-   ctx.moveTo(0,-77);ctx.lineTo(-13,-52);ctx.lineTo(13,-52);ctx.closePath();ctx.fill();
-   ctx.fillStyle="#1a344d";ctx.font="1000 20px system-ui";ctx.fillText("!",0,-56);
+  ctx.fillStyle="#254d604d";ctx.beginPath();ctx.ellipse(0,13,34,10,0,0,Math.PI*2);ctx.fill();
+  drawAlpineAnimal(a);
+  if(a.phase==="crossing"&&Math.abs(a.at-game.distance)<105){
+   ctx.fillStyle="#ffe1a1";ctx.strokeStyle="#31475a";ctx.lineWidth=2;
+   ctx.beginPath();ctx.moveTo(0,-99);ctx.lineTo(-15,-69);ctx.lineTo(15,-69);ctx.closePath();ctx.fill();ctx.stroke();
+   ctx.fillStyle="#294157";ctx.font="1000 20px system-ui";ctx.textAlign="center";
+   ctx.fillText("!",0,-74);
   }
   ctx.restore();
  }
 }
-
 function drawSkiBike(){
  const x=480+game.lane*196,y=427;
  const sway=game.steerVelocity*.16+game.course.wind*Math.sin(game.time*2)*.015;
