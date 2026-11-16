@@ -340,7 +340,7 @@ function drawObstacle(enemy){
  const size=enemy.type==="big"?1.35:enemy.type==="runner"?.93:1;
  const pace=enemy.type==="runner"?17:enemy.type==="big"?7:10;
  // Animated illustrated enemy poses. The procedural renderer below is an offline fallback.
- if(spriteReady(zombieAtlas,720)){
+ if(typeof zombieAtlas!=="undefined"&&spriteReady(zombieAtlas,720)){
   const phase=Math.floor(game.time*(enemy.type==="runner"?11:7)+enemy.id*.6);
   const frame=enemy.type==="helmet"?3:enemy.type==="runner"?2:Math.abs(phase)%2;
   ctx.scale(size,size);
