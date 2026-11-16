@@ -502,6 +502,32 @@ function drawAnimals(){
   ctx.restore();
  }
 }
+// Carved parallel ski tracks remain attached to the actual rider lane.
+function drawSkiGrooves(){
+ if(game.phase!=="playing"||!game.grounded)return;
+ const x=480+game.lane*196;
+ const drift=clamp(game.steerVelocity,-2,2);
+ ctx.save();ctx.lineCap="round";
+ for(const side of [-1,1]){
+  ctx.beginPath();ctx.moveTo(x+side*24,438);
+  for(let i=1;i<=9;i++){
+   const y=438+i*8;
+   ctx.lineTo(x+side*24-drift*i*1.65+Math.sin(game.time*1.5+i*.15)*i*.3,y);
+  }
+  ctx.strokeStyle="#7997b67a";ctx.lineWidth=5.5;ctx.stroke();
+  ctx.strokeStyle="#e9fdffdd";ctx.lineWidth=2;ctx.stroke();
+  // Displaced snow throws a short, soft-edged plume alongside each cut.
+  if(!reducedMotion){
+   ctx.fillStyle=game.boostTime>0?"#fff4c1a8":"#ffffffb2";
+   for(let i=0;i<7;i++){
+    const y=443+i*9,dx=side*(29+i*2.3)+Math.sin(game.time*17+i*2)*4;
+    ctx.beginPath();ctx.ellipse(x+dx-drift*i,y,1.7+i*.14,3+i*.45,side*.2,0,Math.PI*2);ctx.fill();
+   }
+  }
+ }
+ ctx.restore();
+}
+
 function drawSkiBike(){
  const x=480+game.lane*196,y=427;
  const sway=game.steerVelocity*.16+game.course.wind*Math.sin(game.time*2)*.015;
@@ -550,6 +576,13 @@ function drawSkiBike(){
   ctx.fillStyle=skiGrad;ctx.beginPath();ctx.roundRect(-6,-61,12,89,5);ctx.fill();
   ctx.fillStyle="#173d57";ctx.beginPath();ctx.roundRect(-14,-9,28,17,5);ctx.fill();
   ctx.fillStyle="#eafcfa";ctx.fillRect(-7,-8,14,4);
+  // Steel runner, binding bolts and layered ski top sheet.
+  ctx.strokeStyle="#cde8f0";ctx.lineWidth=1.8;
+  ctx.beginPath();ctx.moveTo(-9,-47);ctx.lineTo(-9,30);ctx.moveTo(9,-47);ctx.lineTo(9,30);ctx.stroke();
+  ctx.fillStyle="#233c55";
+  for(const boltY of [-30,3,22]){
+   ctx.beginPath();ctx.arc(0,boltY,2.5,0,Math.PI*2);ctx.fill();
+  }
   ctx.restore();
  }
  // Fork legs, crossbar and braced bicycle frame.
@@ -566,6 +599,22 @@ function drawSkiBike(){
  ctx.strokeStyle="#123d5b";ctx.lineWidth=8;
  ctx.beginPath();ctx.moveTo(-17,-56);ctx.lineTo(17,-56);ctx.stroke();
  ctx.fillStyle="#f8d674";ctx.beginPath();ctx.arc(0,-11,8,0,Math.PI*2);ctx.fill();
+ // Exposed centre tube, ski forks, suspension coils and the saddle under the rider.
+ // Metallic reflections and articulated bindings distinguish a ski-bike from a snowboard.
+ ctx.strokeStyle="#112f43";ctx.lineWidth=10;ctx.beginPath();
+ ctx.moveTo(0,-56);ctx.lineTo(0,-5);ctx.lineTo(-20,12);
+ ctx.moveTo(0,-5);ctx.lineTo(20,12);ctx.stroke();
+ ctx.strokeStyle="#dae8e6";ctx.lineWidth=4;ctx.beginPath();
+ ctx.moveTo(0,-52);ctx.lineTo(0,-9);ctx.stroke();
+ ctx.fillStyle="#173248";ctx.beginPath();ctx.roundRect(-14,-18,28,11,5);ctx.fill();
+ ctx.strokeStyle="#7ce1d6";ctx.lineWidth=2.5;
+ for(const side of [-1,1]){
+  for(let i=0;i<5;i++){
+   ctx.beginPath();ctx.moveTo(side*19,-16+i*5);
+   ctx.lineTo(side*(25+i%2*2),-13+i*5);ctx.stroke();
+  }
+  ctx.fillStyle="#d1efed";ctx.beginPath();ctx.arc(side*21,12,4.5,0,Math.PI*2);ctx.fill();
+ }
  // Boots, legs and ski suit are recognizable in this overhead perspective.
  const legLean=Math.sin(game.time*(2+game.velocity*.09))*1.7;
  for(const side of [-1,1]){
@@ -580,6 +629,9 @@ function drawSkiBike(){
  const jacket=ctx.createLinearGradient(-27,-62,28,-9);
  jacket.addColorStop(0,"#c2fcdf");jacket.addColorStop(.48,"#36c4b7");jacket.addColorStop(1,"#176b9d");
  ctx.fillStyle=jacket;ctx.beginPath();ctx.ellipse(0,-35,23,28,0,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle="#9af5e1";ctx.lineWidth=2;ctx.beginPath();
+ ctx.ellipse(-8,-37,10,22,-.32,Math.PI*.53,Math.PI*1.44);ctx.stroke();
+ ctx.fillStyle="#08364b77";ctx.beginPath();ctx.ellipse(13,-31,6,18,-.27,0,Math.PI*2);ctx.fill();
  ctx.fillStyle="#f4df82";ctx.beginPath();ctx.moveTo(0,-59);ctx.lineTo(-4,-35);ctx.lineTo(3,-18);ctx.lineTo(8,-36);ctx.closePath();ctx.fill();
  for(const side of [-1,1]){
   ctx.strokeStyle="#14324b";ctx.lineWidth=11;ctx.beginPath();
@@ -596,6 +648,12 @@ function drawSkiBike(){
  ctx.fillStyle="#10364e";ctx.beginPath();ctx.roundRect(-18,-80,36,18,9);ctx.fill();
  ctx.fillStyle="#a0e9f5";ctx.beginPath();ctx.roundRect(-15,-77,30,5,3);ctx.fill();
  ctx.fillStyle="#f8ffde";ctx.beginPath();ctx.ellipse(-8,-90,5,3,-.35,0,Math.PI*2);ctx.fill();
+ // Separate curved goggle lens and retaining strap for a more convincing helmet.
+ ctx.strokeStyle="#12394f";ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,-67,18,.15,Math.PI-.15);ctx.stroke();
+ const lens=ctx.createLinearGradient(-13,-81,17,-70);
+ lens.addColorStop(0,"#e9fdff");lens.addColorStop(.5,"#7ac7d6");lens.addColorStop(1,"#244d65");
+ ctx.fillStyle=lens;ctx.beginPath();ctx.roundRect(-15,-78,30,9,4);ctx.fill();
+ ctx.strokeStyle="#f8ffdd";ctx.lineWidth=1.4;ctx.strokeRect(-11,-75,21,1);
  ctx.restore();
 }
 function drawSnowRush(){
@@ -630,7 +688,7 @@ function paint(){
   ctx.translate(Math.sin(game.time*69)*visuals.shake,
     Math.cos(game.time*87)*visuals.shake*.54);
  }
- drawSnow();drawGates();drawAnimals();
+ drawSnow();drawSkiGrooves();drawGates();drawAnimals();
  drawSpeedSnow();
  // Animated speed streaks accentuate fast downhill riding without obscuring obstacles.
  if(game.velocity>43&&game.phase==="playing"){
