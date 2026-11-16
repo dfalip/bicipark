@@ -12,7 +12,7 @@ function rng(seed){let x=(seed>>>0)||1337;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5
 function makeEnemy(type,x,id){
  const rules={walker:[1,11,110],runner:[1,24,160],helmet:[2,9,220],big:[3,8,420],barrier:[Infinity,0,0]};
  const [hp,speed,points]=rules[type];
- return {id,type,x,hp,speed,points,stunned:false,passed:false,hit:false,collision:false};
+ return {id,type,x,hp,speed,points,stunned:false,stunTime:0,stunAwards:0,passed:false,hit:false,collision:false};
 }
 export function makeEnemies(seed=77){
  const random=rng(seed),out=[];let x=360,id=0;
@@ -40,7 +40,8 @@ export function makeGame(seed=77){
   horde:15,invulnerable:0,combo:0,bestCombo:0,comboTimer:0,
   enemies:makeEnemies(seed),pickups:makePickups(seed),balls:[],
   hits:0,stuns:0,dodges:0,collected:0,lastEvent:"Pedala, salta i frena els zombis amb boles de pintura!",
-  eventTimer:0,zone:0,finishStars:0,gameOverReason:""};
+  eventTimer:0,zone:0,finishStars:0,gameOverReason:"",
+  events:[],stagger:0};
 }
 export function start(g){if(g.phase!=="ready")return false;g.phase="running";g.lastEvent="FUGIDA INICIADA!";g.eventTimer=1.2;return true;}
 export function togglePause(g){
@@ -48,18 +49,23 @@ export function togglePause(g){
  if(g.phase==="paused"){g.phase="running";return true;}
  return false;
 }
-function say(g,msg){g.lastEvent=msg;g.eventTimer=1.2;}
+function say(g,msg,type="notice",details={}){
+ g.lastEvent=msg;g.eventTimer=1.2;
+ g.events.push({type,at:g.distance,time:g.time,...details});
+ if(g.events.length>64)g.events.splice(0,g.events.length-64);
+}
 export function jump(g){
  if(g.phase!=="running"||!g.grounded)return false;
  g.grounded=false;g.vy=410;g.jumps++;
- say(g,"SALT! Aterra abans del següent obstacle.");
+ say(g,"SALT! Aterra abans del següent obstacle.","jump");
  return true;
 }
 export function fire(g){
  if(g.phase!=="running"||g.ammo<=0||g.fireCooldown>0)return false;
  g.ammo--;g.fireCooldown=.27;
  g.balls.push({x:g.distance+31,y:g.altitude+33,ttl:1.25});
- say(g,"PINTURA! Frena els zombis sense fer-los mal.");
+ say(g,"PINTURA! Frena els zombis sense fer-los mal.","paint-shot",
+  {at:g.distance+31,y:g.altitude+33});
  return true;
 }
 function collision(g){
@@ -67,18 +73,22 @@ function collision(g){
  g.hearts--;g.hits++;g.combo=0;g.comboTimer=0;
  g.speed=Math.max(12,g.speed*.66);
  g.horde=clamp(g.horde+22,0,100);
- g.invulnerable=1.05;
- say(g,"XOC! La horda s'acosta. Pedala fort!");
+ g.invulnerable=1.05;g.stagger=.75;
+ say(g,"XOC! La horda s'acosta. Pedala fort!","collision",{penalty:1});
  if(g.hearts<=0)lose(g,"LA HORDA T'HA ATRAPAT! Sense vides.");
  else if(g.horde>=100)lose(g,"LA HORDA T'HA ATRAPAT! Massa a prop.");
 }
-function lose(g,reason){g.phase="lost";g.gameOverReason=reason;say(g,reason);}
+function lose(g,reason){g.phase="lost";g.gameOverReason=reason;say(g,reason,"lost");}
 function combo(g,points){
  g.combo++;g.bestCombo=Math.max(g.bestCombo,g.combo);
  g.comboTimer=3.7;g.score+=points+Math.min(280,g.combo*15);
 }
 function enemyStep(g,enemy,dt){
  if(enemy.passed)return;
+ if(enemy.stunned){
+  enemy.stunTime=Math.max(0,enemy.stunTime-dt);
+  if(enemy.stunTime===0)enemy.stunned=false;
+ }
  if(enemy.x>g.distance-40 && enemy.x<g.distance+700&&!enemy.stunned)
   enemy.x-=enemy.speed*dt;
  // Projectile collision is checked before rider collision; this rewards accuracy.
@@ -87,10 +97,20 @@ function enemyStep(g,enemy,dt){
   if(enemy.type==="barrier")continue;
   if(Math.abs(ball.x-enemy.x)<26&&ball.y<=72){
    ball.ttl=0;enemy.hp--;
+   say(g,"PLOF! Impacte de pintura!","paint-hit",
+     {at:enemy.x,y:51,enemyId:enemy.id,typeEnemy:enemy.type});
    if(enemy.hp<=0){
-    enemy.stunned=true;g.stuns++;combo(g,enemy.points);
-    say(g,"ZOMBI FRENAT! +combo");
-   }else{g.score+=25;say(g,"IMPACTE DE PINTURA! Torna a apuntar.");}
+    enemy.stunned=true;
+    enemy.stunTime=enemy.type==="big"?2.8:enemy.type==="helmet"?2.4:1.85;
+    enemy.hp=enemy.type==="big"?3:enemy.type==="helmet"?2:1;
+    if(!enemy.stunAwards){
+      enemy.stunAwards=1;g.stuns++;combo(g,enemy.points);
+    }
+    say(g,"ZOMBI FRENAT! +combo","paint-stun",{at:enemy.x,points:enemy.points,enemyId:enemy.id});
+   }else{
+    g.score+=25;say(g,"IMPACTE DE PINTURA! Torna a apuntar.","paint-hit",
+      {at:enemy.x,points:25,enemyId:enemy.id});
+   }
   }
  }
  const gap=enemy.x-(g.distance+18);
@@ -98,27 +118,31 @@ function enemyStep(g,enemy,dt){
   enemy.hit=true;
   if(g.altitude>38){
    enemy.passed=true;g.dodges++;combo(g,135);
-   say(g,"ESQUIVADA AÈRIA! +135");
+   say(g,"ESQUIVADA AÈRIA! +135","dodge",{at:enemy.x,points:135});
   }else collision(g);
  }
  if(enemy.x<g.distance-45){
   enemy.passed=true;
-  if(!enemy.hit&&!enemy.stunned){g.dodges++;combo(g,85);}
+  if(!enemy.hit&&!enemy.stunned){
+   g.dodges++;combo(g,85);
+   say(g,"ESQUIVADA! +85","dodge",{at:enemy.x,points:85});
+  }
  }
 }
 function pickupStep(g,item){
  if(item.collected||Math.abs(item.x-g.distance)>26)return;
  if(g.altitude>82)return;
  item.collected=true;g.collected++;
- if(item.kind==="heart"){g.hearts=Math.min(3,g.hearts+1);say(g,"VIDA RECUPERADA!");}
- if(item.kind==="ammo"){g.ammo=Math.min(g.maxAmmo,g.ammo+3);say(g,"MÉS BOLAS DE PINTURA!");}
- if(item.kind==="star"){combo(g,190);say(g,"ESTRELLA RECOLLIDA! +190");}
+ if(item.kind==="heart"){g.hearts=Math.min(3,g.hearts+1);say(g,"VIDA RECUPERADA!","pickup",{kind:"heart",at:item.x});}
+ if(item.kind==="ammo"){g.ammo=Math.min(g.maxAmmo,g.ammo+3);say(g,"MÉS BOLES DE PINTURA!","pickup",{kind:"ammo",at:item.x});}
+ if(item.kind==="star"){combo(g,190);say(g,"ESTRELLA RECOLLIDA! +190","pickup",{kind:"star",at:item.x,points:190});}
 }
 function advance(g,input,dt){
  if(g.phase!=="running")return;
  g.time+=dt;g.eventTimer=Math.max(0,g.eventTimer-dt);
  g.fireCooldown=Math.max(0,g.fireCooldown-dt);
  g.invulnerable=Math.max(0,g.invulnerable-dt);
+ g.stagger=Math.max(0,g.stagger-dt);
  g.comboTimer=Math.max(0,g.comboTimer-dt);
  if(g.comboTimer===0)g.combo=0;
  g.ammoClock+=dt;
@@ -131,7 +155,10 @@ function advance(g,input,dt){
  if(!g.grounded){
   g.altitude+=g.vy*dt;
   g.vy-=880*dt;
-  if(g.altitude<=0){g.altitude=0;g.vy=0;g.grounded=true;}
+  if(g.altitude<=0){
+   g.altitude=0;g.vy=0;g.grounded=true;
+   say(g,"ATERRATGE! Continua pedalant.","land");
+  }
  }
  for(const ball of g.balls){ball.x+=(460+g.speed)*dt;ball.ttl-=dt;}
  g.balls=g.balls.filter(x=>x.ttl>0&&x.x<g.distance+600);
@@ -143,12 +170,12 @@ function advance(g,input,dt){
  if(g.horde>=100)lose(g,"LA HORDA T'HA ATRAPAT! Augmenta la velocitat.");
  if(g.phase!=="running")return;
  const zone=Math.min(ZONES.length-1,Math.floor(g.distance/1450));
- if(zone>g.zone){g.zone=zone;g.score+=400;say(g,"NOVA ZONA! +400");}
+ if(zone>g.zone){g.zone=zone;g.score+=400;say(g,"NOVA ZONA! +400","zone",{zone,points:400});}
  if(g.distance>=WORLD.length){
   g.phase="finished";
   g.finishStars=g.hits===0&&g.time<127?3:g.hits<=2?2:1;
   g.score+=Math.max(0,Math.round(3000-g.time*11));
-  say(g,"HAS ESCAPAT! La ciutat queda enrere.");
+  say(g,"HAS ESCAPAT! La ciutat queda enrere.","finish");
  }
 }
 export function step(g,input={},dt=1/60){
