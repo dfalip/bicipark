@@ -88,7 +88,7 @@ test('ZombiePedal charges recharge from stars and zone progression but respect t
  assert.ok(star);g.distance=star.x;g.zone=Math.min(3,Math.floor(star.x/1450));e.step(g,{},.016);
  assert.equal(star.collected,true);
  assert.equal(g.dashCharges,1);
- g.distance=1449;g.speed=74;e.step(g,{accelerate:true},.12);
+ g.zone=0;g.distance=1449;g.speed=74;e.step(g,{accelerate:true},.12);
  assert.equal(g.zone,1);assert.equal(g.dashCharges,2);
  g.distance=2899;e.step(g,{accelerate:true},.12);
  assert.equal(g.zone,2);assert.equal(g.dashCharges,2,'rewards cannot exceed cap');
