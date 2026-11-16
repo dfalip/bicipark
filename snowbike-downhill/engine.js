@@ -86,7 +86,7 @@ export function animalPosition(animal){
 }
 function animalStep(g,a,dt,previousDistance){
  if(a.passed)return;
- if(a.phase==="waiting"&&g.distance>=a.at-105){a.phase="crossing";a.seen=true;}
+ if(a.phase==="waiting"&&g.distance>=a.at-Math.max(115,g.velocity*2.7)){a.phase="crossing";a.seen=true;}
  if(a.phase==="crossing"){
   a.progress+=a.speed*dt;
   a.x=animalPosition(a);
