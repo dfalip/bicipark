@@ -1,4 +1,4 @@
-import {COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,jump,step,scoreFinish} from "./engine.js";
+import {COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,jump,trick,step,scoreFinish} from "./engine.js";
 const $=id=>document.getElementById(id);
 const canvas=$("gameCanvas"),ctx=canvas.getContext("2d");
 const ui={course:$("courseSelect"),time:$("timeValue"),speed:$("speedValue"),
@@ -10,9 +10,9 @@ const ui={course:$("courseSelect"),time:$("timeValue"),speed:$("speedValue"),
  failedPanel:$("failedPanel"),finishStars:$("finishStars"),
  finishTime:$("finishTime"),finishSummary:$("finishSummary"),
  failedReason:$("failedReason"),next:$("nextButton"),records:$("courseRecords"),
- flash:$("impactFlash")};
+ flash:$("impactFlash"),style:$("styleValue")};
 const controls={left:$("leftButton"),right:$("rightButton"),
- tuck:$("tuckButton"),brake:$("brakeButton"),turbo:$("turboButton"),jump:$("jumpButton")};
+ tuck:$("tuckButton"),brake:$("brakeButton"),turbo:$("turboButton"),jump:$("jumpButton"),trick:$("trickButton")};
 const STORE="bicipark-snowbike-downhill-times-v1";
 function readRecords(){try{const values=JSON.parse(localStorage.getItem(STORE)||"{}");return values&&typeof values==="object"?values:{};}catch{return {};}}
 let records=readRecords();
@@ -53,6 +53,21 @@ function effectEvent(event){
   burst(skier,429,"#f6ffff",38,1.15);
   visuals.rings.push({x:skier,y:416,radius:22,life:.55,color:"#d6faff"});
   floatWord("ATERRATGE!",skier,348,"#c6ffee");
+ }else if(event.type==="trick-start"){
+  const skier=480+game.lane*196;
+  visuals.rings.push({x:skier,y:355,radius:15,life:.55,color:"#fff39a"});
+  burst(skier,356,"#ffe6a4",22,.8);
+  floatWord("360°!",skier,285,"#ffe59f");
+ }else if(event.type==="trick-land"){
+  const skier=480+game.lane*196;
+  burst(skier,412,event.perfect?"#fff0a2":"#b2ffea",event.perfect?55:30,1.3);
+  visuals.rings.push({x:skier,y:392,radius:24,life:.8,color:"#ffecab"});
+  floatWord((event.perfect?"360 PERFECTE! ":"360 COMPLET! ")+"+"+event.points,skier,290,"#fff0a4");
+  ui.notice.classList.add("notice--win");
+ }else if(event.type==="trick-fail"){
+  visuals.flash=.28;visuals.flashColor="#f7a27a";
+  floatWord("TRUC FALLAT · +2 S",480,305,"#ffe4b0");
+  burst(480+game.lane*196,419,"#ffbf88",20,.8);
  }else if(event.type==="jump-dodge"){
   const legendary=event.kind==="yeti";
   burst(x,y,legendary?"#fff3b0":"#bde4ff",legendary?52:32,1.35);
@@ -75,7 +90,7 @@ function effectEvent(event){
   const perfect=event.type==="gate-perfect";
   burst(x,y,perfect?"#fff1a2":"#b0f5f1",perfect?40:19,1.15);
   visuals.rings.push({x,y,radius:14,life:.56,color:perfect?"#ffe87c":"#94fbea"});
-  floatWord(perfect?"PERFECTE! +250":"+100",x,y-42);
+  floatWord((perfect?"PERFECTE! ":"PORTA! ")+"+"+event.points+(event.streak>1?" ×"+event.streak:""),x,y-42);
   ui.notice.classList.add("notice--win");
   ui.gates.parentElement?.classList.add("hud-success");
  }else if(event.type==="gate-miss"){
@@ -187,7 +202,7 @@ function keyAllowed(event){
  return !(event.target instanceof HTMLElement&&["BUTTON","SELECT","INPUT","TEXTAREA","A"].includes(event.target.tagName));
 }
 document.addEventListener("keydown",event=>{
- if(!["ArrowLeft","ArrowRight","ArrowDown","ArrowUp","KeyA","KeyD","KeyS","KeyW","Space","KeyJ","KeyT","KeyP"].includes(event.code))return;
+ if(!["ArrowLeft","ArrowRight","ArrowDown","ArrowUp","KeyA","KeyD","KeyS","KeyW","Space","KeyJ","KeyT","KeyK","KeyP"].includes(event.code))return;
  if(!keyAllowed(event))return;
  event.preventDefault();
  if(event.code==="KeyP"&&!event.repeat){togglePause();return;}
@@ -195,6 +210,7 @@ document.addEventListener("keydown",event=>{
  keys.add(event.code);
  if(["Space","KeyJ"].includes(event.code)&&!event.repeat)jump(game);
  if(event.code==="KeyT"&&!event.repeat)boost(game);
+ if(event.code==="KeyK"&&!event.repeat)trick(game);
 });
 document.addEventListener("keyup",event=>{
  if(keys.delete(event.code))event.preventDefault();
@@ -214,12 +230,14 @@ for(const [action,button] of Object.entries(controls)){
   try{button.setPointerCapture(event.pointerId);}catch{/* browser differences */}
   if(action==="turbo")boost(game);
   if(action==="jump")jump(game);
+  if(action==="trick")trick(game);
  });
  // Native keyboard activation of a focused game button (Enter/Space).
  button.addEventListener("click",event=>{
   if(event.detail!==0)return; // Pointer actions already fire on pointerdown.
   if(game.phase==="ready")beginRace();
   if(action==="jump")jump(game);
+  if(action==="trick")trick(game);
   if(action==="turbo")boost(game);
  });
  const release=event=>{
@@ -283,7 +301,7 @@ function feedback(dt){
    const result=scoreFinish(game);
    ui.finishStars.textContent="★".repeat(game.stars)+"☆".repeat(3-game.stars);
    ui.finishTime.textContent=formatTime(result.totalTime);
-   ui.finishSummary.textContent=`Temps real ${formatTime(result.rawTime)} · +${result.penalty} s de penalització · ${result.perfect} portes perfectes · ${result.animals} animals esquivats · ${result.jumpDodges} saltats · ${result.score} punts`;
+   ui.finishSummary.textContent=`Temps real ${formatTime(result.rawTime)} · +${result.penalty} s de penalització · ${result.perfect} portes perfectes · ratxa màxima ×${result.bestStreak} · ${result.animals} animals esquivats · ${result.jumpDodges} saltats · ${result.tricks} trucs 360° · ${result.score} punts`;
    ui.finishPanel.hidden=false;
    ui.next.focus({preventScroll:true});
   }
@@ -305,7 +323,17 @@ function refresh(){
  const progress=Math.round(game.distance/game.course.length*100);
  ui.progress.style.width=progress+"%";ui.progressText.textContent=progress+"%";
  ui.boost.style.width=game.boost+"%";ui.boostText.textContent=Math.round(game.boost)+"%";
+ const next=game.course.gates.find(gate=>!gate.passed);
+ const distance=next?Math.max(0,Math.round(next.at-game.distance)):null;
+ const canTrick=game.phase==="playing"&&!game.grounded&&!game.trickUsed&&
+  game.airHeight>=.35&&game.airVelocity>=-1.15;
+ ui.style.textContent=game.phase!=="playing"?
+  "360° + PORTES EN RATXA":canTrick?"ARA! PREM K / TRUC 360°":
+  game.trickUsed&&!game.grounded?"360° EN CURS":
+  game.streak>0?"RATXA ×"+game.streak+(next?" · porta "+distance+" m":""):
+  next?"SEGÜENT PORTA "+distance+" m":"ÚLTIM TRAM";
  controls.turbo.disabled=game.phase!=="playing"||game.boost<30||game.boostTime>0;
+ controls.trick.setAttribute("aria-disabled",String(game.phase!=="playing"||game.grounded||game.trickUsed||game.airHeight<.35||game.airVelocity< -1.15));
  controls.jump.setAttribute("aria-disabled",
   String(game.phase!=="playing"||!game.grounded||game.jumpCooldown>0||game.stumble>0));
 }
@@ -549,7 +577,7 @@ function drawSkiBike(){
    ctx.fill();ctx.restore();
   }
   ctx.translate(0,-game.airHeight*145);
-  ctx.rotate(sway+recovery+carving+airPitch);
+  ctx.rotate(sway+recovery+carving+airPitch+(game.grounded||reducedMotion?0:game.trickSpin*Math.PI*2));
   if(game.invulnerability>0&&Math.floor(game.time*16)%2===0)ctx.globalAlpha=.48;
   ctx.drawImage(riderAtlas,pose*240,0,240,260,-89,-175,178,194);
   ctx.restore();
@@ -570,7 +598,7 @@ function drawSkiBike(){
  ctx.translate(0,-game.airHeight*145);
  if(game.airHeight>0)ctx.scale(1+game.airHeight*.07,1+game.airHeight*.07);
  const airPitch=game.grounded?0:clamp(game.airVelocity*.045,-.19,.19);
- ctx.rotate(sway+recovery+carving+airPitch);
+ ctx.rotate(sway+recovery+carving+airPitch+(game.grounded||reducedMotion?0:game.trickSpin*Math.PI*2));
  if(game.invulnerability>0&&Math.floor(game.time*16)%2===0)ctx.globalAlpha=.46;
  const speed=clamp(game.velocity/85,0,1);
  // Draw physical snow cast by each ski edge, more visible at speed.
