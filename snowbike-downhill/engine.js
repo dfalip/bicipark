@@ -48,16 +48,21 @@ export function makeGame(index=0){
   lane:0,steerVelocity:0,hearts:3,penalty:0,misses:0,hits:0,
   perfectGates:0,passedGates:0,animalsDodged:0,boost:35,
   boostTime:0,boostUsed:0,stars:0,score:0,finalTime:null,
-  event:"Tria una pista i comença el descens!",eventTimer:0};
+  event:"Tria una pista i comença el descens!",eventTimer:0,
+  events:[],stumble:0,invulnerability:0};
 }
 export function start(g){if(g.phase!=="ready")return false;g.phase="playing";g.event="ENDAVANT! Controla els esquís.";g.eventTimer=1.25;return true;}
 export function pause(g){if(g.phase!=="playing")return false;g.phase="paused";return true;}
 export function resume(g){if(g.phase!=="paused")return false;g.phase="playing";return true;}
-function announce(g,message){g.event=message;g.eventTimer=1.15;}
+function announce(g,message,type="notice",details={}){
+ g.event=message;g.eventTimer=1.15;
+ g.events.push({type,at:g.distance,lane:g.lane,time:g.time,...details});
+ if(g.events.length>32)g.events.splice(0,g.events.length-32);
+}
 export function boost(g){
  if(g.phase!=="playing"||g.boost<30||g.boostTime>0)return false;
  g.boost-=30;g.boostTime=1.65;g.boostUsed++;
- announce(g,"TURBO! Busca una línia neta.");
+ announce(g,"TURBO! Busca una línia neta.","boost");
  return true;
 }
 function gateCross(g,gate){
@@ -67,13 +72,13 @@ function gateCross(g,gate){
  if(error<=.27){
   gate.quality="perfect";g.perfectGates++;g.score+=250;
   g.boost=clamp(g.boost+22,0,100);
-  announce(g,"PORTA PERFECTA! +250 i energia turbo");
+  announce(g,"PORTA PERFECTA! +250 i energia turbo","gate-perfect",{at:gate.at,lane:gate.lane,points:250});
  }else if(error<=.48){
   gate.quality="passed";g.score+=100;g.boost=clamp(g.boost+8,0,100);
-  announce(g,"PORTA SUPERADA! +100");
+  announce(g,"PORTA SUPERADA! +100","gate-pass",{at:gate.at,lane:gate.lane,points:100});
  }else{
   gate.quality="missed";g.misses++;g.penalty+=3;g.score=Math.max(0,g.score-75);
-  announce(g,"PORTA FALLADA: +3 s de penalització");
+  announce(g,"PORTA FALLADA: +3 s de penalització","gate-miss",{at:gate.at,lane:gate.lane,penalty:3});
  }
 }
 export function animalPosition(animal){
@@ -86,15 +91,17 @@ function animalStep(g,a,dt,previousDistance){
   a.progress+=a.speed*dt;
   a.x=animalPosition(a);
  }
- if(g.distance>=a.at-5 && previousDistance<=a.at+11 && !a.collision){
+ if(g.distance>=a.at-5 && previousDistance<=a.at+11 && !a.collision && g.invulnerability<=0){
   // Check approximate proximity at the rider's downhill crossing.
   const distanceGap=Math.abs(a.at-g.distance);
   if(distanceGap<=12&&Math.abs(g.lane-a.x)<a.radius+.12){
    a.collision=true;g.hits++;g.hearts=Math.max(0,g.hearts-1);
-   g.penalty+=5;g.velocity*=.63;g.boostTime=0;
-   announce(g,"ESQUIVA ELS ANIMALS! +5 s de penalització");
+   g.penalty+=5;g.velocity*=.55;g.boostTime=0;
+   g.stumble=.85;g.invulnerability=1.35;
+   announce(g,"XOC! +5 s · recupera l'equilibri!","animal-hit",
+     {at:a.at,lane:a.x,species:a.emoji,penalty:5});
    if(g.hearts===0){
-    g.phase="failed";g.event="DESCENS INTERROMPUT: 3 col·lisions. Torna-ho a provar!";
+    g.phase="failed";announce(g,"DESCENS INTERROMPUT: 3 col·lisions. Torna-ho a provar!","failed");
    }
   }
  }
@@ -102,6 +109,7 @@ function animalStep(g,a,dt,previousDistance){
   a.passed=true;
   if(!a.collision){
    g.animalsDodged++;g.score+=80;
+   announce(g,"ANIMAL ESQUIVAT! +80","animal-dodge",{at:a.at,lane:a.x,points:80});
   }
  }
 }
@@ -117,13 +125,15 @@ function advance(g,input,dt){
  const oldDistance=g.distance;
  g.time+=dt;
  g.eventTimer=Math.max(0,g.eventTimer-dt);
+ g.stumble=Math.max(0,g.stumble-dt);
+ g.invulnerability=Math.max(0,g.invulnerability-dt);
  const tuck=Boolean(input?.tuck),brake=Boolean(input?.brake);
  const max=39+g.course.id*2+ (tuck?12:0)+(g.boostTime>0?17:0);
  const target=brake?12:max;
  g.velocity+=(target-g.velocity)*Math.min(1,dt*(brake?2.9:tuck?1.45:.9));
  if(g.boostTime>0)g.boostTime=Math.max(0,g.boostTime-dt);
  const turn=clamp(Number(input?.steer)||0,-1,1);
- const turnStrength=tuck?.55:1;
+ const turnStrength=(tuck?.55:1)*(g.stumble>0?.45:1);
  g.steerVelocity+=(turn*1.15*turnStrength-g.steerVelocity)*Math.min(1,dt*9);
  // Wind and increasing speed produce small but manageable course drift.
  const drift=Math.sin(g.distance/115+g.course.seed)*g.course.wind*.12;
@@ -144,7 +154,7 @@ function advance(g,input,dt){
     g.hits<=1&&g.misses<=3&&ratio>=.77?2:1;
   const timeBonus=Math.max(0,Math.round((g.course.par-g.finalTime+20)*45));
   g.score+=timeBonus+Math.round(g.course.length/4);
-  announce(g,"META! Descens completat.");
+  announce(g,"META! Descens completat.","finish");
  }
 }
 export function step(g,input={},dt=1/60){
