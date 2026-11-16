@@ -24,6 +24,12 @@ const keys=new Set(),pointers=new Map();
 
 const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||false;
 const fx={particles:[],words:[],circles:[],shake:0,freeze:0,flash:0,color:"#ff748a",clock:0};
+const cyclistAtlas=typeof Image==="function"?new Image():null;
+const zombieAtlas=typeof Image==="function"?new Image():null;
+if(cyclistAtlas){cyclistAtlas.decoding="async";cyclistAtlas.src="./assets/cyclist-pedal-atlas.svg";}
+if(zombieAtlas){zombieAtlas.decoding="async";zombieAtlas.src="./assets/zombie-characters-atlas.svg";}
+function spriteReady(sprite,minWidth){return Boolean(sprite?.complete&&sprite.naturalWidth>=minWidth);}
+
 function burst(x,y,color,n=18,strength=1){
  if(reducedMotion)n=Math.min(n,7);
  for(let i=0;i<n;i++){
@@ -333,6 +339,23 @@ function drawObstacle(enemy){
  }
  const size=enemy.type==="big"?1.35:enemy.type==="runner"?.93:1;
  const pace=enemy.type==="runner"?17:enemy.type==="big"?7:10;
+ // Animated illustrated enemy poses. The procedural renderer below is an offline fallback.
+ if(spriteReady(zombieAtlas,720)){
+  const phase=Math.floor(game.time*(enemy.type==="runner"?11:7)+enemy.id*.6);
+  const frame=enemy.type==="helmet"?3:enemy.type==="runner"?2:Math.abs(phase)%2;
+  ctx.scale(size,size);
+  ctx.rotate(enemy.stunned?.22:Math.sin(game.time*6+enemy.id)*.045);
+  if(enemy.stunned)ctx.globalAlpha=.72;
+  ctx.drawImage(zombieAtlas,frame*180,0,180,230,-45,-122,90,125);
+  if(enemy.stunned){
+   ctx.globalAlpha=.23;ctx.fillStyle="#d3ff73";ctx.beginPath();
+   ctx.ellipse(0,-64,38,52,0,0,Math.PI*2);ctx.fill();
+   ctx.globalAlpha=1;ctx.font="900 25px system-ui";ctx.textAlign="center";
+   ctx.fillStyle="#f5ff99";ctx.fillText("✦",0,-130);
+  }
+  ctx.restore();return;
+ }
+
  const stride=enemy.stunned?0:Math.sin(game.time*pace+enemy.id*.82);
  const lurch=enemy.stunned?.35:Math.sin(game.time*pace*.5+enemy.id)*.065;
  ctx.scale(size,size);
@@ -458,6 +481,22 @@ function drawCityRush(){
 }
 function drawCyclist(){
  const x=242,y=WORLD.roadY-game.altitude;
+ // Four pre-illustrated pedal poses, animated by actual game cadence.
+ if(spriteReady(cyclistAtlas,1200)){
+  const cadence=game.time*game.speed*.092;
+  const frame=reducedMotion?0:Math.floor(((cadence%(Math.PI*2))+(Math.PI*2))%(Math.PI*2)/(Math.PI/2))%4;
+  ctx.save();ctx.fillStyle="#091b2b70";
+  ctx.beginPath();ctx.ellipse(x+2,WORLD.roadY+4,75,9,0,0,Math.PI*2);ctx.fill();ctx.restore();
+  ctx.save();ctx.translate(x,y);
+  if(game.invulnerable>0&&Math.floor(fx.clock*18)%2===0)ctx.globalAlpha=.46;
+  const wobble=game.stagger>0?Math.sin(fx.clock*31)*.24*game.stagger/.75:0;
+  const airborne=game.grounded?0:clamp(game.vy/1400,-.17,.2);
+  ctx.rotate(wobble+airborne);
+  if(!reducedMotion&&game.grounded)ctx.translate(0,Math.sin(cadence*2)*.9);
+  ctx.drawImage(cyclistAtlas,frame*300,0,300,260,-120,-208,240,208);
+  ctx.restore();return;
+ }
+
  const cadence=game.time*game.speed*.092;
  const pedal=Math.sin(cadence),pedalOther=Math.cos(cadence);
  ctx.save();ctx.translate(x,y);
