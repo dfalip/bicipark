@@ -37,7 +37,7 @@ export function makeGame(){
   return {phase:"ready",x:80,y:start.y-WORLD.radius,
     vx:0,vy:0,angle:Math.atan(start.slope),angularVelocity:0,
     grounded:true,charge:0,airTime:0,runTime:0,score:0,
-    checkpoint:0,checkpointX:80,crashes:0,landings:0,
+    checkpoint:0,checkpointX:80,crashes:0,landings:0,perfectLandings:0,
     rings:RINGS.map(x=>({...x,collected:false})),
     lastEvent:"Prem JUGAR i accelera amb → o el botó!",
     eventTick:0,crashClock:0,landingFx:0,progress:0,
@@ -93,6 +93,7 @@ function land(g,surface){
   const reward=alignment<.4?300:alignment<.79?185:70;
   g.score+=reward+Math.round(Math.min(160,g.airTime*70));
   g.landings++;
+  if(reward===300)g.perfectLandings++;
   g.landingFx=.7;g.charge=0;
   g.lastEvent=reward===300?"ATERRATGE PERFECTE! +300":reward===185?
     "BON ATERRATGE! +185":"ATERRATGE DUR! +70";
@@ -203,4 +204,42 @@ export function step(g,input,dt){
     subStep(g,{...input,jumpReleased:release&&first},h);
     first=false;remaining-=h;
   }
+}
+
+
+// Five opt-in personal challenges. Conditions come exclusively from the real
+// local game state; only a completed ride can earn a persistent medal.
+export const CHALLENGES=Object.freeze([
+  {id:"finish",title:"Primera meta",help:"Acaba el circuit",icon:"🏁"},
+  {id:"rings",title:"Caçador d'anelles",help:"Recull almenys 3 anelles i acaba",icon:"◎"},
+  {id:"landing",title:"Aterratge fi",help:"Fes 2 aterratges perfectes i acaba",icon:"✦"},
+  {id:"clean",title:"Sense caigudes",help:"Acaba sense caure",icon:"✓"},
+  {id:"speed",title:"Contrarellotge",help:"Acaba en 25 segons o menys",icon:"⏱"}
+]);
+export function challengeProgress(g){
+  const finished=g.phase==="finish";
+  const collected=g.rings.filter(r=>r.collected).length;
+  const perfect=g.perfectLandings||0;
+  return CHALLENGES.map(c=>{
+    let progress="",achieved=false;
+    switch(c.id){
+      case "finish":
+        progress=finished?"Meta completada":"Arriba a meta";
+        achieved=finished;break;
+      case "rings":
+        progress=String(Math.min(collected,3))+"/3 anelles";
+        achieved=finished&&collected>=3;break;
+      case "landing":
+        progress=String(Math.min(perfect,2))+"/2 perfectes";
+        achieved=finished&&perfect>=2;break;
+      case "clean":
+        progress=g.crashes===0?"0 caigudes":g.crashes+" caigudes";
+        achieved=finished&&g.crashes===0;break;
+      case "speed":
+        progress=Number.isFinite(g.runTime)?Math.round(g.runTime)+" / 25 s":"— / 25 s";
+        achieved=finished&&g.runTime<=25;break;
+      default:throw Error("Unrecognized challenge");
+    }
+    return {...c,progress,achieved};
+  });
 }

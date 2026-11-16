@@ -73,7 +73,7 @@ test('Predicted initial projectile trajectory and first target are finite and no
 });
 test('Additional levels have finite geometry and the shot simulation can advance',async()=>{
   const e=await engine();
-  for(let index=4;index<6;index++){
+  for(let index=4;index<10;index++){
     const g=e.newGame(index);
     assert.ok(g.robots.length>=3);
     assert.ok(g.blocks.length>=8);

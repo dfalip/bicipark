@@ -51,6 +51,7 @@
           <p class="overlay-kicker">META CREUADA!</p><h2>CIRCUIT COMPLETAT!</h2>
           <div id="finishStars" class="finish-stars">★★★</div>
           <p id="finishSummary"></p>
+          <p id="finishChallengeSummary" class="finish-medal-summary"></p>
           <button id="playAgainButton" type="button" class="play-button">↺ TORNA A JUGAR</button>
         </div>
       </div>
@@ -64,6 +65,14 @@
       <button type="button" id="accelerateButton" class="control control-gas"><span>▶</span> PEDALAR <small>→ / D</small></button>
     </section>
     <div class="jump-meter" aria-label="Impuls per al salt"><span>CARREGA DE SALT</span><div class="meter-track"><div id="jumpMeterBar"></div></div><strong id="jumpMeterLabel">0%</strong></div>
+    <section class="ride-challenge-panel" aria-label="Reptes de BikeJump Ride">
+      <div class="challenge-panel-head">
+        <div><p class="eyebrow">5 REPTES · UN CIRCUIT</p><h2>MISSIONS DEL DESCENS</h2></div>
+        <span id="challengeSummary" aria-live="polite">0 / 5 medalles</span>
+      </div>
+      <div id="challengeList" class="challenge-list"></div>
+      <p class="challenge-note">Les medalles s'aconsegueixen només en arribar a meta. Queden desades en aquest navegador; els reptes no canvien la física ni afegeixen penalitzacions.</p>
+    </section>
     <p id="instructions" class="help">La bicicleta avança només quan pedales. Mantén l'espai o SALT per carregar impuls i deixa'l anar per saltar; si arribes a una rampa, també sortiràs disparat automàticament. Corregeix l'angle durant el vol amb ↑/↓. Si caus, reapareixes al punt de control.</p>
     <footer><a href="../bike-jump/">Tornar al BikeJump clàssic</a> · Joc arcade original BiciPark · Funciona sense connexió i només desa el rècord localment</footer>
   </main>

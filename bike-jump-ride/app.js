@@ -1,4 +1,4 @@
-import {WORLD,TRACK,CHECKPOINTS,trackAt,makeGame,begin,step,clamp} from "./engine.js";
+import {WORLD,TRACK,CHECKPOINTS,trackAt,makeGame,begin,step,clamp,CHALLENGES,challengeProgress} from "./engine.js";
 
 const canvas=document.getElementById("gameCanvas"),ctx=canvas.getContext("2d");
 const $=id=>document.getElementById(id);
@@ -8,28 +8,63 @@ const ui={play:$("playButton"),again:$("playAgainButton"),restart:$("restartButt
   score:$("scoreValue"),time:$("timeValue"),best:$("bestValue"),progress:$("progressBar"),
   progressLabel:$("progressLabel"),zone:$("zoneLabel"),state:$("stateLabel"),
   status:$("statusText"),notice:$("centerNotice"),jumpBar:$("jumpMeterBar"),
-  jumpLabel:$("jumpMeterLabel")};
+  jumpLabel:$("jumpMeterLabel"),challengeSummary:$("challengeSummary"),
+  challengeList:$("challengeList"),finishChallengeSummary:$("finishChallengeSummary")};
 const touch={
   brake:$("brakeButton"),leanBack:$("leanBackButton"),jump:$("jumpButton"),
   leanForward:$("leanForwardButton"),gas:$("accelerateButton")
 };
 const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||false;
 const BEST_KEY="bicipark-bike-jump-ride-best-v1";
+const AWARDS_KEY="bicipark-bike-jump-ride-medals-v1";
 function loadBest(){
   try{const x=Number(localStorage.getItem(BEST_KEY));return Number.isFinite(x)&&x>0?x:0;}
   catch{return 0;}
 }
 function storeBest(value){try{localStorage.setItem(BEST_KEY,String(value));}catch{/* private browsing */}}
+function loadAwards(){
+  try{
+    const stored=JSON.parse(localStorage.getItem(AWARDS_KEY)||"[]");
+    const valid=Array.isArray(stored)?stored.filter(id=>CHALLENGES.some(c=>c.id===id)):[];
+    return new Set(valid);
+  }catch{return new Set();}
+}
+function storeAwards(){
+  try{localStorage.setItem(AWARDS_KEY,JSON.stringify([...awards]));}
+  catch{/* private browsing */}
+}
+function renderChallenges(){
+  const current=challengeProgress(game);
+  ui.challengeSummary.textContent=`${awards.size} / ${CHALLENGES.length} medalles aconseguides`;
+  ui.challengeList.replaceChildren();
+  for(const entry of current){
+    const tile=document.createElement("div");
+    const earned=awards.has(entry.id);
+    tile.className="challenge-item"+(entry.achieved?" challenge-item--achieved":"")+
+      (earned?" challenge-item--earned":"");
+    tile.title=entry.help;
+    tile.setAttribute("aria-label",entry.title+": "+entry.help+". "+entry.progress+
+      (earned?". Medalla aconseguida.":""));
+    const icon=document.createElement("span");
+    icon.className="challenge-icon";icon.setAttribute("aria-hidden","true");
+    icon.textContent=earned?"★":entry.icon;
+    const title=document.createElement("strong");title.textContent=entry.title;
+    const desc=document.createElement("small");
+    desc.textContent=earned?"★ Aconseguida":entry.progress;
+    tile.append(icon,title,desc);ui.challengeList.append(tile);
+  }
+}
 const keys=new Set(),pointers=new Map();
-let game=makeGame(),best=loadBest(),camera=0,lastFrame=null,queuedRelease=false;
+let game=makeGame(),best=loadBest(),awards=loadAwards(),camera=0,lastFrame=null,queuedRelease=false;
+let lastChallengeRender=-Infinity;
 let previousEvent="",previousPhase="ready",noticeTimer=0;
 const particles=[];
 function reset(){
   game=makeGame();camera=0;lastFrame=null;previousEvent="";previousPhase="ready";
   keys.clear();pointers.clear();queuedRelease=false;particles.length=0;
-  noticeTimer=0;ui.notice.hidden=true;ui.ready.hidden=false;ui.finish.hidden=true;
+  noticeTimer=0;lastChallengeRender=-Infinity;ui.notice.hidden=true;ui.ready.hidden=false;ui.finish.hidden=true;
   for(const button of Object.values(touch))button.setAttribute("aria-pressed","false");
-  refresh();paint();
+  refresh();renderChallenges();paint();
 }
 function startRide(){
   if(begin(game)){
@@ -113,6 +148,12 @@ function updateFeedback(dt){
       ui.finish.hidden=false;
       ui.finishStars.textContent="★".repeat(game.finishStars)+"☆".repeat(3-game.finishStars);
       ui.finishSummary.textContent=`${Math.round(game.runTime)} segons · ${game.landings} aterratges · ${game.rings.filter(r=>r.collected).length} anelles · ${game.crashes} caigudes · ${game.score.toLocaleString("ca-ES")} punts.`;
+      const won=challengeProgress(game).filter(m=>m.achieved);
+      const oldTotal=awards.size;
+      for(const medal of won)awards.add(medal.id);
+      if(awards.size>oldTotal)storeAwards();
+      ui.finishChallengeSummary.textContent=`${won.length} reptes completats en aquesta cursa · ${awards.size}/${CHALLENGES.length} medalles totals.`;
+      renderChallenges();
       ui.again.focus({preventScroll:true});
     }
   }
@@ -131,7 +172,7 @@ function refresh(){
   ui.distance.innerHTML=`${Math.round(game.distance*.22)} <small>m</small>`;
   ui.score.textContent=Math.round(game.score).toLocaleString("ca-ES");
   ui.time.textContent=formatTime(game.runTime);
-  ui.best.textContent=Math.max(best,game.score).toLocaleString("ca-ES");
+  ui.best.textContent=best.toLocaleString("ca-ES");
   ui.progress.style.width=`${Math.round(game.progress*100)}%`;
   ui.progressLabel.textContent=`${Math.round(game.progress*100)}%`;
   ui.jumpBar.style.width=`${Math.round(game.charge*100)}%`;
@@ -328,6 +369,7 @@ function frame(time){
   const desired=clamp(game.x-240,0,WORLD.width-1000);
   camera+= (desired-camera)*Math.min(1,dt*4.8);
   updateFeedback(dt);refresh();paint();
+  if(time-lastChallengeRender>=250){lastChallengeRender=time;renderChallenges();}
   requestAnimationFrame(frame);
 }
 reset();

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a253f">
+<meta name="description" content="SnowBike Downhill, joc arcade de descens en bicicleta d'esquí. Esquiva animals, supera portes d'eslàlom i bat el cronòmetre en quatre pistes.">
+<title>SnowBike Downhill — BiciPark Play</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="../explora/?category=games"><span>✦</span> BICIPARK <b>PLAY</b></a>
+  <nav><a href="../bike-jump-ride/">BikeJump Ride</a><a href="../explora/?category=games">Tots els jocs</a></nav>
+</header>
+<main class="shell">
+  <header class="hero">
+    <div><p class="eyebrow">BICIPARK PLAY · ARCADE ALPÍ</p><h1>SNOWBIKE <span>DOWNHILL</span></h1>
+    <p>Baixa per pistes nevades en una bicicleta amb esquís. Busca la traçada més ràpida, passa les portes i <strong>esquiva els animals que travessen la pista!</strong></p></div>
+    <div class="hero-action"><label for="courseSelect">CIRCUIT</label><select id="courseSelect" aria-label="Escull una prova de descens"></select></div>
+  </header>
+  <section class="scoreboard" aria-label="Marcador">
+    <div><small>CRONÒMETRE</small><strong id="timeValue">00:00.0</strong></div>
+    <div><small>VELOCITAT</small><strong id="speedValue">0 <em>km/h</em></strong></div>
+    <div><small>PORTES</small><strong id="gatesValue">0 / 0</strong></div>
+    <div><small>PENALITZACIÓ</small><strong id="penaltyValue">+0 s</strong></div>
+    <div><small>VIDES</small><strong id="heartsValue">♥ ♥ ♥</strong></div>
+    <div><small>MILLOR MARCA</small><strong id="bestValue">—</strong></div>
+  </section>
+  <section class="game-stage" aria-label="Pista de descens">
+    <div class="stage-bar"><span id="zoneValue">PISTA DEL BOSC</span><span id="phaseValue">PREPARAT</span></div>
+    <canvas id="gameCanvas" width="960" height="540" role="img" aria-describedby="gameHelp statusText" aria-label="Pista nevada de descens amb portes d'eslàlom i animals que creuen. Mou el ciclista amb les fletxes esquerra i dreta.">Necessites un navegador amb compatibilitat amb Canvas per jugar.</canvas>
+    <div class="impact-flash" id="impactFlash" aria-hidden="true"></div>
+    <div class="progress"><div id="progressFill"></div><span id="progressValue">0%</span></div>
+    <div id="notice" class="notice" hidden aria-live="polite"></div>
+    <div id="startPanel" class="overlay">
+      <div class="overlay-inner">
+        <p class="eyebrow">PROVA CONTRARELLOTGE</p>
+        <h2>PREPARA ELS ESQUÍS!</h2>
+        <p>El temps corre tan bon punt surtis. Passa entre les banderes, evita els animals i fes servir la posició aerodinàmica per baixar més ràpid.</p>
+        <button id="startButton" type="button" class="primary">▶ INICIAR DESCENS</button>
+        <small>← → girar · ↓ velocitat · ↑ frenar · ESPAI turbo</small>
+      </div>
+    </div>
+    <div id="finishPanel" class="overlay" hidden>
+      <div class="overlay-inner">
+        <p class="eyebrow">PROVA COMPLETADA</p><h2>HAS ARRIBAT A META!</h2>
+        <p class="stars" id="finishStars">★★★</p>
+        <strong id="finishTime">00:00.0</strong>
+        <p id="finishSummary"></p>
+        <button id="nextButton" type="button" class="primary">SEGÜENT PISTA →</button>
+        <button id="retryFinish" type="button" class="secondary">↻ Repetir aquesta pista</button>
+      </div>
+    </div>
+    <div id="failedPanel" class="overlay" hidden>
+      <div class="overlay-inner">
+        <p class="eyebrow">DESCENS INTERROMPUT</p><h2>TORNA-HO A PROVAR</h2>
+        <p id="failedReason"></p>
+        <button id="retryFailed" type="button" class="primary">↻ TORNAR A SORTIR</button>
+      </div>
+    </div>
+    <div id="pausePanel" class="overlay" hidden>
+      <div class="overlay-inner"><h2>PAUSA</h2><p>La pista t'espera.</p>
+      <button id="resumeButton" type="button" class="primary">▶ CONTINUAR</button></div>
+    </div>
+  </section>
+  <div id="statusText" class="status" role="status" aria-live="polite">Prem Iniciar descens per començar.</div>
+  <section class="controls" aria-label="Controls tàctils">
+    <button id="leftButton" type="button" class="control"><span>◀</span> ESQUERRA</button>
+    <button id="brakeButton" type="button" class="control"><span>▮▮</span> FRENAR</button>
+    <button id="turboButton" type="button" class="control turbo"><span>⚡</span> TURBO</button>
+    <button id="tuckButton" type="button" class="control tuck"><span>▼</span> AERODINÀMICA</button>
+    <button id="rightButton" type="button" class="control"><span>▶</span> DRETA</button>
+  </section>
+  <div class="energy"><span>ENERGIA TURBO</span><div class="energy-track"><div id="boostFill"></div></div><strong id="boostValue">35%</strong><button id="pauseButton" type="button" class="tiny">PAUSA</button><button id="restartButton" type="button" class="tiny">↻ REINICIA</button></div>
+  <section class="how">
+    <div><p class="eyebrow">4 PISTES · DIFICULTAT CREIXENT</p><h2>La millor línia és la més ràpida</h2>
+      <p id="gameHelp">Gira amb ← → o els botons. Mantén ↓ / AERODINÀMICA per agafar velocitat, però costa més girar. Amb ↑ / FRENAR pots preparar millor les portes. Prem ESPAI / TURBO quan tinguis energia suficient. Les portes donen punts i turbo; saltar-se-les afegeix 3 segons. Cada col·lisió amb un animal afegeix 5 segons i et resta una vida. Els animals no reben cap dany: només cal esquivar-los.</p></div>
+    <div class="best-list" id="courseRecords" aria-label="Millors marques per circuit"></div>
+  </section>
+  <footer><a href="../explora/?category=games">Tots els jocs</a> · Joc arcade original BiciPark · Rècords desats al navegador</footer>
+</main>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
