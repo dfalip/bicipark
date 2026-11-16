@@ -99,3 +99,33 @@ test('Losing all hearts stops the arcade and offers accessible replay',()=>{
   assert.equal(h.w.__state().game.phase,'ready');
  }finally{h.dom.window.close();}
 });
+
+test('Real zombie crash triggers visible flash, horde pressure, wobble and damage HUD',()=>{
+ const h=setup();try{
+  h.$('playButton').click();const g=h.w.__state().game;
+  const enemy=g.enemies.find(x=>x.type==='walker');g.enemies=[enemy];
+  g.distance=enemy.x-18;g.hearts=3;g.altitude=0;
+  h.frame(0);h.frame(33);
+  assert.equal(g.hits,1);assert.equal(g.hearts,2);
+  assert.ok(g.stagger>0&&g.invulnerable>0);
+  assert.ok(Number(h.$('impactFlash').style.opacity)>.05);
+  assert.equal(h.w.document.querySelector('.stage').classList.contains('is-hit'),true);
+  assert.equal(h.$('notice').classList.contains('notice--damage'),true);
+  assert.match(h.$('statusText').textContent,/XOC/);
+ }finally{h.dom.window.close();}
+});
+test('Hitting a zombie with paint gives a visible reward event and a temporary stun',()=>{
+ const h=setup();try{
+  h.$('playButton').click();const g=h.w.__state().game;
+  const target=g.enemies.find(x=>x.type==='walker');g.enemies=[target];
+  g.distance=target.x-70;g.speed=28;
+  h.key('keydown','KeyX');
+  h.frame(0);
+  for(let i=1;i<23;i++)h.frame(i*16);
+  assert.equal(g.stuns,1);
+  assert.ok(target.stunTime>0);
+  assert.equal(h.$('notice').classList.contains('notice--reward'),true);
+  assert.ok(g.score>0);
+  h.key('keyup','KeyX');
+ }finally{h.dom.window.close();}
+});
