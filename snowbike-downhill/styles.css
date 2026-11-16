@@ -55,3 +55,17 @@ footer{font-size:.72rem;text-align:center;border-top:1px solid var(--line);paddi
 .hero h1{font-size:2.3rem}.hero p:not(.eyebrow){font-size:.75rem}.stage-bar{top:5px;left:5px;right:5px}.stage-bar span{font-size:.48rem;padding:5px 7px}
 .notice{font-size:.78rem;padding:6px}.control{font-size:.49rem}.energy{grid-template-columns:80px 1fr 27px auto auto}.energy>span{font-size:.48rem}}
 @media(prefers-reduced-motion:reduce){.progress>div,.energy-track>div{transition:none}}
+
+
+/* Feedback layers are visual-only; the simulation remains testable and deterministic. */
+.impact-flash{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:0;background:radial-gradient(ellipse at 50% 72%,transparent 35%,#ff5b68d9 100%);transition:opacity 90ms linear}
+.game-stage.is-hit{border-color:#ff8a94;box-shadow:0 0 0 4px #ff79834f,0 19px 65px #8d26378c}
+.game-stage.is-turbo{border-color:#fff3a1;box-shadow:0 0 0 3px #fef5a461,0 14px 70px #2ac3e37d}
+.notice--hit{background:#6a1e3be9;color:#fff3f3;border-color:#ffb8be;text-shadow:none;animation:snow-hit-jolt .25s 2}
+.notice--win{background:#245958e9;color:#fff5a6;border-color:#fff8b9}
+.scoreboard .hud-hit{animation:hud-hit-pop .5s ease-out}
+.scoreboard .hud-success{animation:hud-success-pop .5s ease-out}
+@keyframes snow-hit-jolt{0%,100%{transform:translateX(-50%) rotate(-2deg)}30%{transform:translateX(calc(-50% - 7px)) rotate(-6deg)}65%{transform:translateX(calc(-50% + 7px)) rotate(3deg)}}
+@keyframes hud-hit-pop{0%{background:#c74758}55%{background:#752e48}100%{background:transparent}}
+@keyframes hud-success-pop{0%{background:#c0e67b}60%{background:#4a8279}100%{background:transparent}}
+@media(prefers-reduced-motion:reduce){.impact-flash{transition:none}.notice--hit,.scoreboard .hud-hit,.scoreboard .hud-success{animation:none}}
