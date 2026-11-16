@@ -1,4 +1,4 @@
-import {COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,step,scoreFinish} from "./engine.js";
+import {COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,jump,step,scoreFinish} from "./engine.js";
 const $=id=>document.getElementById(id);
 const canvas=$("gameCanvas"),ctx=canvas.getContext("2d");
 const ui={course:$("courseSelect"),time:$("timeValue"),speed:$("speedValue"),
@@ -12,7 +12,7 @@ const ui={course:$("courseSelect"),time:$("timeValue"),speed:$("speedValue"),
  failedReason:$("failedReason"),next:$("nextButton"),records:$("courseRecords"),
  flash:$("impactFlash")};
 const controls={left:$("leftButton"),right:$("rightButton"),
- tuck:$("tuckButton"),brake:$("brakeButton"),turbo:$("turboButton")};
+ tuck:$("tuckButton"),brake:$("brakeButton"),turbo:$("turboButton"),jump:$("jumpButton")};
 const STORE="bicipark-snowbike-downhill-times-v1";
 function readRecords(){try{const values=JSON.parse(localStorage.getItem(STORE)||"{}");return values&&typeof values==="object"?values:{};}catch{return {};}}
 let records=readRecords();
@@ -39,7 +39,25 @@ function floatWord(text,x,y,color="#fff3a5"){
 function effectEvent(event){
  const y=Math.max(110,Math.min(430,screenY(event.at||game.distance)));
  const x=center(event.at||game.distance)+(event.lane??game.lane)*196;
- if(event.type==="animal-hit"){
+ if(event.type==="jump"){
+  const skier=480+game.lane*196;
+  burst(skier,425,"#e5fbff",25,1.2);
+  visuals.rings.push({x:skier,y:419,radius:19,life:.48,color:"#acdeff"});
+  floatWord("SALT!",skier,332,"#e2d8ff");
+ }else if(event.type==="land"){
+  const skier=480+game.lane*196;
+  burst(skier,429,"#f6ffff",38,1.15);
+  visuals.rings.push({x:skier,y:416,radius:22,life:.55,color:"#d6faff"});
+  floatWord("ATERRATGE!",skier,348,"#c6ffee");
+ }else if(event.type==="jump-dodge"){
+  const legendary=event.kind==="yeti";
+  burst(x,y,legendary?"#fff3b0":"#bde4ff",legendary?52:32,1.35);
+  visuals.rings.push({x,y,radius:17,life:.75,color:legendary?"#ffdc81":"#d3c4ff"});
+  floatWord(legendary?"IETI SUPERAT! +250":"SALT PERFECTE! +130",480,297,
+    legendary?"#ffe398":"#d1faff");
+  ui.notice.classList.add("notice--win");
+  ui.gates.parentElement?.classList.add("hud-success");
+ }else if(event.type==="animal-hit"){
   visuals.shake=reducedMotion?0:21;
   visuals.flash=.62;visuals.freeze=reducedMotion?0:.10;
   visuals.flashColor="#ff5367";
@@ -165,13 +183,14 @@ function keyAllowed(event){
  return !(event.target instanceof HTMLElement&&["BUTTON","SELECT","INPUT","TEXTAREA","A"].includes(event.target.tagName));
 }
 document.addEventListener("keydown",event=>{
- if(!["ArrowLeft","ArrowRight","ArrowDown","ArrowUp","KeyA","KeyD","KeyS","KeyW","Space","KeyP"].includes(event.code))return;
+ if(!["ArrowLeft","ArrowRight","ArrowDown","ArrowUp","KeyA","KeyD","KeyS","KeyW","Space","KeyJ","KeyT","KeyP"].includes(event.code))return;
  if(!keyAllowed(event))return;
  event.preventDefault();
  if(event.code==="KeyP"&&!event.repeat){togglePause();return;}
- if(game.phase==="ready"&&["ArrowDown","ArrowLeft","ArrowRight"].includes(event.code))beginRace();
+ if(game.phase==="ready"&&["ArrowDown","ArrowLeft","ArrowRight","Space","KeyJ"].includes(event.code))beginRace();
  keys.add(event.code);
- if(event.code==="Space"&&!event.repeat)boost(game);
+ if(["Space","KeyJ"].includes(event.code)&&!event.repeat)jump(game);
+ if(event.code==="KeyT"&&!event.repeat)boost(game);
 });
 document.addEventListener("keyup",event=>{
  if(keys.delete(event.code))event.preventDefault();
@@ -179,7 +198,7 @@ document.addEventListener("keyup",event=>{
 function down(action){
  return [...pointers.values()].includes(action)||
  ({left:["ArrowLeft","KeyA"],right:["ArrowRight","KeyD"],
- tuck:["ArrowDown","KeyS"],brake:["ArrowUp","KeyW"],turbo:["Space"]}[action]||[]).some(k=>keys.has(k));
+ tuck:["ArrowDown","KeyS"],brake:["ArrowUp","KeyW"],turbo:["KeyT"]}[action]||[]).some(k=>keys.has(k));
 }
 for(const [action,button] of Object.entries(controls)){
  button.setAttribute("aria-pressed","false");
@@ -189,6 +208,14 @@ for(const [action,button] of Object.entries(controls)){
   if(game.phase==="ready")beginRace();
   pointers.set(event.pointerId,action);button.setAttribute("aria-pressed","true");
   try{button.setPointerCapture(event.pointerId);}catch{/* browser differences */}
+  if(action==="turbo")boost(game);
+  if(action==="jump")jump(game);
+ });
+ // Native keyboard activation of a focused game button (Enter/Space).
+ button.addEventListener("click",event=>{
+  if(event.detail!==0)return; // Pointer actions already fire on pointerdown.
+  if(game.phase==="ready")beginRace();
+  if(action==="jump")jump(game);
   if(action==="turbo")boost(game);
  });
  const release=event=>{
@@ -252,7 +279,7 @@ function feedback(dt){
    const result=scoreFinish(game);
    ui.finishStars.textContent="★".repeat(game.stars)+"☆".repeat(3-game.stars);
    ui.finishTime.textContent=formatTime(result.totalTime);
-   ui.finishSummary.textContent=`Temps real ${formatTime(result.rawTime)} · +${result.penalty} s de penalització · ${result.perfect} portes perfectes · ${result.animals} animals esquivats · ${result.score} punts`;
+   ui.finishSummary.textContent=`Temps real ${formatTime(result.rawTime)} · +${result.penalty} s de penalització · ${result.perfect} portes perfectes · ${result.animals} animals esquivats · ${result.jumpDodges} saltats · ${result.score} punts`;
    ui.finishPanel.hidden=false;
    ui.next.focus({preventScroll:true});
   }
@@ -275,6 +302,8 @@ function refresh(){
  ui.progress.style.width=progress+"%";ui.progressText.textContent=progress+"%";
  ui.boost.style.width=game.boost+"%";ui.boostText.textContent=Math.round(game.boost)+"%";
  controls.turbo.disabled=game.phase!=="playing"||game.boost<30||game.boostTime>0;
+ controls.jump.setAttribute("aria-disabled",
+  String(game.phase!=="playing"||!game.grounded||game.jumpCooldown>0||game.stumble>0));
 }
 const TRACK_PROJECTION=.58;
 function screenY(at){return 427-(at-game.distance)*TRACK_PROJECTION;}
@@ -352,7 +381,60 @@ function drawGates(){
  }
 }
 
+
+function drawYeti(a){
+ // Original illustrated mythical creature: recognisable pale shaggy silhouette,
+ // long arms, icy eyes, snow-dusted fur and animated footsteps.
+ const walk=Math.sin(game.time*8+a.id*1.7);
+ ctx.save();ctx.translate(Math.sin(game.time*4+a.id)*2,0);
+ ctx.fillStyle="#15364f52";ctx.beginPath();ctx.ellipse(0,12,34,9,0,0,Math.PI*2);ctx.fill();
+ // Heavy legs and oversized feet.
+ for(const side of [-1,1]){
+  ctx.strokeStyle="#d0e7ef";ctx.lineWidth=14;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(side*10,-13);ctx.lineTo(side*(12+walk*4),10);ctx.stroke();
+  ctx.fillStyle="#627d95";ctx.beginPath();
+  ctx.ellipse(side*(15+walk*4),10,13,7,side*.12,0,Math.PI*2);ctx.fill();
+ }
+ // Thick swinging arms.
+ for(const side of [-1,1]){
+  const armSwing=walk*8*side;
+  ctx.strokeStyle="#eef8fc";ctx.lineWidth=17;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(side*20,-43);
+  ctx.quadraticCurveTo(side*32,-30,side*(38+armSwing*.3),-11+armSwing);
+  ctx.stroke();
+  ctx.fillStyle="#7995a6";ctx.beginPath();
+  ctx.arc(side*(38+armSwing*.3),-11+armSwing,9,0,Math.PI*2);ctx.fill();
+ }
+ const fur=ctx.createLinearGradient(-32,-72,36,10);
+ fur.addColorStop(0,"#ffffff");fur.addColorStop(.5,"#dcebf1");fur.addColorStop(1,"#8ba4b9");
+ ctx.fillStyle=fur;ctx.strokeStyle="#6b90aa";ctx.lineWidth=2.5;
+ ctx.beginPath();ctx.ellipse(0,-31,28,37,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ // Shaggy snowy tufts.
+ ctx.fillStyle="#f9ffff";
+ for(const side of [-1,1]){
+  for(let i=0;i<4;i++){
+   ctx.beginPath();ctx.moveTo(side*18,-48+i*13);
+   ctx.lineTo(side*(31+i%2*5),-49+i*13);
+   ctx.lineTo(side*25,-41+i*13);ctx.closePath();ctx.fill();
+  }
+ }
+ // Mythical hornless polar face, distinct from goats and deer.
+ ctx.fillStyle="#eef8fc";ctx.strokeStyle="#8aa5b4";
+ ctx.beginPath();ctx.ellipse(0,-67,22,24,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.fillStyle="#60778f";ctx.beginPath();ctx.ellipse(0,-62,16,13,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#a5eaff";ctx.shadowColor="#4ac9f3";ctx.shadowBlur=9;
+ for(const side of [-1,1]){ctx.beginPath();ctx.ellipse(side*9,-69,5,4,0,0,Math.PI*2);ctx.fill();}
+ ctx.shadowBlur=0;ctx.fillStyle="#25465f";ctx.beginPath();ctx.ellipse(0,-54,7,4,0,0,Math.PI*2);ctx.fill();
+ // Subtle snow crystals above the shoulders, not emoji artwork.
+ ctx.strokeStyle="#ffffffb3";ctx.lineWidth=2;
+ for(const side of [-1,1]){
+  ctx.beginPath();ctx.moveTo(side*12,-82);ctx.lineTo(side*12,-94);
+  ctx.moveTo(side*6,-88);ctx.lineTo(side*18,-88);ctx.stroke();
+ }
+ ctx.restore();
+}
 function drawAlpineAnimal(a){
+ if(a.kind==="yeti"){drawYeti(a);return;}
  const species=a.emoji==="🐇"?"rabbit":a.emoji==="🦊"?"fox":a.emoji==="🦌"?"deer":"goat";
  const palette={
   rabbit:["#e6e0d5","#b8b2aa","#ffe8ce"],
@@ -403,15 +485,19 @@ function drawAnimals(){
  for(const a of animals){
   const y=screenY(a.at);if(y<0||y>540)continue;
   const x=center(a.at)+a.x*192;
-  const scale=clamp(.55+y/750,.55,1.18);
+  const scale=clamp(.55+y/750,.55,1.18)*(a.kind==="yeti"?1.22:1);
   ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
   ctx.fillStyle="#254d604d";ctx.beginPath();ctx.ellipse(0,13,34,10,0,0,Math.PI*2);ctx.fill();
   drawAlpineAnimal(a);
-  if(a.phase==="crossing"&&Math.abs(a.at-game.distance)<105){
+  if(a.phase==="crossing"&&Math.abs(a.at-game.distance)<(a.kind==="yeti"?175:105)){
    ctx.fillStyle="#ffe1a1";ctx.strokeStyle="#31475a";ctx.lineWidth=2;
    ctx.beginPath();ctx.moveTo(0,-99);ctx.lineTo(-15,-69);ctx.lineTo(15,-69);ctx.closePath();ctx.fill();ctx.stroke();
    ctx.fillStyle="#294157";ctx.font="1000 20px system-ui";ctx.textAlign="center";
    ctx.fillText("!",0,-74);
+   if(a.kind==="yeti"){
+    ctx.fillStyle="#133850";ctx.font="1000 13px system-ui";
+    ctx.fillText("IETI",0,-110);
+   }
   }
   ctx.restore();
  }
@@ -421,11 +507,22 @@ function drawSkiBike(){
  const sway=game.steerVelocity*.16+game.course.wind*Math.sin(game.time*2)*.015;
  const recovery=game.stumble>0?Math.sin(game.time*29)*.32*Math.min(1,game.stumble/.85):0;
  const carving=Math.sin(game.time*(5+game.velocity*.11))*.012;
- ctx.save();ctx.translate(x,y);ctx.rotate(sway+recovery+carving);
+ ctx.save();ctx.translate(x,y);
+ if(game.airHeight>0.01){
+  // Stationary slope shadow makes the jumping height unambiguous.
+  ctx.save();ctx.globalAlpha=.28*(1-game.airHeight*.65);
+  ctx.fillStyle="#18384f";ctx.beginPath();
+  ctx.ellipse(0,4,36+game.airHeight*35,18+game.airHeight*17,0,0,Math.PI*2);
+  ctx.fill();ctx.restore();
+ }
+ ctx.translate(0,-game.airHeight*145);
+ if(game.airHeight>0)ctx.scale(1+game.airHeight*.07,1+game.airHeight*.07);
+ const airPitch=game.grounded?0:clamp(game.airVelocity*.045,-.19,.19);
+ ctx.rotate(sway+recovery+carving+airPitch);
  if(game.invulnerability>0&&Math.floor(game.time*16)%2===0)ctx.globalAlpha=.46;
  const speed=clamp(game.velocity/85,0,1);
  // Draw physical snow cast by each ski edge, more visible at speed.
- if(game.phase==="playing"){
+ if(game.phase==="playing"&&game.grounded){
   for(const side of [-1,1]){
    const stream=game.boostTime>0?20:12;
    ctx.strokeStyle=game.boostTime>0?"#fff3bb9c":"#daeff6b9";
@@ -438,7 +535,7 @@ function drawSkiBike(){
    }
   }
  }
- ctx.fillStyle="#27485b44";ctx.beginPath();ctx.ellipse(0,4,36,24,0,0,Math.PI*2);ctx.fill();
+ if(game.grounded){ctx.fillStyle="#27485b44";ctx.beginPath();ctx.ellipse(0,4,36,24,0,0,Math.PI*2);ctx.fill();}
  // Two curved, tapered downhill skis with alternating black and mint edges.
  for(const side of [-1,1]){
   ctx.save();ctx.translate(side*24,2);ctx.rotate(-sway*.3+side*.014);
