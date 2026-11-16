@@ -276,7 +276,8 @@ function refresh(){
  ui.boost.style.width=game.boost+"%";ui.boostText.textContent=Math.round(game.boost)+"%";
  controls.turbo.disabled=game.phase!=="playing"||game.boost<30||game.boostTime>0;
 }
-function screenY(at){return 427-(at-game.distance)*.48;}
+const TRACK_PROJECTION=.58;
+function screenY(at){return 427-(at-game.distance)*TRACK_PROJECTION;}
 function center(at){return 480+skiTrackCenter(at,game.course.id)-skiTrackCenter(game.distance,game.course.id);}
 function drawSnow(){
  const bg=ctx.createLinearGradient(0,0,960,540);
@@ -284,11 +285,11 @@ function drawSnow(){
  bg.addColorStop(0,colors[0]);bg.addColorStop(1,colors[1]);
  ctx.fillStyle=bg;ctx.fillRect(0,0,960,540);
  drawAlpineLayers();
- const start=game.distance+(427-(-20))/.48;
- const end=game.distance+(427-560)/.48;
+ const start=game.distance+(427-(-20))/TRACK_PROJECTION;
+ const end=game.distance+(427-560)/TRACK_PROJECTION;
  const bounds=[];
  for(let y=-20;y<=560;y+=14){
-  const at=game.distance+(427-y)/.48;
+  const at=game.distance+(427-y)/TRACK_PROJECTION;
   const c=center(at),w=230+15*Math.sin(at/167);
   bounds.push({y,left:c-w,right:c+w});
  }
@@ -307,7 +308,7 @@ function drawSnow(){
  for(const s of [-.55,.55]){
   ctx.beginPath();
   for(let y=0;y<=540;y+=12){
-   const at=game.distance+(427-y)/.48,x=center(at)+s*200;
+   const at=game.distance+(427-y)/TRACK_PROJECTION,x=center(at)+s*200;
    if(y===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
   }ctx.stroke();
  }
@@ -502,23 +503,23 @@ function drawSkiBike(){
 }
 function drawSnowRush(){
  if(reducedMotion||game.phase!=="playing")return;
- const strength=clamp((game.velocity-23)/62,0,1);
+ const strength=clamp((game.velocity-20)/64,0,1);
  if(strength===0)return;
  ctx.save();ctx.strokeStyle="#78b6d8";ctx.lineWidth=1.4+strength*1.8;
  ctx.globalAlpha=.12+strength*.26;
  for(let i=0;i<33;i++){
-  const x=((i*179+game.time*(game.velocity*15+i*9))%1050+1050)%1050;
+  const x=((i*179+game.time*(game.velocity*22+i*12))%1050+1050)%1050;
   const y=((i*97+game.time*(40+i%7*8))%560+560)%560;
-  const length=8+strength*33+y*.03;
+  const length=12+strength*45+y*.035;
   ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+length);ctx.stroke();
  }
  ctx.restore();
  // Fast textured piste markers flow towards the bottom of the screen.
  ctx.save();ctx.globalAlpha=.15+strength*.17;ctx.fillStyle="#93b3c9";
  for(let i=0;i<24;i++){
-  const d=(i*66+game.distance*5.4)%610;
+  const d=(i*66+game.distance*7.0)%610;
   const y=d-70;
-  const at=game.distance+(427-y)/.48;
+  const at=game.distance+(427-y)/TRACK_PROJECTION;
   const x=center(at)+((i%2)?-1:1)*((i*47)%138);
   ctx.beginPath();ctx.ellipse(x,y,2+strength*3,8+strength*16,0,0,Math.PI*2);ctx.fill();
  }
