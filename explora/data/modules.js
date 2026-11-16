@@ -180,6 +180,19 @@ export const biciparkModules = [
     enabled: true
   },
   {
+    id: "snowbike-downhill",
+    category: "games",
+    title: "SnowBike Downhill · Descens alpí",
+    description:
+      "Competeix en quatre proves de descens amb una bicicleta d'esquí. Porta l'eslàlom al límit, esquiva animals que creuen la pista i bat el cronòmetre.",
+    href: "../snowbike-downhill/",
+    icon: "⛷️",
+    status: "Nou joc",
+    statusType: "new",
+    tags: ["Descens", "Arcade", "Esquí", "Animals", "Contrarellotge", "4 pistes"],
+    enabled: true
+  },
+  {
     id: "roda-rumble",
     category: "games",
     title: "RodaRumble · Destrueix les torres",
