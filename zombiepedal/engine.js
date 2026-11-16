@@ -38,6 +38,7 @@ export function makeGame(seed=77){
   altitude:0,vy:0,grounded:true,jumps:0,
   hearts:3,ammo:8,maxAmmo:8,ammoClock:0,fireCooldown:0,
   horde:15,invulnerable:0,combo:0,bestCombo:0,comboTimer:0,
+  dashCharges:1,maxDashCharges:2,dashTime:0,dashes:0,dashDodges:0,
   enemies:makeEnemies(seed),pickups:makePickups(seed),balls:[],
   hits:0,stuns:0,dodges:0,collected:0,lastEvent:"Pedala, salta i frena els zombis amb boles de pintura!",
   eventTimer:0,zone:0,finishStars:0,gameOverReason:"",
@@ -58,6 +59,14 @@ export function jump(g){
  if(g.phase!=="running"||!g.grounded)return false;
  g.grounded=false;g.vy=410;g.jumps++;
  say(g,"SALT! Aterra abans del següent obstacle.","jump");
+ return true;
+}
+// Limited tactical sprint: a short window to pass through a dangerous enemy.
+export function dash(g){
+ if(g.phase!=="running"||g.dashCharges<=0||g.dashTime>0||g.stagger>0)return false;
+ g.dashCharges--;g.dashTime=.68;g.dashes++;
+ g.speed=Math.max(g.speed,79);g.horde=clamp(g.horde-8,0,100);
+ say(g,"ESPRINT! Travessa l'obstacle mentre dura el llampec.","dash");
  return true;
 }
 export function fire(g){
@@ -105,6 +114,7 @@ function enemyStep(g,enemy,dt){
     enemy.hp=enemy.type==="big"?3:enemy.type==="helmet"?2:1;
     if(!enemy.stunAwards){
       enemy.stunAwards=1;g.stuns++;combo(g,enemy.points);
+      if(g.stuns%3===0)g.dashCharges=Math.min(g.maxDashCharges,g.dashCharges+1);
     }
     say(g,"ZOMBI FRENAT! +combo","paint-stun",{at:enemy.x,points:enemy.points,enemyId:enemy.id});
    }else{
@@ -116,7 +126,12 @@ function enemyStep(g,enemy,dt){
  const gap=enemy.x-(g.distance+18);
  if(!enemy.hit&&!enemy.stunned&&Math.abs(gap)<18){
   enemy.hit=true;
-  if(g.altitude>38){
+  if(g.dashTime>0){
+   enemy.passed=true;g.dodges++;g.dashDodges++;
+   const points=enemy.type==="big"?275:155;combo(g,points);
+   say(g,"ESPRINT PERFECTE! +"+points+" · combo","dash-dodge",
+    {at:enemy.x,enemyId:enemy.id,points});
+  }else if(g.altitude>38){
    enemy.passed=true;g.dodges++;combo(g,135);
    say(g,"ESQUIVADA AÈRIA! +135","dodge",{at:enemy.x,points:135});
   }else collision(g);
@@ -135,12 +150,13 @@ function pickupStep(g,item){
  item.collected=true;g.collected++;
  if(item.kind==="heart"){g.hearts=Math.min(3,g.hearts+1);say(g,"VIDA RECUPERADA!","pickup",{kind:"heart",at:item.x});}
  if(item.kind==="ammo"){g.ammo=Math.min(g.maxAmmo,g.ammo+3);say(g,"MÉS BOLES DE PINTURA!","pickup",{kind:"ammo",at:item.x});}
- if(item.kind==="star"){combo(g,190);say(g,"ESTRELLA RECOLLIDA! +190","pickup",{kind:"star",at:item.x,points:190});}
+ if(item.kind==="star"){combo(g,190);g.dashCharges=Math.min(g.maxDashCharges,g.dashCharges+1);say(g,"ESTRELLA! +190 · +1 esprint","pickup",{kind:"star",at:item.x,points:190});}
 }
 function advance(g,input,dt){
  if(g.phase!=="running")return;
  g.time+=dt;g.eventTimer=Math.max(0,g.eventTimer-dt);
  g.fireCooldown=Math.max(0,g.fireCooldown-dt);
+ g.dashTime=Math.max(0,g.dashTime-dt);
  g.invulnerable=Math.max(0,g.invulnerable-dt);
  g.stagger=Math.max(0,g.stagger-dt);
  g.comboTimer=Math.max(0,g.comboTimer-dt);
@@ -148,7 +164,7 @@ function advance(g,input,dt){
  g.ammoClock+=dt;
  if(g.ammoClock>=3){g.ammoClock-=3;g.ammo=Math.min(g.maxAmmo,g.ammo+1);}
  const fast=Boolean(input.accelerate),brake=Boolean(input.brake);
- const max=fast?74:brake?24:55;
+ const max=g.dashTime>0?87:fast?74:brake?24:55;
  g.speed+=(max-g.speed)*Math.min(1,dt*(brake?3.1:2.25));
  g.distance=Math.min(WORLD.length,g.distance+g.speed*dt);
  g.score+=Math.round(g.speed*dt*2);
@@ -170,7 +186,7 @@ function advance(g,input,dt){
  if(g.horde>=100)lose(g,"LA HORDA T'HA ATRAPAT! Augmenta la velocitat.");
  if(g.phase!=="running")return;
  const zone=Math.min(ZONES.length-1,Math.floor(g.distance/1450));
- if(zone>g.zone){g.zone=zone;g.score+=400;say(g,"NOVA ZONA! +400","zone",{zone,points:400});}
+ if(zone>g.zone){g.zone=zone;g.dashCharges=Math.min(g.maxDashCharges,g.dashCharges+1);g.score+=400;say(g,"NOVA ZONA! +400 · +1 esprint","zone",{zone,points:400});}
  if(g.distance>=WORLD.length){
   g.phase="finished";
   g.finishStars=g.hits===0&&g.time<127?3:g.hits<=2?2:1;
