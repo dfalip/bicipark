@@ -110,3 +110,11 @@ test('Browser page is standalone and has accessible real keyboard and pointer co
  assert.match(app,/pointercancel/);assert.match(app,/keydown/);assert.match(app,/localStorage/);
  assert.doesNotMatch(html,/<script[^>]+https?:\/\//);
 });
+
+test('Downhill progress exposes a synchronized accessible progressbar',()=>{
+ const html=readFileSync(path.join(dir,'index.html'),'utf8');
+ const app=readFileSync(path.join(dir,'app.js'),'utf8');
+ assert.match(html,/id="raceProgress"[^>]*role="progressbar"[^>]*aria-valuemin="0"[^>]*aria-valuemax="100"[^>]*aria-valuenow="0"/);
+ assert.match(html,/id="progressValue" aria-hidden="true"/);
+ assert.match(app,/\$\("raceProgress"\)\.setAttribute\("aria-valuenow",String\(progress\)\)/);
+});
