@@ -35,3 +35,19 @@
 @keyframes zombie-heart-jolt{0%{background:#ff6371}60%{background:#69384c}100%{background:transparent}}
 @keyframes zombie-reward-pop{0%{background:#e2f99e}60%{background:#387664}100%{background:transparent}}
 @media(prefers-reduced-motion:reduce){.impact-flash{transition:none}.notice--damage,.hud .is-damaged,.hud .is-reward{animation:none}}
+
+/* Tactical dash: clear charge meter and five responsive action buttons. */
+.hud{grid-template-columns:repeat(7,minmax(0,1fr))}
+.hud>div:last-child{border-color:#ffe79c88}
+.hud>div:last-child strong{color:#fff4af}
+.buttons{grid-template-columns:repeat(5,minmax(0,1fr))}
+.control.dash{color:#153a44;background:linear-gradient(115deg,#ffef9a,#f8be78);border-color:#fff3c9}
+.control:disabled{opacity:.52;cursor:not-allowed;box-shadow:none}
+.stage.is-combo .hud{filter:none}
+@media(max-width:720px){
+ .hud{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+ .buttons{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ .buttons .control.dash{grid-column:span 2}
+ .buttons .control{min-height:65px}
+}
+@media(max-width:430px){.control.dash{font-size:.65rem}}
