@@ -33,7 +33,7 @@ h1{font-size:clamp(2.2rem,6vw,4.6rem);line-height:1;margin:0;font-weight:1000;le
 .stars{font-size:2.1rem!important;color:#ffeb86!important;letter-spacing:.15em;margin:5px!important}
 #finishTime{font-size:2rem;color:#f3ffbd;font-variant-numeric:tabular-nums}
 .status{min-height:32px;padding:12px 3px 3px;color:#f5efbb;font-size:.85rem;font-weight:900}
-.controls{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.5fr 1.2fr;gap:8px;padding:6px 0 12px}
+.controls{display:grid;grid-template-columns:1.15fr 1fr 1.25fr 1fr 1.5fr 1.15fr;gap:8px;padding:6px 0 12px}
 .control{border-radius:13px;min-height:75px;background:linear-gradient(120deg,#1b5368,#124050);border:2px solid #82c9db;color:#ecffff;font-size:.78rem;font-weight:1000;touch-action:none;user-select:none;box-shadow:0 4px #071b2a;display:grid;place-content:center;gap:3px;padding:5px}
 .control span{font-size:1.5rem;line-height:1}.control.turbo{background:linear-gradient(120deg,#d79b42,#ffe180);border-color:#fff3b0;color:#183947}.control.tuck{background:linear-gradient(120deg,#16736c,#32aa8e);border-color:#a7ffea}
 .control:active,.control[aria-pressed="true"]{transform:translateY(3px);box-shadow:0 1px #071b2a;filter:brightness(1.18)}
@@ -69,3 +69,18 @@ footer{font-size:.72rem;text-align:center;border-top:1px solid var(--line);paddi
 @keyframes hud-hit-pop{0%{background:#c74758}55%{background:#752e48}100%{background:transparent}}
 @keyframes hud-success-pop{0%{background:#c0e67b}60%{background:#4a8279}100%{background:transparent}}
 @media(prefers-reduced-motion:reduce){.impact-flash{transition:none}.notice--hit,.scoreboard .hud-hit,.scoreboard .hud-success{animation:none}}
+
+.control.jump{background:linear-gradient(125deg,#3254ad,#7e63c9);border-color:#c9d8ff;color:#fff}
+.control.jump span{font-size:2rem;color:#fff8af;text-shadow:0 1px 4px #4c4089}
+.control.jump[aria-disabled="true"]{opacity:.62;filter:saturate(.6);cursor:not-allowed}
+@media(max-width:730px){
+ .controls{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ .control{min-height:64px}
+ .control.jump{border-width:2px}
+}
+@media(max-width:440px){
+ .controls{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ .control{min-height:60px;font-size:.62rem}
+ .control.jump span{font-size:1.6rem}
+}
+@media(prefers-reduced-motion:reduce){.control{transition:none}}
