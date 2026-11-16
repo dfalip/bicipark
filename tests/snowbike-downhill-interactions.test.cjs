@@ -14,9 +14,9 @@ function setup(){
  const ctx=new Proxy({},{get(obj,k){if(k==='createLinearGradient')return ()=>gradient;if(k in obj)return obj[k];obj[k]=()=>{};return obj[k];},set(obj,k,v){obj[k]=v;return true;}});
  w.HTMLCanvasElement.prototype.getContext=()=>ctx;
  w.requestAnimationFrame=fn=>{queue.push(fn);return queue.length;};
- w.eval(read('engine.js').replace(/^export /gm,'')+'\nwindow.__engine={COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,step,scoreFinish};');
+ w.eval(read('engine.js').replace(/^export /gm,'')+'\nwindow.__engine={COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,jump,step,scoreFinish};');
  const app=read('app.js').replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/engine\.js";/,
-  'const {COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,step,scoreFinish}=window.__engine;');
+  'const {COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,jump,step,scoreFinish}=window.__engine;');
  assert.doesNotMatch(app,/^import\s/m);
  w.eval(app+'\nwindow.__state=()=>({game,keys,pointers});');
  const $=id=>w.document.getElementById(id);
@@ -49,9 +49,9 @@ test('Starting, steering, aerodynamic tuck and turbo advance the live downhill',
   assert.ok(g.lane>.1);
   assert.match(h.$('speedValue').textContent,/km\/h/);
   h.key('keyup','ArrowRight');h.key('keyup','ArrowDown');
-  h.key('keydown','Space');h.frame(1300);
+  h.key('keydown','KeyT');h.frame(1300);
   assert.equal(g.boostUsed,1);assert.ok(g.boostTime>0);
-  h.key('keyup','Space');
+  h.key('keyup','KeyT');
  }finally{h.dom.window.close();}
 });
 test('Touch controls press and release, pause and restart function',()=>{
@@ -114,5 +114,45 @@ test('A perfect gate creates on-screen reward feedback and an improved turbo met
   assert.ok(g.boost>35);
   assert.equal(h.$('notice').classList.contains('notice--win'),true);
   assert.match(h.$('statusText').textContent,/PORTA PERFECTA/);
+ }finally{h.dom.window.close();}
+});
+
+test('Space and touch controls launch a visible jump, land and restore availability',()=>{
+ const h=setup();try{
+  assert.ok(h.$('jumpButton'),'Mobile jump button exists');
+  h.$('startButton').click();
+  const g=h.w.__state().game;
+  h.key('keydown','Space');
+  assert.equal(g.jumps,1);
+  assert.equal(g.grounded,false);
+  assert.equal(g.airVelocity>0,true);
+  h.frame(0);h.frame(150);h.frame(300);
+  assert.ok(g.airHeight>.35,'The skibike must visibly rise over the piste');
+  assert.equal(h.$('jumpButton').getAttribute('aria-disabled'),'true');
+  h.key('keyup','Space');
+  for(let i=5;i<100&&(!g.grounded||g.jumpCooldown>0);i++)h.frame(i*16);
+  assert.equal(g.grounded,true);
+  assert.equal(g.jumpCooldown,0);
+  h.pointer('jumpButton','pointerdown',24);
+  assert.equal(g.jumps,2);
+  assert.equal(g.grounded,false);
+  h.pointer('jumpButton','pointerup',24);
+  assert.equal(h.w.__state().pointers.size,0);
+ }finally{h.dom.window.close();}
+});
+test('Touch jump cleanly resets after switching courses',()=>{
+ const h=setup();try{
+  h.pointer('jumpButton','pointerdown',31);
+  assert.equal(h.w.__state().game.jumps,1);
+  assert.equal(h.w.__state().game.phase,'playing');
+  h.pointer('jumpButton','pointercancel',31);
+  h.$('courseSelect').value='2';
+  h.$('courseSelect').dispatchEvent(new h.w.Event('change',{bubbles:true}));
+  const g=h.w.__state().game;
+  assert.equal(g.phase,'ready');
+  assert.equal(g.course.id,2);
+  assert.equal(g.jumps,0);
+  assert.equal(g.airHeight,0);
+  assert.equal(h.w.__state().pointers.size,0);
  }finally{h.dom.window.close();}
 });

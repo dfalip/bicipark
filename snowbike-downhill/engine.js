@@ -10,7 +10,8 @@ export const ANIMALS=Object.freeze([
  {id:"rabbit",emoji:"🐇",label:"Conill",radius:.105,speed:.70},
  {id:"fox",emoji:"🦊",label:"Guineu",radius:.14,speed:.52},
  {id:"deer",emoji:"🦌",label:"Cérvol",radius:.19,speed:.40},
- {id:"goat",emoji:"🐐",label:"Cabra",radius:.16,speed:.49}
+ {id:"goat",emoji:"🐐",label:"Cabra",radius:.16,speed:.49},
+ {id:"yeti",kind:"yeti",emoji:"❄️",label:"Ieti",radius:.29,speed:.43}
 ]);
 export const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 export function skiTrackCenter(distance,courseId=0){
@@ -34,10 +35,13 @@ export function makeCourse(index=0){
   // Keep animal encounters away from slalom gates to allow skillful routes.
   for(const gate of gates)if(Math.abs(at-gate.at)<19)at+=30;
   at=Math.min(c.length-70,at);
-  const template=ANIMALS[Math.floor(rand()*ANIMALS.length)];
+  // Each course includes one legendary yeti encounter; advanced courses have two.
+  // Other wildlife stays deterministic and common.
+  const special=i===Math.floor(c.animals*.68)||(id>=2&&i===Math.floor(c.animals*.28));
+  const template=special?ANIMALS[4]:ANIMALS[Math.floor(rand()*4)];
   const side=rand()<.5?-1:1;
   animals.push({...template,at,id:i,side,phase:"waiting",
-   x:side*1.38,seen:false,passed:false,collision:false,
+   x:side*1.38,seen:false,passed:false,collision:false,jumped:false,
    progress:0,speed:template.speed+(rand()-.5)*.1});
  }
  return {...c,id,gates,animals};
@@ -46,6 +50,7 @@ export function makeGame(index=0){
  const course=makeCourse(index);
  return {course,phase:"ready",distance:0,time:0,velocity:24,
   lane:0,steerVelocity:0,hearts:3,penalty:0,misses:0,hits:0,
+  airHeight:0,airVelocity:0,grounded:true,jumpCooldown:0,jumps:0,jumpDodges:0,
   perfectGates:0,passedGates:0,animalsDodged:0,boost:35,
   boostTime:0,boostUsed:0,stars:0,score:0,finalTime:null,
   event:"Tria una pista i comença el descens!",eventTimer:0,
@@ -58,6 +63,13 @@ function announce(g,message,type="notice",details={}){
  g.event=message;g.eventTimer=1.15;
  g.events.push({type,at:g.distance,lane:g.lane,time:g.time,...details});
  if(g.events.length>32)g.events.splice(0,g.events.length-32);
+}
+// Single, timed jump. No double-jump or jumping again during crash recovery.
+export function jump(g){
+ if(g.phase!=="playing"||!g.grounded||g.jumpCooldown>0||g.stumble>0)return false;
+ g.grounded=false;g.airHeight=0;g.airVelocity=3.8;g.jumps++;
+ announce(g,"SALT! Passa per sobre de l'animal.","jump");
+ return true;
 }
 export function boost(g){
  if(g.phase!=="playing"||g.boost<30||g.boostTime>0)return false;
@@ -91,17 +103,26 @@ function animalStep(g,a,dt,previousDistance){
   a.progress+=a.speed*dt;
   a.x=animalPosition(a);
  }
- if(g.distance>=a.at-5 && previousDistance<=a.at+11 && !a.collision && g.invulnerability<=0){
+ if(g.distance>=a.at-5 && previousDistance<=a.at+11 && !a.collision && !a.jumped && g.invulnerability<=0){
   // Check approximate proximity at the rider's downhill crossing.
   const distanceGap=Math.abs(a.at-g.distance);
   if(distanceGap<=12&&Math.abs(g.lane-a.x)<a.radius+.12){
-   a.collision=true;g.hits++;g.hearts=Math.max(0,g.hearts-1);
-   g.penalty+=5;g.velocity*=.55;g.boostTime=0;
-   g.stumble=.85;g.invulnerability=1.35;
-   announce(g,"XOC! +5 s · recupera l'equilibri!","animal-hit",
-     {at:a.at,lane:a.x,species:a.emoji,penalty:5});
-   if(g.hearts===0){
-    g.phase="failed";announce(g,"DESCENS INTERROMPUT: 3 col·lisions. Torna-ho a provar!","failed");
+   const clearance=a.kind==="yeti"?.57:.33;
+   if(!g.grounded&&g.airHeight>=clearance){
+    a.jumped=true;g.jumpDodges++;
+    const points=a.kind==="yeti"?250:130;
+    g.score+=points;
+    announce(g,a.kind==="yeti"?"IETI SALTAT! +250":"SALT PERFECTE! +130",
+      "jump-dodge",{at:a.at,lane:a.x,species:a.emoji,kind:a.kind||"wildlife",points});
+   }else{
+    a.collision=true;g.hits++;g.hearts=Math.max(0,g.hearts-1);
+    g.penalty+=5;g.velocity*=.55;g.boostTime=0;
+    g.stumble=.85;g.invulnerability=1.35;
+    announce(g,a.kind==="yeti"?"XOC AMB UN IETI! +5 s":"XOC! +5 s · recupera l'equilibri!",
+      "animal-hit",{at:a.at,lane:a.x,species:a.emoji,kind:a.kind||"wildlife",penalty:5});
+    if(g.hearts===0){
+     g.phase="failed";announce(g,"DESCENS INTERROMPUT: 3 col·lisions. Torna-ho a provar!","failed");
+    }
    }
   }
  }
@@ -118,7 +139,7 @@ export function scoreFinish(g){
  const time=g.time+g.penalty;
  return {totalTime:time,rawTime:g.time,penalty:g.penalty,
   gates:g.passedGates,perfect:g.perfectGates,animals:g.animalsDodged,
-  hits:g.hits,misses:g.misses,stars:g.stars,score:g.score};
+  hits:g.hits,misses:g.misses,stars:g.stars,score:g.score,jumps:g.jumps,jumpDodges:g.jumpDodges};
 }
 function advance(g,input,dt){
  if(g.phase!=="playing")return;
@@ -127,13 +148,22 @@ function advance(g,input,dt){
  g.eventTimer=Math.max(0,g.eventTimer-dt);
  g.stumble=Math.max(0,g.stumble-dt);
  g.invulnerability=Math.max(0,g.invulnerability-dt);
+ g.jumpCooldown=Math.max(0,g.jumpCooldown-dt);
+ if(!g.grounded){
+  g.airHeight+=g.airVelocity*dt;
+  g.airVelocity-=8.8*dt;
+  if(g.airHeight<=0){
+   g.airHeight=0;g.airVelocity=0;g.grounded=true;g.jumpCooldown=.28;
+   announce(g,"ATERRATGE A LA NEU!","land");
+  }
+ }
  const tuck=Boolean(input?.tuck),brake=Boolean(input?.brake);
  const max=55+g.course.id*2+(tuck?18:0)+(g.boostTime>0?22:0);
  const target=brake?12:max;
  g.velocity+=(target-g.velocity)*Math.min(1,dt*(brake?3.3:tuck?2.35:1.75));
  if(g.boostTime>0)g.boostTime=Math.max(0,g.boostTime-dt);
  const turn=clamp(Number(input?.steer)||0,-1,1);
- const turnStrength=(tuck?.55:1)*(g.stumble>0?.45:1);
+ const turnStrength=(tuck?.55:1)*(g.stumble>0?.45:1)*(g.grounded?1:.84);
  g.steerVelocity+=(turn*1.15*turnStrength-g.steerVelocity)*Math.min(1,dt*9);
  // Wind and increasing speed produce small but manageable course drift.
  const drift=Math.sin(g.distance/115+g.course.seed)*g.course.wind*.12;

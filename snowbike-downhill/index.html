@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a253f">
-<meta name="description" content="SnowBike Downhill, joc arcade de descens en bicicleta d'esquí. Esquiva animals, supera portes d'eslàlom i bat el cronòmetre en quatre pistes.">
+<meta name="description" content="SnowBike Downhill, joc arcade de descens en bicicleta d'esquí. Salta per esquivar animals i ietis, supera portes d'eslàlom i bat el cronòmetre en quatre pistes.">
 <title>SnowBike Downhill — BiciPark Play</title>
 <link rel="stylesheet" href="./styles.css">
 </head>
@@ -16,7 +16,7 @@
 <main class="shell">
   <header class="hero">
     <div><p class="eyebrow">BICIPARK PLAY · ARCADE ALPÍ</p><h1>SNOWBIKE <span>DOWNHILL</span></h1>
-    <p>Baixa per pistes nevades en una bicicleta amb esquís. Busca la traçada més ràpida, passa les portes i <strong>esquiva els animals que travessen la pista!</strong></p></div>
+    <p>Baixa per pistes nevades en una bicicleta amb esquís. Busca la traçada més ràpida, passa les portes i <strong>salta per esquivar animals i ietis que travessen la pista!</strong></p></div>
     <div class="hero-action"><label for="courseSelect">CIRCUIT</label><select id="courseSelect" aria-label="Escull una prova de descens"></select></div>
   </header>
   <section class="scoreboard" aria-label="Marcador">
@@ -37,9 +37,9 @@
       <div class="overlay-inner">
         <p class="eyebrow">PROVA CONTRARELLOTGE</p>
         <h2>PREPARA ELS ESQUÍS!</h2>
-        <p>El temps corre tan bon punt surtis. Passa entre les banderes, evita els animals i fes servir la posició aerodinàmica per baixar més ràpid.</p>
+        <p>El temps corre tan bon punt surtis. Passa entre les banderes, esquiva els animals o salta per sobre seu. Compte amb els ietis!</p>
         <button id="startButton" type="button" class="primary">▶ INICIAR DESCENS</button>
-        <small>← → girar · ↓ velocitat · ↑ frenar · ESPAI turbo</small>
+        <small>← → girar · ↓ aerodinàmica · ↑ frenar · ESPAI saltar · T turbo</small>
       </div>
     </div>
     <div id="finishPanel" class="overlay" hidden>
@@ -68,6 +68,7 @@
   <section class="controls" aria-label="Controls tàctils">
     <button id="leftButton" type="button" class="control"><span>◀</span> ESQUERRA</button>
     <button id="brakeButton" type="button" class="control"><span>▮▮</span> FRENAR</button>
+    <button id="jumpButton" type="button" class="control jump" aria-label="Saltar per sobre dels animals i els ietis"><span>⤒</span> SALTAR</button>
     <button id="turboButton" type="button" class="control turbo"><span>⚡</span> TURBO</button>
     <button id="tuckButton" type="button" class="control tuck"><span>▼</span> AERODINÀMICA</button>
     <button id="rightButton" type="button" class="control"><span>▶</span> DRETA</button>
@@ -75,7 +76,7 @@
   <div class="energy"><span>ENERGIA TURBO</span><div class="energy-track"><div id="boostFill"></div></div><strong id="boostValue">35%</strong><button id="pauseButton" type="button" class="tiny">PAUSA</button><button id="restartButton" type="button" class="tiny">↻ REINICIA</button></div>
   <section class="how">
     <div><p class="eyebrow">4 PISTES · DIFICULTAT CREIXENT</p><h2>La millor línia és la més ràpida</h2>
-      <p id="gameHelp">Gira amb ← → o els botons. Mantén ↓ / AERODINÀMICA per agafar velocitat, però costa més girar. Amb ↑ / FRENAR pots preparar millor les portes. Prem ESPAI / TURBO quan tinguis energia suficient. Les portes donen punts i turbo; saltar-se-les afegeix 3 segons. Cada col·lisió amb un animal afegeix 5 segons i et resta una vida. Els animals no reben cap dany: només cal esquivar-los.</p></div>
+      <p id="gameHelp">Gira amb ← → o els botons. Mantén ↓ / AERODINÀMICA per agafar velocitat, però costa més girar. Amb ↑ / FRENAR pots preparar millor les portes. Prem ESPAI / SALTAR per enlairar-te i esquivar animals, o T / TURBO quan tinguis energia. Els ietis són més grans: cal saltar més alt o evitar-los lateralment. No pots tornar a saltar fins a aterrar. Superar animals amb un salt dona punts extra; els ietis donen una bonificació especial. Les portes donen punts i turbo; fallar-les afegeix 3 segons. Xocar amb un animal o un ieti afegeix 5 segons i resta una vida. Cap animal rep danys.</p></div>
     <div class="best-list" id="courseRecords" aria-label="Millors marques per circuit"></div>
   </section>
   <footer><a href="../explora/?category=games">Tots els jocs</a> · Joc arcade original BiciPark · Rècords desats al navegador</footer>
