@@ -15,12 +15,12 @@ function makeEnemy(type,x,id){
  return {id,type,x,hp,speed,points,stunned:false,stunTime:0,stunAwards:0,passed:false,hit:false,collision:false};
 }
 export function makeEnemies(seed=77){
- const random=rng(seed),out=[];let x=360,id=0;
+ const random=rng(seed),out=[];let x=285,id=0;
  while(x<WORLD.length-150){
   const zone=Math.min(3,Math.floor(x/1450)),roll=random();
   const type=zone>=2&&roll>.79?"helmet":roll<.12?"barrier":roll>.56?"runner":"walker";
   out.push(makeEnemy(type,Math.round(x),id++));
-  x+=165+Math.round(random()*110);
+  x+=135+Math.round(random()*95);
  }
  out.push(makeEnemy("big",WORLD.length-215,id++));
  return out;
