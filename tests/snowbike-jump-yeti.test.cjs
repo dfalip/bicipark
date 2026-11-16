@@ -28,7 +28,7 @@ test('Jump is a physical arc with a single take-off, a clear landing and no doub
  assert.equal(e.jump(g),true);
  assert.equal(e.jump(g),false,'No double jump');
  const snapshots=[];
- for(let i=0;i<110;i++){
+ for(let i=0;i<160;i++){
   e.step(g,{},1/120);
   snapshots.push(g.airHeight);
  }
