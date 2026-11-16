@@ -34,6 +34,7 @@ test('Player runs automatically and can pedal, brake and pause without time drif
 test('Jump clears a zombie, but standing at the collision point costs one heart',async()=>{
  const e=await load(),g=e.makeGame();e.start(g);
  const enemy=g.enemies.find(x=>x.type==='walker');
+ g.enemies=[enemy];
  g.distance=enemy.x-18;g.altitude=82;g.grounded=false;g.vy=0;
  e.step(g,{},.008);
  assert.equal(enemy.passed,true);
@@ -41,6 +42,7 @@ test('Jump clears a zombie, but standing at the collision point costs one heart'
  assert.equal(g.dodges,1);
  const h=e.makeGame();e.start(h);
  const obstacle=h.enemies.find(x=>x.type==='walker');
+ h.enemies=[obstacle];
  h.distance=obstacle.x-18;h.altitude=0;h.grounded=true;
  e.step(h,{},.008);
  assert.equal(obstacle.hit,true);
