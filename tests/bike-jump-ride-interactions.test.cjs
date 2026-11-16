@@ -22,9 +22,9 @@ function setup(){
   w.HTMLCanvasElement.prototype.getContext=()=>fakeCtx;
   w.matchMedia=()=>({matches:false});
   const engine=read('engine.js').replace(/^export /gm,'');
-  w.eval(engine+'\nwindow.__engine={WORLD,TRACK,CHECKPOINTS,trackAt,makeGame,begin,step,clamp};');
+  w.eval(engine+'\nwindow.__engine={WORLD,TRACK,CHECKPOINTS,trackAt,makeGame,begin,step,clamp,CHALLENGES,challengeProgress};');
   const app=read('app.js').replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/engine\.js";/,
-    'const {WORLD,TRACK,CHECKPOINTS,trackAt,makeGame,begin,step,clamp}=window.__engine;');
+    'const {WORLD,TRACK,CHECKPOINTS,trackAt,makeGame,begin,step,clamp,CHALLENGES,challengeProgress}=window.__engine;');
   assert.doesNotMatch(app,/\bimport\s*\{/);
   w.eval(app+'\nwindow.__rideForTest=()=>({game,camera,keys,pointers});');
   const $=id=>w.document.getElementById(id);
@@ -98,5 +98,48 @@ test('Finishing a route updates the result overlay and never requires a login',(
     assert.match(h.$('finishSummary').textContent,/punts/);
     h.$('playAgainButton').click();
     assert.equal(h.w.__rideForTest().game.phase,'ready');
+  }finally{h.dom.window.close();}
+});
+
+test('Five course challenges unlock only at the finish and persist after replay',()=>{
+  const h=setup();try{
+    assert.equal(h.$('challengeList').children.length,5);
+    assert.match(h.$('challengeSummary').textContent,/0 \/ 5/);
+    h.$('playButton').click();
+    let g=h.w.__rideForTest().game;
+    g.rings[0].collected=true;
+    g.rings[1].collected=true;
+    g.rings[2].collected=true;
+    g.perfectLandings=2;
+    h.frame(0);h.frame(30);
+    assert.equal(h.w.localStorage.getItem('bicipark-bike-jump-ride-medals-v1'),null);
+    g.x=h.w.__engine.WORLD.finish-1;
+    g.y=h.w.__engine.trackAt(g.x).y-22;
+    g.vx=100;g.grounded=true;
+    h.frame(80);
+    assert.equal(g.phase,'finish');
+    assert.equal(h.$('finishPanel').hidden,false);
+    assert.match(h.$('finishChallengeSummary').textContent,/reptes completats/);
+    const medals=JSON.parse(h.w.localStorage.getItem('bicipark-bike-jump-ride-medals-v1'));
+    for(const id of ['finish','rings','landing','clean','speed'])
+      assert.ok(medals.includes(id),id+' must unlock');
+    assert.match(h.$('challengeSummary').textContent,/5 \/ 5/);
+    h.$('playAgainButton').click();
+    assert.equal(h.w.__rideForTest().game.phase,'ready');
+    assert.match(h.$('challengeSummary').textContent,/5 \/ 5/);
+  }finally{h.dom.window.close();}
+});
+test('A crashed run cannot earn the clean-run challenge',()=>{
+  const h=setup();try{
+    h.$('playButton').click();
+    const g=h.w.__rideForTest().game;g.crashes=2;
+    g.x=h.w.__engine.WORLD.finish-1;
+    g.y=h.w.__engine.trackAt(g.x).y-22;
+    g.vx=100;g.grounded=true;
+    h.frame(0);h.frame(45);
+    assert.equal(g.phase,'finish');
+    const medals=JSON.parse(h.w.localStorage.getItem('bicipark-bike-jump-ride-medals-v1'));
+    assert.ok(!medals.includes('clean'));
+    assert.ok(medals.includes('finish'));
   }finally{h.dom.window.close();}
 });
