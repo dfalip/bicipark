@@ -14,9 +14,9 @@ function setup(){
  const ctx=new Proxy({},{get(obj,k){if(k==='createLinearGradient')return ()=>gradient;if(k in obj)return obj[k];obj[k]=()=>{};return obj[k];},set(obj,k,v){obj[k]=v;return true;}});
  w.HTMLCanvasElement.prototype.getContext=()=>ctx;
  w.requestAnimationFrame=fn=>{queue.push(fn);return queue.length;};
- w.eval(read('engine.js').replace(/^export /gm,'')+'\nwindow.__engine={COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,jump,step,scoreFinish};');
+ w.eval(read('engine.js').replace(/^export /gm,'')+'\nwindow.__engine={COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,jump,trick,step,scoreFinish};');
  const app=read('app.js').replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/engine\.js";/,
-  'const {COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,jump,step,scoreFinish}=window.__engine;');
+  'const {COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,jump,trick,step,scoreFinish}=window.__engine;');
  assert.doesNotMatch(app,/^import\s/m);
  w.eval(app+'\nwindow.__state=()=>({game,keys,pointers});');
  const $=id=>w.document.getElementById(id);
@@ -154,5 +154,27 @@ test('Touch jump cleanly resets after switching courses',()=>{
   assert.equal(g.jumps,0);
   assert.equal(g.airHeight,0);
   assert.equal(h.w.__state().pointers.size,0);
+ }finally{h.dom.window.close();}
+});
+
+test('360 trick timing works with touch and updates the visible skill hint',()=>{
+ const h=setup();try{
+  assert.ok(h.$('trickButton'));
+  h.$('startButton').click();
+  const g=h.w.__state().game;
+  h.key('keydown','Space');
+  h.frame(0);
+  for(let i=1;i<=26;i++)h.frame(i*16);
+  h.key('keyup','Space');
+  assert.ok(g.airHeight>.35);
+  assert.match(h.$('styleValue').textContent,/K|360/);
+  h.pointer('trickButton','pointerdown',17);
+  assert.equal(g.trickUsed,true);
+  assert.equal(h.$('trickButton').getAttribute('aria-disabled'),'true');
+  h.pointer('trickButton','pointerup',17);
+  for(let i=27;i<90;i++)h.frame(i*16);
+  assert.equal(g.tricks,1);
+  assert.ok(g.score>=260);
+  assert.match(h.$('statusText').textContent,/360|TRUC/);
  }finally{h.dom.window.close();}
 });
