@@ -149,3 +149,19 @@ test('Tactical dash is usable on a touch device and rescues a near collision',()
   assert.equal(h.w.__state().pointers.size,0);
  }finally{h.dom.window.close();}
 });
+
+test('New route changes seeded enemies and pickups while a manual restart keeps chosen layout',()=>{
+ const h=setup();try{
+  const before=h.w.__state().game;
+  const original=before.enemies.map(e=>e.type+':'+e.x).join('|');
+  const seedLabel=h.$('routeValue').textContent;
+  h.$('newRouteButton').click();
+  const changed=h.w.__state().game;
+  assert.notEqual(changed.enemies.map(e=>e.type+':'+e.x).join('|'),original);
+  assert.notEqual(h.$('routeValue').textContent,seedLabel);
+  assert.equal(changed.phase,'ready');
+  h.$('playButton').click();
+  h.$('resetButton').click();
+  assert.deepEqual(h.w.__state().game.enemies,changed.enemies);
+ }finally{h.dom.window.close();}
+});
