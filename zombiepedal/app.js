@@ -10,7 +10,7 @@ const ui={score:$("scoreValue"),speed:$("speedValue"),distance:$("distanceValue"
  ready:$("readyPanel"),finish:$("finishPanel"),lost:$("lostPanel"),
  pause:$("pausePanel"),finishStars:$("finishStars"),
  finishSummary:$("finishSummary"),lostReason:$("lostReason"),
- zones:$("zoneList"),flash:$("impactFlash"),dash:$("dashValue")};
+ zones:$("zoneList"),flash:$("impactFlash"),dash:$("dashValue"),route:$("routeValue")};
 const touch={pedal:$("pedalButton"),brake:$("brakeButton"),
  jump:$("jumpButton"),paint:$("paintButton"),dash:$("dashButton")};
 const RECORD="bicipark-zombiepedal-best-v1";
@@ -19,7 +19,8 @@ function loadBest(){
   return value&&typeof value==="object"&&Number.isFinite(value.score)?value:null;
  }catch{return null;}
 }
-let best=loadBest(),game=makeGame(),lastFrame=null,lastEvent="",lastPhase="ready",noticeLeft=0;
+let routeSeed=77;
+let best=loadBest(),game=makeGame(routeSeed),lastFrame=null,lastEvent="",lastPhase="ready",noticeLeft=0;
 const keys=new Set(),pointers=new Map();
 
 const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||false;
@@ -192,6 +193,7 @@ function refresh(){
  ui.hearts.textContent="♥ ".repeat(game.hearts).trim()||"0";
  ui.combo.textContent="×"+game.combo;
  ui.dash.textContent=game.dashCharges+" / "+game.maxDashCharges+(game.dashTime>0?" ⚡":"");
+ ui.route.textContent="RUTA #"+String(routeSeed%10000).padStart(4,"0");
  ui.zone.textContent=ZONES[game.zone].name.toUpperCase();
  ui.phase.textContent=({ready:"PREPARAT",running:game.dashTime>0?"⚡ ESPRINT":"FUGINT",paused:"PAUSA",finished:"ESCAPAT",lost:"CAPTURAT"})[game.phase];
  const pct=Math.round(game.distance/WORLD.length*100);
@@ -203,7 +205,7 @@ function refresh(){
  touch.dash.disabled=game.phase!=="running"||game.dashCharges<1||game.dashTime>0||game.stagger>0;
 }
 function reset(){
- game=makeGame();lastFrame=null;lastEvent="";lastPhase="ready";noticeLeft=0;
+ game=makeGame(routeSeed);lastFrame=null;lastEvent="";lastPhase="ready";noticeLeft=0;
  fx.particles.length=0;fx.words.length=0;fx.circles.length=0;
  fx.flash=0;fx.shake=0;fx.freeze=0;ui.flash.style.opacity="0";
  ui.notice.classList.remove("notice--damage","notice--reward");
@@ -272,6 +274,11 @@ $("playButton").addEventListener("click",launch);
 $("playAgainButton").addEventListener("click",reset);
 $("retryButton").addEventListener("click",reset);
 $("resetButton").addEventListener("click",reset);
+$("newRouteButton").addEventListener("click",()=>{
+ // Deterministic new course: no hidden data and no accidental duplicate seed.
+ routeSeed=(Math.imul(routeSeed,1664525)+1013904223)>>>0;
+ reset();
+});
 $("pauseButton").addEventListener("click",pauseGame);
 $("resumeButton").addEventListener("click",pauseGame);
 function zones(){
