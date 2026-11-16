@@ -101,3 +101,18 @@ test('Level picker can access more challenging 5x5 levels and their chapter stat
     assert.equal(h.$('board').querySelectorAll('.tile-wall').length,5);
   }finally{h.dom.window.close();}
 });
+
+test('Arrow keys move the selected bicycle and Ctrl+Z undoes its move',()=>{
+  const h=setup();try{
+    const game=h.w.__getGame();
+    const chosen=h.w.__engine.solve(game.cfg,game.positions)[0];
+    h.$('board').querySelector('[data-pos="'+chosen.from+'"]').click();
+    const keyName={up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight'}[chosen.direction];
+    h.key(keyName);
+    assert.equal(game.positions[chosen.bike],chosen.to);
+    assert.equal(game.moves,1);
+    h.key('KeyZ',{ctrlKey:true});
+    assert.equal(game.positions[chosen.bike],chosen.from);
+    assert.equal(game.moves,0);
+  }finally{h.dom.window.close();}
+});
