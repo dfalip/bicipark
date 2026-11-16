@@ -97,7 +97,7 @@ test('The horde grows if rider brakes and can end the chase; lost state is final
 test('Escape route reaches a complete ending with a score and progress',async()=>{
  const e=await load(),g=e.makeGame();e.start(g);
  // Isolate race progression from collisions, covered separately above.
- g.enemies.forEach(x=>{x.stunned=true;});
+ g.enemies=[]; // Isolate distance-to-finish from timed-stun expiry and collisions.
  for(let i=0;i<11000&&g.phase==='running';i++)e.step(g,{accelerate:true},1/60);
  assert.equal(g.phase,'finished');
  assert.equal(g.distance,e.WORLD.length);
