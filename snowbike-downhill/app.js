@@ -369,31 +369,114 @@ function drawAnimals(){
   ctx.restore();
  }
 }
-function drawBike(){
+
+function drawSkiBike(){
  const x=480+game.lane*196,y=427;
- ctx.save();ctx.translate(x,y);
- ctx.rotate(game.steerVelocity*.09+
-  (game.stumble>0?Math.sin(game.time*29)*.36*Math.min(1,game.stumble/.85):0));
- if(game.invulnerability>0&&Math.floor(game.time*16)%2===0)ctx.globalAlpha=.38;
- if(game.boostTime>0){
-  for(let i=0;i<5;i++){ctx.strokeStyle="#76ddec88";ctx.lineWidth=4;
-   ctx.beginPath();ctx.moveTo((i-2)*8,29);ctx.lineTo((i-2)*12,55+i*10);ctx.stroke();}
+ const sway=game.steerVelocity*.16+game.course.wind*Math.sin(game.time*2)*.015;
+ const recovery=game.stumble>0?Math.sin(game.time*29)*.32*Math.min(1,game.stumble/.85):0;
+ const carving=Math.sin(game.time*(5+game.velocity*.11))*.012;
+ ctx.save();ctx.translate(x,y);ctx.rotate(sway+recovery+carving);
+ if(game.invulnerability>0&&Math.floor(game.time*16)%2===0)ctx.globalAlpha=.46;
+ const speed=clamp(game.velocity/85,0,1);
+ // Draw physical snow cast by each ski edge, more visible at speed.
+ if(game.phase==="playing"){
+  for(const side of [-1,1]){
+   const stream=game.boostTime>0?20:12;
+   ctx.strokeStyle=game.boostTime>0?"#fff3bb9c":"#daeff6b9";
+   ctx.lineWidth=1.6+speed*2.7;
+   for(let i=0;i<stream;i++){
+    const offset=(i*29+game.time*game.velocity*4)%180;
+    const dx=side*(27+offset*.6);
+    const y0=22+offset*.46;
+    ctx.beginPath();ctx.moveTo(side*21,28);ctx.lineTo(dx,y0);ctx.stroke();
+   }
+  }
  }
- // Two visible skis under a mountain ski-bike, viewed from above.
+ ctx.fillStyle="#27485b44";ctx.beginPath();ctx.ellipse(0,4,36,24,0,0,Math.PI*2);ctx.fill();
+ // Two curved, tapered downhill skis with alternating black and mint edges.
  for(const side of [-1,1]){
-  ctx.fillStyle="#1b3b54";ctx.beginPath();
-  ctx.roundRect(side*13-5,-26,10,64,5);ctx.fill();
-  ctx.fillStyle="#7febd7";ctx.fillRect(side*13-2,-22,4,53);
+  ctx.save();ctx.translate(side*24,2);ctx.rotate(-sway*.3+side*.014);
+  ctx.fillStyle="#123650";ctx.strokeStyle="#143b57";ctx.lineWidth=4;
+  ctx.beginPath();ctx.moveTo(-9,40);ctx.quadraticCurveTo(-15,22,-13,-13);
+  ctx.lineTo(-9,-64);ctx.quadraticCurveTo(0,-86,9,-64);
+  ctx.lineTo(13,-13);ctx.quadraticCurveTo(15,22,9,40);
+  ctx.quadraticCurveTo(0,45,-9,40);ctx.closePath();ctx.fill();ctx.stroke();
+  const skiGrad=ctx.createLinearGradient(-9,-70,10,42);
+  skiGrad.addColorStop(0,"#e7fff8");skiGrad.addColorStop(.4,side<0?"#4cdbcb":"#ffe093");
+  skiGrad.addColorStop(1,side<0?"#13a4b9":"#d66776");
+  ctx.fillStyle=skiGrad;ctx.beginPath();ctx.roundRect(-6,-61,12,89,5);ctx.fill();
+  ctx.fillStyle="#173d57";ctx.beginPath();ctx.roundRect(-14,-9,28,17,5);ctx.fill();
+  ctx.fillStyle="#eafcfa";ctx.fillRect(-7,-8,14,4);
+  ctx.restore();
  }
- ctx.strokeStyle="#e8b55c";ctx.lineWidth=5;ctx.lineCap="round";
- ctx.beginPath();ctx.moveTo(0,-19);ctx.lineTo(-17,10);ctx.lineTo(0,26);
- ctx.lineTo(17,10);ctx.lineTo(0,-19);ctx.stroke();
- ctx.strokeStyle="#243f53";ctx.lineWidth=7;
- ctx.beginPath();ctx.moveTo(-17,-10);ctx.lineTo(17,-10);ctx.stroke();
- ctx.fillStyle=game.stumble>0?"#ffe27f":"#e56386";
- ctx.beginPath();ctx.ellipse(0,-3,14,20,0,0,Math.PI*2);ctx.fill();
- ctx.fillStyle="#2d5f88";ctx.beginPath();ctx.arc(0,-14,12,0,Math.PI*2);ctx.fill();
- ctx.fillStyle="#a1fcf3";ctx.beginPath();ctx.arc(0,-18,6,Math.PI,Math.PI*2);ctx.fill();
+ // Fork legs, crossbar and braced bicycle frame.
+ ctx.strokeStyle="#092739";ctx.lineWidth=11;ctx.lineJoin="round";ctx.lineCap="round";
+ ctx.beginPath();ctx.moveTo(-22,-19);ctx.lineTo(-11,-44);ctx.lineTo(0,-8);
+ ctx.lineTo(12,-44);ctx.lineTo(22,-19);ctx.stroke();
+ const chassis=ctx.createLinearGradient(-20,-48,25,16);
+ chassis.addColorStop(0,"#94fce2");chassis.addColorStop(.5,"#f9f2a7");chassis.addColorStop(1,"#35b6dc");
+ ctx.strokeStyle=chassis;ctx.lineWidth=6;ctx.stroke();
+ // Front suspension and binding straps.
+ ctx.strokeStyle="#dcecef";ctx.lineWidth=4;
+ ctx.beginPath();ctx.moveTo(-22,-19);ctx.lineTo(-22,7);
+ ctx.moveTo(22,-19);ctx.lineTo(22,7);ctx.stroke();
+ ctx.strokeStyle="#123d5b";ctx.lineWidth=8;
+ ctx.beginPath();ctx.moveTo(-17,-56);ctx.lineTo(17,-56);ctx.stroke();
+ ctx.fillStyle="#f8d674";ctx.beginPath();ctx.arc(0,-11,8,0,Math.PI*2);ctx.fill();
+ // Boots, legs and ski suit are recognizable in this overhead perspective.
+ const legLean=Math.sin(game.time*(2+game.velocity*.09))*1.7;
+ for(const side of [-1,1]){
+  ctx.strokeStyle="#193d60";ctx.lineWidth=14;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(side*9,-4);ctx.lineTo(side*(11+legLean),21);ctx.stroke();
+  ctx.fillStyle="#0c2d49";ctx.beginPath();
+  ctx.roundRect(side*17-8,13,15,23,5);ctx.fill();
+  ctx.fillStyle="#daefec";ctx.fillRect(side*17-6,20,11,4);
+ }
+ // Rider shoulders, aerodynamic torso, and right/left hand on handlebar.
+ ctx.fillStyle="#102f4d";ctx.beginPath();ctx.ellipse(0,-33,29,34,0,0,Math.PI*2);ctx.fill();
+ const jacket=ctx.createLinearGradient(-27,-62,28,-9);
+ jacket.addColorStop(0,"#c2fcdf");jacket.addColorStop(.48,"#36c4b7");jacket.addColorStop(1,"#176b9d");
+ ctx.fillStyle=jacket;ctx.beginPath();ctx.ellipse(0,-35,23,28,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#f4df82";ctx.beginPath();ctx.moveTo(0,-59);ctx.lineTo(-4,-35);ctx.lineTo(3,-18);ctx.lineTo(8,-36);ctx.closePath();ctx.fill();
+ for(const side of [-1,1]){
+  ctx.strokeStyle="#14324b";ctx.lineWidth=11;ctx.beginPath();
+  ctx.moveTo(side*18,-48);ctx.lineTo(side*27,-59);ctx.lineTo(side*27,-72);ctx.stroke();
+  ctx.strokeStyle="#6ddbc6";ctx.lineWidth=5;ctx.beginPath();
+  ctx.moveTo(side*18,-48);ctx.lineTo(side*27,-59);ctx.stroke();
+  ctx.fillStyle="#f5c99e";ctx.beginPath();ctx.arc(side*27,-72,6,0,Math.PI*2);ctx.fill();
+ }
+ // Helmet with shell vents, distinct dark visor and glossy highlight.
+ ctx.fillStyle="#102f49";ctx.beginPath();ctx.ellipse(0,-66,24,29,0,0,Math.PI*2);ctx.fill();
+ const helmet=ctx.createLinearGradient(-21,-93,24,-47);
+ helmet.addColorStop(0,"#ffec9e");helmet.addColorStop(.48,"#72eee0");helmet.addColorStop(1,"#2c83bd");
+ ctx.fillStyle=helmet;ctx.beginPath();ctx.ellipse(0,-67,21,26,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#10364e";ctx.beginPath();ctx.roundRect(-18,-80,36,18,9);ctx.fill();
+ ctx.fillStyle="#a0e9f5";ctx.beginPath();ctx.roundRect(-15,-77,30,5,3);ctx.fill();
+ ctx.fillStyle="#f8ffde";ctx.beginPath();ctx.ellipse(-8,-90,5,3,-.35,0,Math.PI*2);ctx.fill();
+ ctx.restore();
+}
+function drawSnowRush(){
+ if(reducedMotion||game.phase!=="playing")return;
+ const strength=clamp((game.velocity-23)/62,0,1);
+ if(strength===0)return;
+ ctx.save();ctx.strokeStyle="#78b6d8";ctx.lineWidth=1.4+strength*1.8;
+ ctx.globalAlpha=.12+strength*.26;
+ for(let i=0;i<33;i++){
+  const x=((i*179+game.time*(game.velocity*15+i*9))%1050+1050)%1050;
+  const y=((i*97+game.time*(40+i%7*8))%560+560)%560;
+  const length=8+strength*33+y*.03;
+  ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+length);ctx.stroke();
+ }
+ ctx.restore();
+ // Fast textured piste markers flow towards the bottom of the screen.
+ ctx.save();ctx.globalAlpha=.15+strength*.17;ctx.fillStyle="#93b3c9";
+ for(let i=0;i<24;i++){
+  const d=(i*66+game.distance*5.4)%610;
+  const y=d-70;
+  const at=game.distance+(427-y)/.48;
+  const x=center(at)+((i%2)?-1:1)*((i*47)%138);
+  ctx.beginPath();ctx.ellipse(x,y,2+strength*3,8+strength*16,0,0,Math.PI*2);ctx.fill();
+ }
  ctx.restore();
 }
 function paint(){
@@ -415,7 +498,7 @@ function paint(){
    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+14+game.velocity/2);ctx.stroke();
   }
  }
- drawBike();drawFeedback();
+ drawSnowRush();drawSkiBike();drawFeedback();
  ctx.restore();
  ctx.fillStyle="#13374cbf";ctx.fillRect(0,508,960,33);
  ctx.textAlign="left";ctx.font="900 15px system-ui";ctx.fillStyle="white";
