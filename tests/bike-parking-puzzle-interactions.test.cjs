@@ -11,7 +11,7 @@ function setup(){
     runScripts:'outside-only',pretendToBeVisual:true});
   const w=dom.window;
   const script=read('engine.js').replace(/^export /gm,'');
-  w.eval(script+\'\nwindow.__engine={LEVELS,COLORS,LABELS,cell,xy,newGame,selectBike,moveTo,moveDirection,movesAvailable,undo,hint,restart,isSolved,solve};\');
+  w.eval(script+'\nwindow.__engine={LEVELS,COLORS,LABELS,cell,xy,newGame,selectBike,moveTo,moveDirection,movesAvailable,undo,hint,restart,isSolved,solve};');
   let app=read('app.js').replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/engine\.js";/,
     'const {LEVELS,COLORS,LABELS,cell,xy,newGame,selectBike,moveTo,moveDirection,movesAvailable,undo,hint,restart,isSolved}=window.__engine;');
   assert.doesNotMatch(app,/^import\s/m);
