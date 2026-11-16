@@ -85,7 +85,7 @@ test('ZombiePedal charges recharge from stars and zone progression but respect t
  e.start(g);g.enemies=[];
  e.dash(g);g.dashTime=0;g.dashCharges=0;
  const star=g.pickups.find(x=>x.kind==='star');
- assert.ok(star);g.distance=star.x;e.step(g,{},.016);
+ assert.ok(star);g.distance=star.x;g.zone=Math.min(3,Math.floor(star.x/1450));e.step(g,{},.016);
  assert.equal(star.collected,true);
  assert.equal(g.dashCharges,1);
  g.distance=1449;g.speed=74;e.step(g,{accelerate:true},.12);
