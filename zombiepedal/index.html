@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ca">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="theme-color" content="#0b2431">
+ <meta name="description" content="ZombiePedal: arcade de bicicleta contra una horda de zombis. Salta obstacles, llança boles de pintura per aturar els zombis i escapa de la ciutat.">
+ <title>ZombiePedal — Escapa de la ciutat</title>
+ <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="top"><a href="../explora/?category=games" class="brand">✦ BICIPARK <b>PLAY</b></a><nav><a href="../bike-jump-ride/">BikeJump Ride</a><a href="../explora/?category=games">Tots els jocs</a></nav></header>
+<main class="wrap">
+  <header class="hero"><div><p class="eyebrow">BICIPARK PLAY · ARCADE DE PERSECUCIÓ</p>
+    <h1>ZOMBIE<span>PEDAL</span></h1><p>La ciutat està plena de zombis. Pedala, esquiva'ls saltant i llança boles de pintura per frenar-los. <strong>No deixis que la horda t'atrapi!</strong></p></div>
+    <div class="mode"><span>4 ZONES</span><strong>UNA GRAN FUGIDA</strong><small>Sense violència explícita · Arcade familiar</small></div>
+  </header>
+  <section class="hud" aria-label="Estadístiques de partida">
+    <div><small>PUNTS</small><strong id="scoreValue">0</strong></div>
+    <div><small>VELOCITAT</small><strong id="speedValue">0 <em>km/h</em></strong></div>
+    <div><small>RECORREGUT</small><strong id="distanceValue">0 / 5700</strong></div>
+    <div><small>PINTURA</small><strong id="ammoValue">8 / 8</strong></div>
+    <div><small>VIDES</small><strong id="heartsValue">♥ ♥ ♥</strong></div>
+    <div><small>COMBO</small><strong id="comboValue">×0</strong></div>
+  </section>
+  <section class="stage" aria-label="Joc de persecució">
+   <div class="stage-top"><span id="zoneValue">CARRERS ABANDONATS</span><span id="phaseValue">PREPARAT</span></div>
+   <canvas id="gameCanvas" width="960" height="540" role="img" aria-describedby="instructions statusText" aria-label="Arcade lateral: ciclista en fugida, zombis i obstacles que s'acosten de la dreta; salta o dispara pintura per superar-los.">Aquest joc requereix Canvas.</canvas>
+   <div class="bottom-progress"><div id="progressFill"></div><span id="progressValue">0%</span></div>
+   <div id="notice" class="notice" aria-live="polite" hidden></div>
+   <div class="overlay" id="readyPanel">
+    <div class="overlay-card"><p class="eyebrow">MISSIÓ: ESCAPAR</p><h2>LA HORDA JA ARRIBA!</h2>
+     <p>La bicicleta avança sola. Accelera per deixar la horda enrere, salta els zombis o utilitza el teu llançador de pintura per aturar-los temporalment.</p>
+     <button id="playButton" class="primary" type="button">▶ COMENÇA LA FUGIDA</button>
+     <small>→/D pedalar · ←/A frenar · ESPAI/↑ saltar · X/F pintura</small>
+    </div>
+   </div>
+   <div class="overlay" id="finishPanel" hidden>
+    <div class="overlay-card"><p class="eyebrow">HAS ESCAPAT!</p><h2>CIUTAT SUPERADA</h2>
+     <div id="finishStars" class="stars">★★★</div><p id="finishSummary"></p>
+     <button id="playAgainButton" class="primary" type="button">↻ TORNA A ESCAPAR</button>
+    </div>
+   </div>
+   <div class="overlay" id="lostPanel" hidden>
+    <div class="overlay-card"><p class="eyebrow">LA HORDA S'ACOSTA</p><h2>FUGIDA INTERROMPUDA</h2>
+     <p id="lostReason"></p><button id="retryButton" class="primary" type="button">↻ TORNA-HO A PROVAR</button>
+    </div>
+   </div>
+   <div class="overlay" id="pausePanel" hidden>
+    <div class="overlay-card"><h2>PAUSA</h2><p>Els zombis també s'aturen.</p>
+     <button id="resumeButton" class="primary" type="button">▶ CONTINUAR</button>
+    </div>
+   </div>
+  </section>
+  <div class="meters">
+    <div class="meter-row"><label for="hordeFill">LA HORDA</label><div class="meter"><div id="hordeFill"></div></div><strong id="hordeValue">15%</strong></div>
+    <div class="meter-row"><span>PROGRÉS D'ESCAPADA</span><div class="meter progress-meter"><div id="journeyFill"></div></div><strong id="journeyValue">0%</strong></div>
+  </div>
+  <div id="statusText" class="status" role="status" aria-live="polite">Prem Comença la fugida per jugar.</div>
+  <section class="buttons" aria-label="Controls tàctils">
+   <button id="brakeButton" class="control" type="button"><span>◀</span> FRENAR <small>← / A</small></button>
+   <button id="jumpButton" class="control jump" type="button"><span>↑</span> SALTAR <small>ESPAI</small></button>
+   <button id="paintButton" class="control paint" type="button"><span>🎯</span> PINTURA <small>X / F</small></button>
+   <button id="pedalButton" class="control pedal" type="button"><span>▶▶</span> PEDALAR <small>→ / D</small></button>
+  </section>
+  <div class="actions"><button id="pauseButton" type="button">Ⅱ PAUSA</button><button id="resetButton" type="button">↻ REINICIA</button><span id="recordValue">MILLOR PUNTUACIÓ: —</span></div>
+  <section class="instructions"><div><p class="eyebrow">4 ZONES · FUGIDA PROGRESSIVA</p><h2>Com sobreviure a la ciutat</h2>
+    <p id="instructions">La bicicleta avança automàticament. Mantén PEDALAR per accelerar i allunyar-te de la horda. Salta per damunt dels zombis o dels obstacles; llança boles de pintura contra els zombis per frenar-los. Recull estrelles, munició i cors. Fes combos i arriba al pont final per aconseguir estrelles. La pintura atura els zombis sense fer-los mal.</p></div>
+    <div class="zones" id="zoneList"></div>
+  </section>
+  <footer><a href="../explora/?category=games">Tots els jocs</a> · Arcade original BiciPark · Rècords desats només en aquest navegador</footer>
+</main>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
