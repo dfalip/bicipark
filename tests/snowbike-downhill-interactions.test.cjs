@@ -1,0 +1,91 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const {JSDOM}=require('jsdom');
+const dir=path.join(__dirname,'..','snowbike-downhill');
+const read=n=>fs.readFileSync(path.join(dir,n),'utf8');
+function setup(){
+ const dom=new JSDOM(read('index.html'),{url:'https://www.bicipark.com/snowbike-downhill/',
+   runScripts:'outside-only',pretendToBeVisual:true});
+ const w=dom.window,queue=[];
+ const gradient={addColorStop(){}};
+ const ctx=new Proxy({},{get(obj,k){if(k==='createLinearGradient')return ()=>gradient;if(k in obj)return obj[k];obj[k]=()=>{};return obj[k];},set(obj,k,v){obj[k]=v;return true;}});
+ w.HTMLCanvasElement.prototype.getContext=()=>ctx;
+ w.requestAnimationFrame=fn=>{queue.push(fn);return queue.length;};
+ w.eval(read('engine.js').replace(/^export /gm,'')+'\nwindow.__engine={COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,step,scoreFinish};');
+ const app=read('app.js').replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/engine\.js";/,
+  'const {COURSES,clamp,skiTrackCenter,makeGame,start,pause,resume,boost,step,scoreFinish}=window.__engine;');
+ assert.doesNotMatch(app,/^import\s/m);
+ w.eval(app+'\nwindow.__state=()=>({game,keys,pointers});');
+ const $=id=>w.document.getElementById(id);
+ const frame=t=>{const f=queue.shift();assert.ok(f);f(t);};
+ const key=(type,code)=>w.document.dispatchEvent(new w.KeyboardEvent(type,{bubbles:true,cancelable:true,code}));
+ const pointer=(id,type,pid=5)=>{
+  const event=new w.Event(type,{bubbles:true,cancelable:true});
+  Object.defineProperty(event,'pointerId',{value:pid});
+  Object.defineProperty(event,'button',{value:0});
+  $(id).dispatchEvent(event);
+ };
+ return {w,dom,$,frame,key,pointer};
+}
+test('SnowBike UI initializes with four playable pistes and no network login',()=>{
+ const h=setup();try{
+  assert.equal(h.$('courseSelect').options.length,4);
+  assert.equal(h.$('startPanel').hidden,false);
+  assert.equal(h.$('courseRecords').children.length,4);
+  assert.equal(h.$('progressValue').textContent,'0%');
+  assert.equal(h.w.__state().game.phase,'ready');
+ }finally{h.dom.window.close();}
+});
+test('Starting, steering, aerodynamic tuck and turbo advance the live downhill',()=>{
+ const h=setup();try{
+  h.$('startButton').click();
+  const g=h.w.__state().game;assert.equal(g.phase,'playing');
+  h.key('keydown','ArrowRight');h.key('keydown','ArrowDown');
+  for(let i=0;i<75;i++)h.frame(i*16);
+  assert.ok(g.distance>10);
+  assert.ok(g.lane>.1);
+  assert.match(h.$('speedValue').textContent,/km\/h/);
+  h.key('keyup','ArrowRight');h.key('keyup','ArrowDown');
+  h.key('keydown','Space');h.frame(1300);
+  assert.equal(g.boostUsed,1);assert.ok(g.boostTime>0);
+  h.key('keyup','Space');
+ }finally{h.dom.window.close();}
+});
+test('Touch controls press and release, pause and restart function',()=>{
+ const h=setup();try{
+  h.pointer('rightButton','pointerdown',7);
+  h.pointer('tuckButton','pointerdown',8);
+  assert.equal(h.w.__state().game.phase,'playing');
+  assert.equal(h.w.__state().pointers.size,2);
+  for(let i=0;i<15;i++)h.frame(i*16);
+  h.pointer('rightButton','pointerup',7);h.pointer('tuckButton','pointerup',8);
+  assert.equal(h.w.__state().pointers.size,0);
+  h.$('pauseButton').click();
+  assert.equal(h.w.__state().game.phase,'paused');
+  assert.equal(h.$('pausePanel').hidden,false);
+  h.$('resumeButton').click();
+  assert.equal(h.w.__state().game.phase,'playing');
+  h.$('restartButton').click();
+  assert.equal(h.w.__state().game.phase,'ready');
+  assert.equal(h.$('startPanel').hidden,false);
+ }finally{h.dom.window.close();}
+});
+test('Completing a downhill race displays honest penalized result and remembers best',()=>{
+ const h=setup();try{
+  h.$('startButton').click();
+  const g=h.w.__state().game;
+  g.distance=g.course.length-.1;g.velocity=44;g.hearts=3;g.time=43;
+  h.frame(0);h.frame(33);
+  assert.equal(g.phase,'finished');
+  assert.equal(h.$('finishPanel').hidden,false);
+  assert.match(h.$('finishSummary').textContent,/penalització/);
+  const saved=JSON.parse(h.w.localStorage.getItem('bicipark-snowbike-downhill-times-v1'));
+  assert.ok(saved[0].time>0);
+  h.$('nextButton').click();
+  assert.equal(h.w.__state().game.course.id,1);
+  assert.equal(h.$('finishPanel').hidden,true);
+ }finally{h.dom.window.close();}
+});
