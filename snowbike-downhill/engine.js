@@ -167,7 +167,7 @@ function advance(g,input,dt){
  g.invulnerability=Math.max(0,g.invulnerability-dt);
  g.jumpCooldown=Math.max(0,g.jumpCooldown-dt);
  if(!g.grounded){
-  if(g.trickUsed)g.trickSpin=clamp(g.trickSpin+dt*3.8,0,1);
+  if(g.trickUsed)g.trickSpin=clamp(g.trickSpin+dt*2.9,0,1);
   g.airHeight+=g.airVelocity*dt;
   g.airVelocity-=8.8*dt;
   if(g.airHeight<=0){
