@@ -77,6 +77,7 @@ test('Pickups replenish paintball ammunition or hearts, while score combos grow'
  assert.equal(g.ammo,4);
  assert.equal(g.collected,1);
  const h=e.makeGame();e.start(h);
+ h.enemies=[]; // Isolate the pickup bonus from unrelated close-spaced zombie dodges.
  const star=h.pickups.find(x=>x.kind==='star');
  assert.ok(star);h.distance=star.x;
  e.step(h,{},.008);
