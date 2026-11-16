@@ -17,7 +17,7 @@ test('ZombiePedal has a faster but brakeable chase, with earlier spaced enemies'
  // Isolate acceleration from collisions to check speed-envelope tuning.
  g.enemies=[];
  for(let i=0;i<240;i++)e.step(g,{accelerate:true},1/60);
- assert.ok(g.speed>65&&g.speed<67,'Pedaling must have a meaningful top-speed boost');
+ assert.ok(g.speed>73&&g.speed<75,'Pedaling must reach the faster tuned top speed');
  assert.ok(g.distance>220);
  const fast=g.speed;
  for(let i=0;i<75;i++)e.step(g,{brake:true},1/60);
@@ -30,7 +30,7 @@ test('SnowBike gains speed downhill, while tucking and turbo remain controllable
  e.start(g);
  g.course.animals=[];g.course.gates=[];
  for(let i=0;i<270;i++)e.step(g,{tuck:true},1/60);
- assert.ok(g.velocity>60&&g.velocity<64);
+ assert.ok(g.velocity>72&&g.velocity<74);
  assert.ok(g.distance>225);
  const normal=g.velocity;
  assert.ok(e.boost(g));

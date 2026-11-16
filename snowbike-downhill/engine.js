@@ -44,7 +44,7 @@ export function makeCourse(index=0){
 }
 export function makeGame(index=0){
  const course=makeCourse(index);
- return {course,phase:"ready",distance:0,time:0,velocity:20,
+ return {course,phase:"ready",distance:0,time:0,velocity:24,
   lane:0,steerVelocity:0,hearts:3,penalty:0,misses:0,hits:0,
   perfectGates:0,passedGates:0,animalsDodged:0,boost:35,
   boostTime:0,boostUsed:0,stars:0,score:0,finalTime:null,
@@ -86,7 +86,7 @@ export function animalPosition(animal){
 }
 function animalStep(g,a,dt,previousDistance){
  if(a.passed)return;
- if(a.phase==="waiting"&&g.distance>=a.at-105){a.phase="crossing";a.seen=true;}
+ if(a.phase==="waiting"&&g.distance>=a.at-Math.max(115,g.velocity*2.7)){a.phase="crossing";a.seen=true;}
  if(a.phase==="crossing"){
   a.progress+=a.speed*dt;
   a.x=animalPosition(a);
@@ -128,9 +128,9 @@ function advance(g,input,dt){
  g.stumble=Math.max(0,g.stumble-dt);
  g.invulnerability=Math.max(0,g.invulnerability-dt);
  const tuck=Boolean(input?.tuck),brake=Boolean(input?.brake);
- const max=47+g.course.id*2+ (tuck?15:0)+(g.boostTime>0?18:0);
+ const max=55+g.course.id*2+(tuck?18:0)+(g.boostTime>0?22:0);
  const target=brake?12:max;
- g.velocity+=(target-g.velocity)*Math.min(1,dt*(brake?3.1:tuck?1.9:1.35));
+ g.velocity+=(target-g.velocity)*Math.min(1,dt*(brake?3.3:tuck?2.35:1.75));
  if(g.boostTime>0)g.boostTime=Math.max(0,g.boostTime-dt);
  const turn=clamp(Number(input?.steer)||0,-1,1);
  const turnStrength=(tuck?.55:1)*(g.stumble>0?.45:1);

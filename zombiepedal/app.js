@@ -40,7 +40,7 @@ function textSplash(text,x,y,color="#fff4a5"){
 }
 function eventEffects(event){
  const type=event.type;
- const sourceX=242+((event.at??game.distance)-game.distance);
+ const sourceX=xPos(event.at??game.distance);
  const x=clamp(sourceX,30,930),road=WORLD.roadY;
  if(type==="collision"){
   fx.flash=.73;fx.color="#ff5878";
@@ -279,7 +279,8 @@ function feedback(dt){
   }
  }
 }
-function xPos(worldX){return 242+(worldX-game.distance);}
+const CHASE_PROJECTION=1.16;
+function xPos(worldX){return 242+(worldX-game.distance)*CHASE_PROJECTION;}
 function drawBackground(){
  const colors=[["#354764","#89a9ad"],["#284d51","#81b69e"],["#4b456a","#8c8cae"],["#5e415c","#a47b9f"]][game.zone];
  const gradient=ctx.createLinearGradient(0,0,0,540);
@@ -291,7 +292,7 @@ function drawBackground(){
  const sceneryStart=Math.max(0,Math.floor((game.distance-300)/125));
  const sceneryEnd=Math.floor((game.distance+950)/125);
  for(let i=sceneryStart;i<=sceneryEnd;i++){
-  const x=242+i*125-game.distance*.44;
+  const x=242+i*125-game.distance*.56;
   const h=70+(i*47%142),y=328-h;
   ctx.fillStyle=i%3?"#203f4e90":"#2d526490";
   ctx.fillRect(x,y,89,h);
@@ -304,7 +305,7 @@ function drawBackground(){
  ctx.strokeStyle="#ffedb077";ctx.lineWidth=5;ctx.setLineDash([30,25]);
  ctx.beginPath();ctx.moveTo(0,490);ctx.lineTo(960,490);ctx.stroke();ctx.setLineDash([]);
  for(let i=0;i<9;i++){
-  const x=((i*150-game.distance*1.4)%1200+1200)%1200-70;
+  const x=((i*150-game.distance*1.75)%1200+1200)%1200-70;
   ctx.fillStyle="#dce7df44";ctx.fillRect(x,412,18,4);
  }
  // Silhouettes of the chasing horde grow with danger.
@@ -377,13 +378,13 @@ function drawPaintballs(){
 
 function drawCityRush(){
  if(reducedMotion||game.phase!=="running")return;
- const rush=clamp((game.speed-26)/40,0,1);
+ const rush=clamp((game.speed-24)/49,0,1);
  if(rush<=0)return;
  ctx.save();ctx.strokeStyle="#d5fff08a";ctx.lineWidth=1.4+rush*2;
  ctx.globalAlpha=.19+rush*.22;
  for(let i=0;i<26;i++){
   const depth=i%3;
-  const x=((i*193-game.distance*(.7+depth*.5))%1220+1220)%1220-120;
+  const x=((i*193-game.distance*(1+depth*.7))%1220+1220)%1220-120;
   const y=390+((i*47+13)%120);
   ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-25-rush*70-depth*25,y);ctx.stroke();
  }
@@ -391,7 +392,7 @@ function drawCityRush(){
  // The road flows under the wheels faster than the distant skyline.
  ctx.fillStyle="#ecf7be70";
  for(let i=0;i<10;i++){
-  const x=((i*135-game.distance*2.4)%1280+1280)%1280-110;
+  const x=((i*135-game.distance*3.15)%1280+1280)%1280-110;
   ctx.fillRect(x,463,34+game.speed*.6,3);
  }
 }

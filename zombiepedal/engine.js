@@ -34,7 +34,7 @@ export function makePickups(seed=77){
  return out;
 }
 export function makeGame(seed=77){
- return {phase:"ready",seed,time:0,distance:0,speed:23,score:0,
+ return {phase:"ready",seed,time:0,distance:0,speed:26,score:0,
   altitude:0,vy:0,grounded:true,jumps:0,
   hearts:3,ammo:8,maxAmmo:8,ammoClock:0,fireCooldown:0,
   horde:15,invulnerable:0,combo:0,bestCombo:0,comboTimer:0,
@@ -148,8 +148,8 @@ function advance(g,input,dt){
  g.ammoClock+=dt;
  if(g.ammoClock>=3){g.ammoClock-=3;g.ammo=Math.min(g.maxAmmo,g.ammo+1);}
  const fast=Boolean(input.accelerate),brake=Boolean(input.brake);
- const max=fast?66:brake?23:48;
- g.speed+=(max-g.speed)*Math.min(1,dt*(brake?2.7:1.9));
+ const max=fast?74:brake?24:55;
+ g.speed+=(max-g.speed)*Math.min(1,dt*(brake?3.1:2.25));
  g.distance=Math.min(WORLD.length,g.distance+g.speed*dt);
  g.score+=Math.round(g.speed*dt*2);
  if(!g.grounded){
@@ -165,7 +165,7 @@ function advance(g,input,dt){
  for(const enemy of g.enemies)enemyStep(g,enemy,dt);
  for(const item of g.pickups)pickupStep(g,item);
  // The horde advances if the rider slows down; accelerating pushes it away.
- const growth=g.speed<32?4.5:g.speed<46?1.2:-1.45;
+ const growth=g.speed<35?4.5:g.speed<52?1.2:-1.45;
  g.horde=clamp(g.horde+growth*dt,0,100);
  if(g.horde>=100)lose(g,"LA HORDA T'HA ATRAPAT! Augmenta la velocitat.");
  if(g.phase!=="running")return;
