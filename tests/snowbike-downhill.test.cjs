@@ -16,7 +16,7 @@ test('Four different downhill tracks have progressively more slalom and wildlife
   assert.ok(c.gates.every(x=>x.at>0&&x.at<c.length));
   assert.ok(c.animals.every(x=>x.at>0&&x.at<c.length));
   assert.equal(new Set(c.gates.map(x=>x.at)).size,c.gates.length);
-  for(const a of c.animals)assert.ok(e.ANIMALS.some(x=>x.id===a.type||x.id===a.id||x.id===a.emoji));
+  for(const a of c.animals)assert.ok(e.ANIMALS.some(x=>x.emoji===a.emoji));
  }
  for(let i=1;i<4;i++)assert.ok(e.COURSES[i].length>e.COURSES[i-1].length);
 });
