@@ -180,6 +180,19 @@ export const biciparkModules = [
     enabled: true
   },
   {
+    id: "bike-parking-puzzle",
+    category: "games",
+    title: "BiciPark Puzzle · Aparca-les!",
+    description:
+      "Dotze nivells de lògica en quatre capítols: mou bicicletes, allibera passadissos i aparca-les amb moviments limitats. Pistes reals i desfés!",
+    href: "../bike-parking-puzzle/",
+    icon: "🧩",
+    status: "Nou joc",
+    statusType: "new",
+    tags: ["Lògica", "Aparcament", "Bicicletes", "12 nivells", "Estratègia"],
+    enabled: true
+  },
+  {
     id: "roda-rumble",
     category: "games",
     title: "RodaRumble · Destrueix les torres",
