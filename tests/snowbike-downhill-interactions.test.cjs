@@ -89,3 +89,30 @@ test('Completing a downhill race displays honest penalized result and remembers 
   assert.equal(h.$('finishPanel').hidden,true);
  }finally{h.dom.window.close();}
 });
+
+test('A real animal collision shakes and flashes the track, wobbles the skier and costs a heart',()=>{
+ const h=setup();try{
+  h.$('startButton').click();const g=h.w.__state().game;
+  const animal=g.course.animals[0];g.course.animals=[animal];
+  g.distance=animal.at-.2;g.lane=animal.x;g.velocity=40;
+  h.frame(0);h.frame(33);
+  assert.equal(g.hits,1);
+  assert.equal(g.hearts,2);
+  assert.ok(g.stumble>0&&g.invulnerability>0);
+  assert.equal(h.$('impactFlash').style.opacity!=='0',true);
+  assert.equal(h.w.document.querySelector('.game-stage').classList.contains('is-hit'),true);
+  assert.match(h.$('statusText').textContent,/XOC/);
+ }finally{h.dom.window.close();}
+});
+test('A perfect gate creates on-screen reward feedback and an improved turbo meter',()=>{
+ const h=setup();try{
+  h.$('startButton').click();const g=h.w.__state().game;
+  const gate=g.course.gates[0];g.distance=gate.at-.2;g.lane=gate.lane;g.velocity=44;
+  h.frame(0);h.frame(40);
+  assert.equal(gate.quality,'perfect');
+  assert.equal(g.perfectGates,1);
+  assert.ok(g.boost>35);
+  assert.equal(h.$('notice').classList.contains('notice--win'),true);
+  assert.match(h.$('statusText').textContent,/PORTA PERFECTA/);
+ }finally{h.dom.window.close();}
+});
