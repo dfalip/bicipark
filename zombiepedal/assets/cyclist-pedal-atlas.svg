@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260" role="img" aria-label="Four animated pedal poses of a cyclist on a mountain bicycle"><defs>
+<linearGradient id="frame" x2="1" y2="1"><stop stop-color="#e9ffcf"/><stop offset=".32" stop-color="#45e6bb"/><stop offset=".76" stop-color="#168ca4"/><stop offset="1" stop-color="#154c75"/></linearGradient>
+<linearGradient id="jersey" x2="1" y2="1"><stop stop-color="#f1f9cc"/><stop offset=".28" stop-color="#43e7c4"/><stop offset=".72" stop-color="#188fa5"/><stop offset="1" stop-color="#0a456d"/></linearGradient>
+<linearGradient id="helmet" x2="1" y2="1"><stop stop-color="#fffbd2"/><stop offset=".48" stop-color="#6ce5b5"/><stop offset=".95" stop-color="#086f96"/></linearGradient>
+<radialGradient id="tires"><stop stop-color="#3e5967"/><stop offset=".67" stop-color="#1d3f50"/><stop offset=".72" stop-color="#a3c2c5"/><stop offset=".77" stop-color="#163343"/><stop offset="1" stop-color="#071925"/></radialGradient>
+</defs><g transform="translate(150 245)">
+ <ellipse cy="1" cx="1" rx="114" ry="9" fill="#071a27" opacity=".22"/>
+ <g transform="translate(-89 -44)"><circle r="39" fill="url(#tires)" stroke="#061825" stroke-width="7"/><circle r="31" fill="none" stroke="#5da0aa" stroke-width="3"/><circle r="26" fill="none" stroke="#b7e5d8" stroke-width="1.5"/><path d="M0 0 L30.0 0.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L26.0 15.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L15.0 26.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L0.0 30.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-15.0 26.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-26.0 15.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-30.0 0.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-26.0 -15.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-15.0 -26.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-0.0 -30.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L15.0 -26.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L26.0 -15.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><circle r="8" fill="#0b2d40" stroke="#dbe7dc" stroke-width="3"/><circle r="3" fill="#fbf2a6"/></g><g transform="translate(80 -44)"><circle r="39" fill="url(#tires)" stroke="#061825" stroke-width="7"/><circle r="31" fill="none" stroke="#5da0aa" stroke-width="3"/><circle r="26" fill="none" stroke="#b7e5d8" stroke-width="1.5"/><path d="M0 0 L30.0 0.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L26.0 15.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L15.0 26.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L0.0 30.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-15.0 26.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-26.0 15.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-30.0 0.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-26.0 -15.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-15.0 -26.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-0.0 -30.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L15.0 -26.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L26.0 -15.0" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><circle r="8" fill="#0b2d40" stroke="#dbe7dc" stroke-width="3"/><circle r="3" fill="#fbf2a6"/></g>
+ <g stroke-linecap="round" stroke-linejoin="round">
+ <path d="M-89 -44 L-43 -95 L8 -44 L-89 -44 M-43 -95 L53 -97 L8 -44 M53 -97 L80 -44" fill="none" stroke="#061f31" stroke-width="15"/>
+ <path d="M-89 -44 L-43 -95 L8 -44 L-89 -44 M-43 -95 L53 -97 L8 -44 M53 -97 L80 -44" fill="none" stroke="url(#frame)" stroke-width="8"/>
+ <path d="M-43 -95 L-54 -112 M50 -98 L57 -116 M56 -116 L81 -121" fill="none" stroke="#132e40" stroke-width="8"/>
+ <path d="M-64 -115 L-32 -115" stroke="#0d2938" stroke-width="10"/>
+ <path d="M61 -118 L84 -121" stroke="#d4ebda" stroke-width="5"/>
+ <path d="M55 -90 L78 -47" stroke="#d3e1e1" stroke-width="4"/>
+ <path d="M0 -48 L28 -59" stroke="#102d3d" stroke-width="7"/>
+ </g>
+ <circle cx="8" cy="-44" r="13" fill="#122d3e" stroke="#a7e4d0" stroke-width="4"/>
+ <circle cx="8" cy="-44" r="5" fill="#ebedac"/>
+ <path d="M8 -44 L26 -44" stroke="#b6d4c9" stroke-width="6" stroke-linecap="round"/>
+ <g stroke-linecap="round" stroke-linejoin="round">
+ <!-- Two alternating pedal strokes; hips, knees and shoes really change across frames -->
+ <path d="M-42 -137 L-19 -93 L-2 -48" stroke="#133248" stroke-width="25" fill="none"/>
+ <path d="M-42 -137 L-19 -93 L-2 -48" stroke="#315779" stroke-width="14" fill="none"/>
+ <path d="M-42 -137 L-12 -90 L17 -48" stroke="#122b3b" stroke-width="18" fill="none"/>
+ <path d="M-10 -46 L11 -49 M7 -46 L30 -49" stroke="#091e2e" stroke-width="11"/>
+ </g>
+ <!-- Athletic rider, windbreaker and visible bent arm -->
+ <g transform="translate(-47 -151) rotate(-9)">
+ <path d="M-24 -61 Q-30 -39 -25 -14 L-6 10 Q13 16 26 0 L28 -40 Q25 -56 10 -64Z" fill="#102c40" stroke="#092335" stroke-width="5"/>
+ <path d="M-18 -57 Q-24 -34 -19 -11 L-3 6 Q17 8 20 -13 L21 -42 Q7 -66 -18 -57" fill="url(#jersey)"/>
+ <path d="M-11 -46 L-1 -4 M12 -38 L14 -13" stroke="#e3ee98" stroke-width="3"/>
+ <path d="M-18 -1 Q2 6 16 -6" stroke="#0e4661" stroke-width="6" fill="none"/>
+ </g>
+ <path d="M-31 -199 Q-12 -177 16 -151 Q39 -126 67 -117" stroke="#102d42" stroke-width="17" fill="none" stroke-linecap="round"/>
+ <path d="M-30 -196 Q-11 -174 17 -151" stroke="#57ddbd" stroke-width="9" fill="none" stroke-linecap="round"/>
+ <path d="M15 -154 Q44 -138 64 -118" stroke="#194e65" stroke-width="8" fill="none" stroke-linecap="round"/>
+ <ellipse cx="66" cy="-117" rx="9" ry="7" fill="#0f3544" stroke="#c3e5cd" stroke-width="2"/>
+ <!-- Face facing forward, helmet and clear wraparound goggles -->
+ <path d="M-46 -234 Q-58 -214 -46 -197 Q-31 -187 -12 -199 Q-7 -218 -18 -231Z" fill="#b5815c"/>
+ <path d="M-49 -227 Q-32 -244 -13 -228 L-6 -211 Q-25 -212 -51 -215Z" fill="url(#helmet)" stroke="#0b3347" stroke-width="4"/>
+ <path d="M-49 -219 Q-26 -226 -11 -215" fill="none" stroke="#c4e8df" stroke-width="4"/>
+ <path d="M-14 -214 L-2 -211 L-10 -204 L-22 -204" fill="#183849" stroke="#0e283a" stroke-width="2"/>
+ <path d="M-49 -229 Q-39 -236 -28 -234" stroke="#f6f4c5" stroke-width="3" fill="none"/>
+ <path d="M-19 -201 Q-26 -195 -35 -196" fill="none" stroke="#11374b" stroke-width="3"/>
+ <!-- Toy paint blaster fixed to handlebar, not a realistic weapon -->
+ <rect x="69" y="-128" width="34" height="10" rx="5" fill="#184d5c" stroke="#0f3141" stroke-width="3"/>
+ <rect x="95" y="-126" width="10" height="6" rx="3" fill="#f1f4a0"/>
+ </g>
+<g transform="translate(450 245)">
+ <ellipse cy="1" cx="1" rx="114" ry="9" fill="#071a27" opacity=".22"/>
+ <g transform="translate(-89 -44)"><circle r="39" fill="url(#tires)" stroke="#061825" stroke-width="7"/><circle r="31" fill="none" stroke="#5da0aa" stroke-width="3"/><circle r="26" fill="none" stroke="#b7e5d8" stroke-width="1.5"/><path d="M0 0 L28.5 9.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L20.1 22.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L6.2 29.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-9.3 28.5" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-22.3 20.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-29.3 6.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-28.5 -9.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-20.1 -22.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-6.2 -29.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L9.3 -28.5" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L22.3 -20.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L29.3 -6.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><circle r="8" fill="#0b2d40" stroke="#dbe7dc" stroke-width="3"/><circle r="3" fill="#fbf2a6"/></g><g transform="translate(80 -44)"><circle r="39" fill="url(#tires)" stroke="#061825" stroke-width="7"/><circle r="31" fill="none" stroke="#5da0aa" stroke-width="3"/><circle r="26" fill="none" stroke="#b7e5d8" stroke-width="1.5"/><path d="M0 0 L28.5 9.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L20.1 22.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L6.2 29.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-9.3 28.5" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-22.3 20.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-29.3 6.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-28.5 -9.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-20.1 -22.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-6.2 -29.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L9.3 -28.5" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L22.3 -20.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L29.3 -6.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><circle r="8" fill="#0b2d40" stroke="#dbe7dc" stroke-width="3"/><circle r="3" fill="#fbf2a6"/></g>
+ <g stroke-linecap="round" stroke-linejoin="round">
+ <path d="M-89 -44 L-43 -95 L8 -44 L-89 -44 M-43 -95 L53 -97 L8 -44 M53 -97 L80 -44" fill="none" stroke="#061f31" stroke-width="15"/>
+ <path d="M-89 -44 L-43 -95 L8 -44 L-89 -44 M-43 -95 L53 -97 L8 -44 M53 -97 L80 -44" fill="none" stroke="url(#frame)" stroke-width="8"/>
+ <path d="M-43 -95 L-54 -112 M50 -98 L57 -116 M56 -116 L81 -121" fill="none" stroke="#132e40" stroke-width="8"/>
+ <path d="M-64 -115 L-32 -115" stroke="#0d2938" stroke-width="10"/>
+ <path d="M61 -118 L84 -121" stroke="#d4ebda" stroke-width="5"/>
+ <path d="M55 -90 L78 -47" stroke="#d3e1e1" stroke-width="4"/>
+ <path d="M0 -48 L28 -59" stroke="#102d3d" stroke-width="7"/>
+ </g>
+ <circle cx="8" cy="-44" r="13" fill="#122d3e" stroke="#a7e4d0" stroke-width="4"/>
+ <circle cx="8" cy="-44" r="5" fill="#ebedac"/>
+ <path d="M8 -44 L8.000000000000002 -26" stroke="#b6d4c9" stroke-width="6" stroke-linecap="round"/>
+ <g stroke-linecap="round" stroke-linejoin="round">
+ <!-- Two alternating pedal strokes; hips, knees and shoes really change across frames -->
+ <path d="M-42 -137 L-19 -84.45 L-2 -29.95" stroke="#133248" stroke-width="25" fill="none"/>
+ <path d="M-42 -137 L-19 -84.45 L-2 -29.95" stroke="#315779" stroke-width="14" fill="none"/>
+ <path d="M-42 -137 L-12 -97.6 L17 -66.05" stroke="#122b3b" stroke-width="18" fill="none"/>
+ <path d="M-10 -27.95 L11 -30.95 M7 -64.05 L30 -67.05" stroke="#091e2e" stroke-width="11"/>
+ </g>
+ <!-- Athletic rider, windbreaker and visible bent arm -->
+ <g transform="translate(-47 -151) rotate(-11)">
+ <path d="M-24 -61 Q-30 -39 -25 -14 L-6 10 Q13 16 26 0 L28 -40 Q25 -56 10 -64Z" fill="#102c40" stroke="#092335" stroke-width="5"/>
+ <path d="M-18 -57 Q-24 -34 -19 -11 L-3 6 Q17 8 20 -13 L21 -42 Q7 -66 -18 -57" fill="url(#jersey)"/>
+ <path d="M-11 -46 L-1 -4 M12 -38 L14 -13" stroke="#e3ee98" stroke-width="3"/>
+ <path d="M-18 -1 Q2 6 16 -6" stroke="#0e4661" stroke-width="6" fill="none"/>
+ </g>
+ <path d="M-31 -199 Q-12 -177 16 -151 Q39 -126 67 -117" stroke="#102d42" stroke-width="17" fill="none" stroke-linecap="round"/>
+ <path d="M-30 -196 Q-11 -174 17 -151" stroke="#57ddbd" stroke-width="9" fill="none" stroke-linecap="round"/>
+ <path d="M15 -154 Q44 -138 64 -118" stroke="#194e65" stroke-width="8" fill="none" stroke-linecap="round"/>
+ <ellipse cx="66" cy="-117" rx="9" ry="7" fill="#0f3544" stroke="#c3e5cd" stroke-width="2"/>
+ <!-- Face facing forward, helmet and clear wraparound goggles -->
+ <path d="M-46 -234 Q-58 -214 -46 -197 Q-31 -187 -12 -199 Q-7 -218 -18 -231Z" fill="#b5815c"/>
+ <path d="M-49 -227 Q-32 -244 -13 -228 L-6 -211 Q-25 -212 -51 -215Z" fill="url(#helmet)" stroke="#0b3347" stroke-width="4"/>
+ <path d="M-49 -219 Q-26 -226 -11 -215" fill="none" stroke="#c4e8df" stroke-width="4"/>
+ <path d="M-14 -214 L-2 -211 L-10 -204 L-22 -204" fill="#183849" stroke="#0e283a" stroke-width="2"/>
+ <path d="M-49 -229 Q-39 -236 -28 -234" stroke="#f6f4c5" stroke-width="3" fill="none"/>
+ <path d="M-19 -201 Q-26 -195 -35 -196" fill="none" stroke="#11374b" stroke-width="3"/>
+ <!-- Toy paint blaster fixed to handlebar, not a realistic weapon -->
+ <rect x="69" y="-128" width="34" height="10" rx="5" fill="#184d5c" stroke="#0f3141" stroke-width="3"/>
+ <rect x="95" y="-126" width="10" height="6" rx="3" fill="#f1f4a0"/>
+ </g>
+<g transform="translate(750 245)">
+ <ellipse cy="1" cx="1" rx="114" ry="9" fill="#071a27" opacity=".22"/>
+ <g transform="translate(-89 -44)"><circle r="39" fill="url(#tires)" stroke="#061825" stroke-width="7"/><circle r="31" fill="none" stroke="#5da0aa" stroke-width="3"/><circle r="26" fill="none" stroke="#b7e5d8" stroke-width="1.5"/><path d="M0 0 L24.3 17.6" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L12.2 27.4" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-3.1 29.8" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-17.6 24.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-27.4 12.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-29.8 -3.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-24.3 -17.6" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-12.2 -27.4" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L3.1 -29.8" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L17.6 -24.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L27.4 -12.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L29.8 3.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><circle r="8" fill="#0b2d40" stroke="#dbe7dc" stroke-width="3"/><circle r="3" fill="#fbf2a6"/></g><g transform="translate(80 -44)"><circle r="39" fill="url(#tires)" stroke="#061825" stroke-width="7"/><circle r="31" fill="none" stroke="#5da0aa" stroke-width="3"/><circle r="26" fill="none" stroke="#b7e5d8" stroke-width="1.5"/><path d="M0 0 L24.3 17.6" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L12.2 27.4" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-3.1 29.8" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-17.6 24.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-27.4 12.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-29.8 -3.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-24.3 -17.6" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-12.2 -27.4" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L3.1 -29.8" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L17.6 -24.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L27.4 -12.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L29.8 3.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><circle r="8" fill="#0b2d40" stroke="#dbe7dc" stroke-width="3"/><circle r="3" fill="#fbf2a6"/></g>
+ <g stroke-linecap="round" stroke-linejoin="round">
+ <path d="M-89 -44 L-43 -95 L8 -44 L-89 -44 M-43 -95 L53 -97 L8 -44 M53 -97 L80 -44" fill="none" stroke="#061f31" stroke-width="15"/>
+ <path d="M-89 -44 L-43 -95 L8 -44 L-89 -44 M-43 -95 L53 -97 L8 -44 M53 -97 L80 -44" fill="none" stroke="url(#frame)" stroke-width="8"/>
+ <path d="M-43 -95 L-54 -112 M50 -98 L57 -116 M56 -116 L81 -121" fill="none" stroke="#132e40" stroke-width="8"/>
+ <path d="M-64 -115 L-32 -115" stroke="#0d2938" stroke-width="10"/>
+ <path d="M61 -118 L84 -121" stroke="#d4ebda" stroke-width="5"/>
+ <path d="M55 -90 L78 -47" stroke="#d3e1e1" stroke-width="4"/>
+ <path d="M0 -48 L28 -59" stroke="#102d3d" stroke-width="7"/>
+ </g>
+ <circle cx="8" cy="-44" r="13" fill="#122d3e" stroke="#a7e4d0" stroke-width="4"/>
+ <circle cx="8" cy="-44" r="5" fill="#ebedac"/>
+ <path d="M8 -44 L-10 -44" stroke="#b6d4c9" stroke-width="6" stroke-linecap="round"/>
+ <g stroke-linecap="round" stroke-linejoin="round">
+ <!-- Two alternating pedal strokes; hips, knees and shoes really change across frames -->
+ <path d="M-42 -137 L-19 -93 L-2 -48" stroke="#133248" stroke-width="25" fill="none"/>
+ <path d="M-42 -137 L-19 -93 L-2 -48" stroke="#315779" stroke-width="14" fill="none"/>
+ <path d="M-42 -137 L-12 -90 L17 -48" stroke="#122b3b" stroke-width="18" fill="none"/>
+ <path d="M-10 -46 L11 -49 M7 -46 L30 -49" stroke="#091e2e" stroke-width="11"/>
+ </g>
+ <!-- Athletic rider, windbreaker and visible bent arm -->
+ <g transform="translate(-47 -151) rotate(-13)">
+ <path d="M-24 -61 Q-30 -39 -25 -14 L-6 10 Q13 16 26 0 L28 -40 Q25 -56 10 -64Z" fill="#102c40" stroke="#092335" stroke-width="5"/>
+ <path d="M-18 -57 Q-24 -34 -19 -11 L-3 6 Q17 8 20 -13 L21 -42 Q7 -66 -18 -57" fill="url(#jersey)"/>
+ <path d="M-11 -46 L-1 -4 M12 -38 L14 -13" stroke="#e3ee98" stroke-width="3"/>
+ <path d="M-18 -1 Q2 6 16 -6" stroke="#0e4661" stroke-width="6" fill="none"/>
+ </g>
+ <path d="M-31 -199 Q-12 -177 16 -151 Q39 -126 67 -117" stroke="#102d42" stroke-width="17" fill="none" stroke-linecap="round"/>
+ <path d="M-30 -196 Q-11 -174 17 -151" stroke="#57ddbd" stroke-width="9" fill="none" stroke-linecap="round"/>
+ <path d="M15 -154 Q44 -138 64 -118" stroke="#194e65" stroke-width="8" fill="none" stroke-linecap="round"/>
+ <ellipse cx="66" cy="-117" rx="9" ry="7" fill="#0f3544" stroke="#c3e5cd" stroke-width="2"/>
+ <!-- Face facing forward, helmet and clear wraparound goggles -->
+ <path d="M-46 -234 Q-58 -214 -46 -197 Q-31 -187 -12 -199 Q-7 -218 -18 -231Z" fill="#b5815c"/>
+ <path d="M-49 -227 Q-32 -244 -13 -228 L-6 -211 Q-25 -212 -51 -215Z" fill="url(#helmet)" stroke="#0b3347" stroke-width="4"/>
+ <path d="M-49 -219 Q-26 -226 -11 -215" fill="none" stroke="#c4e8df" stroke-width="4"/>
+ <path d="M-14 -214 L-2 -211 L-10 -204 L-22 -204" fill="#183849" stroke="#0e283a" stroke-width="2"/>
+ <path d="M-49 -229 Q-39 -236 -28 -234" stroke="#f6f4c5" stroke-width="3" fill="none"/>
+ <path d="M-19 -201 Q-26 -195 -35 -196" fill="none" stroke="#11374b" stroke-width="3"/>
+ <!-- Toy paint blaster fixed to handlebar, not a realistic weapon -->
+ <rect x="69" y="-128" width="34" height="10" rx="5" fill="#184d5c" stroke="#0f3141" stroke-width="3"/>
+ <rect x="95" y="-126" width="10" height="6" rx="3" fill="#f1f4a0"/>
+ </g>
+<g transform="translate(1050 245)">
+ <ellipse cy="1" cx="1" rx="114" ry="9" fill="#071a27" opacity=".22"/>
+ <g transform="translate(-89 -44)"><circle r="39" fill="url(#tires)" stroke="#061825" stroke-width="7"/><circle r="31" fill="none" stroke="#5da0aa" stroke-width="3"/><circle r="26" fill="none" stroke="#b7e5d8" stroke-width="1.5"/><path d="M0 0 L17.6 24.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L3.1 29.8" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-12.2 27.4" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-24.3 17.6" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-29.8 3.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-27.4 -12.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-17.6 -24.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-3.1 -29.8" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L12.2 -27.4" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L24.3 -17.6" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L29.8 -3.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L27.4 12.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><circle r="8" fill="#0b2d40" stroke="#dbe7dc" stroke-width="3"/><circle r="3" fill="#fbf2a6"/></g><g transform="translate(80 -44)"><circle r="39" fill="url(#tires)" stroke="#061825" stroke-width="7"/><circle r="31" fill="none" stroke="#5da0aa" stroke-width="3"/><circle r="26" fill="none" stroke="#b7e5d8" stroke-width="1.5"/><path d="M0 0 L17.6 24.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L3.1 29.8" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-12.2 27.4" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-24.3 17.6" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-29.8 3.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-27.4 -12.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-17.6 -24.3" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L-3.1 -29.8" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L12.2 -27.4" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L24.3 -17.6" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L29.8 -3.1" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><path d="M0 0 L27.4 12.2" stroke="#b8d3c9" stroke-width="1.2" opacity=".85"/><circle r="8" fill="#0b2d40" stroke="#dbe7dc" stroke-width="3"/><circle r="3" fill="#fbf2a6"/></g>
+ <g stroke-linecap="round" stroke-linejoin="round">
+ <path d="M-89 -44 L-43 -95 L8 -44 L-89 -44 M-43 -95 L53 -97 L8 -44 M53 -97 L80 -44" fill="none" stroke="#061f31" stroke-width="15"/>
+ <path d="M-89 -44 L-43 -95 L8 -44 L-89 -44 M-43 -95 L53 -97 L8 -44 M53 -97 L80 -44" fill="none" stroke="url(#frame)" stroke-width="8"/>
+ <path d="M-43 -95 L-54 -112 M50 -98 L57 -116 M56 -116 L81 -121" fill="none" stroke="#132e40" stroke-width="8"/>
+ <path d="M-64 -115 L-32 -115" stroke="#0d2938" stroke-width="10"/>
+ <path d="M61 -118 L84 -121" stroke="#d4ebda" stroke-width="5"/>
+ <path d="M55 -90 L78 -47" stroke="#d3e1e1" stroke-width="4"/>
+ <path d="M0 -48 L28 -59" stroke="#102d3d" stroke-width="7"/>
+ </g>
+ <circle cx="8" cy="-44" r="13" fill="#122d3e" stroke="#a7e4d0" stroke-width="4"/>
+ <circle cx="8" cy="-44" r="5" fill="#ebedac"/>
+ <path d="M8 -44 L7.9999999999999964 -62" stroke="#b6d4c9" stroke-width="6" stroke-linecap="round"/>
+ <g stroke-linecap="round" stroke-linejoin="round">
+ <!-- Two alternating pedal strokes; hips, knees and shoes really change across frames -->
+ <path d="M-42 -137 L-19 -101.55 L-2 -66.05" stroke="#133248" stroke-width="25" fill="none"/>
+ <path d="M-42 -137 L-19 -101.55 L-2 -66.05" stroke="#315779" stroke-width="14" fill="none"/>
+ <path d="M-42 -137 L-12 -82.4 L17 -29.95" stroke="#122b3b" stroke-width="18" fill="none"/>
+ <path d="M-10 -64.05 L11 -67.05 M7 -27.95 L30 -30.95" stroke="#091e2e" stroke-width="11"/>
+ </g>
+ <!-- Athletic rider, windbreaker and visible bent arm -->
+ <g transform="translate(-47 -151) rotate(-9)">
+ <path d="M-24 -61 Q-30 -39 -25 -14 L-6 10 Q13 16 26 0 L28 -40 Q25 -56 10 -64Z" fill="#102c40" stroke="#092335" stroke-width="5"/>
+ <path d="M-18 -57 Q-24 -34 -19 -11 L-3 6 Q17 8 20 -13 L21 -42 Q7 -66 -18 -57" fill="url(#jersey)"/>
+ <path d="M-11 -46 L-1 -4 M12 -38 L14 -13" stroke="#e3ee98" stroke-width="3"/>
+ <path d="M-18 -1 Q2 6 16 -6" stroke="#0e4661" stroke-width="6" fill="none"/>
+ </g>
+ <path d="M-31 -199 Q-12 -177 16 -151 Q39 -126 67 -117" stroke="#102d42" stroke-width="17" fill="none" stroke-linecap="round"/>
+ <path d="M-30 -196 Q-11 -174 17 -151" stroke="#57ddbd" stroke-width="9" fill="none" stroke-linecap="round"/>
+ <path d="M15 -154 Q44 -138 64 -118" stroke="#194e65" stroke-width="8" fill="none" stroke-linecap="round"/>
+ <ellipse cx="66" cy="-117" rx="9" ry="7" fill="#0f3544" stroke="#c3e5cd" stroke-width="2"/>
+ <!-- Face facing forward, helmet and clear wraparound goggles -->
+ <path d="M-46 -234 Q-58 -214 -46 -197 Q-31 -187 -12 -199 Q-7 -218 -18 -231Z" fill="#b5815c"/>
+ <path d="M-49 -227 Q-32 -244 -13 -228 L-6 -211 Q-25 -212 -51 -215Z" fill="url(#helmet)" stroke="#0b3347" stroke-width="4"/>
+ <path d="M-49 -219 Q-26 -226 -11 -215" fill="none" stroke="#c4e8df" stroke-width="4"/>
+ <path d="M-14 -214 L-2 -211 L-10 -204 L-22 -204" fill="#183849" stroke="#0e283a" stroke-width="2"/>
+ <path d="M-49 -229 Q-39 -236 -28 -234" stroke="#f6f4c5" stroke-width="3" fill="none"/>
+ <path d="M-19 -201 Q-26 -195 -35 -196" fill="none" stroke="#11374b" stroke-width="3"/>
+ <!-- Toy paint blaster fixed to handlebar, not a realistic weapon -->
+ <rect x="69" y="-128" width="34" height="10" rx="5" fill="#184d5c" stroke="#0f3141" stroke-width="3"/>
+ <rect x="95" y="-126" width="10" height="6" rx="3" fill="#f1f4a0"/>
+ </g></svg>
