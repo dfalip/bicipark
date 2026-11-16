@@ -13,8 +13,8 @@ function setup(){
  const ctx=new Proxy({},{get(o,k){if(k==='createLinearGradient')return ()=>grad;if(k in o)return o[k];o[k]=()=>{};return o[k];},set(o,k,v){o[k]=v;return true;}});
  w.HTMLCanvasElement.prototype.getContext=()=>ctx;
  w.requestAnimationFrame=fn=>{frames.push(fn);return frames.length;};
- w.eval(read('engine.js').replace(/^export /gm,'')+'\nwindow.__engine={WORLD,ZONES,clamp,makeGame,start,togglePause,jump,fire,step};');
- const app=read('app.js').replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/engine\.js";/,'const {WORLD,ZONES,clamp,makeGame,start,togglePause,jump,fire,step}=window.__engine;');
+ w.eval(read('engine.js').replace(/^export /gm,'')+'\nwindow.__engine={WORLD,ZONES,clamp,makeGame,start,togglePause,jump,fire,dash,step};');
+ const app=read('app.js').replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/engine\.js";/,'const {WORLD,ZONES,clamp,makeGame,start,togglePause,jump,fire,dash,step}=window.__engine;');
  assert.doesNotMatch(app,/^import\s/m);
  w.eval(app+'\nwindow.__state=()=>({game,keys,pointers});');
  const $=id=>w.document.getElementById(id);
@@ -127,5 +127,41 @@ test('Hitting a zombie with paint gives a visible reward event and a temporary s
   assert.equal(h.$('notice').classList.contains('notice--reward'),true);
   assert.ok(g.score>0);
   h.key('keyup','KeyX');
+ }finally{h.dom.window.close();}
+});
+
+test('Tactical dash is usable on a touch device and rescues a near collision',()=>{
+ const h=setup();try{
+  assert.ok(h.$('dashButton'));
+  h.$('playButton').click();
+  const g=h.w.__state().game;
+  const enemy=g.enemies.find(x=>x.type==='walker');
+  g.enemies=[enemy];g.distance=enemy.x-18;
+  h.pointer('dashButton','pointerdown',25);
+  assert.equal(g.dashCharges,0);
+  assert.ok(g.dashTime>0);
+  h.pointer('dashButton','pointerup',25);
+  h.frame(0);h.frame(35);
+  assert.equal(g.hearts,3);
+  assert.equal(g.dashDodges,1);
+  assert.match(h.$('dashValue').textContent,/0 \/ 2/);
+  assert.equal(h.$('dashButton').disabled,true);
+  assert.equal(h.w.__state().pointers.size,0);
+ }finally{h.dom.window.close();}
+});
+
+test('New route changes seeded enemies and pickups while a manual restart keeps chosen layout',()=>{
+ const h=setup();try{
+  const before=h.w.__state().game;
+  const original=before.enemies.map(e=>e.type+':'+e.x).join('|');
+  const seedLabel=h.$('routeValue').textContent;
+  h.$('newRouteButton').click();
+  const changed=h.w.__state().game;
+  assert.notEqual(changed.enemies.map(e=>e.type+':'+e.x).join('|'),original);
+  assert.notEqual(h.$('routeValue').textContent,seedLabel);
+  assert.equal(changed.phase,'ready');
+  h.$('playButton').click();
+  h.$('resetButton').click();
+  assert.deepEqual(h.w.__state().game.enemies,changed.enemies);
  }finally{h.dom.window.close();}
 });

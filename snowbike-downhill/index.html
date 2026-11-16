@@ -28,7 +28,7 @@
     <div><small>MILLOR MARCA</small><strong id="bestValue">—</strong></div>
   </section>
   <section class="game-stage" aria-label="Pista de descens">
-    <div class="stage-bar"><span id="zoneValue">PISTA DEL BOSC</span><span id="phaseValue">PREPARAT</span></div>
+    <div class="stage-bar"><span id="zoneValue">PISTA DEL BOSC</span><span id="styleValue" class="skill-chip">360° + PORTES EN RATXA</span><span id="phaseValue">PREPARAT</span></div>
     <canvas id="gameCanvas" width="960" height="540" role="img" aria-describedby="gameHelp statusText" aria-label="Pista nevada de descens amb portes d'eslàlom i animals que creuen. Mou el ciclista amb les fletxes esquerra i dreta.">Necessites un navegador amb compatibilitat amb Canvas per jugar.</canvas>
     <div class="impact-flash" id="impactFlash" aria-hidden="true"></div>
     <div class="progress"><div id="progressFill"></div><span id="progressValue">0%</span></div>
@@ -39,7 +39,7 @@
         <h2>PREPARA ELS ESQUÍS!</h2>
         <p>El temps corre tan bon punt surtis. Passa entre les banderes, esquiva els animals o salta per sobre seu. Compte amb els ietis!</p>
         <button id="startButton" type="button" class="primary">▶ INICIAR DESCENS</button>
-        <small>← → girar · ↓ aerodinàmica · ↑ frenar · ESPAI saltar · T turbo</small>
+        <small>← → girar · ↓ aerodinàmica · ↑ frenar · ESPAI saltar · K truc 360° · T turbo</small>
       </div>
     </div>
     <div id="finishPanel" class="overlay" hidden>
@@ -69,6 +69,7 @@
     <button id="leftButton" type="button" class="control"><span>◀</span> ESQUERRA</button>
     <button id="brakeButton" type="button" class="control"><span>▮▮</span> FRENAR</button>
     <button id="jumpButton" type="button" class="control jump" aria-label="Saltar per sobre dels animals i els ietis"><span>⤒</span> SALTAR</button>
+    <button id="trickButton" type="button" class="control trick" aria-label="Fer un truc de 360 graus durant un salt"><span>⟳</span> TRUC 360°</button>
     <button id="turboButton" type="button" class="control turbo"><span>⚡</span> TURBO</button>
     <button id="tuckButton" type="button" class="control tuck"><span>▼</span> AERODINÀMICA</button>
     <button id="rightButton" type="button" class="control"><span>▶</span> DRETA</button>
@@ -76,7 +77,7 @@
   <div class="energy"><span>ENERGIA TURBO</span><div class="energy-track"><div id="boostFill"></div></div><strong id="boostValue">35%</strong><button id="pauseButton" type="button" class="tiny">PAUSA</button><button id="restartButton" type="button" class="tiny">↻ REINICIA</button></div>
   <section class="how">
     <div><p class="eyebrow">4 PISTES · DIFICULTAT CREIXENT</p><h2>La millor línia és la més ràpida</h2>
-      <p id="gameHelp">Gira amb ← → o els botons. Mantén ↓ / AERODINÀMICA per agafar velocitat, però costa més girar. Amb ↑ / FRENAR pots preparar millor les portes. Prem ESPAI / SALTAR per enlairar-te i esquivar animals, o T / TURBO quan tinguis energia. Els ietis són més grans: cal saltar més alt o evitar-los lateralment. No pots tornar a saltar fins a aterrar. Superar animals amb un salt dona punts extra; els ietis donen una bonificació especial. Les portes donen punts i turbo; fallar-les afegeix 3 segons. Xocar amb un animal o un ieti afegeix 5 segons i resta una vida. Cap animal rep danys.</p></div>
+      <p id="gameHelp">Gira amb ← → o els botons. Mantén ↓ / AERODINÀMICA per agafar velocitat, però costa més girar. Amb ↑ / FRENAR pots preparar millor les portes. Prem ESPAI / SALTAR per enlairar-te i esquivar animals. Al punt alt del salt, prem K / TRUC 360°: un aterratge perfecte dona puntuació i turbo, però un truc incomplet afegeix 2 segons. Encadena portes precises per multiplicar punts. Prem T / TURBO quan tinguis energia. Els ietis són més grans: cal saltar més alt o evitar-los lateralment. No pots tornar a saltar fins a aterrar. Superar animals amb un salt dona punts extra; els ietis donen una bonificació especial. Les portes donen punts i turbo; fallar-les afegeix 3 segons. Xocar amb un animal o un ieti afegeix 5 segons i resta una vida. Cap animal rep danys.</p></div>
     <div class="best-list" id="courseRecords" aria-label="Millors marques per circuit"></div>
   </section>
   <footer><a href="../explora/?category=games">Tots els jocs</a> · Joc arcade original BiciPark · Rècords desats al navegador</footer>

@@ -84,3 +84,18 @@ footer{font-size:.72rem;text-align:center;border-top:1px solid var(--line);paddi
  .control.jump span{font-size:1.6rem}
 }
 @media(prefers-reduced-motion:reduce){.control{transition:none}}
+
+/* Skill-first arcade controls and ahead-of-time route guidance. */
+.controls{grid-template-columns:repeat(7,minmax(0,1fr))}
+.control.trick{background:linear-gradient(120deg,#694fa2,#9a6dc9);border-color:#d9c1ff;color:#fff9ff}
+.control[aria-disabled="true"]{opacity:.58}
+.stage-bar .skill-chip{background:#20375ae8;color:#fff0a5;border-color:#ffe9a8;font-variant-numeric:tabular-nums;letter-spacing:.02em;text-align:center}
+@media(max-width:720px){
+ .controls{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+ .controls .control{min-height:60px}
+ .controls .control.trick{grid-column:span 2}
+ .stage-bar{gap:5px;top:7px;left:6px;right:6px}
+ .stage-bar span{padding:4px 6px;font-size:.53rem;letter-spacing:0}
+ .stage-bar .skill-chip{max-width:46%;white-space:normal}
+}
+@media(prefers-reduced-motion:reduce){.control.trick{transition:none}}
