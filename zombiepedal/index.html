@@ -22,6 +22,7 @@
     <div><small>PINTURA</small><strong id="ammoValue">8 / 8</strong></div>
     <div><small>VIDES</small><strong id="heartsValue">♥ ♥ ♥</strong></div>
     <div><small>COMBO</small><strong id="comboValue">×0</strong></div>
+    <div><small>ESPRINTS</small><strong id="dashValue">1 / 2</strong></div>
   </section>
   <section class="stage" aria-label="Joc de persecució">
    <div class="stage-top"><span id="zoneValue">CARRERS ABANDONATS</span><span id="phaseValue">PREPARAT</span></div>
@@ -33,7 +34,7 @@
     <div class="overlay-card"><p class="eyebrow">MISSIÓ: ESCAPAR</p><h2>LA HORDA JA ARRIBA!</h2>
      <p>La bicicleta avança sola. Accelera per deixar la horda enrere, salta els zombis o utilitza el teu llançador de pintura per aturar-los temporalment.</p>
      <button id="playButton" class="primary" type="button">▶ COMENÇA LA FUGIDA</button>
-     <small>→/D pedalar · ←/A frenar · ESPAI/↑ saltar · X/F pintura</small>
+     <small>→/D pedalar · ←/A frenar · ESPAI/↑ saltar · X/F pintura · C esprint</small>
     </div>
    </div>
    <div class="overlay" id="finishPanel" hidden>
@@ -63,10 +64,11 @@
    <button id="jumpButton" class="control jump" type="button"><span>↑</span> SALTAR <small>ESPAI</small></button>
    <button id="paintButton" class="control paint" type="button"><span>🎯</span> PINTURA <small>X / F</small></button>
    <button id="pedalButton" class="control pedal" type="button"><span>▶▶</span> PEDALAR <small>→ / D</small></button>
+   <button id="dashButton" class="control dash" type="button" aria-label="Esprint curt per superar un obstacle"><span>⚡</span> ESPRINT <small>C</small></button>
   </section>
   <div class="actions"><button id="pauseButton" type="button">Ⅱ PAUSA</button><button id="resetButton" type="button">↻ REINICIA</button><span id="recordValue">MILLOR PUNTUACIÓ: —</span></div>
   <section class="instructions"><div><p class="eyebrow">4 ZONES · FUGIDA PROGRESSIVA</p><h2>Com sobreviure a la ciutat</h2>
-    <p id="instructions">La bicicleta avança automàticament. Mantén PEDALAR per accelerar i allunyar-te de la horda. Salta per damunt dels zombis o dels obstacles; llança boles de pintura contra els zombis per frenar-los. Recull estrelles, munició i cors. Fes combos i arriba al pont final per aconseguir estrelles. La pintura atura els zombis sense fer-los mal.</p></div>
+    <p id="instructions">La bicicleta avança automàticament. Mantén PEDALAR per accelerar i allunyar-te de la horda. Salta per damunt dels zombis o dels obstacles; llança boles de pintura contra els zombis per frenar-los. Recull estrelles, munició i cors. Prem C / ESPRINT just abans d’un obstacle per travessar-lo sense xocar: les càrregues són limitades i es recuperen amb estrelles, cada 3 zombis frenats o quan canvies de zona. Encadena esquivades per multiplicar combos i arribar al pont final. La pintura atura els zombis sense fer-los mal.</p></div>
     <div class="zones" id="zoneList"></div>
   </section>
   <footer><a href="../explora/?category=games">Tots els jocs</a> · Arcade original BiciPark · Rècords desats només en aquest navegador</footer>
