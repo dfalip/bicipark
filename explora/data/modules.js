@@ -180,6 +180,19 @@ export const biciparkModules = [
     enabled: true
   },
   {
+    id: "zombiepedal",
+    category: "games",
+    title: "ZombiePedal · Escapa de la ciutat",
+    description:
+      "Pedala davant d'una horda de zombis en 4 zones arcade, salta obstacles i llança pintura per frenar-los sense fer-los mal. Recull estrelles i aconsegueix combos!",
+    href: "../zombiepedal/",
+    icon: "🧟",
+    status: "Nou joc",
+    statusType: "new",
+    tags: ["Arcade", "Persecució", "Salts", "Zombis", "4 zones", "Paintball"],
+    enabled: true
+  },
+  {
     id: "roda-rumble",
     category: "games",
     title: "RodaRumble · Destrueix les torres",
