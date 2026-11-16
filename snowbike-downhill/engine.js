@@ -52,6 +52,8 @@ export function makeGame(index=0){
   lane:0,steerVelocity:0,hearts:3,penalty:0,misses:0,hits:0,
   airHeight:0,airVelocity:0,grounded:true,jumpCooldown:0,jumps:0,jumpDodges:0,
   perfectGates:0,passedGates:0,animalsDodged:0,boost:35,
+  streak:0,bestStreak:0,tricks:0,perfectTricks:0,trickFailures:0,
+  trickUsed:false,trickQuality:"",trickSpin:0,
   boostTime:0,boostUsed:0,stars:0,score:0,finalTime:null,
   event:"Tria una pista i comença el descens!",eventTimer:0,
   events:[],stumble:0,invulnerability:0};
@@ -68,6 +70,7 @@ function announce(g,message,type="notice",details={}){
 export function jump(g){
  if(g.phase!=="playing"||!g.grounded||g.jumpCooldown>0||g.stumble>0)return false;
  g.grounded=false;g.airHeight=0;g.airVelocity=3.8;g.jumps++;
+ g.trickUsed=false;g.trickSpin=0;g.trickQuality="";
  announce(g,"SALT! Passa per sobre de l'animal.","jump");
  return true;
 }
@@ -77,19 +80,32 @@ export function boost(g){
  announce(g,"TURBO! Busca una línia neta.","boost");
  return true;
 }
+// Risk/reward: perform one full 360 while airborne. Press near the apex for style.
+export function trick(g){
+ if(g.phase!=="playing"||g.grounded||g.stumble>0||g.trickUsed||
+    g.airHeight<.35||g.airVelocity< -1.15)return false;
+ g.trickUsed=true;g.trickSpin=0;
+ g.trickQuality=Math.abs(g.airVelocity)<1.1?"perfect":"clean";
+ announce(g,g.trickQuality==="perfect"?"TRUC PERFECTE! Completa la volta.":"TRUC! Mantén l'equilibri fins aterrar.","trick-start");
+ return true;
+}
 function gateCross(g,gate){
  if(gate.passed)return;
  gate.passed=true;g.passedGates++;
  const error=Math.abs(g.lane-gate.lane);
  if(error<=.27){
-  gate.quality="perfect";g.perfectGates++;g.score+=250;
+  gate.quality="perfect";g.perfectGates++;
+  g.streak++;g.bestStreak=Math.max(g.bestStreak,g.streak);
+  const points=250+Math.min(4,g.streak-1)*65;g.score+=points;
   g.boost=clamp(g.boost+22,0,100);
-  announce(g,"PORTA PERFECTA! +250 i energia turbo","gate-perfect",{at:gate.at,lane:gate.lane,points:250});
+  announce(g,"PORTA PERFECTA! +"+points+" · ratxa ×"+g.streak,"gate-perfect",{at:gate.at,lane:gate.lane,points,streak:g.streak});
  }else if(error<=.48){
-  gate.quality="passed";g.score+=100;g.boost=clamp(g.boost+8,0,100);
-  announce(g,"PORTA SUPERADA! +100","gate-pass",{at:gate.at,lane:gate.lane,points:100});
+  gate.quality="passed";g.streak++;g.bestStreak=Math.max(g.bestStreak,g.streak);
+  const points=100+Math.min(4,g.streak-1)*30;g.score+=points;
+  g.boost=clamp(g.boost+8,0,100);
+  announce(g,"PORTA SUPERADA! +"+points+" · ratxa ×"+g.streak,"gate-pass",{at:gate.at,lane:gate.lane,points,streak:g.streak});
  }else{
-  gate.quality="missed";g.misses++;g.penalty+=3;g.score=Math.max(0,g.score-75);
+  gate.quality="missed";g.misses++;g.streak=0;g.penalty+=3;g.score=Math.max(0,g.score-75);
   announce(g,"PORTA FALLADA: +3 s de penalització","gate-miss",{at:gate.at,lane:gate.lane,penalty:3});
  }
 }
@@ -115,7 +131,7 @@ function animalStep(g,a,dt,previousDistance){
     announce(g,a.kind==="yeti"?"IETI SALTAT! +250":"SALT PERFECTE! +130",
       "jump-dodge",{at:a.at,lane:a.x,species:a.emoji,kind:a.kind||"wildlife",points});
    }else{
-    a.collision=true;g.hits++;g.hearts=Math.max(0,g.hearts-1);
+    a.collision=true;g.hits++;g.streak=0;g.hearts=Math.max(0,g.hearts-1);
     g.penalty+=5;g.velocity*=.55;g.boostTime=0;
     g.stumble=.85;g.invulnerability=1.35;
     announce(g,a.kind==="yeti"?"XOC AMB UN IETI! +5 s":"XOC! +5 s · recupera l'equilibri!",
@@ -139,7 +155,8 @@ export function scoreFinish(g){
  const time=g.time+g.penalty;
  return {totalTime:time,rawTime:g.time,penalty:g.penalty,
   gates:g.passedGates,perfect:g.perfectGates,animals:g.animalsDodged,
-  hits:g.hits,misses:g.misses,stars:g.stars,score:g.score,jumps:g.jumps,jumpDodges:g.jumpDodges};
+  hits:g.hits,misses:g.misses,stars:g.stars,score:g.score,jumps:g.jumps,jumpDodges:g.jumpDodges,
+  tricks:g.tricks,perfectTricks:g.perfectTricks,bestStreak:g.bestStreak,trickFailures:g.trickFailures};
 }
 function advance(g,input,dt){
  if(g.phase!=="playing")return;
@@ -150,11 +167,25 @@ function advance(g,input,dt){
  g.invulnerability=Math.max(0,g.invulnerability-dt);
  g.jumpCooldown=Math.max(0,g.jumpCooldown-dt);
  if(!g.grounded){
+  if(g.trickUsed)g.trickSpin=clamp(g.trickSpin+dt*3.8,0,1);
   g.airHeight+=g.airVelocity*dt;
   g.airVelocity-=8.8*dt;
   if(g.airHeight<=0){
    g.airHeight=0;g.airVelocity=0;g.grounded=true;g.jumpCooldown=.28;
    announce(g,"ATERRATGE A LA NEU!","land");
+   if(g.trickUsed){
+    if(g.trickSpin>=.99){
+     const perfect=g.trickQuality==="perfect";
+     const points=perfect?460:260;
+     g.tricks++;if(perfect)g.perfectTricks++;
+     g.score+=points;g.boost=clamp(g.boost+(perfect?24:14),0,100);
+     announce(g,perfect?"360 PERFECTE! +460 · TURBO!":"TRUC COMPLET! +260 · TURBO!","trick-land",
+      {points,perfect,boost:perfect?24:14});
+    }else{
+     g.trickFailures++;g.streak=0;g.penalty+=2;g.velocity*=.78;
+     announce(g,"TRUC INCOMPLET! +2 s · perd velocitat.","trick-fail",{penalty:2});
+    }
+   }
   }
  }
  const tuck=Boolean(input?.tuck),brake=Boolean(input?.brake);
