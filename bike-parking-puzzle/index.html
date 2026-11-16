@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b263e">
+  <meta name="description" content="BiciPark Puzzle: aparca les bicicletes a les places correctes. Dotze nivells de lògica, espais bloquejats, moviments limitats, pistes i desfés.">
+  <title>BiciPark Puzzle — Aparca-les!</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="header">
+    <a href="../explora/?category=games" class="brand">✦ BICIPARK <span>PLAY</span></a>
+    <nav aria-label="Navegació dels jocs"><a href="../explora/?category=games">← Tots els jocs</a><a href="../roda-rumble/">RodaRumble</a><a href="../bike-jump-ride/">BikeJump Ride</a></nav>
+  </header>
+  <main class="main">
+    <div class="intro">
+      <div>
+        <p class="eyebrow">BICIPARK PLAY · LÒGICA I ESTRATÈGIA</p>
+        <h1>APARCA-<span>LES!</span></h1>
+        <p>Un aparcament embolicat, places assignades i moviments comptats. Cada bicicleta que aparques pot bloquejar les altres. <strong>Pensa abans de moure!</strong></p>
+      </div>
+      <div class="intro-medal"><span aria-hidden="true">🧠</span><strong>12 REPTES</strong><small>4 capítols · sense presses</small></div>
+    </div>
+    <section class="layout" aria-label="Zona de joc">
+      <div class="game">
+        <div class="toolbar">
+          <label for="levelSelect">REPTE</label>
+          <select id="levelSelect" aria-label="Escull el nivell de l'aparcament"></select>
+          <span class="chapter" id="chapterLabel">INICI</span>
+        </div>
+        <div class="stats" aria-label="Estat de la partida">
+          <div><small>MOVIMENTS</small><strong><span id="movesValue">0</span> <em>/ <span id="movesLimit">0</span></em></strong></div>
+          <div><small>MÍNIM POSSIBLE</small><strong id="optimalValue">—</strong></div>
+          <div><small>APARCADES</small><strong id="parkedValue">0 / 2</strong></div>
+          <div><small>MILLOR MARCA</small><strong id="bestValue">—</strong></div>
+        </div>
+        <div class="board-frame">
+          <div class="board-topline"><span>🚲 APARCAMENT BICIPARK</span><span id="boardTitle">Primers aparcaments</span></div>
+          <div id="board" class="board" role="group" aria-label="Aparcament amb bicicletes i places assignades. Selecciona una bicicleta i una casella adjacent o utilitza les fletxes del teclat."></div>
+          <div class="board-bottomline"><span id="spacesLabel">Places: 2</span><span>TOCA UNA BICI → MOU-LA</span></div>
+          <div id="winPanel" class="win-panel" hidden role="status">
+            <span class="win-crown" aria-hidden="true">🏆</span>
+            <h2>APARCADES!</h2>
+            <div id="winStars" class="win-stars" aria-label="Estrelles guanyades">★★★</div>
+            <p id="winText">Nivell completat.</p>
+            <button id="nextLevelButton" type="button" class="button main-button">SEGÜENT REPTE →</button>
+          </div>
+        </div>
+        <div id="statusText" role="status" aria-live="polite" class="status">Selecciona una bicicleta i mou-la a una casella lliure.</div>
+        <div class="actions">
+          <button id="undoButton" type="button" class="button" disabled>↶ DESFÉS</button>
+          <button id="hintButton" type="button" class="button">✦ PISTA</button>
+          <button id="resetButton" type="button" class="button">↺ REINICIA</button>
+        </div>
+      </div>
+      <aside class="sidebar">
+        <section class="side-card">
+          <p class="side-eyebrow">MISSIÓ</p>
+          <h2>Una plaça per a cada bicicleta</h2>
+          <p>Fes arribar cada bicicleta a la plaça de la seva <strong>lletra i color</strong>. Si aparques una bicicleta massa aviat, pots bloquejar el camí d'una altra.</p>
+          <div id="legend" class="legend" aria-label="Bicicletes i places"></div>
+        </section>
+        <section class="side-card">
+          <p class="side-eyebrow">COM ES JUGA?</p>
+          <ol>
+            <li><strong>Selecciona</strong> una bicicleta.</li>
+            <li><strong>Toca una casella lliure del costat</strong>, llisca en qualsevol direcció o utilitza les fletxes.</li>
+            <li>Desbloqueja els passadissos, respecta el límit i <strong>aparca-les totes</strong>.</li>
+          </ol>
+          <p class="side-note">Les caselles fosques estan bloquejades. Si t'equivoques, pots desfer el moviment. Les pistes venen d'un solucionador real: no són aleatòries.</p>
+        </section>
+        <section class="side-card">
+          <p class="side-eyebrow">CAPÍTOLS</p>
+          <div id="chapters" class="chapter-list"></div>
+          <p class="side-note">Completa reptes per omplir les estrelles del teu progrés. Cap cronòmetre: pensa al teu ritme.</p>
+        </section>
+      </aside>
+    </section>
+    <footer>Joc original de BiciPark · Progrés desat només en aquest navegador · Sense publicitat ni compte</footer>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
