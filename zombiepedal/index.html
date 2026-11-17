@@ -55,8 +55,8 @@
    </div>
   </section>
   <div class="meters">
-    <div class="meter-row"><label for="hordeFill">LA HORDA</label><div class="meter"><div id="hordeFill"></div></div><strong id="hordeValue">15%</strong></div>
-    <div class="meter-row"><span>PROGRÉS D'ESCAPADA</span><div class="meter progress-meter"><div id="journeyFill"></div></div><strong id="journeyValue">0%</strong></div>
+    <div class="meter-row"><label for="hordeFill">LA HORDA</label><div class="meter" role="progressbar" aria-label="Proximitat de la horda" aria-valuemin="0" aria-valuemax="100" aria-valuenow="15" id="hordeMeter"><div id="hordeFill"></div></div><strong id="hordeValue" aria-hidden="true">15%</strong></div>
+    <div class="meter-row"><span>PROGRÉS D'ESCAPADA</span><div class="meter progress-meter" role="progressbar" aria-label="Progrés de la fugida" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="journeyMeter"><div id="journeyFill"></div></div><strong id="journeyValue" aria-hidden="true">0%</strong></div>
   </div>
   <div id="statusText" class="status" role="status" aria-live="polite">Prem Comença la fugida per jugar.</div>
   <section class="buttons" aria-label="Controls tàctils">

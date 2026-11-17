@@ -198,8 +198,8 @@ function refresh(){
  ui.phase.textContent=({ready:"PREPARAT",running:game.dashTime>0?"⚡ ESPRINT":"FUGINT",paused:"PAUSA",finished:"ESCAPAT",lost:"CAPTURAT"})[game.phase];
  const pct=Math.round(game.distance/WORLD.length*100);
  ui.progress.style.width=pct+"%";ui.progressLabel.textContent=pct+"%";
- ui.journey.style.width=pct+"%";ui.journeyValue.textContent=pct+"%";
- ui.horde.style.width=game.horde+"%";ui.hordeValue.textContent=Math.round(game.horde)+"%";
+ ui.journey.style.width=pct+"%";ui.journeyValue.textContent=pct+"%";document.getElementById("journeyMeter")?.setAttribute("aria-valuenow",String(pct));
+ ui.horde.style.width=game.horde+"%";ui.hordeValue.textContent=Math.round(game.horde)+"%";document.getElementById("hordeMeter")?.setAttribute("aria-valuenow",String(Math.max(0,Math.min(100,Math.round(game.horde)))));
  ui.record.textContent=best?`MILLOR PUNTUACIÓ: ${best.score.toLocaleString("ca-ES")} · ${best.distance} m`:"MILLOR PUNTUACIÓ: —";
  touch.paint.disabled=game.phase!=="running"||game.ammo===0||game.fireCooldown>0;
  touch.dash.disabled=game.phase!=="running"||game.dashCharges<1||game.dashTime>0||game.stagger>0;
