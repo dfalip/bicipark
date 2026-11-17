@@ -119,8 +119,14 @@ function renderBoard(){
     ui.board.append(tile);
   }
   if(focusedPos !== null) {
-    const replacement = ui.board.querySelector(`button[data-pos="${focusedPos}"]`);
-    if(replacement && !replacement.disabled) replacement.focus({preventScroll:true});
+    // A level change can turn the old tile into a wall. Keep focus on the board
+    // by selecting the nearest enabled tile rather than dropping to <body>.
+    const tiles = [...ui.board.querySelectorAll("button[data-pos]:not(:disabled)")];
+    const replacement = tiles.find(tile => Number(tile.dataset.pos) === focusedPos)
+      || tiles.reduce((nearest, tile) =>
+        !nearest || Math.abs(Number(tile.dataset.pos) - focusedPos) <
+          Math.abs(Number(nearest.dataset.pos) - focusedPos) ? tile : nearest, null);
+    replacement?.focus({preventScroll:true});
   }
 }
 function renderLegend(){
