@@ -31,7 +31,7 @@
     <div class="stage-bar"><span id="zoneValue">PISTA DEL BOSC</span><span id="styleValue" class="skill-chip">360° + PORTES EN RATXA</span><span id="phaseValue">PREPARAT</span></div>
     <canvas id="gameCanvas" width="960" height="540" role="img" aria-describedby="gameHelp statusText" aria-label="Pista nevada de descens amb portes d'eslàlom i animals que creuen. Mou el ciclista amb les fletxes esquerra i dreta.">Necessites un navegador amb compatibilitat amb Canvas per jugar.</canvas>
     <div class="impact-flash" id="impactFlash" aria-hidden="true"></div>
-    <div class="progress"><div id="progressFill"></div><span id="progressValue">0%</span></div>
+    <div class="progress" role="progressbar" aria-label="Progrés del descens" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressFill" aria-hidden="true"></div><span id="progressValue" aria-hidden="true">0%</span></div>
     <div id="notice" class="notice" hidden aria-live="polite"></div>
     <div id="startPanel" class="overlay">
       <div class="overlay-inner">
@@ -74,7 +74,7 @@
     <button id="tuckButton" type="button" class="control tuck"><span>▼</span> AERODINÀMICA</button>
     <button id="rightButton" type="button" class="control"><span>▶</span> DRETA</button>
   </section>
-  <div class="energy"><span>ENERGIA TURBO</span><div class="energy-track"><div id="boostFill"></div></div><strong id="boostValue">35%</strong><button id="pauseButton" type="button" class="tiny">PAUSA</button><button id="restartButton" type="button" class="tiny">↻ REINICIA</button></div>
+  <div class="energy"><span id="boostLabel">ENERGIA TURBO</span><div class="energy-track" role="progressbar" aria-labelledby="boostLabel" aria-valuemin="0" aria-valuemax="100" aria-valuenow="35"><div id="boostFill" aria-hidden="true"></div></div><strong id="boostValue" aria-hidden="true">35%</strong><button id="pauseButton" type="button" class="tiny">PAUSA</button><button id="restartButton" type="button" class="tiny">↻ REINICIA</button></div>
   <section class="how">
     <div><p class="eyebrow">4 PISTES · DIFICULTAT CREIXENT</p><h2>La millor línia és la més ràpida</h2>
       <p id="gameHelp">Gira amb ← → o els botons. Mantén ↓ / AERODINÀMICA per agafar velocitat, però costa més girar. Amb ↑ / FRENAR pots preparar millor les portes. Prem ESPAI / SALTAR per enlairar-te i esquivar animals. Al punt alt del salt, prem K / TRUC 360°: un aterratge perfecte dona puntuació i turbo, però un truc incomplet afegeix 2 segons. Encadena portes precises per multiplicar punts. Prem T / TURBO quan tinguis energia. Els ietis són més grans: cal saltar més alt o evitar-los lateralment. No pots tornar a saltar fins a aterrar. Superar animals amb un salt dona punts extra; els ietis donen una bonificació especial. Les portes donen punts i turbo; fallar-les afegeix 3 segons. Xocar amb un animal o un ieti afegeix 5 segons i resta una vida. Cap animal rep danys.</p></div>
