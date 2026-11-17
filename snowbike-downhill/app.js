@@ -322,7 +322,9 @@ function refresh(){
  ui.phase.textContent=({ready:"PREPARAT",playing:game.boostTime>0?"⚡ TURBO":"EN DESCENS",paused:"PAUSA",finished:"META",failed:"FINAL"})[game.phase];
  const progress=Math.round(game.distance/game.course.length*100);
  ui.progress.style.width=progress+"%";ui.progressText.textContent=progress+"%";
+ ui.progress.parentElement.setAttribute("aria-valuenow",String(progress));
  ui.boost.style.width=game.boost+"%";ui.boostText.textContent=Math.round(game.boost)+"%";
+ ui.boost.parentElement.setAttribute("aria-valuenow",String(Math.round(game.boost)));
  const next=game.course.gates.find(gate=>!gate.passed);
  const distance=next?Math.max(0,Math.round(next.at-game.distance)):null;
  const canTrick=game.phase==="playing"&&!game.grounded&&!game.trickUsed&&
