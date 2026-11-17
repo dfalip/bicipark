@@ -11,7 +11,7 @@ test("puzzle board restores keyboard focus after its DOM rebuild", () => {
 });
 
 test("puzzle focus falls back to an enabled tile when old tile becomes a wall", () => {
-  assert.match(source, /querySelectorAll\\("button\\[data-pos\\]:not\\(:disabled\\)"\\)/);
-  assert.match(source, /tiles\\.find\\(tile => Number\\(tile\\.dataset\\.pos\\) === focusedPos\\)/);
-  assert.match(source, /tiles\\.reduce\\(\\(nearest, tile\\) =>/);
+  assert.ok(source.includes('querySelectorAll("button[data-pos]:not(:disabled)")'));
+  assert.ok(source.includes("tiles.find(tile => Number(tile.dataset.pos) === focusedPos)"));
+  assert.ok(source.includes("tiles.reduce((nearest, tile) =>"));
 });
