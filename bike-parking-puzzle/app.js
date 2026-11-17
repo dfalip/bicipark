@@ -52,6 +52,10 @@ function renderBoard(){
   const occupied=new Map(game.positions.map((p,i)=>[p,i]));
   const targets=new Map(cfg.goals.map((p,i)=>[p,i]));
   const options=new Set(game.selected===null?[]:movesAvailable(game,game.selected).map(m=>m.to));
+  // Rebuilding the board after a keyboard move must not drop keyboard focus.
+  const focusedTile = ui.board.contains(document.activeElement)
+    ? document.activeElement.closest("button[data-pos]") : null;
+  const focusedPos = focusedTile ? Number(focusedTile.dataset.pos) : null;
   ui.board.replaceChildren();
   ui.board.style.setProperty("--board-size",String(cfg.size));
   for(let pos=0;pos<cfg.size*cfg.size;pos++){
@@ -113,6 +117,10 @@ function renderBoard(){
       },true);
     }
     ui.board.append(tile);
+  }
+  if(focusedPos !== null) {
+    const replacement = ui.board.querySelector(`button[data-pos="${focusedPos}"]`);
+    if(replacement && !replacement.disabled) replacement.focus({preventScroll:true});
   }
 }
 function renderLegend(){
