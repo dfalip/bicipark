@@ -107,6 +107,13 @@ async function requestOverpass(provider,lat,lng){
     if(typeof body.remark==="string" && body.remark.trim())
       return {ok:false,code:"UPSTREAM_REMARK",status:502};
     if(!Array.isArray(body.elements))return {ok:false,code:"UPSTREAM_INVALID_DATA",status:502};
+    // A successful HTTP status does not establish a valid OSM response.
+    // Reject malformed records rather than caching a misleading success.
+    if(body.elements.some(element=>!element||typeof element!=="object"||
+      !["node","way","relation"].includes(element.type)||
+      !Number.isSafeInteger(element.id)||element.id<=0||
+      (element.type==="node"&&(!valid(element.lat,element.lon)))))
+      return {ok:false,code:"UPSTREAM_INVALID_DATA",status:502};
     return {ok:true,elements:body.elements.slice(0,MAX_ELEMENTS),
       osm3s:body.osm3s&&typeof body.osm3s==="object"?
         {timestamp_osm_base:body.osm3s.timestamp_osm_base}:null,
