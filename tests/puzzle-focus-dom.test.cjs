@@ -33,6 +33,15 @@ test("Puzzle keeps real DOM keyboard focus through selection, move, undo and res
     assert.equal(dom.window.document.activeElement.dataset.pos, String(start), "undo retains focus");
     dom.window.document.getElementById("resetButton").click();
     assert.equal(dom.window.document.activeElement.dataset.pos, String(start), "reset retains focus");
+    // Escape and Ctrl+Z also rebuild the board; keyboard users must not lose focus.
+    tile(start).click();
+    dom.window.document.dispatchEvent(new dom.window.KeyboardEvent("keydown", { code: "Escape", bubbles: true }));
+    assert.equal(dom.window.document.activeElement.dataset.pos, String(start), "Escape retains focus");
+    tile(start).click();
+    dom.window.document.dispatchEvent(new dom.window.KeyboardEvent("keydown", { code: "ArrowRight", bubbles: true }));
+    assert.ok(board.contains(dom.window.document.activeElement), "arrow key retains board focus");
+    dom.window.document.dispatchEvent(new dom.window.KeyboardEvent("keydown", { code: "KeyZ", ctrlKey: true, bubbles: true }));
+    assert.ok(board.contains(dom.window.document.activeElement), "Ctrl+Z retains board focus");
     const select = dom.window.document.getElementById("levelSelect");
     select.value = "1";
     select.dispatchEvent(new dom.window.Event("change", { bubbles: true }));
