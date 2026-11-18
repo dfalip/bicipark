@@ -227,3 +227,15 @@ test('World gateway rejects Overpass HTTP 200 runtime remarks instead of showing
     assert.equal(res.headers['cache-control'],'no-store');
   }finally{global.fetch=previous;}
 });
+
+test('World gateway rejects malformed OSM elements despite upstream HTTP 200',async()=>{
+  const previous=global.fetch;
+  try{
+    global.fetch=async()=>({ok:true,status:200,headers:{get:()=>null},
+      text:async()=>JSON.stringify({elements:[{type:'node',id:7,lat:999,lon:2}]})});
+    const res=await invoke('/api/world-bike?lat=51.5074&lng=-0.1278');
+    assert.equal(res.statusCode,503);
+    assert.equal(res.data.code,'UPSTREAM_INVALID_DATA');
+    assert.equal(res.headers['cache-control'],'no-store');
+  }finally{global.fetch=previous;}
+});
