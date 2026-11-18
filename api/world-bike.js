@@ -112,7 +112,9 @@ async function requestOverpass(provider,lat,lng){
     if(body.elements.some(element=>!element||typeof element!=="object"||
       !["node","way","relation"].includes(element.type)||
       !Number.isSafeInteger(element.id)||element.id<=0||
-      (element.type==="node"&&(!valid(element.lat,element.lon)))))
+      (element.type==="node"&&(!valid(element.lat,element.lon)))||
+      (element.center!==undefined&&(!element.center||typeof element.center!=="object"||
+        !valid(element.center.lat,element.center.lon)))))
       return {ok:false,code:"UPSTREAM_INVALID_DATA",status:502};
     return {ok:true,elements:body.elements.slice(0,MAX_ELEMENTS),
       osm3s:body.osm3s&&typeof body.osm3s==="object"?
