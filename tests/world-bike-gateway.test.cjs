@@ -239,3 +239,28 @@ test('World gateway rejects malformed OSM elements despite upstream HTTP 200',as
     assert.equal(res.headers['cache-control'],'no-store');
   }finally{global.fetch=previous;}
 });
+
+test('World gateway rejects malformed way/relation centers and accepts valid centers',async()=>{
+  const previous=global.fetch;
+  try{
+    const samples=[
+      {type:'way',id:11,center:{lat:95,lon:2}},
+      {type:'relation',id:12,center:{lat:41,lon:NaN}},
+      {type:'way',id:13,center:null}
+    ];
+    let index=0;
+    global.fetch=async()=>({ok:true,status:200,headers:{get:()=>null},
+      text:async()=>JSON.stringify({elements:[samples[index++]]})});
+    for(const coords of ['10.101,20.101','10.102,20.102','10.103,20.103']){
+      const [lat,lng]=coords.split(',');
+      const res=await invoke('/api/world-bike?lat='+lat+'&lng='+lng);
+      assert.equal(res.statusCode,503);
+      assert.equal(res.data.code,'UPSTREAM_INVALID_DATA');
+    }
+    global.fetch=async()=>({ok:true,status:200,headers:{get:()=>null},
+      text:async()=>JSON.stringify({elements:[{type:'way',id:14,center:{lat:41.4,lon:2.2}}]})});
+    const valid=await invoke('/api/world-bike?lat=10.104&lng=20.104');
+    assert.equal(valid.statusCode,200);
+    assert.equal(valid.data.elements[0].id,14);
+  }finally{global.fetch=previous;}
+});
