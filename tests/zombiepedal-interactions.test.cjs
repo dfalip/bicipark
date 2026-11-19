@@ -6,8 +6,8 @@ const path=require('node:path');
 const {JSDOM}=require('jsdom');
 const dir=path.join(__dirname,'..','zombiepedal');
 const read=n=>fs.readFileSync(path.join(dir,n),'utf8');
-function setup(){
- const dom=new JSDOM(read('index.html'),{url:'https://www.bicipark.com/zombiepedal/',runScripts:'outside-only',pretendToBeVisual:true});
+function setup(href="https://www.bicipark.com/zombiepedal/"){
+ const dom=new JSDOM(read('index.html'),{url:href,runScripts:'outside-only',pretendToBeVisual:true});
  const w=dom.window,frames=[];
  const grad={addColorStop(){}};
  const ctx=new Proxy({},{get(o,k){if(k==='createLinearGradient')return ()=>grad;if(k in o)return o[k];o[k]=()=>{};return o[k];},set(o,k,v){o[k]=v;return true;}});
@@ -163,5 +163,26 @@ test('New route changes seeded enemies and pickups while a manual restart keeps 
   h.$('playButton').click();
   h.$('resetButton').click();
   assert.deepEqual(h.w.__state().game.enemies,changed.enemies);
+ }finally{h.dom.window.close();}
+});
+
+test('A dated ZombiePedal mission follows the seed and only successful escape records completion',async()=>{
+ const mod=await import('data:text/javascript;base64,'+Buffer.from(
+  require('node:fs').readFileSync(require('node:path').join(__dirname,'..','explora','play-progress.js'),'utf8')).toString('base64'));
+ const day=mod.localDay(),mission=mod.missionForDay(day);
+ if(mission.game!=='zombiepedal')return; // SnowBike has the alternating day.
+ const h=setup('https://www.bicipark.com/zombiepedal/?challenge='+day+'&seed='+mission.seed);
+ try{
+  const g=h.w.__state().game;
+  assert.equal(g.seed,mission.seed);
+  assert.equal(h.w.localStorage.getItem(mod.DAILY_STORE),null);
+  h.$('playButton').click();g.enemies=[];
+  g.distance=h.w.__engine.WORLD.length-1;g.speed=65;
+  h.frame(0);h.frame(65);
+  assert.equal(g.phase,'finished');
+  const records=JSON.parse(h.w.localStorage.getItem(mod.DAILY_STORE));
+  assert.equal(records[day].game,'zombiepedal');
+  assert.ok(records[day].score>=0);
+  assert.match(h.$('finishSummary').textContent,/REPTE DIARI COMPLETAT/);
  }finally{h.dom.window.close();}
 });
