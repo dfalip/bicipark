@@ -1,7 +1,7 @@
 // Local-only BiciPark Play missions. No server tracking and no fabricated rewards.
 export const DAILY_STORE='bicipark-play:daily-v1';
-const validDay=day=>/^\d{4}-\d{2}-\d{2}$/.test(String(day||''))&&
-  new Date(day+'T12:00:00Z').toISOString().slice(0,10)===day;
+const validDay=day=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(String(day||'')))return false;
+ const d=new Date(day+'T12:00:00Z');return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===day;};
 export function localDay(date=new Date()){
  const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),
   d=String(date.getDate()).padStart(2,'0');
