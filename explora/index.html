@@ -51,6 +51,32 @@
       </div>
     </section>
 
+    <section id="playMissions" class="play-missions" aria-label="Reptes i progressió de BiciPark Play">
+      <div class="play-missions-head">
+        <div><p class="hub-eyebrow">BICIPARK PLAY · OBJECTIUS I PROGRÉS</p><h2>El teu proper repte</h2><p>Un repte diferent cada dia i un historial que només es desa al teu navegador.</p></div>
+        <span class="play-missions-private">Sense compte ni classificacions inventades</span>
+      </div>
+      <div class="play-missions-layout">
+        <article class="play-daily-card">
+          <div class="play-daily-top"><span id="playMissionIcon" aria-hidden="true">🚴</span><span id="playMissionStatus" class="play-mission-status" role="status">Carregant...</span></div>
+          <h3 id="playMissionTitle">Repte del dia</h3>
+          <strong id="playMissionSubtitle">Preparant la ruta</strong>
+          <p id="playMissionDescription">Cada dia una nova missió jugable.</p>
+          <a id="playMissionLink" class="play-daily-link" href="../snowbike-downhill/">Juga el repte del dia</a>
+        </article>
+        <div class="play-stats">
+          <div class="play-stats-grid">
+            <div><small>RATXA ACTUAL</small><strong id="playStreak">0 dies</strong></div>
+            <div><small>ÚLTIMS 7 DIES</small><strong id="playWeekCount">0 / 7</strong></div>
+            <div><small>MILLOR TEMPS SNOWBIKE</small><strong id="playSnowRecord">—</strong></div>
+            <div><small>MILLOR PUNTUACIÓ ZOMBIEPEDAL</small><strong id="playZombieRecord">—</strong></div>
+          </div>
+          <div id="playWeek" class="play-week" role="group" aria-label="Progrés dels últims set dies"></div>
+          <p class="play-note">Les estadístiques són personals i locals. Un repte només compta quan acabes la partida del dia.</p>
+        </div>
+      </div>
+    </section>
+
     <nav
       id="categoryNavigation"
       class="hub-category-navigation"
@@ -81,6 +107,7 @@
   </footer>
 
   <script type="module" src="./app.js"></script>
+  <script type="module" src="./play-progress-ui.js"></script>
   <script src="./bike-bases-integration.js"></script>
 </body>
 </html>
