@@ -45,3 +45,12 @@ test('The home page exposes the arcade mission hub without hiding the bicycle ma
  const hub=read('explora/index.html');
  assert.match(hub,/id="playMissions"/);
 });
+
+test('Play rail card describes its mission-hub destination rather than a different game',()=>{
+ const html=read('index.html');
+ const card=html.match(/<a class="rail-card" href="\.\/explora\/\?category=games#playMissions">([\s\S]*?)<\/a>/);
+ assert.ok(card,'Play mission rail card must exist');
+ assert.match(card[1],/Reptes de BiciPark Play/);
+ assert.match(card[1],/Veure reptes/);
+ assert.doesNotMatch(card[1],/Arrossega el lloc/);
+});
