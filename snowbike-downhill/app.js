@@ -14,6 +14,35 @@ const ui={course:$("courseSelect"),time:$("timeValue"),speed:$("speedValue"),
 const controls={left:$("leftButton"),right:$("rightButton"),
  tuck:$("tuckButton"),brake:$("brakeButton"),turbo:$("turboButton"),jump:$("jumpButton"),trick:$("trickButton")};
 const STORE="bicipark-snowbike-downhill-times-v1";
+const DAILY_STORE="bicipark-play:daily-v1";
+const dailyChallenge=(()=>{
+ const params=new URLSearchParams(window.location.search);
+ const day=params.get("challenge");
+ if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(day||""))return null;
+ const now=new Date();
+ const today=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+ if(day!==today)return null;
+ const [y,m,d]=day.split("-").map(Number),index=Math.floor(Date.UTC(y,m-1,d)/86400000);
+ const course=Math.floor(index/2)%COURSES.length;
+ if(index%2!==0||params.get("course")!==String(course))return null;
+ return {day,course};
+})();
+function recordDailyFinish(result){
+ if(!dailyChallenge||game.course.id!==dailyChallenge.course)return false;
+ try{
+  const raw=JSON.parse(localStorage.getItem(DAILY_STORE)||"{}");
+  const records=raw&&typeof raw==="object"&&!Array.isArray(raw)?raw:{};
+  const prev=records[dailyChallenge.day];
+  if(!prev||prev.game!=="snowbike"||!Number.isFinite(prev.time)||result.totalTime<prev.time){
+   records[dailyChallenge.day]={game:"snowbike",score:Math.max(0,Math.round(result.score)),
+    time:Number(result.totalTime.toFixed(2)),completedAt:new Date().toISOString()};
+   const entries=Object.entries(records).sort(([a],[b])=>a.localeCompare(b)).slice(-365);
+   localStorage.setItem(DAILY_STORE,JSON.stringify(Object.fromEntries(entries)));
+  }
+  return true;
+ }catch{return false;}
+}
+
 function readRecords(){try{const values=JSON.parse(localStorage.getItem(STORE)||"{}");return values&&typeof values==="object"?values:{};}catch{return {};}}
 let records=readRecords();
 function storeRecords(){try{localStorage.setItem(STORE,JSON.stringify(records));}catch{/* private session */}}
@@ -302,6 +331,7 @@ function feedback(dt){
    ui.finishStars.textContent="★".repeat(game.stars)+"☆".repeat(3-game.stars);
    ui.finishTime.textContent=formatTime(result.totalTime);
    ui.finishSummary.textContent=`Temps real ${formatTime(result.rawTime)} · +${result.penalty} s de penalització · ${result.perfect} portes perfectes · ratxa màxima ×${result.bestStreak} · ${result.animals} animals esquivats · ${result.jumpDodges} saltats · ${result.tricks} trucs 360° · ${result.score} punts`;
+   if(recordDailyFinish(result))ui.finishSummary.textContent+=" · REPTE DIARI COMPLETAT!";
    ui.finishPanel.hidden=false;
    ui.next.focus({preventScroll:true});
   }
@@ -775,4 +805,4 @@ function frame(now){
  feedback(dt);refresh();paint();
  requestAnimationFrame(frame);
 }
-gameReset();drawRecords();requestAnimationFrame(frame);
+gameReset(dailyChallenge?.course??0);drawRecords();requestAnimationFrame(frame);
