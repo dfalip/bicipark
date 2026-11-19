@@ -18,7 +18,7 @@ const DAILY_STORE="bicipark-play:daily-v1";
 const dailyChallenge=(()=>{
  const params=new URLSearchParams(window.location.search);
  const day=params.get("challenge");
- if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(day||""))return null;
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(day||""))return null;
  const now=new Date();
  const today=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
  if(day!==today)return null;
