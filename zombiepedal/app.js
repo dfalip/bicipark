@@ -14,12 +14,38 @@ const ui={score:$("scoreValue"),speed:$("speedValue"),distance:$("distanceValue"
 const touch={pedal:$("pedalButton"),brake:$("brakeButton"),
  jump:$("jumpButton"),paint:$("paintButton"),dash:$("dashButton")};
 const RECORD="bicipark-zombiepedal-best-v1";
+const DAILY_STORE="bicipark-play:daily-v1";
+const dailyChallenge=(()=>{
+ const params=new URLSearchParams(window.location.search),day=params.get("challenge");
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(day||""))return null;
+ const now=new Date(),today=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+ if(day!==today)return null;
+ const [y,m,d]=day.split("-").map(Number),index=Math.floor(Date.UTC(y,m-1,d)/86400000);
+ const seed=Math.imul(index,2654435761)>>>0;
+ if(index%2===0||params.get("seed")!==String(seed))return null;
+ return {day,seed};
+})();
+function recordDailyFinish(){
+ if(game.phase!=="finished"||!dailyChallenge||game.seed!==dailyChallenge.seed)return false;
+ try{
+  const raw=JSON.parse(localStorage.getItem(DAILY_STORE)||"{}");
+  const records=raw&&typeof raw==="object"&&!Array.isArray(raw)?raw:{};
+  const score=Math.max(0,Math.round(game.score)),previous=records[dailyChallenge.day];
+  if(!previous||previous.game!=="zombiepedal"||!Number.isFinite(previous.score)||score>previous.score){
+   records[dailyChallenge.day]={game:"zombiepedal",score,finished:true,completedAt:new Date().toISOString()};
+   const entries=Object.entries(records).sort(([a],[b])=>a.localeCompare(b)).slice(-365);
+   localStorage.setItem(DAILY_STORE,JSON.stringify(Object.fromEntries(entries)));
+  }
+  return true;
+ }catch{return false;}
+}
+
 function loadBest(){
  try{const value=JSON.parse(localStorage.getItem(RECORD)||"null");
   return value&&typeof value==="object"&&Number.isFinite(value.score)?value:null;
  }catch{return null;}
 }
-let routeSeed=77;
+let routeSeed=dailyChallenge?.seed??77;
 let best=loadBest(),game=makeGame(routeSeed),lastFrame=null,lastEvent="",lastPhase="ready",noticeLeft=0;
 const keys=new Set(),pointers=new Map();
 
@@ -184,6 +210,7 @@ function persist(){
   best=challenger;
   try{localStorage.setItem(RECORD,JSON.stringify(best));}catch{/* storage unavailable */}
  }
+ return recordDailyFinish();
 }
 function refresh(){
  ui.score.textContent=Math.round(game.score).toLocaleString("ca-ES");
@@ -306,9 +333,9 @@ function feedback(dt){
  if(game.phase!==lastPhase){
   lastPhase=game.phase;
   if(game.phase==="finished"){
-   persist();ui.finish.hidden=false;
+   const dailyDone=persist();ui.finish.hidden=false;
    ui.finishStars.textContent="★".repeat(game.finishStars)+"☆".repeat(3-game.finishStars);
-   ui.finishSummary.textContent=`${Math.round(game.distance)} m · ${Math.round(game.time)} s · ${game.stuns} zombis frenats · ${game.dodges} esquivats · ${game.dashDodges} amb esprint · combo màxim ×${game.bestCombo} · ${Math.round(game.score).toLocaleString("ca-ES")} punts.`;
+   ui.finishSummary.textContent=`${Math.round(game.distance)} m · ${Math.round(game.time)} s · ${game.stuns} zombis frenats · ${game.dodges} esquivats · ${game.dashDodges} amb esprint · combo màxim ×${game.bestCombo} · ${Math.round(game.score).toLocaleString("ca-ES")} punts.${dailyDone?" · REPTE DIARI COMPLETAT!":""}`;
   }else if(game.phase==="lost"){
    persist();ui.lost.hidden=false;ui.lostReason.textContent=game.gameOverReason;
   }
