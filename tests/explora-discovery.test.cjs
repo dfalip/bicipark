@@ -35,3 +35,13 @@ test('All linked playable games exist and have unique IDs',async()=>{
     assert.ok(fs.existsSync(html),'Missing playable page: '+item.id);
   }
 });
+
+test('The home page exposes the arcade mission hub without hiding the bicycle map',()=>{
+ const html=read('index.html');
+ assert.match(html,/href="\.\/explora\/\?category=games#playMissions"/);
+ assert.match(html,/Jocs i reptes/);
+ assert.match(html,/Repte del dia/);
+ assert.match(html,/href="\.\/mapa-ciclista\.html"/);
+ const hub=read('explora/index.html');
+ assert.match(hub,/id="playMissions"/);
+});
