@@ -6,8 +6,8 @@ const path=require('node:path');
 const {JSDOM}=require('jsdom');
 const dir=path.join(__dirname,'..','snowbike-downhill');
 const read=n=>fs.readFileSync(path.join(dir,n),'utf8');
-function setup(){
- const dom=new JSDOM(read('index.html'),{url:'https://www.bicipark.com/snowbike-downhill/',
+function setup(href="https://www.bicipark.com/snowbike-downhill/"){
+ const dom=new JSDOM(read('index.html'),{url:href,
    runScripts:'outside-only',pretendToBeVisual:true});
  const w=dom.window,queue=[];
  const gradient={addColorStop(){}};
@@ -177,5 +177,27 @@ test('360 trick timing works with touch and updates the visible skill hint',()=>
   assert.equal(g.tricks,1);
   assert.ok(g.score>=260);
   assert.match(h.$('statusText').textContent,/360|TRUC/);
+ }finally{h.dom.window.close();}
+});
+
+test('An authentic dated SnowBike mission records completion only after finishing the chosen course',async()=>{
+ const mod=await import('data:text/javascript;base64,'+Buffer.from(
+  require('node:fs').readFileSync(require('node:path').join(__dirname,'..','explora','play-progress.js'),'utf8')).toString('base64'));
+ const day=mod.localDay(),mission=mod.missionForDay(day);
+ if(mission.game!=='snowbike')return; // ZombiePedal has the alternating day.
+ const h=setup('https://www.bicipark.com/snowbike-downhill/?challenge='+day+'&course='+mission.course);
+ try{
+  const g=h.w.__state().game;
+  assert.equal(g.course.id,mission.course);
+  assert.equal(h.w.localStorage.getItem(mod.DAILY_STORE),null,'opening a challenge is not completion');
+  h.$('startButton').click();g.course.animals=[];
+  g.distance=g.course.length-.1;g.velocity=44;g.hearts=3;g.time=38;
+  h.frame(0);h.frame(50);
+  assert.equal(g.phase,'finished');
+  const records=JSON.parse(h.w.localStorage.getItem(mod.DAILY_STORE));
+  assert.equal(records[day].game,'snowbike');
+  assert.ok(records[day].score>=0);
+  assert.equal(records[day].time,Number(g.finalTime.toFixed(2)));
+  assert.match(h.$('finishSummary').textContent,/REPTE DIARI COMPLETAT/);
  }finally{h.dom.window.close();}
 });
