@@ -62,7 +62,7 @@ body[data-play-arcade] :where(button,a,select,input):focus-visible{outline:3px s
 body[data-play-arcade] :where(.status,.rr-status,.bike-jump-status){color:var(--pa-ink);border-color:var(--pa-edge)}
 body[data-play-arcade] :where(.control,.puzzle-drive-button):disabled{opacity:.43}
 body[data-play-arcade] #gameCanvas{image-rendering:pixelated}
-body[data-play-arcade] :where(.control,.puzzle-drive-button,.small-button,.header-btn,.menu-btn){touch-action:manipulation}
+body[data-play-arcade] :where(.puzzle-drive-button,.small-button,.header-btn,.menu-btn){touch-action:manipulation}
 body[data-play-arcade] :where(.control,.puzzle-drive-button) small{color:var(--pa-muted)}
 /* Puzzle streets: pixel architecture rather than abstract icons. */
 body[data-play-arcade="puzzle"] .board{
@@ -136,3 +136,35 @@ body[data-play-arcade="drag"] :where(.leaflet-control-zoom a,.leaflet-control-at
 @media(prefers-reduced-motion:reduce){
  body[data-play-arcade] :where(.control,.primary,.play-button,.gs-button,.map-game-button){transition:none}
 }
+
+body[data-play-arcade="three"] .topbar nav a{color:var(--pa-muted)}
+body[data-play-arcade="three"] .topbar nav a.active{color:var(--pa-gold)}
+body[data-play-arcade="three"] :where(.panel,.instructions,.status-card,.result-card,.debug-box){
+ background:var(--pa-panel);border-color:var(--pa-edge);color:var(--pa-ink);border-radius:4px;
+}
+body[data-play-arcade="three"] .panel{border-radius:0}
+body[data-play-arcade="three"] .hint{color:var(--pa-muted)}
+body[data-play-arcade="three"] .step-chip{background:#223034;color:var(--pa-gold);border-color:var(--pa-edge);border-radius:4px;font-family:monospace}
+body[data-play-arcade="cannon"]{--bc-text:#eee7d5;--bc-muted:#bdcfc5;--bc-green:#a9d5aa;--bc-green-dark:#f3cd78;--bc-line:#6a817c}
+body[data-play-arcade="cannon"] :where(.bc-hero,.bc-panel,.bc-stage,.bc-note){
+ background:var(--pa-panel);border-color:var(--pa-edge);border-radius:5px;box-shadow:0 3px 0 var(--pa-shadow);
+}
+body[data-play-arcade="cannon"] :where(.bc-wind,.bc-target,.bc-result-card,.bc-score div,.bc-history-item,.bc-result-empty,.bc-mode){
+ background:#34474b;color:var(--pa-ink);border-color:var(--pa-edge);border-radius:4px;
+}
+body[data-play-arcade="cannon"] :where(.bc-target span,.bc-control label){color:var(--pa-muted)}
+body[data-play-arcade="cannon"] .bc-hero h1{color:var(--pa-gold);text-shadow:2px 2px #172126}
+body[data-play-arcade="cannon"] :where(.bc-eyebrow,.bc-chip,.bc-score strong,.bc-control strong){font-family:monospace;font-variant-numeric:tabular-nums}
+body[data-play-arcade="cannon"] .bc-chip{background:#203036ef;border-color:var(--pa-edge);color:var(--pa-gold);border-radius:3px;font-size:.7rem}
+body[data-play-arcade="cannon"] :where(.bc-launch,.bc-link){background:#edc981;color:#202b30!important;border:1px solid #e4c98c;border-radius:4px;box-shadow:0 3px 0 #806538}
+body[data-play-arcade="cannon"] .bc-launch:hover:not(:disabled){background:#f9e4a6}
+body[data-play-arcade="cannon"] .bc-reset{background:#3a4d50;color:var(--pa-ink);border-color:var(--pa-edge);border-radius:4px}
+body[data-play-arcade="cannon"] .bc-badge{background:#344b48;border-radius:4px}
+body[data-play-arcade="cannon"] :where(.bc-badge strong,.bc-badge span){color:var(--pa-gold)}
+body[data-play-arcade="cannon"] #bikeCannonCanvas{image-rendering:pixelated}
+body[data-play-arcade="cannon"] :where(.bc-hero p,.bc-wind,.bc-target span,.bc-result-card p,.bc-history-item,.bc-result-empty,.bc-note){font-size:.78rem}
+body[data-play-arcade="cannon"] :where(.bc-mode,.bc-control label,.bc-reset,.bc-link){font-size:.75rem}
+body[data-play-arcade="cannon"] :where(.bc-badge span,.bc-score small,.bc-target small,.bc-eyebrow){font-size:.65rem}
+body[data-play-arcade="cannon"] .bc-reset{min-height:42px}
+body[data-play-arcade="zombie"] .top{background:#202d31;border-color:var(--pa-edge)}
+body[data-play-arcade="zombie"] .notice{border-color:var(--pa-edge)}
