@@ -139,3 +139,26 @@ footer{text-align:center;margin-top:22px;padding:15px 0;border-top:1px solid var
  .bike.bike-drive-ghost,.tile-possible::after{animation:none}
  .tile,.bike{transition:none}
 }
+
+
+/* Smooth connected-street cycling: no rubber-band overshoot or teleport blur. */
+.bike-icon{transform:rotate(var(--bike-heading,0deg));
+ transition:transform .18s cubic-bezier(.3,.65,.35,1);transform-origin:center center}
+.bike.bike-drive-ghost{animation:bike-parking-roll .225s cubic-bezier(.21,.65,.28,1) both}
+.bike-drive-ghost .bike-icon{
+ animation:bike-parking-steer .225s cubic-bezier(.22,.7,.36,1) both;
+ transition:none;
+}
+@keyframes bike-parking-steer{
+ from{transform:rotate(var(--drive-start-angle,0deg))}
+ to{transform:rotate(var(--drive-end-angle,0deg))}
+}
+@keyframes bike-parking-roll{
+ 0%{transform:translate(var(--drive-x),var(--drive-y)) scale(1.01);filter:brightness(1.12)}
+ 66%{filter:brightness(1.04)}
+ 100%{transform:translate(0,0) scale(1);filter:brightness(1)}
+}
+@media(prefers-reduced-motion:reduce){
+ .bike-icon{transition:none}
+ .bike-drive-ghost .bike-icon{animation:none}
+}
