@@ -290,3 +290,13 @@ body {
   width: 100%;
   height: 100%;
 }
+
+/* Play usability: touch / keyboard location guess and animated reveal. */
+.map-game-center{border:1px solid #83bba6;background:#edf8f2;color:#145b3f;min-height:48px}
+.map-game-center:hover:not(:disabled){background:#d2f3e4}
+.map-game-selection-status{font-size:.8rem;line-height:1.5;color:#43556a;margin:0 0 13px;padding:8px 10px;
+ border-left:3px solid #1c8c60;background:#f0f6f2;border-radius:4px}
+.map-game-map:focus-visible{outline:4px solid #f2bc37;outline-offset:-5px}
+@media(prefers-reduced-motion:reduce){
+ .map-game-result,.map-game-button{transition:none!important;animation:none!important}
+}
