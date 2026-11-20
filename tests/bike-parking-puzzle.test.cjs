@@ -111,3 +111,50 @@ test('Game source is standalone and the user can play without network assets',()
   assert.match(js,/ArrowUp/);
   assert.doesNotMatch(html,/https?:\/\//,'No external scripts or resources');
 });
+
+test('Street path planner creates shortest collision-free routes through the city without teleporting',async()=>{
+ const e=await engine();
+ for(let i=0;i<e.LEVELS.length;i++){
+  const g=e.newGame(i);
+  for(let bike=0;bike<g.positions.length;bike++){
+   const blocked=new Set([...g.cfg.walls,...g.positions.filter((_,id)=>id!==bike)]);
+   for(let target=0;target<g.cfg.size*g.cfg.size;target++){
+    const path=e.streetPath(g,target,bike);
+    if(path===null)continue;
+    let from=g.positions[bike];
+    assert.ok(!blocked.has(target));
+    for(const step of path){
+     assert.ok(!blocked.has(step),'Routes cannot enter buildings or other parked bikes');
+     const a=e.xy(from,g.cfg.size),b=e.xy(step,g.cfg.size);
+     assert.equal(Math.abs(a.x-b.x)+Math.abs(a.y-b.y),1,'Every segment is a real adjacent movement');
+     from=step;
+    }
+    assert.equal(from,target);
+   }
+  }
+  const available=e.movesAvailable(g,0);
+  assert.ok(available.length>0);
+  assert.equal(e.streetPath(g,available[0].to,0).length,1);
+  if(g.cfg.walls.length)assert.equal(e.streetPath(g,g.cfg.walls[0],0),null);
+  assert.equal(e.streetPath(g,g.positions[1],0),null);
+  assert.equal(e.streetPath(g,-1,0),null);
+ }
+});
+test('A connected-street journey still uses one engine move per segment and honours the movement budget',async()=>{
+ const e=await engine(),g=e.newGame(0);
+ const found=[...Array(g.cfg.size*g.cfg.size).keys()].map(pos=>e.streetPath(g,pos,0))
+  .find(path=>path&&path.length>=2&&path.length<=g.limit);
+ assert.ok(found);
+ for(const step of found){
+  assert.equal(e.moveTo(g,step,0),true);
+ }
+ assert.equal(g.moves,found.length);
+ assert.equal(g.history.length,found.length);
+ assert.equal(g.positions[0],found.at(-1));
+ const fresh=e.newGame(0),far=[...Array(fresh.cfg.size*fresh.cfg.size).keys()].map(pos=>e.streetPath(fresh,pos,0))
+  .find(path=>path&&path.length>=2);
+ assert.ok(far);
+ fresh.moves=fresh.limit-1;
+ assert.equal(e.moveTo(fresh,far[0],0),true);
+ assert.equal(e.moveTo(fresh,far[1],0),false,'No route can exceed the budget by ignoring engine moves');
+});
