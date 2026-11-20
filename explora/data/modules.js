@@ -180,6 +180,18 @@ export const biciparkModules = [
     enabled: true
   },
   {
+    id: "zombiepedal-arcade-city",
+    category: "games",
+    title: "ZombiePedal · Arcade City",
+    description: "Arcade urbà pixel-art en tres carrils: vehicles, zombis amb habilitats, salts, turbo, escuts i combos. Quatre districtes o supervivència infinita.",
+    href: "../zombiepedal/arcade.html",
+    icon: "🧟",
+    status: "Nou arcade",
+    statusType: "new",
+    tags: ["Pixel-art", "3 carrils", "Onades", "Turbo", "Reptes"],
+    enabled: true
+  },
+  {
     id: "zombiepedal",
     category: "games",
     title: "ZombiePedal · Escapa de la ciutat",

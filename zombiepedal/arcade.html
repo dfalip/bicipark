@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#232c31">
+<meta name="description" content="ZombiePedal Arcade City: joc original de persecució urbana pixel-art amb tres carrils, quatre districtes, zombis, salts i supervivència.">
+<title>ZombiePedal — Arcade City | BiciPark Play</title>
+<link rel="stylesheet" href="./arcade.css">
+</head>
+<body>
+<header class="mast"><a class="brand" href="../explora/?category=games">BICIPARK <b>PLAY</b></a><nav aria-label="Navegació"><a href="./index.html">Versió original</a><a href="../explora/?category=games">Tots els jocs</a></nav></header>
+<main>
+<div class="intro"><div><p class="kicker">BICIPARK ORIGINAL · ARCADE 03</p><h1>ZOMBIEPEDAL <span>ARCADE CITY</span></h1><p class="subtitle">Tres carrils. Una ciutat. Moltes ganes d'escapar.</p></div><div class="topactions"><button id="sound" class="mini" type="button" aria-pressed="false">♪ SO: OFF</button><button id="pause" class="mini" type="button" disabled>Ⅱ PAUSA</button><button id="reset" class="mini" type="button">↻ REINICIA</button></div></div>
+<div class="selection"><label for="mode">MODE</label><select id="mode"><option value="story">Fugida dels 4 districtes</option><option value="endless">Supervivència infinita</option></select><span id="best">RÈCORD LOCAL: —</span></div>
+<section class="hud" aria-label="Estat de la partida">
+<div><small>VIDES</small><strong id="hearts">♥ ♥ ♥</strong></div>
+<div><small>PINTURA</small><strong id="ammo">6/9</strong></div>
+<div><small>TURBO</small><strong id="turbo">1</strong></div>
+<div><small>ESCUT</small><strong id="shield">—</strong></div>
+<div><small>COMBO</small><strong id="combo">×0</strong></div>
+<div><small>ONADA</small><strong id="wave">1</strong></div>
+</section>
+<section class="stage" aria-label="Circuit urbà arcade">
+<div class="stage-top"><span id="district">EIXAMPLE A MITJANIT</span><span id="phase">PREPARAT</span></div>
+<div class="screen">
+<canvas id="city" width="640" height="360" role="img" aria-label="Carrer urbà en tres carrils, ciclista i zombis. Esquiva amb els controls, salta o frena zombis amb pintura." aria-describedby="instructions status">El joc necessita Canvas.</canvas>
+<div id="overlay" class="overlay"><div class="panel">
+<p class="kicker" id="overlayKicker">ARCADE CITY</p><h2 id="overlayTitle">LA HORDA JA ARRIBA!</h2><p id="overlayText">Canvia de carril, esquiva vehicles, frena els zombis amb pintura i combina els teus moviments. No deixis que la horda t'atrapi.</p>
+<p class="panel-stats" id="resultStats"></p><button id="play" type="button" class="play">▶ COMENÇA A PEDALAR</button>
+</div></div>
+</div>
+<div class="track"><div class="meter"><span class="meter-label">HORDA</span><div class="meter-groove"><div id="threat"></div></div><strong id="threatText">12%</strong></div><div class="meter"><span class="meter-label">RECORREGUT</span><div class="meter-groove route"><div id="progress"></div></div><strong id="progressText">0%</strong></div></div>
+</section>
+<p id="status" class="status" aria-live="polite" role="status">Tria un mode i comença la partida.</p>
+<div class="controls" role="group" aria-label="Controls de la bicicleta">
+<button data-action="up" class="control" type="button" aria-label="Carril superior"><b>▲</b><span>CARRIL ↑</span><small>W / ↑</small></button>
+<button data-action="down" class="control" type="button" aria-label="Carril inferior"><b>▼</b><span>CARRIL ↓</span><small>S / ↓</small></button>
+<button data-action="jump" class="control jump" type="button"><b>↗</b><span>SALT</span><small>ESPAI</small></button>
+<button data-action="fire" class="control paint" type="button"><b>⊕</b><span>PINTURA</span><small>X / F</small></button>
+<button data-action="boost" class="control boost" type="button"><b>»</b><span>TURBO</span><small>C</small></button>
+<button data-action="gas" class="control gas" type="button"><b>▶▶</b><span>PEDALA</span><small>D / →</small></button>
+<button data-action="brake" class="control" type="button"><b>◀</b><span>FRENA</span><small>A / ←</small></button>
+</div>
+<section class="details"><div><p class="kicker">TRIA LA TEVA ESTRATÈGIA</p><h2>Com jugar</h2><p id="instructions">La bici avança tota sola. Canvia de carril amb W/S o ↑/↓; mantén X o F per llançar pintura al mateix carril; salta amb Espai. Utilitza C per activar el turbo, D per accelerar i A per frenar. Un escut et protegeix d'un xoc. La furgoneta és massa alta: desvia't o utilitza turbo o escut. Els corredors avisen amb un signe d'exclamació, els gegants necessiten més impactes. El mode infinit continua amb onades cada cop més difícils. Prem P per pausar. Les distàncies i velocitats són unitats arcade del circuit virtual.</p></div><div><p class="kicker">PROGRÉS LOCAL</p><h2>Medalles</h2><div id="medals" class="medals" aria-label="Medalles aconseguides"></div><p class="hint">Rècords de cada mode i medalles guardats en aquest navegador. Sense compte, anuncis ni recursos gràfics externs.</p></div></section>
+<footer><a href="./index.html">ZombiePedal original</a> · <a href="../explora/?category=games">BiciPark Play</a> · Joc de ficció amb pintura, sense sang.</footer>
+</main>
+<script type="module" src="./arcade-app.js"></script>
+</body>
+</html>
