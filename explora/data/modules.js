@@ -55,12 +55,12 @@ export const biciparkModules = [
     title: "Rutes ciclistes",
     description:
       "Descobreix rutes, dificultat, distància, desnivell i informació pràctica.",
-    href: "../rutes.html",
+    href: "../route-explorer/catalog.html",
     icon: "🚴",
-    status: "Configurable",
-    statusType: "development",
-    tags: ["Carretera", "BTT", "Desnivell"],
-    enabled: false
+    status: "Disponible",
+    statusType: "default",
+    tags: ["Carretera", "BTT", "Desnivell", "Preferides"],
+    enabled: true
   },
   {
     id: "missions",
