@@ -52,9 +52,11 @@
 
         <p class="map-game-instructions">
           Observa la fotografia i marca al mapa el lloc on creus que s'ha fet.
-          Pots arrossegar el marcador abans de confirmar.
+          Pots arrossegar el marcador abans de confirmar. Amb el teclat, enfoca el mapa, mou-lo amb les fletxes i prem «Marca el centre».
         </p>
 
+        <button id="centerButton" class="map-game-button map-game-button-secondary map-game-center" type="button">📍 Marca el centre del mapa</button>
+        <p id="selectionStatus" class="map-game-selection-status" role="status" aria-live="polite">Mou el mapa i marca el centre, o toca un punt directament.</p>
         <button
           id="confirmButton"
           class="map-game-button map-game-button-primary"
@@ -103,7 +105,9 @@
     <section
       id="gameMap"
       class="map-game-map"
-      aria-label="Mapa interactiu del joc"
+      tabindex="0"
+      role="region"
+      aria-label="Mapa interactiu del joc. Utilitza les fletxes per desplaçar-lo, i després el botó Marca el centre"
     ></section>
   </main>
 
