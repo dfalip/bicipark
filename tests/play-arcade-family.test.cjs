@@ -6,9 +6,9 @@ const pages={
  'snowbike-downhill/index.html':'snow','bike-jump-ride/index.html':'ride','bike-jump/index.html':'jump',
  'roda-rumble/index.html':'rumble','bike-parking-puzzle/index.html':'puzzle',
  'modules/bike-cannon/index.html':'cannon','geo-sprint/index.html':'geo','map-game/index.html':'photo',
- 'drag-map-game/index.html':'drag','joc-3clics.html':'three','zombiepedal/index.html':'zombie'
+ 'drag-map-game/index.html':'drag','joc-3clics.html':'three'
 };
-test('All eleven existing game pages opt into the shared arcade identity and local stylesheet',()=>{
+test('All ten other game pages opt into the shared arcade identity and local stylesheet',()=>{
  for(const [p,theme] of Object.entries(pages)){
   const html=read(p);
   assert.ok(html.includes('data-play-arcade="'+theme+'"'),p);
@@ -47,4 +47,8 @@ test('Procedural sprite routines paint pixel art, keep canvas transforms balance
  assert.ok(rects>500);assert.equal(depth,0);
  const count=alloc;a.pixelFrame(ctx);a.pixelFrame(ctx);
  assert.equal(alloc,count+1);assert.ok(blits>=4);assert.equal(depth,0);
+});
+
+test('ZombiePedal stays modern and the classic remains unlisted',()=>{
+ const main=read('zombiepedal/index.html');assert.equal(main,read('zombiepedal/arcade.html'));assert.match(main,/id="city"/);assert.doesNotMatch(main,/classic\.html|Versió original/);assert.match(read('zombiepedal/classic.html'),/noindex,nofollow/);
 });

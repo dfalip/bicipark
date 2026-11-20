@@ -12,7 +12,16 @@ try{
   if(Array.isArray(v.medals))settings.medals=[...new Set(v.medals.filter(id=>typeof id==="string"&&achievements(makeArcade()).some(m=>m.id===id)))];
  }
 }catch{/* private browsing */}
-let seed=77,g=makeArcade(seed),fx=makeEffects(),lastFrame=null,previous="ready";
+const dailyQuery=new URLSearchParams(window.location.search);
+const challengeDay=dailyQuery.get("challenge");
+let dailySeed=null;
+if(/^\d{4}-\d{2}-\d{2}$/.test(challengeDay||"")){
+ const date=new Date(challengeDay+"T12:00:00Z");
+ const index=Math.floor(date.getTime()/86400000);
+ const expected=Math.imul(index,2654435761)>>>0;
+ if(Number.isFinite(index)&&date.toISOString().slice(0,10)===challengeDay&&Math.abs(index%2)===1&&dailyQuery.get("seed")===String(expected))dailySeed=expected;
+}
+let seed=dailySeed??77,g=makeArcade(seed),fx=makeEffects(),lastFrame=null,previous="ready";
 let soundOn=false,audio=null;
 const keys=new Set(),pointers=new Map();
 const keyMap={ArrowUp:"up",KeyW:"up",ArrowDown:"down",KeyS:"down",ArrowLeft:"brake",KeyA:"brake",ArrowRight:"gas",KeyD:"gas",Space:"jump",KeyX:"fire",KeyF:"fire",KeyC:"boost"};
@@ -35,7 +44,20 @@ function beep(type){
  }catch{/* no sound dependency */}
 }
 function saveFinish(){
- const score=Math.floor(g.score);settings[g.mode]=Math.max(settings[g.mode],score);
+ const score=Math.floor(g.score);
+ if(dailySeed!==null&&seed===dailySeed&&g.mode==="story"&&g.phase==="won"){
+  try{
+   const key="bicipark-play:daily-v1",records=JSON.parse(localStorage.getItem(key)||"{}");
+   if(records&&typeof records==="object"&&!Array.isArray(records)){
+    const prior=records[challengeDay];
+    if(!prior||prior.game!=="zombiepedal"||!Number.isFinite(prior.score)||prior.score<score){
+     records[challengeDay]={game:"zombiepedal",score,edition:"arcade-city"};
+     localStorage.setItem(key,JSON.stringify(records));
+    }
+   }
+  }catch{}
+ }
+ settings[g.mode]=Math.max(settings[g.mode],score);
  for(const medal of achievements(g))if(medal.earned&&!settings.medals.includes(medal.id))settings.medals.push(medal.id);
  try{localStorage.setItem(STORE,JSON.stringify(settings));}catch{/* private mode */}
 }
@@ -61,7 +83,7 @@ function setOverlay(){
  $("resultStats").textContent=g.phase==="won"||g.phase==="lost"?Math.floor(g.score)+" punts · "+g.stuns+" aturats · "+g.dodges+" esquivats · combo ×"+g.maxCombo+" · onada "+g.wave:"";
 }
 function reset(changeSeed=false){
- clearInputs();if(changeSeed)seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+ clearInputs();if(changeSeed&&dailySeed===null)seed=(Math.imul(seed,1664525)+1013904223)>>>0;
  g=makeArcade(seed,$("mode").value);fx=makeEffects();lastFrame=null;previous="ready";
  $("status").textContent="Tria un mode i comença la partida.";
  renderMedals();setOverlay();refresh();paint();

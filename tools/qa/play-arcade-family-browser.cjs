@@ -16,7 +16,7 @@ const games=[
  ['roda-rumble/index.html','rumble','#gameCanvas','#fireButton'],
  ['modules/bike-cannon/index.html','cannon','#bikeCannonCanvas','#launchButton'],
  ['bike-parking-puzzle/index.html','puzzle',null,null],
- ['zombiepedal/index.html','zombie','#gameCanvas','#playButton']
+ ['zombiepedal/index.html','zombie','#city','#play']
 ];
 async function run(){
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -29,8 +29,14 @@ async function run(){
     const page=await browser.newPage({viewport,deviceScaleFactor:1,hasTouch:viewport.width<500});
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
     await page.goto('http://127.0.0.1:'+server.address().port+'/'+url,{waitUntil:'domcontentloaded'});
-    await page.locator('body[data-play-arcade="'+theme+'"]').waitFor();
-    assert.ok(await page.evaluate(()=>getComputedStyle(document.body).getPropertyValue('--pa-gold').trim()),theme+' shared CSS must be active');
+    if(theme==='zombie'){
+     await page.locator('#city').waitFor();
+     assert.ok(await page.locator('h1').textContent().then(s=>s.includes('ARCADE CITY')));
+     assert.equal(await page.locator('a[href*="classic.html"]').count(),0);
+    }else{
+     await page.locator('body[data-play-arcade="'+theme+'"]').waitFor();
+     assert.ok(await page.evaluate(()=>getComputedStyle(document.body).getPropertyValue('--pa-gold').trim()),theme+' shared CSS must be active');
+    }
     if(canvas){
      const el=page.locator(canvas);
      await el.waitFor({state:'visible'});
