@@ -131,6 +131,34 @@ export function movesAvailable(game,bike){
   if(!Number.isInteger(bike)||bike<0||bike>=game.positions.length)return [];
   return neighborStates(game.cfg,game.positions).filter(x=>x.bike===bike);
 }
+// A rider can follow existing connected streets in one gesture. This is
+// strictly a shortest route through free cells; no teleporting or ignored
+// occupancy. Every visited cell is still one original engine move.
+export function streetPath(game,to,bike=game.selected){
+  if(game.phase!=="playing"||!Number.isInteger(bike)||
+     bike<0||bike>=game.positions.length||
+     !Number.isInteger(to)||to<0||to>=game.cfg.size**2)return null;
+  const from=game.positions[bike];
+  if(from===to)return [];
+  const blocked=new Set([...game.cfg.walls,
+    ...game.positions.filter((_,index)=>index!==bike)]);
+  if(blocked.has(to))return null;
+  const size=game.cfg.size,queue=[from],parent=new Map([[from,null]]);
+  for(let head=0;head<queue.length&&!parent.has(to);head++){
+    const pos=queue[head],{x,y}=xy(pos,size);
+    for(const d of directions){
+      const xx=x+d.dx,yy=y+d.dy;
+      if(xx<0||xx>=size||yy<0||yy>=size)continue;
+      const candidate=cell(xx,yy,size);
+      if(blocked.has(candidate)||parent.has(candidate))continue;
+      parent.set(candidate,pos);queue.push(candidate);
+    }
+  }
+  if(!parent.has(to))return null;
+  const result=[];
+  for(let pos=to;pos!==from;pos=parent.get(pos))result.push(pos);
+  return result.reverse();
+}
 export function newGame(index=0){
   const cfg=config(index),positions=scramble(cfg);
   const solution=solve(cfg,positions);
