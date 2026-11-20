@@ -7,8 +7,9 @@
   <meta name="description" content="BikeJump Ride: condueix una bicicleta per un circuit continu de muntanya amb quatre grans salts, rampes, anelles i punts de control.">
   <title>BikeJump Ride — BiciPark Play</title>
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../css/play-arcade.css">
 </head>
-<body>
+<body data-play-arcade="ride">
   <header class="site-header">
     <a href="../explora/?category=games" class="brand"><span>✦</span> BICIPARK <b>PLAY</b></a>
     <nav aria-label="Navegació"><a href="../bike-jump/">BikeJump clàssic</a><a href="../explora/?category=games">Tots els jocs</a></nav>
@@ -76,6 +77,7 @@
     <p id="instructions" class="help">La bicicleta avança només quan pedales. Mantén l'espai o SALT per carregar impuls i deixa'l anar per saltar; si arribes a una rampa, també sortiràs disparat automàticament. Corregeix l'angle durant el vol amb ↑/↓. Si caus, reapareixes al punt de control.</p>
     <footer><a href="../bike-jump/">Tornar al BikeJump clàssic</a> · Joc arcade original BiciPark · Funciona sense connexió i només desa el rècord localment</footer>
   </main>
+  <script src="../js/play-arcade-art.js"></script>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
