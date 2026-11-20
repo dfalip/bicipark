@@ -25,8 +25,15 @@ let seed=dailySeed??77,g=makeArcade(seed),fx=makeEffects(),lastFrame=null,previo
 let soundOn=false,audio=null;
 const keys=new Set(),pointers=new Map();
 const keyMap={ArrowUp:"up",KeyW:"up",ArrowDown:"down",KeyS:"down",ArrowLeft:"brake",KeyA:"brake",ArrowRight:"gas",KeyD:"gas",Space:"jump",KeyX:"fire",KeyF:"fire",KeyC:"boost"};
-function clearInputs(){keys.clear();pointers.clear();for(const b of buttons)b.setAttribute("aria-pressed","false");}
-function isHeld(action){return [...keys].some(k=>keyMap[k]===action)||[...pointers.values()].includes(action);}
+const stick={pointer:null,x:0,y:0,turn:0,repeat:0};
+const pad=$("touchSteer"),knob=$("stickKnob"),controls=$("controls");
+function resetStick(){
+ const id=stick.pointer;stick.pointer=null;stick.x=0;stick.y=0;stick.turn=0;stick.repeat=0;
+ if(knob){knob.style.setProperty("--sx","0px");knob.style.setProperty("--sy","0px");}
+ if(id!==null){try{if(pad?.hasPointerCapture?.(id))pad.releasePointerCapture(id);}catch{}}
+}
+function clearInputs(){keys.clear();pointers.clear();resetStick();for(const b of buttons)b.setAttribute("aria-pressed","false");}
+function isHeld(action){return [...keys].some(k=>keyMap[k]===action)||[...pointers.values()].includes(action)||(stick.pointer!==null&&((action==="gas"&&stick.x>.25)||(action==="brake"&&stick.x<-.25)));}
 function updateButtons(){for(const b of buttons)b.setAttribute("aria-pressed",String(isHeld(b.dataset.action)));}
 function unlockAudio(){
  if(!soundOn)return;
@@ -103,6 +110,46 @@ function action(a){
  if(a==="fire")shootArcade(g);
  if(a==="boost")turboArcade(g);
 }
+function moveStick(ev){
+ if(stick.pointer!==ev.pointerId)return;
+ ev.preventDefault();
+ const rect=pad.querySelector(".stick-disc").getBoundingClientRect();
+ const radius=Math.max(1,Math.min(rect.width,rect.height)*.37);
+ const dx=(ev.clientX-rect.left-rect.width/2)/radius,dy=(ev.clientY-rect.top-rect.height/2)/radius;
+ const scale=Math.max(1,Math.hypot(dx,dy));
+ stick.x=dx/scale;stick.y=dy/scale;
+ knob.style.setProperty("--sx",Math.round(stick.x*radius)+"px");
+ knob.style.setProperty("--sy",Math.round(stick.y*radius)+"px");
+ const turn=Math.abs(stick.y)>.34?Math.sign(stick.y):0;
+ if(turn!==stick.turn){
+  stick.turn=turn;stick.repeat=.42;
+  if(turn)action(turn<0?"up":"down");
+ }
+ updateButtons();
+}
+function tickStick(dt){
+ if(stick.pointer===null||!stick.turn||g.phase!=="running")return;
+ stick.repeat-=dt;
+ if(stick.repeat<=0){action(stick.turn<0?"up":"down");stick.repeat=.36;}
+}
+if(pad){
+ pad.addEventListener("pointerdown",ev=>{
+  if(stick.pointer!==null||(ev.button!=null&&ev.button!==0)||!["ready","running"].includes(g.phase))return;
+  ev.preventDefault();unlockAudio();if(g.phase==="ready")launch();
+  stick.pointer=ev.pointerId;try{pad.setPointerCapture(ev.pointerId);}catch{}
+  moveStick(ev);
+ });
+ pad.addEventListener("pointermove",moveStick);
+ for(const name of ["pointerup","pointercancel","lostpointercapture"])pad.addEventListener(name,ev=>{
+  if(stick.pointer===ev.pointerId){resetStick();updateButtons();}
+ });
+}
+$("mobileControlToggle")?.addEventListener("click",()=>{
+ clearInputs();const useStick=controls.dataset.mobileMode!=="stick";
+ controls.dataset.mobileMode=useStick?"stick":"buttons";
+ $("mobileControlToggle").setAttribute("aria-pressed",String(useStick));
+ $("mobileControlToggle").textContent=useStick?"Comandament / botons":"Botons / comandament";
+});
 document.addEventListener("keydown",event=>{
  if(event.target instanceof HTMLElement&&["INPUT","SELECT","BUTTON","TEXTAREA","A"].includes(event.target.tagName))return;
  if(event.code==="KeyP"||event.code==="Escape"){if(!event.repeat){event.preventDefault();pause();}return;}
