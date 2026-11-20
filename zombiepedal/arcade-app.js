@@ -12,7 +12,16 @@ try{
   if(Array.isArray(v.medals))settings.medals=[...new Set(v.medals.filter(id=>typeof id==="string"&&achievements(makeArcade()).some(m=>m.id===id)))];
  }
 }catch{/* private browsing */}
-let seed=77,g=makeArcade(seed),fx=makeEffects(),lastFrame=null,previous="ready";
+const dailyChallenge=(()=>{
+ const params=new URLSearchParams(window.location.search),day=params.get("challenge");
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(day||""))return null;
+ const date=new Date(day+"T12:00:00Z");
+ if(!Number.isFinite(date.getTime())||date.toISOString().slice(0,10)!==day)return null;
+ const index=Math.floor(date.getTime()/86400000),seed=Math.imul(index,2654435761)>>>0;
+ if(index%2===0||params.get("seed")!==String(seed))return null;
+ return {day,seed};
+})();
+let seed=dailyChallenge?.seed??77,g=makeArcade(seed),fx=makeEffects(),lastFrame=null,previous="ready";
 let soundOn=false,audio=null;
 const keys=new Set(),pointers=new Map();
 const keyMap={ArrowUp:"up",KeyW:"up",ArrowDown:"down",KeyS:"down",ArrowLeft:"brake",KeyA:"brake",ArrowRight:"gas",KeyD:"gas",Space:"jump",KeyX:"fire",KeyF:"fire",KeyC:"boost"};
@@ -34,10 +43,24 @@ function beep(type){
   o.connect(gain);gain.connect(audio.destination);o.start(now);o.stop(now+d+.015);
  }catch{/* no sound dependency */}
 }
+function recordDailyFinish(){
+ if(!dailyChallenge||g.phase!=="won"||g.mode!=="story"||g.seed!==dailyChallenge.seed)return false;
+ try{
+  const key="bicipark-play:daily-v1",raw=JSON.parse(localStorage.getItem(key)||"{}");
+  const records=raw&&typeof raw==="object"&&!Array.isArray(raw)?raw:{};
+  const score=Math.floor(g.score),previous=records[dailyChallenge.day];
+  if(!previous||previous.edition!=="arcade-city"||!Number.isFinite(previous.score)||score>previous.score){
+   records[dailyChallenge.day]={game:"zombiepedal",edition:"arcade-city",score,finished:true,completedAt:new Date().toISOString()};
+   localStorage.setItem(key,JSON.stringify(Object.fromEntries(Object.entries(records).sort(([a],[b])=>a.localeCompare(b)).slice(-365))));
+  }
+  return true;
+ }catch{return false;}
+}
 function saveFinish(){
  const score=Math.floor(g.score);settings[g.mode]=Math.max(settings[g.mode],score);
  for(const medal of achievements(g))if(medal.earned&&!settings.medals.includes(medal.id))settings.medals.push(medal.id);
  try{localStorage.setItem(STORE,JSON.stringify(settings));}catch{/* private mode */}
+ return recordDailyFinish();
 }
 function renderMedals(){
  $("medals").replaceChildren();
@@ -61,9 +84,10 @@ function setOverlay(){
  $("resultStats").textContent=g.phase==="won"||g.phase==="lost"?Math.floor(g.score)+" punts · "+g.stuns+" aturats · "+g.dodges+" esquivats · combo ×"+g.maxCombo+" · onada "+g.wave:"";
 }
 function reset(changeSeed=false){
- clearInputs();if(changeSeed)seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+ clearInputs();if(changeSeed&&!dailyChallenge)seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+ if(dailyChallenge)$("mode").value="story";
  g=makeArcade(seed,$("mode").value);fx=makeEffects();lastFrame=null;previous="ready";
- $("status").textContent="Tria un mode i comença la partida.";
+ $("status").textContent=dailyChallenge?"Repte diari · "+dailyChallenge.day+" · completa els quatre districtes.":"Tria un mode i comença la partida.";
  renderMedals();setOverlay();refresh();paint();
 }
 function launch(){
@@ -138,7 +162,7 @@ function refresh(){
  $("threat").parentElement.setAttribute("role","progressbar");$("threat").parentElement.setAttribute("aria-label","Horda");
  $("threat").parentElement.setAttribute("aria-valuenow",Math.round(g.threat));$("progress").parentElement.setAttribute("role","progressbar");
  $("progress").parentElement.setAttribute("aria-label","Progrés del circuit");$("progress").parentElement.setAttribute("aria-valuenow",Math.round(progress*100));
- $("mode").disabled=["running","paused"].includes(g.phase);$("pause").disabled=!["running","paused"].includes(g.phase);
+ $("mode").disabled=Boolean(dailyChallenge)||["running","paused"].includes(g.phase);$("pause").disabled=!["running","paused"].includes(g.phase);
  $("pause").textContent=g.phase==="paused"?"▶ CONTINUAR":"Ⅱ PAUSA";
  $("best").textContent="RÈCORD LOCAL: "+(settings[g.mode]?settings[g.mode].toLocaleString("ca-ES"):"—");
 }
@@ -149,7 +173,7 @@ function frame(time){
  if(g.phase==="running")stepArcade(g,{accelerate:isHeld("gas"),brake:isHeld("brake"),fire:isHeld("fire")},dt);
  consume();if(g.phase!=="paused")advanceEffects(fx,dt);
  if(g.phase!==previous){
-  if(g.phase==="won"||g.phase==="lost"){saveFinish();renderMedals();clearInputs();setOverlay();$("play").focus({preventScroll:true});}
+  if(g.phase==="won"||g.phase==="lost"){const dailyDone=saveFinish();renderMedals();clearInputs();setOverlay();if(dailyDone)$("resultStats").textContent+=" · REPTE DIARI COMPLETAT!";$("play").focus({preventScroll:true});}
   previous=g.phase;
  }
  refresh();paint();requestAnimationFrame(frame);
