@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b263e">
-  <meta name="description" content="BiciPark Puzzle City: 12 nivells per aparcar bicicletes pels carrers de la ciutat, moviments animats, controls tàctils, pistes reals i desfés.">
+  <meta name="description" content="BiciPark Puzzle City: desplaçament fluid pels carrers connectats, girs naturals, 12 nivells, controls tàctils, pistes i desfés.">
   <title>BiciPark Puzzle — Aparca-les!</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
@@ -18,7 +18,7 @@
       <div>
         <p class="eyebrow">BICIPARK PLAY · CITY PARKING CHALLENGE</p>
         <h1>APARCA-<span>LES!</span></h1>
-        <p>Recorre els carrers d’una ciutat en miniatura, evita els edificis i aparca cada bicicleta al seu destí. <strong>Moviments fluids, decisions ràpides i 12 reptes!</strong></p>
+        <p>Recorre la ciutat en miniatura: toca una bicicleta i després un destí connectat per veure-la <strong>pedalar pels carrers, girar i arribar-hi amb fluïdesa</strong>. Cada casella recorreguda continua comptant!</p>
       </div>
       <div class="intro-medal"><span aria-hidden="true">🏙️</span><strong>12 DISTRICTES</strong><small>4 capítols · controls tàctils</small></div>
     </div>
@@ -38,14 +38,14 @@
         <div class="board-frame">
           <div class="board-topline"><span>🚦 BICIPARK CITY · MAPA URBÀ</span><span id="boardTitle">Primers aparcaments</span></div>
           <div id="board" class="board" role="group" aria-label="Mapa urbà amb carrers, edificis, bicicletes i places assignades. Selecciona una bicicleta i una casella de carrer adjacent o utilitza les fletxes."></div>
-          <div class="board-bottomline"><span id="spacesLabel">Places: 2</span><span>SELECCIONA · TOCA · PEDALA</span></div>
+          <div class="board-bottomline"><span id="spacesLabel">Places: 2</span><span>SELECCIONA · DESTÍ · PEDALA</span></div>
           <div class="puzzle-drive-controls" id="puzzleDpad" role="group" aria-label="Mou la bicicleta seleccionada pels carrers">
             <span class="puzzle-drive-caption">CONTROLS DE CARRER</span>
             <button type="button" class="puzzle-drive-button" data-puzzle-direction="left" aria-label="Mou la bicicleta cap a l’esquerra" disabled>←</button>
             <button type="button" class="puzzle-drive-button" data-puzzle-direction="up" aria-label="Mou la bicicleta cap amunt" disabled>↑</button>
             <button type="button" class="puzzle-drive-button" data-puzzle-direction="down" aria-label="Mou la bicicleta cap avall" disabled>↓</button>
             <button type="button" class="puzzle-drive-button" data-puzzle-direction="right" aria-label="Mou la bicicleta cap a la dreta" disabled>→</button>
-            <span class="puzzle-drive-tip">Toca la bici i dirigeix-la pels carrers.</span>
+            <span class="puzzle-drive-tip">Toca la bici i qualsevol carrer lliure connectat.</span>
           </div>
           <div id="winPanel" class="win-panel" hidden role="status">
             <span class="win-crown" aria-hidden="true">🏆</span>
@@ -73,10 +73,10 @@
           <p class="side-eyebrow">COM ES JUGA?</p>
           <ol>
             <li><strong>Selecciona</strong> una bicicleta.</li>
-            <li><strong>Toca una casella lliure del costat</strong>, llisca en qualsevol direcció o utilitza les fletxes.</li>
+            <li><strong>Toca qualsevol carrer lliure connectat</strong> perquè la bicicleta hi circuli, o utilitza les fletxes per moure-la pas a pas.</li>
             <li>Desbloqueja els passadissos, respecta el límit i <strong>aparca-les totes</strong>.</li>
           </ol>
-          <p class="side-note">Les caselles fosques estan bloquejades. Si t'equivoques, pots desfer el moviment. Les pistes venen d'un solucionador real: no són aleatòries.</p>
+          <p class="side-note">Els edificis no es poden travessar. Cada tram recorregut compta com un moviment; si t'equivoques, pots desfer el moviment. Les pistes venen d'un solucionador real: no són aleatòries.</p>
         </section>
         <section class="side-card">
           <p class="side-eyebrow">CAPÍTOLS</p>
