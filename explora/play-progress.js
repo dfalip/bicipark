@@ -22,7 +22,7 @@ export function missionForDay(day){
  const seed=Math.imul(index,2654435761)>>>0;
  return {day,game:'zombiepedal',seed,title:'Fugida del dia',
   subtitle:'Ruta amb zombis compartida',icon:'🧟',
-  description:'Tots els que juguin aquest dia reben la mateixa distribució inicial d’obstacles. Combina salts, pintura i esprints.',
+  description:'Tots els que juguin aquest dia reben la mateixa distribució inicial d’obstacles. Combina canvis de carril, salts, pintura i turbo.',
   href:'../zombiepedal/?challenge='+day+'&seed='+seed};
 }
 export function readDaily(storage){
@@ -57,7 +57,7 @@ export function readBest(storage){
  const parse=k=>{try{return JSON.parse(storage?.getItem(k)||'null');}catch{return null;}};
  const snow=parse('bicipark-snowbike-downhill-times-v1')||{};
  const times=Object.values(snow).filter(x=>x&&Number.isFinite(x.time)&&x.time>=0).map(x=>x.time);
- const zombie=parse('bicipark-zombiepedal-best-v1');
+ const zombie=parse('bicipark-zombiepedal-arcade-v1');
  return {snowTime:times.length?Math.min(...times):null,
-  zombieScore:zombie&&Number.isFinite(zombie.score)&&zombie.score>=0?zombie.score:null};
+  zombieScore:zombie&&Number.isFinite(zombie.story)&&zombie.story>0?zombie.story:null};
 }

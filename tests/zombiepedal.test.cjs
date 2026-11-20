@@ -108,7 +108,7 @@ test('Escape route reaches a complete ending with a score and progress',async()=
  assert.equal(e.fire(g),false);
 });
 test('Game includes touch, keyboard, accessible status and no third-party script',()=>{
- const html=readFileSync(path.join(dir,'index.html'),'utf8');
+ const html=readFileSync(path.join(dir,'classic.html'),'utf8');
  const app=readFileSync(path.join(dir,'app.js'),'utf8');
  for(const file of ['engine.js','app.js'])
   execFileSync(process.execPath,['--check',path.join(dir,file)],{stdio:'pipe'});
