@@ -12,7 +12,7 @@ const rect=(c,x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(Math.round(x),Math.r
 function line(c,x0,y0,x1,y1,color,width=2){
  x0=Math.round(x0);x1=Math.round(x1);y0=Math.round(y0);y1=Math.round(y1);
  let dx=Math.abs(x1-x0),sx=x0<x1?1:-1,dy=-Math.abs(y1-y0),sy=y0<y1?1:-1,err=dx+dy;
- for(let n=0;n<500;n++){
+ for(let n=0;n<1000;n++){
   rect(c,x0-width/2,y0-width/2,width,width,color);
   if(x0===x1&&y0===y1)break;
   const e=err*2;if(e>=dy){err+=dy;x0+=sx;}if(e<=dx){err+=dx;y0+=sy;}
@@ -83,6 +83,42 @@ function building(c,x,w,zone,i){
   for(let k=22;k<111;k+=15)rect(c,x+6,k,11,2,col[3]);
  }
 }
+// Cache repeated architecture tiles. Rendering cost stays bounded on mobile.
+const buildingCache=new Map();
+function sceneryTile(c,x,zone,i){
+ const variant=((i%12)+12)%12;
+ if(!c.canvas?.ownerDocument){building(c,x,112,zone,variant);return;}
+ const key=zone+":"+variant;
+ let tile=buildingCache.get(key);
+ if(!tile){
+  tile=c.canvas.ownerDocument.createElement("canvas");tile.width=112;tile.height=170;
+  const pc=tile.getContext("2d");if(!pc){building(c,x,112,zone,variant);return;}
+  const colors=palette[zone];
+  rect(pc,0,0,112,170,colors[4]);
+  if(zone===1&&variant%3===1){
+   // Enclosed city park with layered trees, fence, pavement and benches.
+   rect(pc,0,120,112,50,"#61705e");
+   for(let j=0;j<4;j++){
+    const tx=12+j*27,ty=49+(hash(variant*8+j)%25);
+    rect(pc,tx-3,ty+20,6,96-ty,"#504c44");
+    circle(pc,tx,ty+14,18,"#3e584d");circle(pc,tx-5,ty+7,13,"#71886a");circle(pc,tx+5,ty+3,10,"#91a27b");
+   }
+   for(let j=0;j<112;j+=12)rect(pc,j,134,2,34,"#30483f");
+   rect(pc,0,135,112,3,"#30483f");rect(pc,0,157,112,3,"#30483f");
+   rect(pc,28,143,33,4,"#ae9876");rect(pc,29,149,31,4,"#82715c");
+  }else if(zone===3&&variant%3!==0){
+   // Bridge deck spans the river, with riveted latticework behind the street.
+   rect(pc,0,96,112,73,"#486975");rect(pc,0,142,112,17,"#71928d");
+   for(let yy=120;yy<160;yy+=8)rect(pc,hash(variant+yy)%62,yy,44,1,"#a8b9ad");
+   rect(pc,0,0,9,169,"#384b55");rect(pc,103,0,9,169,"#384b55");rect(pc,0,9,112,8,"#a1aaa3");
+   line(pc,7,14,107,114,"#74848a",7);line(pc,107,14,7,114,"#74848a",7);
+   rect(pc,0,114,112,6,"#384b55");
+   for(let xx=4;xx<112;xx+=13){rect(pc,xx,12,2,2,"#c4c5b1");rect(pc,xx,116,2,2,"#c4c5b1");}
+  }else building(pc,0,112,zone,variant);
+  buildingCache.set(key,tile);
+ }
+ c.drawImage(tile,Math.round(x),0);
+}
 function sceneBack(c,g){
  const zone=(g.wave-1)%4,colors=palette[zone],d=g.distance;
  rect(c,0,0,W,H,colors[4]);
@@ -92,9 +128,9 @@ function sceneBack(c,g){
   rect(c,x,83-h,66,h+48,colors[0]);rect(c,x+4,78-h,17,5,colors[1]);
  }
  const b0=Math.floor(d*.72/112)-1;
- for(let i=b0;i<=b0+8;i++)building(c,i*112-d*.72,112,zone,i);
+ for(let i=b0;i<=b0+8;i++)sceneryTile(c,i*112-d*.72,zone,i);
  // Overhead cables and tram lighting.
- for(let j=0;j<3;j++)line(c,0,28+j*13,W,39+j*10,"#252b2e",1);
+ for(let j=0;j<3;j++)for(let k=0;k<W;k+=16)rect(c,k,28+j*13+Math.round(k/W*(11-j*3)),16,1,"#252b2e");
  for(let i=Math.floor(d/180)-1;i<Math.floor((d+W)/180)+2;i++){
   const x=i*180-d;
   rect(c,x,43,4,128,"#303c40");rect(c,x+1,43,1,128,"#77847b");
@@ -132,7 +168,7 @@ function wheel(c,x,y,r,angle){
  circle(c,x,y,2,"#dce5d5");
 }
 function cyclist(c,g,reduced){
- const x=VIEW.riderX,y=VIEW.lanes[0]+g.lane*45,air=g.altitude*.67;
+ const x=VIEW.riderX,y=VIEW.lanes[0]+g.lane*45,air=g.altitude;
  const cadence=g.time*g.speed/40;
  shadow(c,x,y,62);
  c.save();c.translate(Math.round(x),Math.round(y-air-(g.altitude?0:reduced?0:Math.sin(cadence*2))));
@@ -173,7 +209,7 @@ function obstacle(c,e,x,y,g,reduced){
  }
  if(type==="car"||type==="van"){
   c.save();c.translate(Math.round(x),Math.round(y));
-  const van=type==="van";const w=van?70:60,h=van?50:29;
+  const van=type==="van";const w=van?70:60,h=van?70:29;
   const base=van?"#d7d1b7":"#87695b",top=van?"#a5aba1":"#c1a185";
   outlineBox(c,-w/2,-h,w,h-4,base);rect(c,-w/2+3,-h+2,w-6,3,top);
   rect(c,-w/2+5,-h+6,van?35:24,15,"#303c46");rect(c,-w/2+8,-h+9,van?29:18,4,"#708a91");
@@ -256,6 +292,9 @@ function canvasHud(c,g){
  rect(c,244,8,152,31,"#1f292ddd");text(c,"PINTURA  "+g.ammo+"/"+g.maxAmmo,320,20,10,"#e9e5c7","center");
  for(let i=0;i<g.maxAmmo;i++){rect(c,258+i*14,25,9,8,i<g.ammo?"#e0cd70":"#54575a");rect(c,258+i*14,25,9,1,"#c1ba9d");}
  rect(c,494,8,138,50,"#1f292ddd");text(c,"COMBO",506,21,11,"#eec974");
+ const bonus=1+Math.min(4,Math.floor(Math.max(0,g.combo-1)/3));
+ text(c,"BONUS ×"+bonus,506,34,8,"#a6d29f");
+ rect(c,499,55,130*clamp(g.comboLeft/3.6,0,1),2,"#d9bf6a");
  text(c,"×"+g.combo,620,39,22,"#fff0a0","right");text(c,Math.floor(g.score)+" PTS",505,51,9,"#f0edcd");
  const progress=g.mode==="story"?clamp(g.distance/(DISTRICT_LENGTH*4),0,1):(g.distance%DISTRICT_LENGTH)/DISTRICT_LENGTH;
  rect(c,10,64,136,5,"#20282a");rect(c,10,64,136*progress,5,"#86cfab");
