@@ -2,7 +2,14 @@
 'use strict';
 const list=document.getElementById('routes'),count=document.getElementById('count'),search=document.getElementById('search'),modality=document.getElementById('modality'),region=document.getElementById('region'),difficulty=document.getElementById('difficulty'),availability=document.getElementById('availability'),sort=document.getElementById('sort'),clear=document.getElementById('clearFilters');
 const node=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n};
-const num=v=>Number.isFinite(Number(v))?Number(v):null;
+const num=v=>v===null||v===undefined||String(v).trim()===''?null:Number.isFinite(Number(v))?Number(v):null;
+const normalize=v=>String(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase();
+const maxDistance=document.getElementById('maxDistance'),maxElevation=document.getElementById('maxElevation'),savedFilter=document.getElementById('savedFilter'),saveStatus=document.getElementById('saveStatus');
+const SAVED_KEY='bicipark.routeCatalog.saved.v1';
+let saved=new Set();
+try{const a=JSON.parse(localStorage.getItem(SAVED_KEY)||'[]');if(Array.isArray(a))saved=new Set(a.filter(x=>typeof x==='string'));}catch{}
+function save(){try{localStorage.setItem(SAVED_KEY,JSON.stringify([...saved]));saveStatus.textContent='Preferències desades en aquest navegador.';}catch{saveStatus.textContent='No es poden desar les preferències: només estaran disponibles durant aquesta sessió.';}}
+const within=(value,limit)=>limit===null||num(value)!==null&&num(value)<=limit;
 const trust=r=>r.needsReview||r.kind==='external'&&r.verified!==true?'review':(r.kind==='local'?'track':'source');
 const trustCopy={track:'Track local',source:'Font oficial consultada',review:'Revisió pendent'};
 try{
@@ -14,8 +21,8 @@ try{
  [...new Set(routes.map(r=>r.region).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ca')).forEach(value=>{const option=node('option',value);option.value=value;region.append(option)});
  function render(){
   list.replaceChildren();
-  const q=search.value.trim().toLocaleLowerCase();
-  let items=routes.filter(r=>{const haystack=[r.name,r.modality,r.region,r.start,r.metricNote].filter(Boolean).join(' ').toLocaleLowerCase();return(!q||haystack.includes(q))&&(!modality.value||r.modality===modality.value)&&(!region.value||r.region===region.value)&&(!difficulty.value||String(r.difficultyLevel)===difficulty.value)&&(!availability.value||availability.value==='local'&&r.kind==='local'||availability.value==='external'&&r.kind==='external'||availability.value==='review'&&trust(r)==='review')});
+  const q=normalize(search.value.trim()),distanceLimit=num(maxDistance.value),elevationLimit=num(maxElevation.value);
+  let items=routes.filter(r=>{const haystack=[r.name,r.modality,r.region,r.start,r.metricNote].filter(Boolean).join(' ');return(!q||normalize(haystack).includes(q))&&within(r.distanceKm,distanceLimit)&&within(r.elevationGain,elevationLimit)&&(!savedFilter.value||saved.has(r.id))&&(!modality.value||r.modality===modality.value)&&(!region.value||r.region===region.value)&&(!difficulty.value||String(r.difficultyLevel)===difficulty.value)&&(!availability.value||availability.value==='local'&&r.kind==='local'||availability.value==='external'&&r.kind==='external'||availability.value==='review'&&trust(r)==='review')});
   items=[...items].sort((a,b)=>sort.value==='distance'?(num(a.distanceKm)??Infinity)-(num(b.distanceKm)??Infinity):sort.value==='elevation'?(num(a.elevationGain)??Infinity)-(num(b.elevationGain)??Infinity):a.name.localeCompare(b.name,'ca'));
   const local=items.filter(r=>r.kind==='local').length,review=items.filter(r=>trust(r)==='review').length;
   count.textContent=`${items.length} rutes · ${local} amb track local${review?` · ${review} pendents de revisió`:''}`;
@@ -29,10 +36,10 @@ try{
    if(r.verified&&r.source){card.append(node('p',`Dades contrastades amb ${r.source}${r.verifiedAt?` · ${r.verifiedAt}`:''}.`))}
    if(trust(r)==='review')card.append(node('p','Metadades pendents de revisió: consulta la font i el track abans de sortir.'));
    const actions=node('p','');actions.className='route-actions';const a=node('a',r.kind==='local'?'Obre el track':'Consulta la ruta');a.href=r.url;actions.append(a);
-   if(r.sourceUrl&&r.sourceUrl!==r.url){const source=node('a','Font original');source.href=r.sourceUrl;source.rel='noopener';actions.append(source)}card.append(actions);list.append(card)
+   if(r.sourceUrl&&r.sourceUrl!==r.url){const source=node('a','Font original');source.href=r.sourceUrl;source.rel='noopener';actions.append(source)}const favorite=node('button',saved.has(r.id)?'★ Desada':'☆ Desa la ruta');favorite.type='button';favorite.className='route-save';favorite.dataset.routeId=r.id;favorite.setAttribute('aria-pressed',String(saved.has(r.id)));favorite.setAttribute('aria-label',(saved.has(r.id)?'Treu de preferides: ':'Desa: ')+r.name);favorite.addEventListener('click',()=>{if(saved.has(r.id))saved.delete(r.id);else saved.add(r.id);save();render();const replacement=[...list.querySelectorAll('.route-save')].find(b=>b.dataset.routeId===r.id);(replacement||savedFilter).focus();});actions.append(favorite);card.append(actions);list.append(card)
   }
  }
- [search,modality,region,difficulty,availability,sort].forEach(el=>el.addEventListener(el===search?'input':'change',render));
- clear.addEventListener('click',()=>{search.value='';modality.value='';region.value='';difficulty.value='';availability.value='';sort.value='name';render();search.focus()});render()
+ [search,modality,region,difficulty,availability,sort,maxDistance,maxElevation,savedFilter].forEach(el=>el.addEventListener([search,maxDistance,maxElevation].includes(el)?'input':'change',render));
+ clear.addEventListener('click',()=>{search.value='';modality.value='';region.value='';difficulty.value='';availability.value='';maxDistance.value='';maxElevation.value='';savedFilter.value='';sort.value='name';render();search.focus()});render()
 }catch{count.textContent='No s’ha pogut carregar el catàleg. Torna-ho a provar.'}
 })();
