@@ -106,6 +106,10 @@ function renderBoard(){
   const motion=pendingMotion;pendingMotion=null;
   const previous=motion?ui.board.querySelector('[data-pos="'+motion.from+'"]'):null;
   const oldRect=previous?.getBoundingClientRect();
+  // Preserve keyboard focus when rebuilding the board; ignore external controls.
+  const focused=ui.board.contains(document.activeElement)?
+    document.activeElement.closest("button[data-pos]"):null;
+  const focusedPos=focused?Number(focused.dataset.pos):null;
   const cfg=game.cfg,walls=new Set(cfg.walls);
   const occupied=new Map(game.positions.map((p,i)=>[p,i]));
   const targets=new Map(cfg.goals.map((p,i)=>[p,i]));
@@ -173,6 +177,14 @@ function renderBoard(){
     ui.board.append(tile);
   }
   playMoveAnimation(oldRect,motion);
+  if(focusedPos!==null){
+    const tiles=[...ui.board.querySelectorAll("button[data-pos]:not(:disabled)")];
+    const target=tiles.find(x=>Number(x.dataset.pos)===focusedPos)||
+      tiles.reduce((nearest,tile)=>!nearest||
+        Math.abs(Number(tile.dataset.pos)-focusedPos)<
+        Math.abs(Number(nearest.dataset.pos)-focusedPos)?tile:nearest,null);
+    target?.focus({preventScroll:true});
+  }
 }
 function renderLegend(){
   ui.legend.replaceChildren();
