@@ -7,7 +7,7 @@ const {JSDOM}=require('jsdom');
 const dir=path.join(__dirname,'..','zombiepedal');
 const read=n=>fs.readFileSync(path.join(dir,n),'utf8');
 function setup(href="https://www.bicipark.com/zombiepedal/"){
- const dom=new JSDOM(read('index.html'),{url:href,runScripts:'outside-only',pretendToBeVisual:true});
+ const dom=new JSDOM(read('legacy.html'),{url:href,runScripts:'outside-only',pretendToBeVisual:true});
  const w=dom.window,frames=[];
  const grad={addColorStop(){}};
  const ctx=new Proxy({},{get(o,k){if(k==='createLinearGradient')return ()=>grad;if(k in o)return o[k];o[k]=()=>{};return o[k];},set(o,k,v){o[k]=v;return true;}});
