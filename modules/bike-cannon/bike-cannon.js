@@ -1415,6 +1415,13 @@
     const cannon =
       cannonGeometry();
 
+    const art=window.BiciParkArcadeArt;
+    if(art){
+      for(let i=0;i<Math.ceil(size.width/83);i++){
+        art.tree(ctx,40+i*83,cannon.groundY-5,28+(i*23%31),false);
+        art.surface(ctx,8+i*83,cannon.groundY+14,i);
+      }
+    }
     ctx.strokeStyle =
       "#8aa780";
 
@@ -1461,6 +1468,7 @@
         state.flight.distanceKm
       );
     }
+    art?.pixelFrame(ctx);
   }
 
   function pointAtProgress(
