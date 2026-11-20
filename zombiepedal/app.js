@@ -14,6 +14,7 @@ const ui={score:$("scoreValue"),speed:$("speedValue"),distance:$("distanceValue"
 const touch={pedal:$("pedalButton"),brake:$("brakeButton"),
  jump:$("jumpButton"),paint:$("paintButton"),dash:$("dashButton")};
 const RECORD="bicipark-zombiepedal-best-v1";
+const SURVIVAL_RECORD="bicipark-zombiepedal-survival-best-v1";
 const DAILY_STORE="bicipark-play:daily-v1";
 const dailyChallenge=(()=>{
  const params=new URLSearchParams(window.location.search),day=params.get("challenge");
@@ -26,7 +27,7 @@ const dailyChallenge=(()=>{
  return {day,seed};
 })();
 function recordDailyFinish(){
- if(game.phase!=="finished"||!dailyChallenge||game.seed!==dailyChallenge.seed)return false;
+ if(game.mode!=="escape"||game.phase!=="finished"||!dailyChallenge||game.seed!==dailyChallenge.seed)return false;
  try{
   const raw=JSON.parse(localStorage.getItem(DAILY_STORE)||"{}");
   const records=raw&&typeof raw==="object"&&!Array.isArray(raw)?raw:{};
@@ -40,12 +41,13 @@ function recordDailyFinish(){
  }catch{return false;}
 }
 
-function loadBest(){
- try{const value=JSON.parse(localStorage.getItem(RECORD)||"null");
+function loadBest(mode="escape"){
+ try{const value=JSON.parse(localStorage.getItem(mode==="survival"?SURVIVAL_RECORD:RECORD)||"null");
   return value&&typeof value==="object"&&Number.isFinite(value.score)?value:null;
  }catch{return null;}
 }
 let routeSeed=dailyChallenge?.seed??77;
+let playMode="escape";
 let best=loadBest(),game=makeGame(routeSeed),lastFrame=null,lastEvent="",lastPhase="ready",noticeLeft=0;
 const keys=new Set(),pointers=new Map();
 
@@ -208,31 +210,34 @@ function persist(){
  const challenger={score:Math.round(game.score),distance:Math.round(game.distance),finished:game.phase==="finished"};
  if(!best||challenger.score>best.score||(challenger.score===best.score&&challenger.distance>best.distance)){
   best=challenger;
-  try{localStorage.setItem(RECORD,JSON.stringify(best));}catch{/* storage unavailable */}
+  try{localStorage.setItem(game.mode==="survival"?SURVIVAL_RECORD:RECORD,JSON.stringify(best));}catch{/* storage unavailable */}
  }
  return recordDailyFinish();
 }
 function refresh(){
  ui.score.textContent=Math.round(game.score).toLocaleString("ca-ES");
  ui.speed.innerHTML=`${Math.round(game.speed*3.6)} <em>km/h</em>`;
- ui.distance.textContent=`${Math.round(game.distance)} / ${WORLD.length} m`;
+ ui.distance.textContent=game.mode==="survival"?`${Math.round(game.distance).toLocaleString("ca-ES")} m`:`${Math.round(game.distance)} / ${WORLD.length} m`;
  ui.ammo.textContent=`${game.ammo} / ${game.maxAmmo}`;
  ui.hearts.textContent="♥ ".repeat(game.hearts).trim()||"0";
  ui.combo.textContent="×"+game.combo;
  ui.dash.textContent=game.dashCharges+" / "+game.maxDashCharges+(game.dashTime>0?" ⚡":"");
  ui.route.textContent="RUTA #"+String(routeSeed%10000).padStart(4,"0");
- ui.zone.textContent=ZONES[game.zone].name.toUpperCase();
+ ui.zone.textContent=(game.mode==="survival"?`ONADA ${game.wave} · `:"")+ZONES[game.zone].name.toUpperCase();
  ui.phase.textContent=({ready:"PREPARAT",running:game.dashTime>0?"⚡ ESPRINT":"FUGINT",paused:"PAUSA",finished:"ESCAPAT",lost:"CAPTURAT"})[game.phase];
- const pct=Math.round(game.distance/WORLD.length*100);
- ui.progress.style.width=pct+"%";ui.progressLabel.textContent=pct+"%";
- ui.journey.style.width=pct+"%";ui.journeyValue.textContent=pct+"%";
+ const survival=game.mode==="survival";
+ const pct=Math.round(survival?(game.distance%1450)/1450*100:game.distance/WORLD.length*100);
+ ui.progress.style.width=pct+"%";ui.progressLabel.textContent=survival?"ONADA "+game.wave:pct+"%";
+ ui.journey.style.width=pct+"%";ui.journeyValue.textContent=survival?"#"+game.wave:pct+"%";
+ $("modeSelect").disabled=game.phase==="running"||game.phase==="paused"||Boolean(dailyChallenge);
+ $("journeyTitle").textContent=survival?"PROGRÉS DE L’ONADA":"PROGRÉS D’ESCAPADA";
  ui.horde.style.width=game.horde+"%";ui.hordeValue.textContent=Math.round(game.horde)+"%";
  ui.record.textContent=best?`MILLOR PUNTUACIÓ: ${best.score.toLocaleString("ca-ES")} · ${best.distance} m`:"MILLOR PUNTUACIÓ: —";
  touch.paint.disabled=game.phase!=="running"||game.ammo===0||game.fireCooldown>0;
  touch.dash.disabled=game.phase!=="running"||game.dashCharges<1||game.dashTime>0||game.stagger>0;
 }
 function reset(){
- game=makeGame(routeSeed);lastFrame=null;lastEvent="";lastPhase="ready";noticeLeft=0;
+ game=makeGame(routeSeed,playMode);lastFrame=null;lastEvent="";lastPhase="ready";noticeLeft=0;
  fx.particles.length=0;fx.words.length=0;fx.circles.length=0;
  fx.flash=0;fx.shake=0;fx.freeze=0;ui.flash.style.opacity="0";
  ui.notice.classList.remove("notice--damage","notice--reward");
@@ -240,6 +245,8 @@ function reset(){
  keys.clear();pointers.clear();
  ui.ready.hidden=false;ui.finish.hidden=true;ui.lost.hidden=true;ui.pause.hidden=true;ui.notice.hidden=true;
  for(const b of Object.values(touch))b.setAttribute("aria-pressed","false");
+ $("readyModeTitle").textContent=playMode==="survival"?"MISSIÓ: SUPERVIURE":"MISSIÓ: ESCAPAR";
+ $("playButton").textContent=playMode==="survival"?"▶ COMENÇA LA SUPERVIVÈNCIA":"▶ COMENÇA LA FUGIDA";
  ui.status.textContent=game.lastEvent;refresh();paint();
 }
 function launch(){if(start(game)){ui.ready.hidden=true;lastFrame=null;ui.status.textContent=game.lastEvent;}}
@@ -297,6 +304,11 @@ function clearInputs(){
 }
 window.addEventListener("blur",()=>{clearInputs();if(game.phase==="running")pauseGame();});
 document.addEventListener("visibilitychange",()=>{lastFrame=null;if(document.hidden&&game.phase==="running"){clearInputs();pauseGame();}});
+$("modeSelect").addEventListener("change",()=>{
+ if(dailyChallenge||game.phase==="running"||game.phase==="paused")return;
+ playMode=$("modeSelect").value==="survival"?"survival":"escape";
+ best=loadBest(playMode);reset();zones();
+});
 $("playButton").addEventListener("click",launch);
 $("playAgainButton").addEventListener("click",reset);
 $("retryButton").addEventListener("click",reset);
@@ -337,7 +349,10 @@ function feedback(dt){
    ui.finishStars.textContent="★".repeat(game.finishStars)+"☆".repeat(3-game.finishStars);
    ui.finishSummary.textContent=`${Math.round(game.distance)} m · ${Math.round(game.time)} s · ${game.stuns} zombis frenats · ${game.dodges} esquivats · ${game.dashDodges} amb esprint · combo màxim ×${game.bestCombo} · ${Math.round(game.score).toLocaleString("ca-ES")} punts.${dailyDone?" · REPTE DIARI COMPLETAT!":""}`;
   }else if(game.phase==="lost"){
-   persist();ui.lost.hidden=false;ui.lostReason.textContent=game.gameOverReason;
+   persist();ui.lost.hidden=false;
+   ui.lostReason.textContent=game.mode==="survival"?game.gameOverReason+
+    " · Onada "+game.wave+" · "+Math.round(game.distance).toLocaleString("ca-ES")+" m · "+
+    Math.round(game.score).toLocaleString("ca-ES")+" punts.":game.gameOverReason;
   }
  }
 }
