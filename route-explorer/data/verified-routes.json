@@ -214,7 +214,9 @@
     "verified": true,
     "verifiedAt": "2026-11-20",
     "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "18 km publicats pel Consorci, amb ramals cap a Ogassa i Sant Pau de Segúries. No hi ha geometria local ni desnivell acumulat verificat. Consulta la fitxa oficial i avisos abans de sortir."
+    "metricNote": "18 km, paviment asfaltat i dificultat mínima declarats pel Consorci. Inclou ramals; sense geometria local ni desnivell acumulat verificat. Consulta avisos abans de sortir.",
+    "difficulty": "mínima",
+    "surface": "asfalt"
   },
   {
     "id": "vv-ripolles-alt-ter",
@@ -230,7 +232,9 @@
     "verified": true,
     "verifiedAt": "2026-11-20",
     "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "21,76 km segons el Consorci; combina trams de via verda i circulació compartida. Sense geometria local ni desnivell acumulat verificat; comprova la fitxa oficial i incidències."
+    "metricNote": "21,76 km, asfalt i dificultat mínima segons el Consorci. Inclou trams de circulació compartida. Sense geometria local ni desnivell acumulat verificat; consulta avisos.",
+    "difficulty": "mínima",
+    "surface": "asfalt"
   },
   {
     "id": "vv-girona-local-breda-viabrea",
