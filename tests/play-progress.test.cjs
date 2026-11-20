@@ -41,12 +41,12 @@ test('Daily results never guess completions from game records; seven-day streak 
  assert.equal(p.dailyStats(records,'2026-11-20').streak,0);
 });
 
-test('Local game best statistics only count real positive or zero saved values',async()=>{
+test('Local game best statistics only count real saved values from the current editions',async()=>{
  const p=await load();
  assert.deepEqual(p.readBest(store({})),{snowTime:null,zombieScore:null});
  const value=p.readBest(store({
   'bicipark-snowbike-downhill-times-v1':JSON.stringify({'0':{time:44.5},'1':{time:37.2},'2':{time:null}}),
-  'bicipark-zombiepedal-best-v1':JSON.stringify({score:1540,finished:true})
+  'bicipark-zombiepedal-arcade-v1':JSON.stringify({story:1540,endless:700})
  }));
  assert.equal(value.snowTime,37.2);
  assert.equal(value.zombieScore,1540);
