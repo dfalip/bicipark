@@ -17,7 +17,7 @@ function createGame(reduced=false){
  w.L={map:()=>map,tileLayer:()=>({addTo(){}}),marker,polyline:()=>({addTo(){}}),
   latLng:point,latLngBounds:points=>points};
  const source=read('app.js').replace(/^\uFEFF?import\s*\{[\s\S]*?\}\s*from\s*"[^"]+";/,
-  'const gameLocations=[{id:"cat",title:"Plaça de Catalunya",lat:41.3874,lng:2.1686,image:"/img/test.jpg",description:"Centre de la ciutat",difficulty:"Fàcil"}];');
+  'const gameLocations=[{id:"cat",title:"Plaça de Catalunya",lat:41.3874,lng:2.1686,image:"/img/test.jpg",description:"Centre de la ciutat",difficulty:"Fàcil",photoAuthor:"Fota",photoSource:"https://commons.wikimedia.org/wiki/File:Test.jpg",photoLicense:"CC BY 4.0",photoLicenseUrl:"https://creativecommons.org/licenses/by/4.0/"}];');
  assert.doesNotMatch(source,/^\uFEFF?import\s/m);
  w.eval(source+';window.__game={map,state,elements};');
  const $=id=>w.document.getElementById(id);
@@ -45,5 +45,33 @@ test('Map game reveal respects reduced motion accessibility setting',()=>{
  const h=createGame(true);try{
   h.$('centerButton').click();h.$('confirmButton').click();
   assert.equal(h.map.revealType,'instant');
+ }finally{h.dom.window.close();}
+});
+
+test('Photo credits are accessible with original file source and license',()=>{
+ const h=createGame();try{
+  assert.equal(h.$('photoAuthor').textContent,'Fota');
+  assert.equal(h.$('photoLicenseLink').textContent,'CC BY 4.0');
+  assert.match(h.$('photoSourceLink').href,/commons\.wikimedia\.org/);
+  assert.equal(h.$('photoCredit').hidden,false);
+  assert.equal(h.$('photoError').hidden,true);
+ }finally{h.dom.window.close();}
+});
+test('Missing photo cannot be scored, and skipping it does not penalize or show an invented demo',()=>{
+ const h=createGame();try{
+  h.$('centerButton').click();
+  assert.equal(h.$('confirmButton').disabled,false);
+  h.$('gameImage').dispatchEvent(new h.w.Event('error'));
+  assert.equal(h.$('photoError').hidden,false);
+  assert.equal(h.$('gameImage').hidden,true);
+  assert.equal(h.$('confirmButton').disabled,true);
+  assert.equal(h.$('centerButton').disabled,true);
+  assert.equal(h.$('nextButton').hidden,false);
+  h.$('confirmButton').click();
+  assert.equal(h.w.__game.state.totalScore,0);
+  h.$('nextButton').click();
+  assert.equal(h.$('finalScreen').hidden,false);
+  assert.equal(h.w.__game.state.questions.length,0);
+  assert.match(h.$('finalScore').textContent,/Cap fotografia disponible/);
  }finally{h.dom.window.close();}
 });

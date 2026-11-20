@@ -15,6 +15,11 @@ const elements = {
   roundNumber: document.getElementById("roundNumber"),
   totalScore: document.getElementById("totalScore"),
   gameImage: document.getElementById("gameImage"),
+  photoCredit: document.getElementById("photoCredit"),
+  photoAuthor: document.getElementById("photoAuthor"),
+  photoSourceLink: document.getElementById("photoSourceLink"),
+  photoLicenseLink: document.getElementById("photoLicenseLink"),
+  photoError: document.getElementById("photoError"),
   difficulty: document.getElementById("difficulty"),
   confirmButton: document.getElementById("confirmButton"),
   centerButton: document.getElementById("centerButton"),
@@ -47,7 +52,8 @@ const state = {
   userMarker: null,
   realMarker: null,
   resultLine: null,
-  roundLocked: false
+  roundLocked: false,
+  imageFailed: false
 };
 
 function shuffle(items) {
@@ -111,15 +117,35 @@ function loadRound() {
 
   state.selectedPosition = null;
   state.roundLocked = false;
+  state.imageFailed = false;
 
   const question = state.questions[state.currentRoundIndex];
 
   elements.roundNumber.textContent =
     `${state.currentRoundIndex + 1} / ${state.questions.length}`;
 
+  // A round must be based on a source photograph, never an invented demo SVG.
+  elements.gameImage.hidden = false;
+  elements.photoError.hidden = true;
+  elements.photoCredit.hidden = !question.photoSource;
+  elements.photoAuthor.textContent = question.photoAuthor || "Autor no indicat";
+  elements.photoSourceLink.href = question.photoSource || "#";
+  elements.photoLicenseLink.href = question.photoLicenseUrl || "#";
+  elements.photoLicenseLink.textContent = question.photoLicense || "Llicència";
+  elements.gameImage.alt = "Fotografia real de la ronda " + (state.currentRoundIndex + 1)
+    + ". Identifica el monument al mapa.";
+  elements.gameImage.onerror = () => {
+    if(state.roundLocked || state.imageFailed)return;
+    state.imageFailed = true;
+    elements.gameImage.hidden = true;
+    elements.photoError.hidden = false;
+    elements.confirmButton.disabled = true;
+    elements.centerButton.disabled = true;
+    elements.nextButton.hidden = false;
+    elements.nextButton.textContent = "Ometre fotografia sense penalització →";
+    elements.selectionStatus.textContent = "La imatge no està disponible; aquesta pregunta no puntuarà.";
+  };
   elements.gameImage.src = question.image;
-  elements.gameImage.alt =
-    `Fotografia de la ronda ${state.currentRoundIndex + 1}`;
 
   elements.difficulty.textContent = question.difficulty;
   elements.confirmButton.disabled = true;
@@ -159,7 +185,7 @@ function startGame() {
 }
 
 function selectPosition(latlng) {
-  if (state.roundLocked) {
+  if (state.roundLocked || state.imageFailed) {
     return;
   }
 
@@ -187,7 +213,7 @@ function selectPosition(latlng) {
 }
 
 function confirmGuess() {
-  if (!state.selectedPosition || state.roundLocked) {
+  if (!state.selectedPosition || state.roundLocked || state.imageFailed) {
     return;
   }
 
@@ -256,6 +282,7 @@ function showFinalScreen() {
   elements.finalScreen.hidden = false;
   elements.selectionStatus.textContent = "";
   elements.finalScore.textContent =
+    state.questions.length === 0 ? "Cap fotografia disponible. Torna-ho a provar més tard." :
     `${state.totalScore.toLocaleString("ca-ES")} / ` +
     `${maximumScore.toLocaleString("ca-ES")} punts`;
 
@@ -263,7 +290,13 @@ function showFinalScreen() {
 }
 
 function nextRound() {
-  state.currentRoundIndex += 1;
+  if(state.imageFailed){
+    // A failed external photo is not a lost guess; remove the unplayable round.
+    state.questions.splice(state.currentRoundIndex,1);
+    state.imageFailed = false;
+  }else{
+    state.currentRoundIndex += 1;
+  }
 
   if (state.currentRoundIndex >= state.questions.length) {
     showFinalScreen();
