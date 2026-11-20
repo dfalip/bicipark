@@ -4,7 +4,7 @@ const list=document.getElementById('routes'),count=document.getElementById('coun
 const node=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n};
 const num=v=>Number.isFinite(Number(v))?Number(v):null;
 const trust=r=>r.needsReview||r.kind==='external'&&r.verified!==true?'review':(r.kind==='local'?'track':'source');
-const trustCopy={track:'Track local',source:'Font verificada',review:'Revisió pendent'};
+const trustCopy={track:'Track local',source:'Font oficial consultada',review:'Revisió pendent'};
 try{
  const [catalogRes,metadataRes,verifiedRoutesRes]=await Promise.all([fetch('./data/catalog.json'),fetch('./data/verified-metadata.json'),fetch('./data/verified-routes.json')]);if(!catalogRes.ok)throw Error();
  const baseRoutes=await catalogRes.json(),metadata=metadataRes.ok?await metadataRes.json():{},verifiedRoutes=verifiedRoutesRes.ok?await verifiedRoutesRes.json():[];
