@@ -230,6 +230,7 @@ function roundedRect(x,y,w,h,r=8){
   ctx.beginPath();ctx.roundRect(x,y,w,h,Math.min(r,w/2,h/2));
 }
 function backdrop(){
+  if(window.BiciParkArcadeArt){window.BiciParkArcadeArt.industrial(ctx,WORLD.width,WORLD.height,WORLD.ground);return;}
   const sky=ctx.createLinearGradient(0,0,0,520);
   sky.addColorStop(0,"#61bbd9");sky.addColorStop(.47,"#b9f6d2");sky.addColorStop(1,"#f5dbac");
   ctx.fillStyle=sky;ctx.fillRect(0,0,WORLD.width,WORLD.height);
@@ -336,6 +337,7 @@ function drawBlock(b){
       ctx.beginPath();ctx.arc(xx,yy,2.8,0,Math.PI*2);ctx.fill();
     }
   }
+  window.BiciParkArcadeArt?.material(ctx,b,colors);
   if(b.hp<26){ctx.strokeStyle="#132a3bbb";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-8,-b.h/2);ctx.lineTo(2,-4);ctx.lineTo(-5,8);ctx.lineTo(8,b.h/2);ctx.stroke();}
   ctx.restore();
 }
@@ -423,6 +425,7 @@ function draw(){
     ctx.globalAlpha=1;
   }
   ctx.restore();
+  window.BiciParkArcadeArt?.pixelFrame(ctx);
 }
 function loop(now){
   if(lastFrame===null)lastFrame=now;
