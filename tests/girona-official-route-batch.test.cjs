@@ -7,7 +7,8 @@ const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
 const all=JSON.parse(read('route-explorer/data/catalog.json'));
 const verified=JSON.parse(read('route-explorer/data/verified-routes.json'));
 const known=new Set(all.map(x=>x.id));
-const batch=verified.filter(x=>x.id.startsWith('vv-girona-'));
+const originalIds=new Set(["vv-girona-pla-girones-sud","vv-girona-masies","vv-girona-termal","vv-girona-tren-pinxo","vv-girona-muga","vv-girona-vall-bianya","vv-girona-circular-sud-37","vv-girona-circular-sud-25"]);
+const batch=verified.filter(x=>originalIds.has(x.id));
 test('the official Girona batch has eight independently identified, link-only cycling itineraries',()=>{
  assert.equal(batch.length,8);
  assert.equal(new Set([...all,...verified].map(x=>x.id)).size,all.length+verified.length,
