@@ -199,5 +199,37 @@
     "verifiedAt": "2026-11-19",
     "source": "Consorci de les Vies Verdes de Girona",
     "metricNote": "Distància indicada per la font oficial; desnivell acumulat i dificultat no contrastats. Itinerari enllaçat, sense geometria GPX allotjada a BiciPark. Consulta avisos d'obres i incidències de la font abans de sortir."
+  },
+  {
+    "id": "vv-ripolles-ferro-carbo",
+    "name": "Via verda del Ferro i del Carbó",
+    "distanceKm": 18,
+    "elevationGain": null,
+    "modality": "greenway",
+    "url": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-ferro-i-del-carbo/",
+    "sourceUrl": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-ferro-i-del-carbo/",
+    "kind": "external",
+    "region": "Ripollès · Ripoll i Sant Joan de les Abadesses",
+    "start": "Ripoll",
+    "verified": true,
+    "verifiedAt": "2026-11-20",
+    "source": "Consorci de les Vies Verdes de Girona",
+    "metricNote": "18 km publicats pel Consorci, amb ramals cap a Ogassa i Sant Pau de Segúries. No hi ha geometria local ni desnivell acumulat verificat. Consulta la fitxa oficial i avisos abans de sortir."
+  },
+  {
+    "id": "vv-ripolles-alt-ter",
+    "name": "Via temàtica de l’Alt Ter",
+    "distanceKm": 21.76,
+    "elevationGain": null,
+    "modality": "greenway",
+    "url": "https://www.viesverdes.cat/rutes_vies_verdes/tematica-alt-ter/",
+    "sourceUrl": "https://www.viesverdes.cat/rutes_vies_verdes/tematica-alt-ter/",
+    "kind": "external",
+    "region": "Ripollès · Alt Ter",
+    "start": "Sant Joan de les Abadesses",
+    "verified": true,
+    "verifiedAt": "2026-11-20",
+    "source": "Consorci de les Vies Verdes de Girona",
+    "metricNote": "21,76 km segons el Consorci; combina trams de via verda i circulació compartida. Sense geometria local ni desnivell acumulat verificat; comprova la fitxa oficial i incidències."
   }
 ]
