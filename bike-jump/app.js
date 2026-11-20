@@ -872,6 +872,7 @@ function drawMountains() {
 // Small layered alpine silhouettes add depth without external assets.
 // All objects are created procedurally in the canvas.
 function drawSceneryDetails() {
+  if(window.BiciParkArcadeArt){window.BiciParkArcadeArt.jumpScene(context,level.theme);return;}
   context.save();
   if(level.theme==="city"){
     for(const [x,y,w,h] of [[20,360,135,200],[210,380,125,180],[414,355,100,205],[592,380,122,180],[774,352,145,208],[928,385,90,175]]){
@@ -1385,6 +1386,7 @@ function draw() {
   drawLandingEffect();
   drawTumblingRider();
   context.restore();
+  window.BiciParkArcadeArt?.pixelFrame(context);
 }
 
 
