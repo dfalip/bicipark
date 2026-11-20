@@ -59,3 +59,83 @@ footer{text-align:center;margin-top:22px;padding:15px 0;border-top:1px solid var
  .sidebar{grid-template-columns:1fr}.sidebar>.side-card:last-child{grid-column:auto}.side-card{padding:14px}.button{font-size:.68rem;min-height:48px;padding:10px 5px}.status{font-size:.77rem}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tile,.button{transition:none}}
+
+
+/* BiciPark Puzzle City — original plan-view street circuit, no remote map dependency. */
+.board-frame{background:
+ radial-gradient(circle at 50% 30%,#5b9cb1aa,transparent 64%),
+ linear-gradient(150deg,#1a5b6b,#0d3447);border-color:#b4ffda;box-shadow:0 13px 34px #02152365}
+.board{position:relative;isolation:isolate;gap:5px;padding:6px;border:5px solid #9bc4bb;
+ background:#b0cfc2;border-radius:16px;box-shadow:0 4px 0 #336b70,0 15px 26px #061f2d66}
+.tile{overflow:visible;border:0;box-shadow:none;border-radius:3px;outline-offset:-3px;transition:filter .14s}
+.tile-street{
+ background:
+ linear-gradient(0deg,transparent 14%,#425e6b 14%,#425e6b 86%,transparent 86%),
+ linear-gradient(90deg,transparent 14%,#425e6b 14%,#425e6b 86%,transparent 86%),
+ #b1c6b3;
+ box-shadow:inset 0 0 0 2px #d2dec8;
+}
+.tile-street::before{content:"";position:absolute;inset:42% 0;opacity:.65;pointer-events:none;
+ background:repeating-linear-gradient(90deg,transparent 0 16%,#fff6c4 16% 26%,transparent 26% 43%);
+}
+.tile-street:hover:not(:disabled){filter:brightness(1.15)}
+.tile-street.tile-goal{background:
+ linear-gradient(0deg,transparent 14%,#536873 14%,#536873 86%,transparent 86%),
+ linear-gradient(90deg,transparent 14%,#536873 14%,#536873 86%,transparent 86%),
+ #cddda9}
+.tile-street.tile-goal::before{background:repeating-linear-gradient(90deg,#eff9bf 0 20%,transparent 20% 44%);opacity:.54}
+.tile-wall{border-radius:6px;border:3px solid #aec8b7;box-shadow:0 5px 0 #315967;background:
+ repeating-linear-gradient(90deg,#63949c 0 12px,#6ba0a4 12px 19px);
+ z-index:1}
+.tile-building::after{content:"▦";font-size:clamp(1.5rem,4.5vw,3.2rem);color:#113b4b;
+ text-shadow:1px 2px 0 #f4e2a1;background:linear-gradient(145deg,#b6d4c0,#80b5ba);
+ border:2px solid #2b6671;border-radius:8px;box-shadow:2px 4px 0 #225164;padding:3px 11px}
+.tile-park{background:repeating-linear-gradient(45deg,#6dba84 0 10px,#81c995 10px 20px);border-color:#a4d9b1}
+.tile-park::after{content:"♣";font-size:clamp(2rem,5vw,3.9rem);color:#23574a;text-shadow:1px 3px #c8ffc0}
+.goal-ring{border-radius:12px;border:4px dashed var(--bike-color,#dcce8d);inset:6%;background:#edf5cf22;z-index:1}
+.goal-label{z-index:3;color:#12383a;background:#e9fae0ee;border-radius:50%;padding:1px 5px;bottom:3%;right:3%}
+.tile-possible{outline:3px solid #fdffac;outline-offset:-5px;box-shadow:0 0 12px #d7fc54a8 inset}
+.tile-possible::after{content:"";position:absolute;inset:18%;border:3px solid #f7e994;border-radius:50%;z-index:1;pointer-events:none;animation:bike-parking-pulse 1.1s ease-in-out infinite alternate}
+.bike{width:75%;height:75%;border-radius:18px;z-index:2;transform:rotate(-5deg);
+ border:2px solid #0d364c;background:linear-gradient(125deg,var(--bike-color,#ffe298) 0 58%,#f5ffe2 100%);
+ box-shadow:0 4px 0 #153a4f,0 7px 15px #001b2759;
+ transition:box-shadow .16s,filter .16s}
+.bike-icon{width:66%;height:85%;display:grid;place-items:center;filter:drop-shadow(0 2px 2px #0005)}
+.cycle-top-view{display:block;width:100%;height:100%}
+.bike-letter{z-index:4;background:#fcffde}
+.tile-selected .bike{outline:4px solid #fffaa7;box-shadow:0 0 0 7px #fff2876b,0 6px 14px #00202c8c}
+.tile-parked .bike{filter:saturate(1.15) brightness(1.1);outline:3px solid #31d5ae}
+.bike-drive-hidden{visibility:hidden}
+.bike.bike-drive-ghost{position:absolute;top:12.5%;left:12.5%;width:75%;height:75%;margin:0;visibility:visible;z-index:8;
+ animation:bike-parking-roll .29s cubic-bezier(.22,.93,.32,1.06) both}
+@keyframes bike-parking-roll{
+ 0%{transform:translate(var(--drive-x),var(--drive-y)) rotate(-12deg) scale(1.07);filter:brightness(1.3)}
+ 58%{transform:translate(0,0) rotate(5deg) scale(1.1);filter:brightness(1.1)}
+ 100%{transform:translate(0,0) rotate(-5deg) scale(1);filter:brightness(1)}
+}
+@keyframes bike-parking-pulse{from{opacity:.48;transform:scale(.84)}to{opacity:1;transform:scale(1.07)}}
+.puzzle-drive-controls{margin:17px auto 1px;max-width:470px;display:grid;
+ grid-template-columns:minmax(0,1fr) repeat(4,52px) minmax(0,1fr);gap:6px;
+ align-items:center;justify-content:center;border:1px solid #a0e6d579;border-radius:13px;
+ background:#082d3bb9;padding:9px}
+.puzzle-drive-caption{font-size:.58rem;letter-spacing:.04em;font-weight:950;color:#d3f7d9}
+.puzzle-drive-tip{font-size:.62rem;color:#c8e8e3;line-height:1.4;max-width:110px}
+.puzzle-drive-button{width:52px;height:48px;padding:0;display:grid;place-items:center;border-radius:10px;border:1px solid #b7f7d4;
+ background:linear-gradient(#a0f2d0,#64bbab);color:#0d3547;font-size:1.5rem;font-weight:950;
+ box-shadow:0 3px 0 #287a7d;touch-action:manipulation}
+.puzzle-drive-button:hover:not(:disabled){background:#f9e99f}
+.puzzle-drive-button:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #287a7d}
+.puzzle-drive-button:disabled{opacity:.38}
+@media(max-width:650px){
+ .puzzle-drive-controls{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+ .puzzle-drive-caption,.puzzle-drive-tip{grid-column:1/-1;text-align:center;max-width:unset}
+ .puzzle-drive-button{width:100%;height:47px;min-width:0}
+ .board{gap:3px;border-width:3px;padding:3px;border-radius:10px}
+ .tile-possible::after{border-width:2px}
+ .tile-building::after{padding:0 5px}
+ .bike-letter{top:-8px;right:-8px}
+}
+@media(prefers-reduced-motion:reduce){
+ .bike.bike-drive-ghost,.tile-possible::after{animation:none}
+ .tile,.bike{transition:none}
+}

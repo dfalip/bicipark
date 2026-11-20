@@ -11,7 +11,62 @@ const ui={
   legend:$("legend"),chapters:$("chapters")
 };
 const KEY="bicipark-bike-parking-progress-v1";
-let game=newGame(0),swipeStart=null;
+
+let game=newGame(0),swipeStart=null,pendingMotion=null;
+const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches===true;
+function queueMotion(ok){
+ if(ok&&game.lastMove)pendingMotion={...game.lastMove};
+ return ok;
+}
+function rewind(){
+ const before=game.positions.slice();
+ if(undo(game)){
+  const bike=before.findIndex((p,i)=>p!==game.positions[i]);
+  if(bike>=0)pendingMotion={bike,from:before[bike],to:game.positions[bike]};
+ }
+ changed();
+}
+function moveSelected(direction){
+ if(game.phase!=="playing"||game.selected===null)return;
+ if(!queueMotion(moveDirection(game,direction)))
+  game.notice="La bicicleta no pot passar per aquí.";
+ changed();
+}
+function createBikeArt(){
+ const icon=document.createElement("span");
+ icon.className="bike-icon";
+ icon.setAttribute("aria-hidden","true");
+ // Original top-down bike artwork; no external sprite dependency.
+ icon.innerHTML='<svg class="cycle-top-view" viewBox="0 0 80 100" focusable="false" aria-hidden="true">'
+  +'<path d="M40 25 V75" stroke="#17465a" stroke-width="7" stroke-linecap="round"/>'
+  +'<path d="M23 31 H57 M29 70 H51" stroke="#133d4b" stroke-width="6" stroke-linecap="round"/>'
+  +'<ellipse cx="40" cy="15" rx="10" ry="14" fill="#153b49" stroke="#e1f9ed" stroke-width="3"/>'
+  +'<ellipse cx="40" cy="86" rx="11" ry="13" fill="#153b49" stroke="#e1f9ed" stroke-width="3"/>'
+  +'<path d="M39 33 L53 51 L40 69 L27 51 Z" fill="none" stroke="#fff9d5" stroke-width="5"/>'
+  +'<path d="M26 45 L53 60" stroke="#153b49" stroke-width="5" stroke-linecap="round"/>'
+  +'<ellipse cx="40" cy="49" rx="11" ry="14" fill="#17465a"/>'
+  +'<ellipse cx="40" cy="48" rx="6" ry="8" fill="#e8ffee"/></svg>';
+ return icon;
+}
+function playMoveAnimation(oldRect,motion){
+ if(!motion||reducedMotion||!oldRect||oldRect.width===0)return;
+ const to=ui.board.querySelector('[data-pos="'+motion.to+'"]');
+ const rider=to?.querySelector(".bike"),nextRect=to?.getBoundingClientRect();
+ if(!rider||!nextRect||!nextRect.width)return;
+ const ghost=rider.cloneNode(true);
+ ghost.classList.add("bike-drive-ghost");
+ ghost.style.setProperty("--drive-x",(oldRect.left-nextRect.left)+"px");
+ ghost.style.setProperty("--drive-y",(oldRect.top-nextRect.top)+"px");
+ rider.classList.add("bike-drive-hidden");
+ to.append(ghost);
+ let finished=false;
+ function finish(){
+  if(finished)return;finished=true;ghost.remove();rider.classList.remove("bike-drive-hidden");
+ }
+ ghost.addEventListener("animationend",finish,{once:true});
+ window.setTimeout(finish,450);
+}
+
 function loadProgress(){
   try{
     const a=JSON.parse(localStorage.getItem(KEY)||"[]");
@@ -37,7 +92,7 @@ function applySelection(pos){
   if(bike>=0){
     selectBike(game,bike);
   }else if(game.selected!==null){
-    moveTo(game,pos);
+    queueMotion(moveTo(game,pos));
   }else{
     game.notice="Primer selecciona una bicicleta; després, la casella lliure.";
   }
@@ -48,6 +103,13 @@ function swipeDirection(dx,dy){
   return Math.abs(dx)>Math.abs(dy)?dx>0?"right":"left":dy>0?"down":"up";
 }
 function renderBoard(){
+  const motion=pendingMotion;pendingMotion=null;
+  const previous=motion?ui.board.querySelector('[data-pos="'+motion.from+'"]'):null;
+  const oldRect=previous?.getBoundingClientRect();
+  // Preserve keyboard focus when rebuilding the board; ignore external controls.
+  const focused=ui.board.contains(document.activeElement)?
+    document.activeElement.closest("button[data-pos]"):null;
+  const focusedPos=focused?Number(focused.dataset.pos):null;
   const cfg=game.cfg,walls=new Set(cfg.walls);
   const occupied=new Map(game.positions.map((p,i)=>[p,i]));
   const targets=new Map(cfg.goals.map((p,i)=>[p,i]));
@@ -59,6 +121,7 @@ function renderBoard(){
     const tile=document.createElement("button");
     tile.type="button";
     tile.className="tile";
+    tile.classList.add(wall?(pos%4===0?"tile-park":"tile-building"):"tile-street");
     tile.dataset.pos=String(pos);
     tile.setAttribute("aria-label",tileLabel(pos,bike,goal,wall));
     if(wall){
@@ -79,8 +142,7 @@ function renderBoard(){
         if(bike===game.selected)tile.classList.add("tile-selected");
         if(cfg.goals[bike]===pos)tile.classList.add("tile-parked");
         const box=document.createElement("span");box.className="bike";
-        const icon=document.createElement("span");icon.className="bike-icon";
-        icon.setAttribute("aria-hidden","true");icon.textContent="🚲";
+        const icon=createBikeArt();
         const letter=document.createElement("span");letter.className="bike-letter";
         letter.setAttribute("aria-hidden","true");letter.textContent=LABELS[bike];
         box.append(icon,letter);tile.append(box);
@@ -100,7 +162,7 @@ function renderBoard(){
         event.preventDefault();
         if(game.phase!=="playing")return;
         selectBike(game,chosen.bike);
-        moveDirection(game,d,chosen.bike);
+        queueMotion(moveDirection(game,d,chosen.bike));
         changed();
         // Avoid the synthetic click generated by touch immediately reselecting.
         tile.dataset.justSwiped="true";
@@ -113,6 +175,15 @@ function renderBoard(){
       },true);
     }
     ui.board.append(tile);
+  }
+  playMoveAnimation(oldRect,motion);
+  if(focusedPos!==null){
+    const tiles=[...ui.board.querySelectorAll("button[data-pos]:not(:disabled)")];
+    const target=tiles.find(x=>Number(x.dataset.pos)===focusedPos)||
+      tiles.reduce((nearest,tile)=>!nearest||
+        Math.abs(Number(tile.dataset.pos)-focusedPos)<
+        Math.abs(Number(nearest.dataset.pos)-focusedPos)?tile:nearest,null);
+    target?.focus({preventScroll:true});
   }
 }
 function renderLegend(){
@@ -163,6 +234,9 @@ function render(){
       ?"TORNA AL PRIMER NIVELL ↻":"SEGÜENT REPTE →";
   }
   renderBoard();renderLegend();renderChapters();
+  const choices=new Set(game.selected===null?[]:movesAvailable(game,game.selected).map(m=>m.direction));
+  for(const button of document.querySelectorAll("[data-puzzle-direction]"))
+   button.disabled=game.phase!=="playing"||!choices.has(button.dataset.puzzleDirection);
 }
 function changed(){
   if(game.phase==="won"&&game.stars>best[game.cfg.id]){
@@ -171,7 +245,7 @@ function changed(){
   render();
 }
 function choose(index){
-  game=newGame(index);swipeStart=null;render();
+  game=newGame(index);swipeStart=null;pendingMotion=null;render();
 }
 for(let i=0;i<LEVELS.length;i++){
   const l=LEVELS[i],option=document.createElement("option");
@@ -179,20 +253,22 @@ for(let i=0;i<LEVELS.length;i++){
   ui.level.append(option);
 }
 ui.level.addEventListener("change",()=>choose(Number(ui.level.value)));
-ui.undo.addEventListener("click",()=>{undo(game);changed();});
+ui.undo.addEventListener("click",rewind);
+for(const button of document.querySelectorAll("[data-puzzle-direction]"))
+ button.addEventListener("click",()=>moveSelected(button.dataset.puzzleDirection));
 ui.hint.addEventListener("click",()=>{
   const result=hint(game);
   if(!result)game.notice="No hi ha una pista disponible. Pots desfer o reiniciar.";
   changed();
 });
-ui.reset.addEventListener("click",()=>{restart(game);changed();});
+ui.reset.addEventListener("click",()=>{restart(game);pendingMotion=null;changed();});
 ui.next.addEventListener("click",()=>choose((game.cfg.id+1)%LEVELS.length));
 document.addEventListener("keydown",event=>{
   if(!["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Escape","KeyZ"].includes(event.code))return;
   if(event.target instanceof HTMLElement&&
      ["INPUT","TEXTAREA","SELECT"].includes(event.target.tagName))return;
   if(event.code==="KeyZ"&&(event.ctrlKey||event.metaKey)){
-    event.preventDefault();undo(game);changed();return;
+    event.preventDefault();rewind();return;
   }
   if(event.code==="Escape"){
     game.selected=null;game.notice="Selecció anul·lada.";changed();return;
@@ -200,8 +276,6 @@ document.addEventListener("keydown",event=>{
   const dirs={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right"};
   if(!dirs[event.code]||game.selected===null)return;
   event.preventDefault();
-  if(!moveDirection(game,dirs[event.code]))
-    game.notice="La bicicleta no pot passar per aquí.";
-  changed();
+  moveSelected(dirs[event.code]);
 });
 render();
