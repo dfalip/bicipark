@@ -18,7 +18,7 @@ function setup(){
  const art=read('arcade-art.js').replace(/^import[^;]+;/m,'const {VIEW,DISTRICTS,clamp,DISTRICT_LENGTH}=window.__arcadeEngine;').replace(/^export /gm,'');
  w.eval('(function(){'+art+';window.__arcadeArt={drawArcade,makeEffects,pushEffects,advanceEffects};})()');
  const app=read('arcade-app.js').replace(/^import \{([^}]+)\} from "\.\/arcade-engine\.js";/m,'const {$1}=window.__arcadeEngine;').replace(/^import \{([^}]+)\} from "\.\/arcade-art\.js";/m,'const {$1}=window.__arcadeArt;');
- w.eval(app+';window.__arcade=()=>({g,fx,settings,keys,pointers,seed});');
+ w.eval(app+';window.__arcade=()=>({g,fx,settings,keys,pointers,seed,stick});');
  const $=id=>w.document.getElementById(id),btn=a=>w.document.querySelector('[data-action="'+a+'"]');
  const frame=t=>{const f=queue.shift();assert.ok(f);f(t)};
  const key=(type,code)=>w.document.dispatchEvent(new w.KeyboardEvent(type,{bubbles:true,cancelable:true,code}));
@@ -55,5 +55,23 @@ test('Touch-style buttons trigger lane changes and release held fire; exclusive 
   const saved=JSON.parse(h.w.localStorage.getItem('bicipark-zombiepedal-arcade-v1'));assert.equal(saved.endless,1234);assert.equal(saved.story,0);assert.ok(saved.medals.includes('survive'));
   h.$('mode').value='story';h.$('mode').dispatchEvent(new h.w.Event('change'));
   assert.equal(h.w.__arcade().g.mode,'story');assert.match(h.$('best').textContent,/—/);
+ }finally{h.dom.window.close();}
+});
+
+test('Thumbstick steers and accelerates while a second touch fires; cancel and pause clear all inputs',()=>{
+ const h=setup();try{
+  h.$('play').click();const pad=h.$('touchSteer'),disc=pad.querySelector('.stick-disc');
+  disc.getBoundingClientRect=()=>({left:20,top:40,width:100,height:100});
+  const emit=(node,type,id,x,y)=>{const ev=new h.w.Event(type,{bubbles:true,cancelable:true});for(const [k,v] of Object.entries({pointerId:id,button:0,clientX:x,clientY:y}))Object.defineProperty(ev,k,{value:v});node.dispatchEvent(ev);};
+  emit(pad,'pointerdown',1,70,90);emit(pad,'pointermove',1,98,62);
+  const {g,stick}=h.w.__arcade();assert.equal(g.laneTarget,0);assert.ok(stick.x>.25);
+  assert.equal(h.btn('gas').getAttribute('aria-pressed'),'true');
+  const before=g.ammo;emit(h.btn('fire'),'pointerdown',2,200,90);
+  assert.ok(g.ammo<before);assert.equal(h.w.__arcade().pointers.size,1);
+  emit(pad,'pointercancel',1,98,62);assert.equal(stick.pointer,null);assert.equal(stick.x,0);
+  assert.equal(h.btn('gas').getAttribute('aria-pressed'),'false');assert.equal(h.btn('fire').getAttribute('aria-pressed'),'true');
+  h.$('pause').click();assert.equal(h.w.__arcade().pointers.size,0);
+  assert.equal(h.btn('fire').getAttribute('aria-pressed'),'false');
+  h.$('mobileControlToggle').click();assert.equal(h.$('controls').dataset.mobileMode,'buttons');
  }finally{h.dom.window.close();}
 });
