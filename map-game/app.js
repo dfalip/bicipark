@@ -17,6 +17,8 @@ const elements = {
   gameImage: document.getElementById("gameImage"),
   difficulty: document.getElementById("difficulty"),
   confirmButton: document.getElementById("confirmButton"),
+  centerButton: document.getElementById("centerButton"),
+  selectionStatus: document.getElementById("selectionStatus"),
   nextButton: document.getElementById("nextButton"),
   restartButton: document.getElementById("restartButton"),
   resultBox: document.getElementById("resultBox"),
@@ -34,6 +36,8 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
   attribution: "&copy; OpenStreetMap contributors"
 }).addTo(map);
+
+const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||false;
 
 const state = {
   questions: [],
@@ -119,6 +123,8 @@ function loadRound() {
 
   elements.difficulty.textContent = question.difficulty;
   elements.confirmButton.disabled = true;
+  elements.centerButton.disabled = false;
+  elements.selectionStatus.textContent = "Mou el mapa i marca el centre, o toca un punt directament.";
   elements.confirmButton.hidden = false;
   elements.nextButton.hidden = true;
   elements.resultBox.classList.remove("is-visible");
@@ -170,12 +176,14 @@ function selectPosition(latlng) {
 
     state.userMarker.on("dragend", (event) => {
       state.selectedPosition = event.target.getLatLng();
+      elements.selectionStatus.textContent = "Marcador desplaçat. Confirma quan estiguis a punt.";
     });
   } else {
     state.userMarker.setLatLng(latlng);
   }
 
   elements.confirmButton.disabled = false;
+  elements.selectionStatus.textContent = "Punt escollit. Pots ajustar el marcador o confirmar.";
 }
 
 function confirmGuess() {
@@ -184,6 +192,8 @@ function confirmGuess() {
   }
 
   state.roundLocked = true;
+  elements.centerButton.disabled = true;
+  elements.selectionStatus.textContent = "Resposta confirmada. Mostrant la distància real.";
 
   const question = state.questions[state.currentRoundIndex];
   const realPosition = L.latLng(question.lat, question.lng);
@@ -209,13 +219,11 @@ function confirmGuess() {
     }
   ).addTo(map);
 
-  map.fitBounds(
-    L.latLngBounds([state.selectedPosition, realPosition]),
-    {
-      padding: [50, 50],
-      maxZoom: 16
-    }
-  );
+  const revealBounds=L.latLngBounds([state.selectedPosition, realPosition]);
+  const revealOptions={padding:[50,50],maxZoom:16};
+  if(!reducedMotion&&typeof map.flyToBounds==="function")
+    map.flyToBounds(revealBounds,{...revealOptions,duration:1.1});
+  else map.fitBounds(revealBounds,revealOptions);
 
   elements.resultPoints.textContent =
     `+${points.toLocaleString("ca-ES")} punts`;
@@ -246,6 +254,7 @@ function showFinalScreen() {
 
   elements.roundScreen.hidden = true;
   elements.finalScreen.hidden = false;
+  elements.selectionStatus.textContent = "";
   elements.finalScore.textContent =
     `${state.totalScore.toLocaleString("ca-ES")} / ` +
     `${maximumScore.toLocaleString("ca-ES")} punts`;
@@ -269,6 +278,7 @@ map.on("click", (event) => {
 });
 
 elements.confirmButton.addEventListener("click", confirmGuess);
+elements.centerButton.addEventListener("click",()=>selectPosition(map.getCenter()));
 elements.nextButton.addEventListener("click", nextRound);
 elements.restartButton.addEventListener("click", startGame);
 
