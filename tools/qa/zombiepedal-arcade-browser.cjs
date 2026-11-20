@@ -54,6 +54,28 @@ async function run(){
    await page.locator('#mode').selectOption('endless');
    assert.match(await page.locator('#overlayTitle').textContent(),/SUPERVIVÈNCIA/);
    await page.locator('#play').click();
+   if(viewport.width<600){
+    const stick=page.locator('#touchSteer'),disc=page.locator('.stick-disc'),fire=page.locator('[data-action="fire"]');
+    await stick.scrollIntoViewIfNeeded();await fire.scrollIntoViewIfNeeded();
+    assert.equal(await stick.isVisible(),true);
+    const d=await disc.boundingBox(),f=await fire.boundingBox();
+    assert.ok(f.width>=44&&f.height>=44);
+    const cdp=await page.context().newCDPSession(page);
+    const center={x:d.x+d.width/2,y:d.y+d.height/2,id:1};
+    const aim={x:center.x+25,y:center.y-25,id:1};
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[center]});
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[aim]});
+    assert.equal(await page.locator('[data-action="gas"]').getAttribute('aria-pressed'),'true');
+    const before=await page.locator('#ammo').textContent();
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[aim,{x:f.x+f.width/2,y:f.y+f.height/2,id:2}]});
+    await page.waitForTimeout(100);
+    assert.notEqual(await page.locator('#ammo').textContent(),before);
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    assert.equal(await page.locator('[data-action="gas"]').getAttribute('aria-pressed'),'false');
+    assert.equal(await page.locator('[data-action="fire"]').getAttribute('aria-pressed'),'false');
+    await page.locator('#mobileControlToggle').click();
+    assert.equal(await stick.isVisible(),false);
+   }
    await page.locator('[data-action="down"]').click();
    await page.locator('#pause').click();
    assert.deepEqual(errors,[]);
