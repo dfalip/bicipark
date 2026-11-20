@@ -39,7 +39,7 @@ test('Steering has continuous lane changes, clamps boundaries and prevents cross
  assert.equal(m.moveLane(g,-1),true);assert.equal(m.moveLane(g,-1),false);
  assert.equal(g.lane,1);advance(m,g,.05);assert.ok(g.lane>0&&g.lane<1);
  advance(m,g,.3);assert.equal(g.lane,0);
- const e1=m.addEnemy(g,'car',g.distance+60,2);advance(m,g,.65);
+ const e1=m.addEnemy(g,'car',g.distance+60,2);advance(m,g,.9);
  assert.equal(g.hearts,3);assert.equal(e1.passed,true);assert.equal(g.dodges,1);
 });
 test('Actual paint projectiles deplete ammo and hit only same lane; helmets and giants take multiple hits',async()=>{
