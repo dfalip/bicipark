@@ -61,3 +61,7 @@
 .mode label{font-weight:950;font-size:.68rem;letter-spacing:.09em;color:var(--yellow)}
 .mode select{max-width:100%;min-height:44px;border:1px solid #8cfcce;background:#10323b;color:#effffa;border-radius:8px;padding:8px;font:inherit;font-size:.82rem;font-weight:850;cursor:pointer}
 .mode select:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}.mode select:disabled{opacity:.75}
+
+.arcade-city-link{display:block;margin-bottom:10px;padding:10px 12px;border:2px solid #d9ba70;border-radius:5px;background:#d2a955;color:#202a2d;text-decoration:none;font-weight:1000;font-family:monospace;font-size:.85rem;text-align:center}
+.arcade-city-link:hover{background:#ffe2a1}
+.arcade-city-link:focus-visible{outline:3px solid white;outline-offset:2px}
