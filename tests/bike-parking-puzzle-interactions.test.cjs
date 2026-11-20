@@ -173,3 +173,18 @@ test('A completed animated move is decorative and does not alter engine position
   assert.equal(g.moves,1);
  }finally{h.dom.window.close();}
 });
+
+test('Puzzle City keeps keyboard focus when selected tiles are rebuilt, including undo',()=>{
+ const h=setup();try{
+  const game=h.w.__getGame();
+  const move=h.w.__engine.solve(game.cfg,game.positions)[0];
+  const tile=h.$('board').querySelector('[data-pos="'+move.from+'"]');
+  tile.focus();tile.click();
+  assert.equal(h.w.document.activeElement.dataset.pos,String(move.from));
+  const destination=h.$('board').querySelector('[data-pos="'+move.to+'"]');
+  destination.focus();destination.click();
+  assert.equal(h.w.document.activeElement.dataset.pos,String(move.to));
+  h.key('KeyZ',{ctrlKey:true});
+  assert.equal(h.w.document.activeElement.dataset.pos,String(move.to));
+ }finally{h.dom.window.close();}
+});
