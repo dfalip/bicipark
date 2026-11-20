@@ -9,13 +9,13 @@ export const DISTRICTS=[
  {name:"Pont de la sortida",subtitle:"L'última gran onada"}
 ];
 const RULES={
- walker:{hp:1,pace:18,radius:14,height:24,points:120},
- runner:{hp:1,pace:48,radius:15,height:24,points:170},
- helmet:{hp:2,pace:13,radius:15,height:29,points:240},
- giant:{hp:4,pace:9,radius:25,height:45,points:600},
- cone:{hp:0,pace:0,radius:15,height:19,points:75},
- car:{hp:0,pace:0,radius:30,height:37,points:160},
- van:{hp:0,pace:0,radius:34,height:66,points:220}
+ walker:{hp:1,pace:18,radius:14,height:49,points:120},
+ runner:{hp:1,pace:48,radius:15,height:43,points:170},
+ helmet:{hp:2,pace:13,radius:15,height:55,points:240},
+ giant:{hp:4,pace:9,radius:25,height:90,points:600},
+ cone:{hp:0,pace:0,radius:15,height:22,points:75},
+ car:{hp:0,pace:0,radius:30,height:34,points:160},
+ van:{hp:0,pace:0,radius:34,height:80,points:220}
 };
 export const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 function nextRandom(g){let x=g.rng>>>0;x^=x<<13;x^=x>>>17;x^=x<<5;g.rng=x>>>0;return g.rng/4294967296;}
@@ -80,7 +80,7 @@ export function moveLane(g,delta){
 }
 export function jumpArcade(g){
  if(g.phase!=="running"||g.altitude>0)return false;
- g.altitude=.1;g.vy=300;g.jumps++;addEvent(g,"jump",{lane:g.lane});return true;
+ g.altitude=.1;g.vy=375;g.jumps++;addEvent(g,"jump",{lane:g.lane});return true;
 }
 export function shootArcade(g){
  if(g.phase!=="running"||g.ammo<=0||g.cooldown>0||g.altitude>26)return false;
@@ -127,7 +127,7 @@ function tick(g,input,dt){
  // Smooth lane steering with continuous collision checks while crossing lanes.
  g.lane+=clamp(g.laneTarget-g.lane,-dt*5.8,dt*5.8);
  if(g.altitude>0){
-  g.altitude+=g.vy*dt;g.vy-=790*dt;
+  g.altitude+=g.vy*dt;g.vy-=900*dt;
   if(g.altitude<=0){g.altitude=0;g.vy=0;addEvent(g,"land",{lane:g.lane});}
  }
  g.ammoClock+=dt;
@@ -141,8 +141,8 @@ function tick(g,input,dt){
   if(e.stunned){e.stunLeft-=dt;if(e.stunLeft<=0){e.passed=true;continue;}}
   else{
    // Runners slow down at first, visibly warn, then lunge on the same lane.
-   if(e.type==="runner"&&gap<300&&!e.warning){e.warning=true;addEvent(g,"warning",{x:e.x,lane:e.lane,enemy:e.type});}
-   if(gap<650)e.x-=spec.pace*(e.warning?1.5:1)*dt;
+   if((e.type==="runner"||e.type==="giant")&&gap<300&&!e.warning){e.warning=true;addEvent(g,"warning",{x:e.x,lane:e.lane,enemy:e.type});}
+   if(gap<650)e.x-=spec.pace*(e.warning&&e.type==="runner"?1.5:1)*dt;
    if(spec.hp>0){
     for(const s of g.shots){
      if(s.ttl<=0||Math.abs(s.lane-e.lane)>.40||Math.abs(s.x-e.x)>spec.radius+9)continue;
