@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "bed-bike-barcelona",
+  "slug": "bed-bike-barcelona",
+  "name": "Bed & Bike Barcelona",
+  "type": "hotel",
+  "categoryLabel": "Alberg · Serveis per a ciclistes",
+  "description": "L'alberg anuncia aparcament interior gratuït per a bicicletes dels hostes i lloguer de bicicletes. Consulta condicions directament. Coordenades pendents de contrastar.",
+  "location": {
+    "country": "ES",
+    "region": "Barcelona",
+    "locality": "Barcelona",
+    "address": "Carrer de la Diputació, 360, 08013 Barcelona"
+  },
+  "status": {
+    "code": "public-unverified",
+    "label": "Informació pública · No verificada",
+    "affiliated": false,
+    "verified": false,
+    "partner": false
+  },
+  "links": {
+    "official": "https://www.barcelonabedandbike.com/espacios/",
+    "bikeFriendly": "https://www.barcelonabedandbike.com/espacios/"
+  },
+  "sources": [
+    "https://www.barcelonabedandbike.com/espacios/"
+  ],
+  "reviewedAt": "2026-11-20",
+  "routes": {
+    "count": 0,
+    "countLabel": "Sense tracks integrats",
+    "modes": [],
+    "modeLabels": [],
+    "notes": "Rutes locals pendents de validar."
+  },
+  "services": {
+    "bikeStorage": true,
+    "bikeRental": true
+  },
+  "serviceLabels": [
+    {
+      "key": "bikeStorage",
+      "label": "Aparcament interior gratuït per a hostes",
+      "icon": "🚲"
+    },
+    {
+      "key": "bikeRental",
+      "label": "Lloguer de bicicletes: consulta condicions",
+      "icon": "🚲"
+    }
+  ],
+  "bikeFriendly": {
+    "methodologyVersion": "1.0",
+    "partial": true,
+    "criteria": {}
+  }
+}
