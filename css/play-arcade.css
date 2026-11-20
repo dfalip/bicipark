@@ -1,0 +1,170 @@
+/* BiciPark Play — shared Arcade City visual language.
+   Original layouts, engines, accessibility and map tiles are retained. */
+body[data-play-arcade]{
+ --pa-bg:#172126;--pa-panel:#27363c;--pa-panel-deep:#202b30;--pa-edge:#758780;
+ --pa-ink:#f2ebd7;--pa-muted:#bdcfc5;--pa-gold:#f3cd78;--pa-mint:#93d4b3;
+ --pa-accent:#dda968;--pa-shadow:#0d171d;
+ color:var(--pa-ink);background:radial-gradient(ellipse at 54% 0,#40524f,#172126 70%);
+ color-scheme:dark;
+}
+body[data-play-arcade="snow"]{--pa-accent:#a4d7ed;--pa-gold:#ffe09a;--pa-mint:#c0eff3;background:radial-gradient(ellipse at 50% 0,#405e70,#172530 65%)}
+body[data-play-arcade="ride"]{--pa-accent:#c4b478;--pa-mint:#a2d0a4;background:radial-gradient(ellipse at 50% 0,#475742,#18272c 65%)}
+body[data-play-arcade="jump"]{--pa-accent:#e1b179;--pa-mint:#a8dbcc}
+body[data-play-arcade="rumble"]{--pa-accent:#e5b271;--pa-mint:#c8da91;background:radial-gradient(ellipse at 50% 0,#555144,#20262b 65%)}
+body[data-play-arcade="puzzle"]{--pa-accent:#c1bd83;--pa-mint:#a5d7b1}
+body[data-play-arcade] :where(.site-header,.topbar,.header,.rr-header,.bike-jump-header,.gs-topbar,.map-game-header,.app-header){
+ background:#202d31;border-bottom:2px solid var(--pa-edge);color:var(--pa-ink);box-shadow:none;
+}
+body[data-play-arcade] :where(.brand,.rr-brand,.bike-jump-brand,.gs-brand){color:var(--pa-ink);letter-spacing:.055em}
+body[data-play-arcade] :where(.brand b,.rr-brand b,.bike-jump-brand strong,.gs-brand-tag,.header .brand span){
+ background:var(--pa-gold);color:#202b30;border-radius:2px;
+}
+body[data-play-arcade] :where(.hero,.intro,.rr-hero,.bike-jump-intro,.gs-hero) h1{color:var(--pa-ink);text-shadow:3px 3px #101b20;letter-spacing:-.055em}
+body[data-play-arcade] :where(.hero,.intro,.rr-hero,.bike-jump-intro,.gs-hero) h1 span:first-child{color:var(--pa-gold)}
+body[data-play-arcade] :where(.eyebrow,.side-eyebrow,.rr-kicker,.bike-jump-eyebrow,.gs-eyebrow,.map-game-eyebrow,.overlay-kicker){color:var(--pa-mint);font-family:ui-monospace,monospace;letter-spacing:.1em;font-weight:850}
+body[data-play-arcade] :where(.stats,.scoreboard,.hud,.rr-scoreboard,.bike-jump-dashboard,.gs-scoreboard)>:where(div,article),
+body[data-play-arcade] .map-game-status-card,body[data-play-arcade] .score-chip{
+ border:1px solid var(--pa-edge);background:var(--pa-panel);border-radius:4px;
+ box-shadow:0 3px 0 var(--pa-shadow);color:var(--pa-ink);
+}
+body[data-play-arcade] :where(.stats,.scoreboard,.hud,.rr-scoreboard,.bike-jump-dashboard,.gs-scoreboard)>:where(div,article) strong,
+body[data-play-arcade] :where(.map-game-status-card,.score-chip) strong{
+ font-family:ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums;color:var(--pa-gold);
+ text-shadow:1px 1px #182328;
+}
+body[data-play-arcade] :where(.stats,.scoreboard,.hud,.rr-scoreboard,.bike-jump-dashboard,.gs-scoreboard)>:where(div,article)>:where(small,span),
+body[data-play-arcade] :where(.map-game-status-card span,.chip-label){color:var(--pa-muted);font-family:ui-monospace,monospace}
+body[data-play-arcade] :where(.stage,.game-stage,.rr-game-shell,.bike-jump-game-shell,.board-frame,.gs-map-shell){
+ background:var(--pa-panel-deep);border:2px solid var(--pa-edge);border-radius:6px;
+ box-shadow:0 5px 0 #111b20,0 12px 26px #0b141a75;
+}
+body[data-play-arcade] :where(.stage-bar,.stage-heading,.rr-stage-title,.bike-jump-stage-header,.board-topline,.board-bottomline,.gs-map-heading){
+ background:#223034;color:var(--pa-ink);font-family:ui-monospace,monospace;
+ border-color:var(--pa-edge);letter-spacing:.035em;
+}
+/* No overlay or filter on game geometry, Leaflet, or documentary photographs. */
+body[data-play-arcade] :where(.overlay-card,.overlay-inner,.rr-overlay-card,.bike-jump-overlay-card,.modal-card){
+ border-radius:5px;background:#202d31f5;border:2px solid var(--pa-edge);box-shadow:6px 6px #111a21a8;
+}
+body[data-play-arcade] :where(.overlay-card,.overlay-inner,.rr-overlay-card,.bike-jump-overlay-card,.modal-card) h2{
+ color:var(--pa-gold);text-shadow:2px 2px #142028;
+}
+body[data-play-arcade] :where(.primary,.play-button,.rr-primary,.bike-jump-primary,.primary-btn,.gs-button-primary,.map-game-button-primary){
+ color:#20272b;background:linear-gradient(#f1d48e,var(--pa-accent));border:1px solid #e4c98c;border-radius:4px;
+ box-shadow:0 4px 0 #6b5434;font-weight:900;
+}
+body[data-play-arcade] :where(.primary,.play-button,.rr-primary,.bike-jump-primary,.primary-btn,.gs-button-primary,.map-game-button-primary):hover:not(:disabled){color:#182328;background:#f5dfa8}
+body[data-play-arcade] :where(.control,.puzzle-drive-button,.rr-control,.bike-jump-control,.small-button,.secondary,.gs-button-subtle,.map-game-button-secondary,.header-btn,.menu-btn,.secondary-btn){
+ border-radius:4px;border-color:var(--pa-edge);background:linear-gradient(#465b5c,#293a40);
+ color:#f2ebd7;box-shadow:0 3px 0 #17252b;
+}
+body[data-play-arcade] :where(button,a,select,input):focus-visible{outline:3px solid var(--pa-gold);outline-offset:3px}
+body[data-play-arcade] :where(.status,.rr-status,.bike-jump-status){color:var(--pa-ink);border-color:var(--pa-edge)}
+body[data-play-arcade] :where(.control,.puzzle-drive-button):disabled{opacity:.43}
+body[data-play-arcade] #gameCanvas{image-rendering:pixelated}
+body[data-play-arcade] :where(.puzzle-drive-button,.small-button,.header-btn,.menu-btn){touch-action:manipulation}
+body[data-play-arcade] :where(.control,.puzzle-drive-button) small{color:var(--pa-muted)}
+/* Puzzle streets: pixel architecture rather than abstract icons. */
+body[data-play-arcade="puzzle"] .board{
+ background:#959a83;border:4px solid #a7aa94;gap:3px;border-radius:5px;
+ box-shadow:0 5px 0 #27373b;
+}
+body[data-play-arcade="puzzle"] .tile-street{
+ border-radius:0;background:
+ linear-gradient(0deg,transparent 12%,#454f56 12%,#454f56 88%,transparent 88%),
+ linear-gradient(90deg,transparent 12%,#454f56 12%,#454f56 88%,transparent 88%),#a8aa8e;
+ box-shadow:inset 0 0 0 2px #cbc6a5;
+}
+body[data-play-arcade="puzzle"] .tile-street::before{opacity:.8;background:repeating-linear-gradient(90deg,transparent 0 17%,#d2cdb2 17% 29%,transparent 29% 46%)}
+body[data-play-arcade="puzzle"] .tile-street.tile-goal{background:linear-gradient(0deg,transparent 12%,#515a60 12% 88%,transparent 88%),linear-gradient(90deg,transparent 12%,#515a60 12% 88%,transparent 88%),#c3c3a1}
+body[data-play-arcade="puzzle"] .tile-building{
+ background:repeating-linear-gradient(0deg,#a2947c 0 5px,#8e8370 5px 6px);
+ border:2px solid #d0c3a0;border-radius:3px;box-shadow:0 3px 0 #463d35;
+}
+body[data-play-arcade="puzzle"] .tile-building::after{
+ content:"";position:absolute;inset:12%;padding:0;border:2px solid #414b4d;border-radius:0;
+ background:
+ linear-gradient(90deg,transparent 0 42%,#a89b7c 42% 58%,transparent 58%),
+ repeating-linear-gradient(0deg,#47565a 0 16%,#a89c81 16% 22%,#53656a 22% 36%,#bfb297 36% 43%);
+ box-shadow:3px 3px #50493e;
+}
+body[data-play-arcade="puzzle"] .tile-park{
+ background:repeating-linear-gradient(90deg,#687c61 0 6px,#738b67 6px 12px);
+ border:2px solid #b2c39c;box-shadow:none;border-radius:2px;
+}
+body[data-play-arcade="puzzle"] .tile-park::after{
+ content:"";position:absolute;inset:15%;padding:0;border:0;border-radius:0;box-shadow:none;
+ background:
+ linear-gradient(90deg,transparent 43%,#5c4b38 43% 57%,transparent 57%) center bottom/100% 40% no-repeat,
+ radial-gradient(ellipse at 25% 33%,#45654d 0 24%,transparent 25%),
+ radial-gradient(ellipse at 75% 36%,#45654d 0 24%,transparent 25%),
+ radial-gradient(ellipse at 50% 30%,#a2b97b 0 32%,#577c51 33% 54%,transparent 55%);
+}
+body[data-play-arcade="puzzle"] .bike{border-radius:5px}
+body[data-play-arcade="puzzle"] .bike-letter{color:#203332}
+body[data-play-arcade="puzzle"] .goal-ring{border-radius:4px;background:#e6f1be13}
+/* Geographical games keep authentic map colors and full-size real photos. */
+body[data-play-arcade="geo"] .gs-hero p,body[data-play-arcade="geo"] :where(.gs-guide,.gs-footer){color:var(--pa-muted)}
+body[data-play-arcade="geo"] :where(.gs-question,.gs-result,.gs-finale){
+ background:var(--pa-panel);border:1px solid var(--pa-edge);border-radius:5px;box-shadow:4px 4px #122027;
+ color:var(--pa-ink);
+}
+body[data-play-arcade="geo"] :where(.gs-question,.gs-result,.gs-finale) p{color:var(--pa-muted)}
+body[data-play-arcade="geo"] :where(.gs-result-head strong,.gs-finale h2,.gs-osm-link){color:var(--pa-gold)}
+body[data-play-arcade="geo"] .gs-map-heading strong,body[data-play-arcade="geo"] .gs-map-heading span,body[data-play-arcade="geo"] .gs-map-footer{color:var(--pa-muted)}
+body[data-play-arcade="geo"] .gs-map-footer a{color:var(--pa-mint)}
+body[data-play-arcade="photo"]{
+ --map-game-text:#eee7d5;--map-game-muted:#bfd0c8;--map-game-green:#9fd5b1;
+ --map-game-green-dark:#f2d08f;--map-game-green-soft:#344e47;
+ --map-game-surface:#243237;--map-game-background:#1b292e;--map-game-border:#72867d;
+}
+body[data-play-arcade="photo"] :where(.map-game-panel,.map-game-photo-frame,.map-game-result,.map-game-selection-status){border-color:var(--pa-edge);border-radius:4px}
+body[data-play-arcade="photo"] :where(.map-game-instructions,.map-game-photo-credit){color:var(--pa-muted)}
+body[data-play-arcade="photo"] .map-game-photo-credit a{color:var(--pa-mint)}
+body[data-play-arcade="photo"] .map-game-selection-status{color:var(--pa-ink);background:#334a47;border-left-color:var(--pa-mint)}
+body[data-play-arcade="photo"] .map-game-photo-frame img{object-fit:contain;image-rendering:auto;filter:none}
+body[data-play-arcade="photo"] .map-game-result-points{color:var(--pa-gold)}
+body[data-play-arcade="drag"] :where(.left-card,.result-toast,.modal-card){
+ background:#25353af5;color:var(--pa-ink);border:1px solid var(--pa-edge);border-radius:6px;box-shadow:5px 5px #15232ba8;
+}
+body[data-play-arcade="drag"] :where(.left-card p,.target-help,.city-select-row label,.time-box-head span,.time-box-foot span,.result-toast-copy p,.scale-labels){color:var(--pa-muted)}
+body[data-play-arcade="drag"] .left-pill{background:#a5bd9c;color:#20342e;border-radius:3px;box-shadow:none}
+body[data-play-arcade="drag"] .brand-pin{background:var(--pa-panel);border-radius:5px;box-shadow:none}
+body[data-play-arcade="drag"] .time-box{background:#35494c;border-radius:4px}
+body[data-play-arcade="drag"] .city-select-row select{background:#26383e;border-color:var(--pa-edge);color:var(--pa-ink);border-radius:4px}
+body[data-play-arcade="drag"] :where(.leaflet-control-zoom a,.leaflet-control-attribution,.real-location-card){color:#17223b}
+@media(prefers-reduced-motion:reduce){
+ body[data-play-arcade] :where(.control,.primary,.play-button,.gs-button,.map-game-button){transition:none}
+}
+
+body[data-play-arcade="three"] .topbar nav a{color:var(--pa-muted)}
+body[data-play-arcade="three"] .topbar nav a.active{color:var(--pa-gold)}
+body[data-play-arcade="three"] :where(.panel,.instructions,.status-card,.result-card,.debug-box){
+ background:var(--pa-panel);border-color:var(--pa-edge);color:var(--pa-ink);border-radius:4px;
+}
+body[data-play-arcade="three"] .panel{border-radius:0}
+body[data-play-arcade="three"] .hint{color:var(--pa-muted)}
+body[data-play-arcade="three"] .step-chip{background:#223034;color:var(--pa-gold);border-color:var(--pa-edge);border-radius:4px;font-family:monospace}
+body[data-play-arcade="cannon"]{--bc-text:#eee7d5;--bc-muted:#bdcfc5;--bc-green:#a9d5aa;--bc-green-dark:#f3cd78;--bc-line:#6a817c}
+body[data-play-arcade="cannon"] :where(.bc-hero,.bc-panel,.bc-stage,.bc-note){
+ background:var(--pa-panel);border-color:var(--pa-edge);border-radius:5px;box-shadow:0 3px 0 var(--pa-shadow);
+}
+body[data-play-arcade="cannon"] :where(.bc-wind,.bc-target,.bc-result-card,.bc-score div,.bc-history-item,.bc-result-empty,.bc-mode){
+ background:#34474b;color:var(--pa-ink);border-color:var(--pa-edge);border-radius:4px;
+}
+body[data-play-arcade="cannon"] :where(.bc-target span,.bc-control label){color:var(--pa-muted)}
+body[data-play-arcade="cannon"] .bc-hero h1{color:var(--pa-gold);text-shadow:2px 2px #172126}
+body[data-play-arcade="cannon"] :where(.bc-eyebrow,.bc-chip,.bc-score strong,.bc-control strong){font-family:monospace;font-variant-numeric:tabular-nums}
+body[data-play-arcade="cannon"] .bc-chip{background:#203036ef;border-color:var(--pa-edge);color:var(--pa-gold);border-radius:3px;font-size:.7rem}
+body[data-play-arcade="cannon"] :where(.bc-launch,.bc-link){background:#edc981;color:#202b30!important;border:1px solid #e4c98c;border-radius:4px;box-shadow:0 3px 0 #806538}
+body[data-play-arcade="cannon"] .bc-launch:hover:not(:disabled){background:#f9e4a6}
+body[data-play-arcade="cannon"] .bc-reset{background:#3a4d50;color:var(--pa-ink);border-color:var(--pa-edge);border-radius:4px}
+body[data-play-arcade="cannon"] .bc-badge{background:#344b48;border-radius:4px}
+body[data-play-arcade="cannon"] :where(.bc-badge strong,.bc-badge span){color:var(--pa-gold)}
+body[data-play-arcade="cannon"] #bikeCannonCanvas{image-rendering:pixelated}
+body[data-play-arcade="cannon"] :where(.bc-hero p,.bc-wind,.bc-target span,.bc-result-card p,.bc-history-item,.bc-result-empty,.bc-note){font-size:.78rem}
+body[data-play-arcade="cannon"] :where(.bc-mode,.bc-control label,.bc-reset,.bc-link){font-size:.75rem}
+body[data-play-arcade="cannon"] :where(.bc-badge span,.bc-score small,.bc-target small,.bc-eyebrow){font-size:.65rem}
+body[data-play-arcade="cannon"] .bc-reset{min-height:42px}
+body[data-play-arcade="zombie"] .top{background:#202d31;border-color:var(--pa-edge)}
+body[data-play-arcade="zombie"] .notice{border-color:var(--pa-edge)}

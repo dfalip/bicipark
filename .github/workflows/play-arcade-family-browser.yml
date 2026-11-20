@@ -1,0 +1,48 @@
+name: BiciPark arcade family browser smoke
+on:
+  pull_request:
+    paths:
+      - 'css/play-arcade.css'
+      - 'js/play-arcade-art.js'
+      - 'tools/qa/play-arcade-family-browser.cjs'
+      - '.github/workflows/play-arcade-family-browser.yml'
+      - 'bike-jump*/**'
+      - 'snowbike-downhill/**'
+      - 'roda-rumble/**'
+      - 'zombiepedal/**'
+      - 'bike-parking-puzzle/**'
+      - 'modules/bike-cannon/**'
+  push:
+    branches:
+      - 'feat/play-arcade-visual-family-*'
+    paths:
+      - 'css/play-arcade.css'
+      - 'js/play-arcade-art.js'
+      - 'tools/qa/play-arcade-family-browser.cjs'
+      - '.github/workflows/play-arcade-family-browser.yml'
+permissions:
+  contents: read
+concurrency:
+  group: play-arcade-family-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  arcade-family-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save --package-lock=false playwright@1.65.1
+      - run: npx --no-install playwright install chromium --with-deps
+      - run: node tools/qa/play-arcade-family-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: play-arcade-family-screenshots
+          path: play-arcade-smoke/
+          if-no-files-found: ignore
+          retention-days: 7

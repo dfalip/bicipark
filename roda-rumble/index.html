@@ -4,11 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#102439">
-  <meta name="description" content="RodaRumble, el joc original de demolició de BiciPark. Apunta amb una llançadora, tomba torres de ferralla i supera quatre nivells.">
+  <meta name="description" content="RodaRumble, el joc original de demolició de BiciPark. Apunta amb una llançadora, tomba torres de ferralla i supera deu nivells.">
   <title>RodaRumble · BiciPark Play</title>
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../css/play-arcade.css">
 </head>
-<body class="rr-page">
+<body data-play-arcade="rumble" class="rr-page">
   <header class="rr-header">
     <a href="../explora/?category=games" class="rr-brand" aria-label="Torna als jocs de BiciPark"><span aria-hidden="true">✺</span> BICIPARK <b>PLAY</b></a>
     <nav aria-label="Navegació"><a href="../explora/?category=games">Tots els jocs</a><a href="../index.html">Mapa</a></nav>
@@ -89,6 +90,7 @@
     <p id="gameInstructions" class="rr-help"><b>ARROSSEGA</b> la roda cap enrere i deixa-la anar. La línia de punts prediu el primer impacte, sense turbo. També pots ajustar l'angle i la potència i prémer <b>Espai</b>. Durant el vol, prem <b>Espai</b> o <b>Habilitat especial</b> per activar-la una sola vegada: roda martell, ona expansiva o trepant. L'acer és resistent, el vidre fràgil i els bidons vermells exploten.</p>
     <footer class="rr-footer">Joc original de BiciPark · 10 nivells · Sense anuncis · Sense dades personals · Marques guardades al navegador</footer>
   </main>
+  <script src="../js/play-arcade-art.js"></script>
   <script type="module" src="./app.js"></script>
 </body>
 </html>

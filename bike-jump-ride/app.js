@@ -229,6 +229,12 @@ function drawTerrain(){
     ctx.lineWidth=s.type==="ramp"?11:9;ctx.stroke();
     ctx.strokeStyle=s.type==="ramp"?"#ffcf5b":"#74a65c";
     ctx.lineWidth=4;ctx.stroke();
+    if(s.type!=="ramp"&&window.BiciParkArcadeArt){
+      const first=Math.ceil(Math.max(s.x0,x0)/22)*22;
+      for(let px=first;px<Math.min(s.x1,x1)-12;px+=22){
+        const at=trackAt(px);if(at)window.BiciParkArcadeArt.surface(ctx,px,at.y+15,px);
+      }
+    }
     if(s.type==="ramp"){
       for(let k=0;k<8;k++){
         const xx=s.x0+(k+.5)*(s.x1-s.x0)/8;
@@ -254,6 +260,7 @@ function drawTrees(){
     if(x<camera-100||x>camera+1100)continue;
     const at=trackAt(x);if(!at||at.type==="ramp")continue;
     const h=34+(x*13%57);
+    if(window.BiciParkArcadeArt){window.BiciParkArcadeArt.tree(ctx,x,at.y,h,false);continue;}
     ctx.fillStyle="#435b4b";ctx.fillRect(x-3,at.y-h*.15,6,h*.2);
     ctx.fillStyle=x%4===0?"#287e79":"#216b70";
     ctx.beginPath();ctx.moveTo(x,at.y-h);
@@ -352,6 +359,7 @@ function paint(){
   drawTerrain();drawTrees();drawCheckpoints();drawRings();finishFlag();
   shadow();drawBike();drawParticles();
   ctx.restore();
+  window.BiciParkArcadeArt?.pixelFrame(ctx);
   ctx.fillStyle="rgba(5,39,56,.55)";ctx.fillRect(0,519,1000,40);
   ctx.textAlign="left";ctx.font="bold 15px system-ui";ctx.fillStyle="#e6fff3";
   ctx.fillText(game.grounded?"RODANT":"✦ EN VOL",20,546);

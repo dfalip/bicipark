@@ -404,6 +404,15 @@ function drawSnow(){
   }ctx.stroke();
  }
  ctx.setLineDash([]);
+ const arcadeArt=window.BiciParkArcadeArt;
+ if(arcadeArt){
+  const start=Math.floor((game.distance-220)/38),end=Math.floor((game.distance+900)/38);
+  for(let i=start;i<=end;i++){
+   const at=i*38,y=screenY(at);if(y<0||y>540)continue;
+   const side=i%2===0?-1:1;
+   arcadeArt.surface(ctx,center(at)+side*(248+Math.abs(i*37%130)),y,i,"snow");
+  }
+ }
  // Stable seeded scenery is drawn from track-distance positions, not random per frame.
  const i0=Math.max(0,Math.floor((game.distance-250)/85));
  const i1=Math.floor((game.distance+1030)/85);
@@ -413,6 +422,7 @@ function drawSnow(){
   const x=center(at)+side*(270+(i*31%170));
   const scale=.5+screen/650;
   ctx.save();ctx.translate(x,screen);ctx.scale(scale,scale);
+  if(arcadeArt){arcadeArt.tree(ctx,0,6,74,true);ctx.restore();continue;}
   ctx.fillStyle="#2f5e68";ctx.fillRect(-4,0,8,24);
   ctx.fillStyle=i%7?"#367c73":"#476e84";
   ctx.beginPath();ctx.moveTo(0,-68);ctx.lineTo(-24,3);ctx.lineTo(24,3);ctx.closePath();ctx.fill();
@@ -785,6 +795,7 @@ function paint(){
  }
  drawSnowRush();drawSkiBike();drawFeedback();
  ctx.restore();
+ window.BiciParkArcadeArt?.pixelFrame(ctx);
  ctx.fillStyle="#13374cbf";ctx.fillRect(0,508,960,33);
  ctx.textAlign="left";ctx.font="900 15px system-ui";ctx.fillStyle="white";
  ctx.fillText(`${Math.round(game.distance)} / ${game.course.length} m`,15,530);
