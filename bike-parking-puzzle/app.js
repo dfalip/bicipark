@@ -1,5 +1,5 @@
 import {LEVELS,COLORS,LABELS,cell,xy,newGame,selectBike,moveTo,
-  moveDirection,movesAvailable,undo,hint,restart,isSolved} from "./engine.js";
+  moveDirection,movesAvailable,streetPath,undo,hint,restart,isSolved} from "./engine.js";
 const $=id=>document.getElementById(id);
 const ui={
   level:$("levelSelect"),chapter:$("chapterLabel"),moves:$("movesValue"),
@@ -13,16 +13,53 @@ const ui={
 const KEY="bicipark-bike-parking-progress-v1";
 
 let game=newGame(0),swipeStart=null,pendingMotion=null;
+let traveling=false,travelTimer=null,headings=Array(LABELS.length).fill(0);
 const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches===true;
+function directionAngle(from,to,size){
+ const a=xy(from,size),b=xy(to,size);
+ return b.x>a.x?90:b.x<a.x?-90:b.y>a.y?180:0;
+}
+function rememberMotion(motion){
+ const fromAngle=headings[motion.bike]??0;
+ const toAngle=directionAngle(motion.from,motion.to,game.cfg.size);
+ headings[motion.bike]=toAngle;
+ pendingMotion={...motion,fromAngle,toAngle};
+}
 function queueMotion(ok){
- if(ok&&game.lastMove)pendingMotion={...game.lastMove};
+ if(ok&&game.lastMove)rememberMotion(game.lastMove);
  return ok;
 }
+function cancelTravel(){
+ traveling=false;
+ if(travelTimer!==null)window.clearTimeout(travelTimer);
+ travelTimer=null;
+}
+function travelPath(path){
+ if(!path.length)return;
+ if(path.length>game.limit-game.moves){
+  game.notice="Calen "+path.length+" moviments i només en queden "+(game.limit-game.moves)+".";
+  changed();return;
+ }
+ cancelTravel();traveling=true;
+ const cells=path.slice();
+ function advance(){
+  if(!traveling)return;
+  const next=cells.shift();
+  if(!queueMotion(moveTo(game,next))){
+   cancelTravel();changed();return;
+  }
+  if(!cells.length||game.phase!=="playing")cancelTravel();
+  changed();
+  if(traveling)travelTimer=window.setTimeout(advance,reducedMotion?40:240);
+ }
+ advance();
+}
 function rewind(){
+ cancelTravel();
  const before=game.positions.slice();
  if(undo(game)){
   const bike=before.findIndex((p,i)=>p!==game.positions[i]);
-  if(bike>=0)pendingMotion={bike,from:before[bike],to:game.positions[bike]};
+  if(bike>=0)rememberMotion({bike,from:before[bike],to:game.positions[bike]});
  }
  changed();
 }
@@ -55,6 +92,9 @@ function playMoveAnimation(oldRect,motion){
  if(!rider||!nextRect||!nextRect.width)return;
  const ghost=rider.cloneNode(true);
  ghost.classList.add("bike-drive-ghost");
+ ghost.dataset.bikeIndex=String(motion.bike);
+ ghost.style.setProperty("--drive-start-angle",motion.fromAngle+"deg");
+ ghost.style.setProperty("--drive-end-angle",motion.toAngle+"deg");
  ghost.style.setProperty("--drive-x",(oldRect.left-nextRect.left)+"px");
  ghost.style.setProperty("--drive-y",(oldRect.top-nextRect.top)+"px");
  rider.classList.add("bike-drive-hidden");
@@ -64,7 +104,7 @@ function playMoveAnimation(oldRect,motion){
   if(finished)return;finished=true;ghost.remove();rider.classList.remove("bike-drive-hidden");
  }
  ghost.addEventListener("animationend",finish,{once:true});
- window.setTimeout(finish,450);
+ window.setTimeout(finish,340);
 }
 
 function loadProgress(){
