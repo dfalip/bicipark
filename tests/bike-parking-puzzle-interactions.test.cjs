@@ -11,9 +11,9 @@ function setup(){
     runScripts:'outside-only',pretendToBeVisual:true});
   const w=dom.window;
   const script=read('engine.js').replace(/^export /gm,'');
-  w.eval(script+'\nwindow.__engine={LEVELS,COLORS,LABELS,cell,xy,newGame,selectBike,moveTo,moveDirection,movesAvailable,undo,hint,restart,isSolved,solve};');
+  w.eval(script+'\nwindow.__engine={LEVELS,COLORS,LABELS,cell,xy,newGame,selectBike,moveTo,moveDirection,movesAvailable,streetPath,undo,hint,restart,isSolved,solve};');
   let app=read('app.js').replace(/import\s*\{[\s\S]*?\}\s*from\s*"\.\/engine\.js";/,
-    'const {LEVELS,COLORS,LABELS,cell,xy,newGame,selectBike,moveTo,moveDirection,movesAvailable,undo,hint,restart,isSolved}=window.__engine;');
+    'const {LEVELS,COLORS,LABELS,cell,xy,newGame,selectBike,moveTo,moveDirection,movesAvailable,streetPath,undo,hint,restart,isSolved}=window.__engine;');
   assert.doesNotMatch(app,/^import\s/m);
   w.eval(app+'\nwindow.__getGame=()=>game;');
   const $=id=>w.document.getElementById(id);
@@ -186,5 +186,59 @@ test('Puzzle City keeps keyboard focus when selected tiles are rebuilt, includin
   assert.equal(h.w.document.activeElement.dataset.pos,String(move.to));
   h.key('KeyZ',{ctrlKey:true});
   assert.equal(h.w.document.activeElement.dataset.pos,String(move.to));
+ }finally{h.dom.window.close();}
+});
+
+test('Tap a distant connected street and the bike pedals the full legal route with all moves counted',async()=>{
+ const h=setup();try{
+  const g=h.w.__getGame();
+  const entries=[...Array(g.cfg.size*g.cfg.size).keys()].map(pos=>({pos,path:h.w.__engine.streetPath(g,pos,0)}));
+  const target=entries.find(x=>x.path&&x.path.length>=2&&x.path.length<=Math.min(3,g.limit));
+  assert.ok(target,'A starter level must offer a reachable multi-street destination');
+  h.$('board').querySelector('[data-pos="'+g.positions[0]+'"]').click();
+  h.$('board').querySelector('[data-pos="'+target.pos+'"]').click();
+  assert.equal(g.moves,1,'First street segment should be driven immediately');
+  assert.equal(h.$('undoButton').disabled,true,'Do not undo while a multi-step route is in progress');
+  await new Promise(resolve=>setTimeout(resolve,(target.path.length-1)*250+100));
+  assert.equal(g.positions[0],target.pos);
+  assert.equal(g.moves,target.path.length,'No teleporting / discounted route distance');
+  assert.equal(g.history.length,target.path.length);
+  assert.equal(h.$('undoButton').disabled,false);
+ }finally{h.dom.window.close();}
+});
+test('Restart and Escape cancel an ongoing city ride with no ghost moves afterward',async()=>{
+ const h=setup();try{
+  const g=h.w.__getGame();
+  const target=[...Array(g.cfg.size*g.cfg.size).keys()].map(pos=>({pos,path:h.w.__engine.streetPath(g,pos,0)}))
+   .find(x=>x.path&&x.path.length>=3&&x.path.length<=g.limit);
+  assert.ok(target,'Expected a connected route of three or more cells');
+  h.$('board').querySelector('[data-pos="'+g.positions[0]+'"]').click();
+  h.$('board').querySelector('[data-pos="'+target.pos+'"]').click();
+  assert.equal(g.moves,1);
+  h.key('Escape');
+  await new Promise(resolve=>setTimeout(resolve,300));
+  assert.equal(g.moves,1,'No queued movement should complete after Escape');
+  h.$('board').querySelector('[data-pos="'+g.positions[0]+'"]').click();
+  h.$('board').querySelector('[data-pos="'+target.pos+'"]').click();
+  assert.equal(g.moves,2,'Second route starts from current location');
+  h.$('resetButton').click();
+  assert.equal(g.moves,0);
+  await new Promise(resolve=>setTimeout(resolve,300));
+  assert.equal(g.moves,0,'Reset cancels all delayed drive steps');
+ }finally{h.dom.window.close();}
+});
+test('Bike SVG visibly steers toward its travel direction and undo restores a heading',()=>{
+ const h=setup();try{
+  const g=h.w.__getGame();
+  const move=h.w.__engine.solve(g.cfg,g.positions)[0];
+  h.$('board').querySelector('[data-pos="'+move.from+'"]').click();
+  h.$('board').querySelector('[data-pos="'+move.to+'"]').click();
+  const tile=h.$('board').querySelector('[data-pos="'+move.to+'"]');
+  const heading=tile.querySelector('.bike').style.getPropertyValue('--bike-heading');
+  const expected={up:'0deg',down:'180deg',left:'-90deg',right:'90deg'}[move.direction];
+  assert.equal(heading,expected);
+  h.$('undoButton').click();
+  const restored=h.$('board').querySelector('[data-pos="'+move.from+'"]').querySelector('.bike');
+  assert.ok(restored.style.getPropertyValue('--bike-heading').endsWith('deg'));
  }finally{h.dom.window.close();}
 });
