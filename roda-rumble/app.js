@@ -379,6 +379,22 @@ function drawDebris(){
     ctx.fillStyle=d.color;ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);ctx.fill();ctx.restore();
   }
 }
+function drawBounceHalo(){
+  const hit=game.projectile?.lastBounce;
+  if(!hit||reducedMotion)return;
+  const age=game.shotTime-hit.at;
+  if(age<0||age>.32)return;
+  const progress=age/.32;
+  ctx.save();
+  ctx.globalAlpha=(1-progress)*.78;
+  ctx.lineWidth=4.5-progress*2.5;
+  ctx.strokeStyle=hit.kind==="steel"?"#a6dfff":
+    hit.kind==="glass"?"#bdfff3":hit.kind==="ground"?"#f1e2ad":"#ffd5a1";
+  ctx.beginPath();
+  ctx.arc(hit.x,hit.y,24+progress*27,0,Math.PI*2);
+  ctx.stroke();
+  ctx.restore();
+}
 function draw(){
   if(!ctx)return;
   ctx.clearRect(0,0,WORLD.width,WORLD.height);
@@ -395,6 +411,7 @@ function draw(){
   drawAim();
   const p=game.projectile;
   if(p&&p.active)drawWheel(p.x,p.y,p.angle,1,p.type);
+  drawBounceHalo();
   drawDebris();
   if(game.phase==="won"&&!reducedMotion){
     const t=game.celebration;
