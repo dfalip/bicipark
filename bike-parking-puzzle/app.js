@@ -127,14 +127,18 @@ function tileLabel(pos,bike,goal,wall){
   return `Casella lliure ${coordinate}${park}; toca per moure la bici seleccionada`;
 }
 function applySelection(pos){
-  if(game.phase!=="playing")return;
+  if(game.phase!=="playing"||traveling)return;
   const bike=game.positions.indexOf(pos);
   if(bike>=0){
     selectBike(game,bike);
   }else if(game.selected!==null){
-    queueMotion(moveTo(game,pos));
+    const path=streetPath(game,pos);
+    if(path===null)game.notice="No hi ha cap carrer lliure fins a aquesta casella.";
+    else if(path.length>1){travelPath(path);return;}
+    else if(path.length===1)queueMotion(moveTo(game,pos));
+    else game.notice="La bicicleta ja és en aquesta casella.";
   }else{
-    game.notice="Primer selecciona una bicicleta; després, la casella lliure.";
+    game.notice="Primer selecciona una bicicleta; després, toca el carrer on vols anar.";
   }
   changed();
 }
@@ -145,7 +149,12 @@ function swipeDirection(dx,dy){
 function renderBoard(){
   const motion=pendingMotion;pendingMotion=null;
   const previous=motion?ui.board.querySelector('[data-pos="'+motion.from+'"]'):null;
-  const oldRect=previous?.getBoundingClientRect();
+  const baseRect=previous?.getBoundingClientRect();
+  const currentSprite=motion?ui.board.querySelector('.bike-drive-ghost[data-bike-index="'+motion.bike+'"]'):null;
+  const movingRect=currentSprite?.getBoundingClientRect();
+  const oldRect=movingRect?.width>0&&baseRect?.width>0
+    ?{left:movingRect.left-baseRect.width*.125,top:movingRect.top-baseRect.height*.125,
+      width:baseRect.width}:baseRect;
   // Preserve keyboard focus when rebuilding the board; ignore external controls.
   const focused=ui.board.contains(document.activeElement)?
     document.activeElement.closest("button[data-pos]"):null;
@@ -182,6 +191,7 @@ function renderBoard(){
         if(bike===game.selected)tile.classList.add("tile-selected");
         if(cfg.goals[bike]===pos)tile.classList.add("tile-parked");
         const box=document.createElement("span");box.className="bike";
+        box.style.setProperty("--bike-heading",(headings[bike]??0)+"deg");
         const icon=createBikeArt();
         const letter=document.createElement("span");letter.className="bike-letter";
         letter.setAttribute("aria-hidden","true");letter.textContent=LABELS[bike];
@@ -190,7 +200,7 @@ function renderBoard(){
       }
       tile.addEventListener("click",()=>applySelection(pos));
       tile.addEventListener("pointerdown",event=>{
-        if(event.button!=null&&event.button!==0)return;
+        if(traveling||event.button!=null&&event.button!==0)return;
         if(bike<0)return;
         swipeStart={id:event.pointerId,pos,bike,x:event.clientX,y:event.clientY};
       });
@@ -200,7 +210,7 @@ function renderBoard(){
         const chosen=swipeStart;swipeStart=null;
         if(!d)return;
         event.preventDefault();
-        if(game.phase!=="playing")return;
+        if(game.phase!=="playing"||traveling)return;
         selectBike(game,chosen.bike);
         queueMotion(moveDirection(game,d,chosen.bike));
         changed();
@@ -263,8 +273,8 @@ function render(){
   ui.parked.textContent=`${parked} / ${game.positions.length}`;
   ui.best.textContent=best[game.cfg.id]?"★".repeat(best[game.cfg.id]):"—";
   ui.status.textContent=game.notice;
-  ui.undo.disabled=game.history.length===0;
-  ui.hint.disabled=game.phase!=="playing";
+  ui.undo.disabled=traveling||game.history.length===0;
+  ui.hint.disabled=traveling||game.phase!=="playing";
   ui.win.hidden=game.phase!=="won";
   if(game.phase==="won"){
     ui.winStars.textContent="★".repeat(game.stars)+"☆".repeat(3-game.stars);
@@ -276,7 +286,7 @@ function render(){
   renderBoard();renderLegend();renderChapters();
   const choices=new Set(game.selected===null?[]:movesAvailable(game,game.selected).map(m=>m.direction));
   for(const button of document.querySelectorAll("[data-puzzle-direction]"))
-   button.disabled=game.phase!=="playing"||!choices.has(button.dataset.puzzleDirection);
+   button.disabled=traveling||game.phase!=="playing"||!choices.has(button.dataset.puzzleDirection);
 }
 function changed(){
   if(game.phase==="won"&&game.stars>best[game.cfg.id]){
@@ -285,7 +295,8 @@ function changed(){
   render();
 }
 function choose(index){
-  game=newGame(index);swipeStart=null;pendingMotion=null;render();
+  cancelTravel();game=newGame(index);headings=Array(LABELS.length).fill(0);
+  swipeStart=null;pendingMotion=null;render();
 }
 for(let i=0;i<LEVELS.length;i++){
   const l=LEVELS[i],option=document.createElement("option");
@@ -301,7 +312,10 @@ ui.hint.addEventListener("click",()=>{
   if(!result)game.notice="No hi ha una pista disponible. Pots desfer o reiniciar.";
   changed();
 });
-ui.reset.addEventListener("click",()=>{restart(game);pendingMotion=null;changed();});
+ui.reset.addEventListener("click",()=>{
+ cancelTravel();restart(game);headings=Array(LABELS.length).fill(0);
+ pendingMotion=null;changed();
+});
 ui.next.addEventListener("click",()=>choose((game.cfg.id+1)%LEVELS.length));
 document.addEventListener("keydown",event=>{
   if(!["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Escape","KeyZ"].includes(event.code))return;
@@ -311,10 +325,10 @@ document.addEventListener("keydown",event=>{
     event.preventDefault();rewind();return;
   }
   if(event.code==="Escape"){
-    game.selected=null;game.notice="Selecció anul·lada.";changed();return;
+    cancelTravel();game.selected=null;game.notice="Selecció anul·lada.";changed();return;
   }
   const dirs={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right"};
-  if(!dirs[event.code]||game.selected===null)return;
+  if(traveling||!dirs[event.code]||game.selected===null)return;
   event.preventDefault();
   moveSelected(dirs[event.code]);
 });
