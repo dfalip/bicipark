@@ -32,7 +32,11 @@
 <div class="track"><div class="meter"><span class="meter-label">HORDA</span><div class="meter-groove"><div id="threat"></div></div><strong id="threatText">12%</strong></div><div class="meter"><span class="meter-label">RECORREGUT</span><div class="meter-groove route"><div id="progress"></div></div><strong id="progressText">0%</strong></div></div>
 </section>
 <p id="status" class="status" aria-live="polite" role="status">Tria un mode i comença la partida.</p>
-<div class="controls" role="group" aria-label="Controls de la bicicleta">
+<div class="touch-options"><span>Controls amb dos polzes</span><button id="mobileControlToggle" class="mini" type="button" aria-pressed="true">Comandament / botons</button></div>
+<div id="controls" class="controls" data-mobile-mode="stick" role="group" aria-label="Controls de la bicicleta">
+<div id="touchSteer" class="touch-steer" role="group" aria-label="Control tàctil de direcció i velocitat. Arrossega amunt o avall per canviar de carril, dreta per accelerar i esquerra per frenar. També pots triar els botons.">
+ <div class="stick-disc" aria-hidden="true"><span class="stick-n">▲</span><span class="stick-s">▼</span><span class="stick-w">◀</span><span class="stick-e">▶</span><span id="stickKnob" class="stick-knob"></span></div><small>DIRECCIÓ · VELOCITAT</small>
+</div>
 <button data-action="up" class="control" type="button" aria-label="Carril superior"><b>▲</b><span>CARRIL ↑</span><small>W / ↑</small></button>
 <button data-action="down" class="control" type="button" aria-label="Carril inferior"><b>▼</b><span>CARRIL ↓</span><small>S / ↓</small></button>
 <button data-action="jump" class="control jump" type="button"><b>↗</b><span>SALT</span><small>ESPAI</small></button>
@@ -41,7 +45,7 @@
 <button data-action="gas" class="control gas" type="button"><b>▶▶</b><span>PEDALA</span><small>D / →</small></button>
 <button data-action="brake" class="control" type="button"><b>◀</b><span>FRENA</span><small>A / ←</small></button>
 </div>
-<section class="details"><div><p class="kicker">TRIA LA TEVA ESTRATÈGIA</p><h2>Com jugar</h2><p id="instructions">La bici avança tota sola. Canvia de carril amb W/S o ↑/↓; mantén X o F per llançar pintura al mateix carril; salta amb Espai. Utilitza C per activar el turbo, D per accelerar i A per frenar. Un escut et protegeix d'un xoc. La furgoneta és massa alta: desvia't o utilitza turbo o escut. Els corredors avisen amb un signe d'exclamació, els gegants necessiten més impactes. El mode infinit continua amb onades cada cop més difícils. Prem P per pausar. Les distàncies i velocitats són unitats arcade del circuit virtual.</p></div><div><p class="kicker">PROGRÉS LOCAL</p><h2>Medalles</h2><div id="medals" class="medals" aria-label="Medalles aconseguides"></div><p class="hint">Rècords de cada mode i medalles guardats en aquest navegador. Sense compte, anuncis ni recursos gràfics externs.</p></div></section>
+<section class="details"><div><p class="kicker">TRIA LA TEVA ESTRATÈGIA</p><h2>Com jugar</h2><p id="instructions">La bici avança tota sola. Canvia de carril amb W/S o ↑/↓; mantén X o F per llançar pintura al mateix carril; salta amb Espai. Utilitza C per activar el turbo, D per accelerar i A per frenar. Un escut et protegeix d'un xoc. La furgoneta és massa alta: desvia't o utilitza turbo o escut. Els corredors avisen amb un signe d'exclamació, els gegants necessiten més impactes. El mode infinit continua amb onades cada cop més difícils. Al mòbil, arrossega el comandament amb el polze esquerre i utilitza els botons de salt, pintura i turbo amb el dret. Pots alternar amb els botons de direcció. Prem P per pausar. Les distàncies i velocitats són unitats arcade del circuit virtual.</p></div><div><p class="kicker">PROGRÉS LOCAL</p><h2>Medalles</h2><div id="medals" class="medals" aria-label="Medalles aconseguides"></div><p class="hint">Rècords de cada mode i medalles guardats en aquest navegador. Sense compte, anuncis ni recursos gràfics externs.</p></div></section>
 <footer><a href="../explora/?category=games">BiciPark Play</a> · Joc de ficció amb pintura, sense sang.</footer>
 </main>
 <script type="module" src="./arcade-app.js"></script>
