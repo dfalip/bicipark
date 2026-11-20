@@ -33,16 +33,45 @@ export function makePickups(seed=77){
  }
  return out;
 }
-export function makeGame(seed=77){
- return {phase:"ready",seed,time:0,distance:0,speed:26,score:0,
+// Procedural survival sectors, generated only as needed and reproducible by seed.
+const SECTOR=1450;
+function extendSurvival(g){
+ while(g.nextSector*SECTOR<=g.distance+1200){
+  const sector=g.nextSector++,base=sector*SECTOR;
+  const random=rng((g.seed^Math.imul(sector+1,2654435761))>>>0);
+  const intensity=Math.min(8,Math.floor(sector/2));
+  let x=base+160,index=0;
+  while(x<base+SECTOR-100){
+   const roll=random();
+   const type=sector>=3&&roll>.92?"big":sector>=1&&roll>.74?"helmet":
+    roll<.12?"barrier":roll>.47-intensity*.025?"runner":"walker";
+   const enemy=makeEnemy(type,Math.round(x),sector*100+index++);
+   enemy.speed*=1+intensity*.045;
+   g.enemies.push(enemy);
+   x+=Math.max(108,170-intensity*5)+Math.round(random()*65);
+  }
+  for(let k=0;k<3;k++){
+   const roll=random();
+   g.pickups.push({id:sector*100+k,x:base+360+k*420,kind:roll<.22?"heart":roll<.6?"ammo":"star",collected:false});
+  }
+ }
+ // Limit active entities to the visible/nearby world; no endless memory growth.
+ g.enemies=g.enemies.filter(e=>e.x>=g.distance-150);
+ g.pickups=g.pickups.filter(p=>p.x>=g.distance-150);
+}
+export function makeGame(seed=77,mode="escape"){
+ const survival=mode==="survival";
+ const g={mode:survival?"survival":"escape",wave:1,nextSector:0,phase:"ready",seed,time:0,distance:0,speed:26,score:0,
   altitude:0,vy:0,grounded:true,jumps:0,
   hearts:3,ammo:8,maxAmmo:8,ammoClock:0,fireCooldown:0,
   horde:15,invulnerable:0,combo:0,bestCombo:0,comboTimer:0,
   dashCharges:1,maxDashCharges:2,dashTime:0,dashes:0,dashDodges:0,
-  enemies:makeEnemies(seed),pickups:makePickups(seed),balls:[],
+  enemies:survival?[]:makeEnemies(seed),pickups:survival?[]:makePickups(seed),balls:[],
   hits:0,stuns:0,dodges:0,collected:0,lastEvent:"Pedala, salta i frena els zombis amb boles de pintura!",
   eventTimer:0,zone:0,finishStars:0,gameOverReason:"",
   events:[],stagger:0};
+ if(survival)extendSurvival(g);
+ return g;
 }
 export function start(g){if(g.phase!=="ready")return false;g.phase="running";g.lastEvent="FUGIDA INICIADA!";g.eventTimer=1.2;return true;}
 export function togglePause(g){
@@ -166,7 +195,8 @@ function advance(g,input,dt){
  const fast=Boolean(input.accelerate),brake=Boolean(input.brake);
  const max=g.dashTime>0?87:fast?74:brake?24:55;
  g.speed+=(max-g.speed)*Math.min(1,dt*(brake?3.1:2.25));
- g.distance=Math.min(WORLD.length,g.distance+g.speed*dt);
+ g.distance=g.mode==="survival"?g.distance+g.speed*dt:Math.min(WORLD.length,g.distance+g.speed*dt);
+ if(g.mode==="survival")extendSurvival(g);
  g.score+=Math.round(g.speed*dt*2);
  if(!g.grounded){
   g.altitude+=g.vy*dt;
@@ -181,10 +211,18 @@ function advance(g,input,dt){
  for(const enemy of g.enemies)enemyStep(g,enemy,dt);
  for(const item of g.pickups)pickupStep(g,item);
  // The horde advances if the rider slows down; accelerating pushes it away.
- const growth=g.speed<35?4.5:g.speed<52?1.2:-1.45;
+ const pressure=g.mode==="survival"?Math.min(1.1,(g.wave-1)*.11):0;
+ const growth=(g.speed<35?4.5:g.speed<52?1.2:-1.45)+pressure;
  g.horde=clamp(g.horde+growth*dt,0,100);
  if(g.horde>=100)lose(g,"LA HORDA T'HA ATRAPAT! Augmenta la velocitat.");
  if(g.phase!=="running")return;
+ if(g.mode==="survival"){
+  const wave=Math.floor(g.distance/SECTOR)+1;
+  if(wave>g.wave){g.wave=wave;g.zone=(wave-1)%ZONES.length;
+   g.dashCharges=Math.min(g.maxDashCharges,g.dashCharges+1);g.score+=400;
+   say(g,"ONADA "+wave+"! +400 · +1 esprint","zone",{zone:g.zone,points:400});}
+  return;
+ }
  const zone=Math.min(ZONES.length-1,Math.floor(g.distance/1450));
  if(zone>g.zone){g.zone=zone;g.dashCharges=Math.min(g.maxDashCharges,g.dashCharges+1);g.score+=400;say(g,"NOVA ZONA! +400 · +1 esprint","zone",{zone,points:400});}
  if(g.distance>=WORLD.length){

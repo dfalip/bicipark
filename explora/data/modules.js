@@ -55,12 +55,12 @@ export const biciparkModules = [
     title: "Rutes ciclistes",
     description:
       "Descobreix rutes, dificultat, distància, desnivell i informació pràctica.",
-    href: "../rutes.html",
+    href: "../route-explorer/catalog.html",
     icon: "🚴",
-    status: "Configurable",
-    statusType: "development",
-    tags: ["Carretera", "BTT", "Desnivell"],
-    enabled: false
+    status: "Disponible",
+    statusType: "default",
+    tags: ["Carretera", "BTT", "Desnivell", "Preferides"],
+    enabled: true
   },
   {
     id: "missions",
@@ -184,7 +184,7 @@ export const biciparkModules = [
     category: "games",
     title: "ZombiePedal · Escapa de la ciutat",
     description:
-      "Pedala davant d'una horda de zombis en 4 zones arcade, salta obstacles i llança pintura per frenar-los sense fer-los mal. Recull estrelles i aconsegueix combos!",
+      "Escapa de la ciutat en 4 zones o sobreviu en un circuit infinit d'onades progressives. Salta, recull estrelles, frena zombis amb pintura i bat els teus rècords!",
     href: "../zombiepedal/",
     icon: "🧟",
     status: "Nou joc",
