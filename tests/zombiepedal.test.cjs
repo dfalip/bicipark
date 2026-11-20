@@ -120,3 +120,23 @@ test('Game includes touch, keyboard, accessible status and no third-party script
  assert.match(app,/pointercancel/);assert.match(app,/localStorage/);
  assert.doesNotMatch(html,/<script[^>]+https?:\/\//);
 });
+
+test('Survival sectors are deterministic, progress beyond the escape finish and discard distant entities',async()=>{
+ const e=await load(),a=e.makeGame(42,'survival'),b=e.makeGame(42,'survival');
+ assert.deepEqual(a.enemies,b.enemies);
+ assert.deepEqual(a.pickups,b.pickups);
+ assert.equal(a.wave,1);
+ e.start(a);
+ for(const distance of [1451,3000,5800,15000,45000]){
+  a.distance=distance;a.invulnerable=1;a.hearts=3;a.horde=0;
+  e.step(a,{accelerate:true},1/60);
+  assert.equal(a.phase,'running');
+  assert.equal(a.wave,Math.floor(a.distance/1450)+1);
+  assert.equal(a.zone,(a.wave-1)%4);
+  assert.ok(a.enemies.length<45 && a.pickups.length<12);
+  assert.ok(a.enemies.every(x=>x.x>=a.distance-151));
+  assert.ok(a.enemies.some(x=>x.x>a.distance));
+ }
+ assert.ok(a.distance>e.WORLD.length);
+ assert.equal(a.finishStars,0);
+});
