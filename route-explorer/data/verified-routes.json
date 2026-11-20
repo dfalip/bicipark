@@ -83,12 +83,10 @@
     "kind": "external",
     "region": "Gironès · sud de Girona",
     "start": "Fornells de la Selva",
-    "difficulty": "facil",
-    "difficultyLevel": 1,
     "verified": true,
     "verifiedAt": "2026-11-19",
     "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "Dades de distància i traçat descrites per la font oficial; BiciPark només enllaça la ruta, no allotja ni verifica el GPX ni l'estat actual del ferm. Comproveu les incidències abans de sortir."
+    "metricNote": "Distància indicada per la font oficial; desnivell acumulat i dificultat no contrastats. Itinerari enllaçat, sense geometria GPX allotjada a BiciPark. Consulta avisos d'obres i incidències de la font abans de sortir."
   },
   {
     "id": "vv-girona-masies",
@@ -101,12 +99,10 @@
     "kind": "external",
     "region": "Gironès · Aiguaviva",
     "start": "Aiguaviva",
-    "difficulty": "facil",
-    "difficultyLevel": 1,
     "verified": true,
     "verifiedAt": "2026-11-19",
     "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "Dades de distància i traçat descrites per la font oficial; BiciPark només enllaça la ruta, no allotja ni verifica el GPX ni l'estat actual del ferm. Comproveu les incidències abans de sortir."
+    "metricNote": "Distància indicada per la font oficial; desnivell acumulat i dificultat no contrastats. Itinerari enllaçat, sense geometria GPX allotjada a BiciPark. Consulta avisos d'obres i incidències de la font abans de sortir."
   },
   {
     "id": "vv-girona-termal",
@@ -119,12 +115,10 @@
     "kind": "external",
     "region": "Selva · Cassà de la Selva",
     "start": "Cassà de la Selva",
-    "difficulty": "facil",
-    "difficultyLevel": 1,
     "verified": true,
     "verifiedAt": "2026-11-19",
     "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "Dades de distància i traçat descrites per la font oficial; BiciPark només enllaça la ruta, no allotja ni verifica el GPX ni l'estat actual del ferm. Comproveu les incidències abans de sortir."
+    "metricNote": "Distància indicada per la font oficial; desnivell acumulat i dificultat no contrastats. Itinerari enllaçat, sense geometria GPX allotjada a BiciPark. Consulta avisos d'obres i incidències de la font abans de sortir."
   },
   {
     "id": "vv-girona-tren-pinxo",
@@ -137,12 +131,10 @@
     "kind": "external",
     "region": "Gironès i Pla de l’Estany",
     "start": "Girona",
-    "difficulty": "moderada",
-    "difficultyLevel": 2,
     "verified": true,
     "verifiedAt": "2026-11-19",
     "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "Dades de distància i traçat descrites per la font oficial; BiciPark només enllaça la ruta, no allotja ni verifica el GPX ni l'estat actual del ferm. Comproveu les incidències abans de sortir."
+    "metricNote": "Distància indicada per la font oficial; desnivell acumulat i dificultat no contrastats. Itinerari enllaçat, sense geometria GPX allotjada a BiciPark. Consulta avisos d'obres i incidències de la font abans de sortir."
   },
   {
     "id": "vv-girona-muga",
@@ -155,12 +147,10 @@
     "kind": "external",
     "region": "Alt Empordà · Muga",
     "start": "Sant Llorenç de la Muga",
-    "difficulty": "moderada",
-    "difficultyLevel": 2,
     "verified": true,
     "verifiedAt": "2026-11-19",
     "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "Dades de distància i traçat descrites per la font oficial; BiciPark només enllaça la ruta, no allotja ni verifica el GPX ni l'estat actual del ferm. Comproveu les incidències abans de sortir."
+    "metricNote": "Distància indicada per la font oficial; desnivell acumulat i dificultat no contrastats. Itinerari enllaçat, sense geometria GPX allotjada a BiciPark. Consulta avisos d'obres i incidències de la font abans de sortir."
   },
   {
     "id": "vv-girona-vall-bianya",
@@ -173,12 +163,10 @@
     "kind": "external",
     "region": "Garrotxa · Vall de Bianya",
     "start": "Olot / L’Hostalnou de Bianya",
-    "difficulty": "facil",
-    "difficultyLevel": 1,
     "verified": true,
     "verifiedAt": "2026-11-19",
     "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "Dades de distància i traçat descrites per la font oficial; BiciPark només enllaça la ruta, no allotja ni verifica el GPX ni l'estat actual del ferm. Comproveu les incidències abans de sortir."
+    "metricNote": "Distància indicada per la font oficial; desnivell acumulat i dificultat no contrastats. Itinerari enllaçat, sense geometria GPX allotjada a BiciPark. Consulta avisos d'obres i incidències de la font abans de sortir."
   },
   {
     "id": "vv-girona-circular-sud-37",
@@ -191,12 +179,10 @@
     "kind": "external",
     "region": "Gironès · Girona",
     "start": "Girona",
-    "difficulty": "moderada",
-    "difficultyLevel": 2,
     "verified": true,
     "verifiedAt": "2026-11-19",
     "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "Dades de distància i traçat descrites per la font oficial; BiciPark només enllaça la ruta, no allotja ni verifica el GPX ni l'estat actual del ferm. Comproveu les incidències abans de sortir."
+    "metricNote": "Distància indicada per la font oficial; desnivell acumulat i dificultat no contrastats. Itinerari enllaçat, sense geometria GPX allotjada a BiciPark. Consulta avisos d'obres i incidències de la font abans de sortir."
   },
   {
     "id": "vv-girona-circular-sud-25",
@@ -209,47 +195,9 @@
     "kind": "external",
     "region": "Gironès · Girona",
     "start": "Girona",
-    "difficulty": "moderada",
-    "difficultyLevel": 2,
     "verified": true,
     "verifiedAt": "2026-11-19",
     "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "Dades de distància i traçat descrites per la font oficial; BiciPark només enllaça la ruta, no allotja ni verifica el GPX ni l'estat actual del ferm. Comproveu les incidències abans de sortir."
-  },
-  {
-    "id": "vv-girona-carrilet-i",
-    "name": "Ruta del Carrilet I · Olot–Girona",
-    "distanceKm": 55.5,
-    "elevationGain": null,
-    "modality": "greenway",
-    "url": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-carrilet-i/",
-    "sourceUrl": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-carrilet-i/",
-    "kind": "external",
-    "region": "Garrotxa, Selva i Gironès · Catalunya",
-    "start": "Olot",
-    "difficulty": "moderada",
-    "difficultyLevel": 2,
-    "verified": true,
-    "verifiedAt": "2026-11-20",
-    "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "La font indica 55,5–58,5 km segons l'entrada a Girona; 55,5 km és el mínim publicat, no una distància exacta d'un GPX. Paviment de sauló compactat segons font. Sense geometria reutilitzada ni desnivell acumulat verificat."
-  },
-  {
-    "id": "vv-girona-carrilet-ii",
-    "name": "Ruta del Carrilet II · Girona–Sant Feliu de Guíxols",
-    "distanceKm": 41.9,
-    "elevationGain": null,
-    "modality": "greenway",
-    "url": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-carrilet-tram-2/",
-    "sourceUrl": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-carrilet-tram-2/",
-    "kind": "external",
-    "region": "Gironès i Baix Empordà · Catalunya",
-    "start": "Girona",
-    "difficulty": "facil",
-    "difficultyLevel": 1,
-    "verified": true,
-    "verifiedAt": "2026-11-20",
-    "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "Distància de 41,9 km publicada per la font oficial; paviment de sauló compactat. No s'infereix desnivell acumulat de les cotes ni s'allotja cap traçat GPX."
+    "metricNote": "Distància indicada per la font oficial; desnivell acumulat i dificultat no contrastats. Itinerari enllaçat, sense geometria GPX allotjada a BiciPark. Consulta avisos d'obres i incidències de la font abans de sortir."
   }
 ]
