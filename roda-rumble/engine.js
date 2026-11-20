@@ -98,6 +98,21 @@ const MATERIAL={wood:{hp:60,mass:1.3,score:85,bounce:.24},
   glass:{hp:32,mass:.85,score:110,bounce:.16},
   steel:{hp:145,mass:2.5,score:140,bounce:.12}};
 const centerDist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+// Deterministic collision response. Normal impact reflects into the surface
+// normal, while tangential velocity retains momentum for realistic glancing hits.
+export function bounceVector(vx,vy,nx,ny,restitution=.4,tangentRetention=.93){
+  const incoming=-(vx*nx+vy*ny);
+  if(incoming<=0)return {vx,vy,normalSpeed:0};
+  const tx=vx+incoming*nx,ty=vy+incoming*ny;
+  return {
+    vx:tx*tangentRetention+incoming*restitution*nx,
+    vy:ty*tangentRetention+incoming*restitution*ny,
+    normalSpeed:incoming
+  };
+}
+const WHEEL_RESTITUTION=Object.freeze({wood:.34,glass:.18,steel:.63});
+const GROUND_RESTITUTION=Object.freeze({impact:.47,pulse:.39,drill:.33});
+
 let serial=0;
 export function newGame(index=0){
   const level=LEVELS[clamp(index|0,0,LEVELS.length-1)];
@@ -136,7 +151,7 @@ export function fire(g){
   const type=upcomingShot(g).id;
   g.projectile={x:WORLD.anchor.x,y:WORLD.anchor.y,r:type==="drill"?17:18,
     vx:Math.cos(theta)*speed,vy:-Math.sin(theta)*speed,angle:0,spin:0,
-    type,active:true,turbo:false,lowSpeed:0};
+    type,active:true,turbo:false,lowSpeed:0,bounces:0,lastBounce:null};
   g.shotsLeft-=1;g.shotCount+=1;g.shotTime=0;g.combo=0;
   g.phase="flying";g.notice=type==="pulse"
     ?"RODA POLS! Activa el turbo a prop dels blocs per crear una ona expansiva."
@@ -285,24 +300,36 @@ function circleBox(p,b){
 function collideProjectile(g,p,b){
   const c=circleBox(p,b);
   if(!c)return;
-  const impact=Math.max(0,(p.vx-b.vx)*-c.nx+(p.vy-b.vy)*-c.ny);
-  p.x+=c.nx*(c.depth+.3);p.y+=c.ny*(c.depth+.3);
-  const kick=Math.max(20,impact);
+  const velocityX=p.vx-b.vx,velocityY=p.vy-b.vy;
+  const impact=Math.max(0,-(velocityX*c.nx+velocityY*c.ny));
+  p.x+=c.nx*(c.depth+.35);p.y+=c.ny*(c.depth+.35);
+  if(impact<.5)return; // No repeated impulse when separating or resting.
   const drill=p.type==="drill" && p.turbo;
   const heavy=p.type==="impact";
-  p.vx+=c.nx*kick*(drill?.19:.65);
-  p.vy+=c.ny*kick*(drill?.23:.68);
-  const force=kick*(heavy?1.35:drill?1.13:1);
-  b.vx-=c.nx*force/(b.mass*2.3);b.vy-=c.ny*force/(b.mass*2.3);
-  b.spin+=(-c.ny*(p.vx>0?1:-1))*force/230;
+  const previousX=p.vx,previousY=p.vy;
+  const restitution=WHEEL_RESTITUTION[b.material]*(drill?.42:1);
+  const bounced=bounceVector(velocityX,velocityY,c.nx,c.ny,restitution,drill?.99:.92);
+  p.vx=clamp(b.vx+bounced.vx,-1000,1000);
+  p.vy=clamp(b.vy+bounced.vy,-1000,1000);
+  // Blocks get a physically directed impulse with their actual mass.
+  const knockback=impact*(heavy?1.35:drill?1.13:1);
+  b.vx-=c.nx*knockback/(b.mass*2.3);
+  b.vy-=c.ny*knockback/(b.mass*2.3);
+  b.spin+=(-c.ny*(previousX>0?1:-1))*knockback/230;
   const materialBonus=drill&&b.material==="steel"?2.7:1;
   damageBlock(g,b,impact*.68*(heavy?1.3:1)*materialBonus);
+  if(impact>44){
+    p.bounces=(p.bounces||0)+1;
+    p.lastBounce={x:p.x,y:p.y,at:g.shotTime,speed:impact,kind:b.material};
+  }
   if(impact>92 && (!b.lastImpactAt || g.shotTime-b.lastImpactAt>.16)){
     b.lastImpactAt=g.shotTime;
-    sparks(g,p.x,p.y,b.material==="glass"?"#baf8fa":"#ffe39e",5);
+    sparks(g,p.x,p.y,b.material==="glass"?"#baf8fa":
+      b.material==="steel"?"#a6ccf5":"#ffe39e",5);
     g.shake=Math.max(g.shake,3);
   }
 }
+
 function collideBlocks(g){
   const blocks=g.blocks.filter(x=>!x.dead);
   for(let i=0;i<blocks.length;i++){
@@ -401,8 +428,17 @@ function updateProjectile(g,dt){
   }
   if(p.y+p.r>WORLD.ground){
     p.y=WORLD.ground-p.r;
-    p.vy=Math.abs(p.vy)>65?-p.vy*.33:0;
-    p.vx*=.68;
+    // Bounce only when falling. Avoid artificial ground launches or jitter
+    // when the wheel is already rolling near the surface.
+    if(p.vy>65){
+      const hit=bounceVector(p.vx,p.vy,0,-1,GROUND_RESTITUTION[p.type]??.4,.89);
+      p.vx=hit.vx;p.vy=hit.vy;
+      p.bounces=(p.bounces||0)+1;
+      p.lastBounce={x:p.x,y:p.y,at:g.shotTime,speed:hit.normalSpeed,kind:"ground"};
+      if(hit.normalSpeed>160)sparks(g,p.x,p.y,"#d4d2bb",4);
+    }else{
+      p.vy=0;p.vx*=.94;
+    }
   }
   if(p.x<12||p.x>WORLD.width+40||p.y>WORLD.height+30){
     p.active=false;return;
