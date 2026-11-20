@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-10-20",
+  "updated": "2026-11-20",
   "bases": [
     {
       "id": "camping-izarpe",
@@ -304,6 +304,27 @@
       "verified": false,
       "partner": false,
       "dataFile": "./data/bases/cerdanya-ecoresort.json"
+    },
+    {
+      "id": "bed-bike-barcelona",
+      "slug": "bed-bike-barcelona",
+      "name": "Bed & Bike Barcelona",
+      "type": "hotel",
+      "categoryLabel": "Alberg · Serveis per a ciclistes",
+      "country": "ES",
+      "region": "Barcelona",
+      "locality": "Barcelona",
+      "profileUrl": "./bike-bases/base.html?id=bed-bike-barcelona",
+      "profileUrlFromBikeBases": "./base.html?id=bed-bike-barcelona",
+      "routesCount": 0,
+      "modes": [],
+      "modeLabels": [],
+      "status": "public-unverified",
+      "statusLabel": "Informació pública · No verificada",
+      "affiliated": false,
+      "verified": false,
+      "partner": false,
+      "dataFile": "./data/bases/bed-bike-barcelona.json"
     }
   ]
 }
