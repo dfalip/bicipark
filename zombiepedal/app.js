@@ -249,7 +249,7 @@ function reset(){
  $("playButton").textContent=playMode==="survival"?"▶ COMENÇA LA SUPERVIVÈNCIA":"▶ COMENÇA LA FUGIDA";
  ui.status.textContent=game.lastEvent;refresh();paint();
 }
-function launch(){if(start(game)){ui.ready.hidden=true;lastFrame=null;ui.status.textContent=game.lastEvent;}}
+function launch(){if(start(game)){ui.ready.hidden=true;lastFrame=null;ui.status.textContent=game.lastEvent;refresh();}}
 function pauseGame(){
  if(togglePause(game)){ui.pause.hidden=game.phase!=="paused";lastFrame=null;}
 }
