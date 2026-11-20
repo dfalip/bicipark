@@ -25,7 +25,7 @@ test('the official Girona batch has eight independently identified, link-only cy
   assert.ok(Number.isFinite(route.distanceKm)&&route.distanceKm>0);
   assert.equal(route.geometryFile,undefined,'link-only route does not contain a locally validated geometry');
   assert.ok(!known.has(route.id));
-  assert.match(route.metricNote,/no allotja ni verifica el GPX/);
+  assert.match(route.metricNote,/sense geometria GPX allotjada/);
  }
 });
 test('the greenway modality can be selected from the user-facing route catalog',()=>{
