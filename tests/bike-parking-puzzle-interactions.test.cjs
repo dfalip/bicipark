@@ -116,3 +116,60 @@ test('Arrow keys move the selected bicycle and Ctrl+Z undoes its move',()=>{
     assert.equal(game.moves,0);
   }finally{h.dom.window.close();}
 });
+
+test('City map retains 12 deterministic levels and renders buildings, roads, parks and original cycle artwork',()=>{
+ const h=setup();try{
+  const g=h.w.__getGame();
+  assert.equal(h.$('levelSelect').options.length,12);
+  assert.equal(h.$('puzzleDpad').querySelectorAll('[data-puzzle-direction]').length,4);
+  assert.equal(h.$('board').querySelectorAll('.tile-street').length,16);
+  assert.ok(h.$('board').querySelectorAll('.cycle-top-view').length>=g.positions.length);
+  assert.match(h.$('board').getAttribute('aria-label'),/Mapa urbà/);
+  h.$('levelSelect').value='11';
+  h.$('levelSelect').dispatchEvent(new h.w.Event('change',{bubbles:true}));
+  assert.ok(h.$('board').querySelectorAll('.tile-building,.tile-park').length>=5);
+  assert.equal(h.$('board').querySelectorAll('.tile').length,25);
+ }finally{h.dom.window.close();}
+});
+test('On-screen direction buttons allow a legal adjacent move and disable blocked directions',()=>{
+ const h=setup();try{
+  const g=h.w.__getGame(),m=h.w.__engine.solve(g.cfg,g.positions)[0];
+  const buttons=[...h.$('puzzleDpad').querySelectorAll('[data-puzzle-direction]')];
+  assert.ok(buttons.every(b=>b.disabled),'Cannot drive without selecting a bike');
+  h.$('board').querySelector('[data-pos="'+m.from+'"]').click();
+  const direction=buttons.find(b=>b.dataset.puzzleDirection===m.direction);
+  assert.equal(direction.disabled,false);
+  direction.focus();
+  direction.click();
+  assert.equal(g.positions[m.bike],m.to);
+  assert.equal(g.moves,1);
+  assert.equal(h.w.document.activeElement,direction,'Direction pad should retain keyboard focus');
+  h.$('undoButton').click();
+  assert.equal(g.moves,0);
+  assert.equal(g.positions[m.bike],m.from);
+ }finally{h.dom.window.close();}
+});
+test('A completed animated move is decorative and does not alter engine positions or controls',()=>{
+ const h=setup();try{
+  const g=h.w.__getGame(),move=h.w.__engine.solve(g.cfg,g.positions)[0];
+  const native=h.w.HTMLElement.prototype.getBoundingClientRect;
+  h.w.HTMLElement.prototype.getBoundingClientRect=function(){
+   const pos=Number(this.dataset?.pos);
+   if(this.classList?.contains('tile')&&Number.isInteger(pos)){
+    const size=g.cfg.size;return {left:(pos%size)*85,top:Math.floor(pos/size)*85,width:80,height:80,right:0,bottom:0};
+   }
+   return native.call(this);
+  };
+  h.$('board').querySelector('[data-pos="'+move.from+'"]').click();
+  h.$('board').querySelector('[data-pos="'+move.to+'"]').click();
+  assert.equal(g.positions[move.bike],move.to);
+  const tile=h.$('board').querySelector('[data-pos="'+move.to+'"]');
+  const ghost=tile.querySelector('.bike-drive-ghost');
+  assert(ghost,'moving bike should be visible as a ghost sprite during the animation');
+  assert.equal(tile.querySelector('.bike-drive-hidden')!==null,true);
+  ghost.dispatchEvent(new h.w.Event('animationend'));
+  assert.equal(tile.querySelector('.bike-drive-ghost'),null);
+  assert.equal(tile.querySelector('.bike-drive-hidden'),null);
+  assert.equal(g.moves,1);
+ }finally{h.dom.window.close();}
+});
