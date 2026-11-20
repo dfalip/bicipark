@@ -8,7 +8,7 @@
 - Una vegada en vol, **Turbo** o **Espai** activa un impuls únic i limitat per trajectòria; no es pot encadenar.
 - La fusta, el vidre i l'acer tenen resistències diferents. Els bidons vermells esclaten i poden fer caure altres blocs o objectius.
 - Cal eliminar els robots de ferralla amb un nombre limitat de rodes. Els robots cauen si perden els suports.
-- Hi ha sis circuits fets a mà i puntuació amb fins a tres estrelles. Les millors marques es guarden localment i el joc funciona sense connexió.
+- Hi ha deu circuits fets a mà i puntuació amb fins a tres estrelles. Les millors marques es guarden localment i el joc funciona sense connexió.
 
 ## Arquitectura
 - `engine.js`: simulació determinista amb integració a passos `1/120`, col·lisions cercle/rectangle i rectangle/rectangle, blocs que es desplacen, dany per impacte, gravetat, reacció dels objectius, explosions, punts i estrelles.
@@ -35,3 +35,11 @@ Obre `/roda-rumble/` en un servidor HTTP estàtic.
 - **Punteria fidel a les fórmules de la roda**, fins al primer obstacle (sense simular el turbo). Mostra on es preveu la col·lisió, tant si apuntes amb arrossegament com amb sliders o teclat.
 - **Indicador de roda següent** amb habilitat, color i instruccions; explosions radials dibuixades sobre l'escenari, col·lisions amb més resposta i partícules.
 - La física és arcade de rectangles axis-aligned, no un motor 2D complet de cossos rígids, i es validarà en un navegador físic.
+
+## Rebots per material (novembre 2026)
+
+- Els impactes de les rodes respecten la **normal de contacte**: en cops frontals canvia la direcció, mentre que en cops oblics es conserva part del moviment tangent. El material modifica la restitució (acer més elàstic, vidre més dissipatiu i fusta entremig).
+- Les col·lisions amb terra reboten només quan la roda cau amb prou velocitat; quan ja roda lentament, la velocitat vertical es cancel·la per evitar salts espuris.
+- Efecte de contacte breu en color diferent segons material, vinculat a una col·lisió real de la simulació; no s'anima quan el sistema demana moviment reduït.
+- Les diferències de força entre martell i trepant i les regles de dany, punts i bombes es mantenen. És física arcade determinista, no simulació rígida completa ni garantia d'igual dificultat sense playtesting real.
+- Proves de normal, rebot per material, cop oblic, sòl i absència de vibració artificial a `tests/roda-rumble-rebounds.test.cjs`.
