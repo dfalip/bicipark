@@ -186,3 +186,27 @@ test('A dated ZombiePedal mission follows the seed and only successful escape re
   assert.match(h.$('finishSummary').textContent,/REPTE DIARI COMPLETAT/);
  }finally{h.dom.window.close();}
 });
+
+test('Survival uses separate records and resumes a fresh run of the selected mode',()=>{
+ const h=setup();try{
+  const select=h.$('modeSelect');select.value='survival';
+  select.dispatchEvent(new h.w.Event('change',{bubbles:true}));
+  assert.equal(h.w.__state().game.mode,'survival');
+  assert.match(h.$('playButton').textContent,/SUPERVIVÈNCIA/);
+  h.$('playButton').click();
+  const g=h.w.__state().game;
+  assert.equal(select.disabled,true);
+  g.distance=6000;g.horde=99.99;g.speed=12;
+  h.frame(0);h.frame(70);
+  assert.equal(g.phase,'lost');
+  assert.match(h.$('lostReason').textContent,/Onada/);
+  assert.ok(h.w.localStorage.getItem('bicipark-zombiepedal-survival-best-v1'));
+  assert.equal(h.w.localStorage.getItem('bicipark-zombiepedal-best-v1'),null);
+  h.$('retryButton').click();
+  assert.equal(h.w.__state().game.mode,'survival');
+  assert.equal(h.w.__state().game.distance,0);
+  select.value='escape';select.dispatchEvent(new h.w.Event('change',{bubbles:true}));
+  assert.equal(h.w.__state().game.mode,'escape');
+  assert.equal(h.w.localStorage.getItem('bicipark-zombiepedal-best-v1'),null);
+ }finally{h.dom.window.close();}
+});

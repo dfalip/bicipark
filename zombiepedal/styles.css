@@ -57,3 +57,7 @@
 .actions .route-seed{margin-left:0;padding:7px 10px;border:1px solid #8dc9be6b;border-radius:8px;color:#d0f9e7;font-variant-numeric:tabular-nums}
 .actions #recordValue{margin-left:auto}
 @media(max-width:540px){.actions{gap:6px}.actions button{padding:8px}.actions .route-seed{font-size:.58rem}.actions #recordValue{flex-basis:100%;margin-left:0}}
+
+.mode label{font-weight:950;font-size:.68rem;letter-spacing:.09em;color:var(--yellow)}
+.mode select{max-width:100%;min-height:44px;border:1px solid #8cfcce;background:#10323b;color:#effffa;border-radius:8px;padding:8px;font:inherit;font-size:.82rem;font-weight:850;cursor:pointer}
+.mode select:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}.mode select:disabled{opacity:.75}
