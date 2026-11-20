@@ -59,6 +59,7 @@ function populate(g){
   g.nextSpawn+=Math.max(225,322-difficulty*11)+Math.floor(nextRandom(g)*72);
  }
  g.enemies=g.enemies.filter(e=>e.x>g.distance-130);
+ for(const wave of g.bossWaves)if(wave<Math.floor(g.distance/DISTRICT_LENGTH)-1)g.bossWaves.delete(wave);
  g.pickups=g.pickups.filter(e=>e.x>g.distance-125&&!e.collected);
 }
 export function makeArcade(seed=77,mode="story"){
@@ -82,7 +83,7 @@ export function jumpArcade(g){
  g.altitude=.1;g.vy=300;g.jumps++;addEvent(g,"jump",{lane:g.lane});return true;
 }
 export function shootArcade(g){
- if(g.phase!=="running"||g.ammo<=0||g.cooldown>0)return false;
+ if(g.phase!=="running"||g.ammo<=0||g.cooldown>0||g.altitude>26)return false;
  g.ammo--;g.cooldown=.23;
  g.shots.push({x:g.distance+29,lane:g.lane,ttl:1.05});
  addEvent(g,"shot",{x:g.distance+29,lane:g.lane});return true;
