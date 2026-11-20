@@ -215,7 +215,7 @@ function paint(){if(ctx)drawArcade(ctx,g,fx,reduce);}
 function frame(time){
  if(lastFrame===null)lastFrame=time;
  const dt=clamp((time-lastFrame)/1000,0,.1);lastFrame=time;
- if(g.phase==="running")stepArcade(g,{accelerate:isHeld("gas"),brake:isHeld("brake"),fire:isHeld("fire")},dt);
+ if(g.phase==="running"){tickStick(dt);stepArcade(g,{accelerate:isHeld("gas"),brake:isHeld("brake"),fire:isHeld("fire")},dt);}
  consume();if(g.phase!=="paused")advanceEffects(fx,dt);
  if(g.phase!==previous){
   if(g.phase==="won"||g.phase==="lost"){saveFinish();renderMedals();clearInputs();setOverlay();$("play").focus({preventScroll:true});}
