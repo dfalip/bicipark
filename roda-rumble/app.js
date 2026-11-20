@@ -337,7 +337,7 @@ function drawBlock(b){
       ctx.beginPath();ctx.arc(xx,yy,2.8,0,Math.PI*2);ctx.fill();
     }
   }
-  window.BiciParkArcadeArt?.material(ctx,b,colors);
+  window.BiciParkArcadeArt?.material(ctx,b,[base,light,edge]);
   if(b.hp<26){ctx.strokeStyle="#132a3bbb";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-8,-b.h/2);ctx.lineTo(2,-4);ctx.lineTo(-5,8);ctx.lineTo(8,b.h/2);ctx.stroke();}
   ctx.restore();
 }
