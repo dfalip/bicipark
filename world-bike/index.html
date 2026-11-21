@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#0b4637">
+  <title>BiciPark World · Serveis ciclistes cartografiats</title>
+  <meta name="description" content="Prototip experimental de consulta voluntària de serveis ciclistes cartografiats a OpenStreetMap, a qualsevol regió del món.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="wb-header">
+    <a href="../index.html" class="wb-brand">🚲 <strong>BiciPark</strong> <span>WORLD</span></a>
+    <nav data-world-i18n-aria="navAria" aria-label="Navegació"><a href="../explora/" data-world-i18n="explore">Explora</a><a href="../mapa-ciclista.html" data-world-i18n="bikeMapNav">Mapa ciclista</a></nav>
+    <div class="wb-language"><label for="worldLanguage" data-world-i18n="language">Idioma</label>
+      <select id="worldLanguage" aria-label="Language / Idioma">
+        <option value="ca">Català</option><option value="es">Español</option>
+        <option value="en">English</option><option value="fr">Français</option>
+      </select>
+    </div>
+  </header>
+  <main class="wb-main">
+    <div class="wb-title">
+      <div>
+        <p class="wb-overline" data-world-i18n="pilot">BiciPark World · pilot experimental</p>
+        <h1 data-world-i18n="hero">El planeta, a dues rodes.</h1>
+        <p><span data-world-i18n="introBefore">Busca serveis ciclistes </span><strong data-world-i18n="introStrong">cartografiats</strong><span data-world-i18n="introAfter"> arreu del món. Mou el mapa i tria un servei, o prem «Cerca serveis a prop meu» per fer-ho amb el GPS.</span></p>
+      </div>
+      <div class="wb-provenance"><strong data-world-i18n="source">Font: OpenStreetMap</strong><span data-world-i18n="sourceNote">Registres comunitaris · no verificats in situ</span></div>
+    </div>
+    <section class="wb-layout">
+      <div class="wb-map-wrap">
+        <div class="wb-map-header"><strong data-world-i18n="map">Mapa mundial</strong><span id="coordinates" data-world-i18n="moveMap">Mou el mapa fins a una ciutat</span></div>
+        <div id="worldMap" role="region" class="wb-map" data-world-i18n-aria="mapAria" aria-label="Mapa mundial amb navegació per teclat"></div>
+        <div class="wb-map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a></div>
+      </div>
+      <aside class="wb-panel">
+        <div class="wb-panel-head"><h2 data-world-i18n="services">Serveis per a ciclistes</h2><p data-world-i18n="servicesIntro">Busca primer una ciutat del món, o utilitza la teva zona, i després consulta els serveis cartografiats.</p></div>
+        <form id="placeSearchForm" class="wb-place-search" role="search">
+          <label for="placeSearchInput" data-world-i18n="cityLabel">Troba una ciutat o una adreça</label>
+          <div class="wb-place-search-row">
+            <input id="placeSearchInput" type="search" minlength="3" maxlength="120" required data-world-i18n-placeholder="cityPlaceholder" placeholder="Amsterdam, Tòquio, París..." autocomplete="off">
+            <button id="placeSearchButton" type="submit" class="wb-button wb-button-primary" data-world-i18n="cityButton">Cerca ciutat</button>
+          </div>
+          <p class="wb-place-search-note" data-world-i18n="placeSearchNote">Cerca mitjançant el geocodificador configurat a BiciPark (dades basades en OpenStreetMap). Només s'envia el text quan prems «Cerca ciutat».</p>
+          <div id="placeSearchStatus" role="status" aria-live="polite" class="wb-place-search-status"></div>
+          <ul id="placeSearchResults" class="wb-place-search-results" data-world-i18n-aria="resultsAria" aria-label="Resultats de cerca de llocs"></ul>
+        </form>
+        <button id="locateButton" type="button" class="wb-button wb-button-secondary" data-world-i18n="near">📍 Cerca serveis a prop meu</button>
+        <button id="searchButton" type="button" class="wb-button wb-button-primary" data-world-i18n="center">🔎 Buscar al centre del mapa (900 m)</button>
+        <p class="wb-disclaimer"><span data-world-i18n="disclaimerBefore">«Cerca serveis a prop meu» demana permís de GPS i, si el concedeixes, consulta la teva zona a Overpass. Les categories i «Buscar al centre» consulten el centre del mapa. Les tesel·les del mapa comuniquen al proveïdor la zona visualitzada. Les consultes de serveis passen pel servidor de BiciPark, que transmet la zona aproximada a </span><a href="https://overpass.private.coffee/" target="_blank" rel="noopener noreferrer">Private.coffee</a><span data-world-i18n="disclaimerAfter"> o, si ho tries, al servidor alternatiu. Radi de cerca: 900 m.</span></p>
+        <p id="status" class="wb-status" role="status" aria-live="polite" data-world-i18n="initial">Selecciona una categoria, prem «Buscar al centre» o cerca a prop teu.</p>
+        <button id="alternateProviderButton" type="button" class="wb-button wb-button-secondary wb-provider-retry" hidden data-world-i18n="retry">🔄 Prova un altre servidor de dades</button>
+        <div class="wb-filters" data-world-i18n-aria="filtersAria" aria-label="Cerca o filtra serveis cartografiats">
+          <button type="button" data-type="all" aria-pressed="true" data-world-i18n="all">Tots</button>
+          <button type="button" data-type="bicycle_parking" aria-pressed="false" data-world-i18n="parking">🅿️ Aparcament</button>
+          <button type="button" data-type="bicycle_repair_station" aria-pressed="false" data-world-i18n="repair">🛠️ Reparació</button>
+          <button type="button" data-type="drinking_water" aria-pressed="false" data-world-i18n="water">💧 Aigua</button>
+          <button type="button" data-type="bicycle_shop" aria-pressed="false" data-world-i18n="shop">🏪 Botigues</button>
+          <button type="button" data-type="bicycle_rental" aria-pressed="false" data-world-i18n="rental">🚲 Lloguer</button>
+        </div>
+        <div class="wb-results-head"><strong id="resultCount" data-world-i18n="none">Cap consulta encara</strong><small id="sourceStamp" data-world-i18n="sourceNoteShort">Font: OSM · dades variables segons la zona</small></div>
+        <ul id="resultList" class="wb-results"></ul>
+        <p class="wb-legal" data-world-i18n="legal">La manca de resultats no vol dir que no hi hagi serveis. Les dades OSM poden ser incompletes, antigues o imprecises. Sense resultats inventats.</p>
+      </aside>
+    </section>
+    <footer><p data-world-i18n="footer">Prototip de descoberta, no navegador ni garantia de seguretat. Verifica sempre la disponibilitat dels serveis abans de sortir.</p></footer>
+  </main>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="../modules/geocoding/geocoding.js"></script>
+  <script src="./i18n.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

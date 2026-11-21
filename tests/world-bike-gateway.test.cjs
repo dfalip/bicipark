@@ -1,0 +1,266 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const handler=require('../api/world-bike.js');
+
+function response(){
+  return {
+    statusCode:200,
+    headers:{},
+    setHeader(name,value){this.headers[name.toLowerCase()]=value;},
+    end(text){this.data=JSON.parse(text);}
+  };
+}
+async function invoke(url,method='GET'){
+  const res=response();
+  await handler({url,method},res);
+  return res;
+}
+test('World gateway refuses unsafe coords, unsupported providers and non-GET methods',async()=>{
+  const r1=await invoke('/api/world-bike?lat=100&lng=2');
+  assert.equal(r1.statusCode,400);
+  assert.equal(r1.data.code,'INVALID_COORDS');
+  const r2=await invoke('/api/world-bike?lat=41&lng=2&provider=https://evil.example');
+  assert.equal(r2.statusCode,400);
+  assert.equal(r2.data.code,'INVALID_PROVIDER');
+  const r3=await invoke('/api/world-bike?lat=41&lng=2','POST');
+  assert.equal(r3.statusCode,405);
+  assert.equal(r3.headers.allow,'GET');
+});
+test('World gateway sends a bounded query server-side and returns attributable OSM data',async()=>{
+  const previous=global.fetch;
+  let requests=0;
+  try{
+    global.fetch=async (url,opts)=>{
+      requests+=1;
+      assert.match(url,/^https:\/\/overpass\.private\.coffee\/api\/interpreter$/);
+      assert.equal(opts.method,'POST');
+      assert.match(String(opts.body),/data=/);
+      assert.match(new URLSearchParams(String(opts.body)).get('data'),/around:900,41\.389,2\.170/);
+      return {
+        ok:true,status:200,headers:{get:()=>null},
+        text:async()=>JSON.stringify({
+          elements:[{type:'node',id:5,lat:41.389,lon:2.17,tags:{amenity:'bicycle_parking'}}],
+          osm3s:{timestamp_osm_base:'2026-11-14T13:00:00Z'}
+        })
+      };
+    };
+    const res=await invoke('/api/world-bike?lat=41.38902&lng=2.16996');
+    assert.equal(res.statusCode,200);
+    assert.equal(res.data.ok,true);
+    assert.equal(res.data.elements.length,1);
+    assert.equal(res.data.provider,'Private.coffee');
+    assert.deepEqual(res.data.queriedCenter,{lat:41.389,lng:2.17});
+    assert.match(res.headers['cache-control'],/s-maxage=600/);
+    assert.equal(requests,1);
+  }finally{global.fetch=previous;}
+});
+test('World gateway keeps upstream failures visible and never converts them into empty success',async()=>{
+  const previous=global.fetch;
+  try{
+    global.fetch=async ()=>({ok:false,status:429,headers:{get:()=>null}});
+    const res=await invoke('/api/world-bike?lat=-33.87&lng=151.20&provider=secondary');
+    assert.equal(res.statusCode,503);
+    assert.equal(res.data.ok,false);
+    assert.equal(res.data.code,'UPSTREAM_HTTP');
+    assert.equal(res.data.upstreamStatus,429);
+    assert.equal(res.data.provider,'FOSSGIS');
+    const repeat=await invoke('/api/world-bike?lat=-33.87&lng=151.20&provider=secondary');
+    assert.equal(repeat.statusCode,429);
+    assert.equal(repeat.data.code,'RECENT_FAILURE');
+  }finally{global.fetch=previous;}
+});
+test('World gateway fails closed when an upstream returns HTML or invalid data',async()=>{
+  const previous=global.fetch;
+  try{
+    global.fetch=async ()=>({ok:true,status:200,headers:{get:()=>null},text:async()=>'<html>Busy</html>'});
+    const res=await invoke('/api/world-bike?lat=35.68&lng=139.65');
+    assert.equal(res.statusCode,503);
+    assert.equal(res.data.code,'UPSTREAM_INVALID_DATA');
+  }finally{global.fetch=previous;}
+});
+
+test('World gateway diagnostics never log exact or rounded user coordinates',async()=>{
+  const previous=global.fetch, info=console.info;
+  const logs=[];
+  try{
+    console.info=message=>logs.push(String(message));
+    global.fetch=async()=>({ok:false,status:503,headers:{get:()=>null}});
+    const res=await invoke('/api/world-bike?lat=53.34984&lng=-6.26031');
+    assert.equal(res.statusCode,503);
+    assert.equal(logs.length,1);
+    const metric=JSON.parse(logs[0]);
+    assert.equal(metric.event,'world-bike.provider');
+    assert.equal(metric.provider,'Private.coffee');
+    assert.equal(metric.outcome,'UPSTREAM_HTTP');
+    assert.doesNotMatch(logs[0],/53\.34|6\.26|lat|lng|coords|ipAddress/i);
+  }finally{global.fetch=previous;console.info=info;}
+});
+
+test('World gateway never forwards finer-than-3-decimal GPS coordinates to Overpass',async()=>{
+  const previous=global.fetch;
+  const queries=[];
+  try{
+    global.fetch=async (_url,opts)=>{
+      queries.push(new URLSearchParams(String(opts.body)).get('data'));
+      return {ok:true,status:200,headers:{get:()=>null},text:async()=>JSON.stringify({elements:[]})};
+    };
+    const first=await invoke('/api/world-bike?lat=48.85661&lng=2.35221');
+    const sameCell=await invoke('/api/world-bike?lat=48.85699&lng=2.35249');
+    const otherCell=await invoke('/api/world-bike?lat=48.85761&lng=2.35221');
+    assert.ok([first,sameCell,otherCell].every(r=>r.statusCode===200));
+    assert.equal(queries.length,3);
+    assert.match(queries[0],/around:900,48\.857,2\.352/);
+    assert.equal(queries[0],queries[1], 'Sub-cell GPS precision must not reach the provider');
+    assert.match(queries[2],/around:900,48\.858,2\.352/);
+    assert.notEqual(queries[0],queries[2], 'A different 3-decimal cell stays distinguishable');
+    assert.deepEqual(first.data.queriedCenter,{lat:48.857,lng:2.352});
+    assert.deepEqual(sameCell.data.queriedCenter,first.data.queriedCenter);
+    assert.deepEqual(otherCell.data.queriedCenter,{lat:48.858,lng:2.352});
+    assert.doesNotMatch(queries.join('\n'),/48\.85661|48\.85699|48\.85761|2\.35221|2\.35249/);
+  }finally{global.fetch=previous;}
+});
+
+test('World gateway rejects multibyte upstream bodies exceeding the UTF-8 byte cap',async()=>{
+  const previous=global.fetch;
+  try{
+    const multibyte='é'.repeat(430_000);
+    assert.ok(multibyte.length<850_000);
+    assert.ok(Buffer.byteLength(multibyte,'utf8')>850_000);
+    global.fetch=async()=>({
+      ok:true,status:200,headers:{get:()=>null},
+      text:async()=>multibyte
+    });
+    const res=await invoke('/api/world-bike?lat=40.71281&lng=-74.00601');
+    assert.equal(res.statusCode,503);
+    assert.equal(res.data.code,'UPSTREAM_TOO_LARGE');
+  }finally{global.fetch=previous;}
+});
+
+test('World gateway cancels an oversized streaming upstream response before buffering all chunks',async()=>{
+  const previous=global.fetch;
+  let reads=0,cancels=0;
+  try{
+    global.fetch=async()=>({
+      ok:true,status:200,headers:{get:()=>null},
+      body:{getReader(){
+        return {
+          async read(){
+            reads++;
+            return {done:false,value:new Uint8Array(500_000)};
+          },
+          async cancel(){cancels++;},
+          releaseLock(){}
+        };
+      }},
+      text:async()=>{throw Error('streaming response must not call text()');}
+    });
+    const res=await invoke('/api/world-bike?lat=37.77493&lng=-122.41942');
+    assert.equal(res.statusCode,503);
+    assert.equal(res.data.code,'UPSTREAM_TOO_LARGE');
+    assert.equal(reads,2);
+    assert.equal(cancels,1);
+  }finally{global.fetch=previous;}
+});
+
+test('World gateway accepts valid JSON delivered in multiple stream chunks',async()=>{
+  const previous=global.fetch;
+  try{
+    const bytes=Buffer.from(JSON.stringify({elements:[{type:'node',id:77,lat:59.33,lon:18.06,tags:{amenity:'drinking_water'}}]}));
+    const chunks=[bytes.subarray(0,9),bytes.subarray(9)];
+    global.fetch=async()=>({
+      ok:true,status:200,headers:{get:()=>null},
+      body:{getReader(){
+        return {
+          async read(){return chunks.length?{done:false,value:chunks.shift()}:{done:true};},
+          releaseLock(){}
+        };
+      }}
+    });
+    const res=await invoke('/api/world-bike?lat=59.32932&lng=18.06858');
+    assert.equal(res.statusCode,200);
+    assert.equal(res.data.elements[0].id,77);
+  }finally{global.fetch=previous;}
+});
+
+test('World gateway caps concurrent distinct upstream calls per instance and permits recovery',async()=>{
+  const previous=global.fetch;
+  const releases=[];
+  let calls=0;
+  try{
+    global.fetch=async()=>{
+      calls++;
+      return await new Promise(resolve=>releases.push(()=>resolve({
+        ok:true,status:200,headers:{get:()=>null},
+        text:async()=>JSON.stringify({elements:[]})
+      })));
+    };
+    const pending=Array.from({length:4},(_,i)=>invoke('/api/world-bike?lat=12.'+(10000+i*100)+'&lng=30.12345'));
+    await Promise.resolve();
+    assert.equal(calls,4);
+    const blocked=await invoke('/api/world-bike?lat=13.12345&lng=30.12345');
+    assert.equal(blocked.statusCode,503);
+    assert.equal(blocked.data.code,'LOCAL_CAPACITY');
+    assert.equal(calls,4);
+    releases.forEach(release=>release());
+    const finished=await Promise.all(pending);
+    assert.ok(finished.every(r=>r.statusCode===200));
+    const next=invoke('/api/world-bike?lat=14.12345&lng=30.12345');
+    await Promise.resolve();
+    assert.equal(calls,5);
+    releases[4]();
+    assert.equal((await next).statusCode,200);
+  }finally{global.fetch=previous;}
+});
+
+
+test('World gateway rejects Overpass HTTP 200 runtime remarks instead of showing zero POIs',async()=>{
+  const previous=global.fetch;
+  try{
+    global.fetch=async()=>({ok:true,status:200,headers:{get:()=>null},text:async()=>JSON.stringify({
+      remark:'runtime error: Query timed out',elements:[]
+    })});
+    const res=await invoke('/api/world-bike?lat=48.857&lng=2.352');
+    assert.equal(res.statusCode,503);
+    assert.equal(res.data.ok,false);
+    assert.equal(res.data.code,'UPSTREAM_REMARK');
+    assert.equal(res.headers['cache-control'],'no-store');
+  }finally{global.fetch=previous;}
+});
+
+test('World gateway rejects malformed OSM elements despite upstream HTTP 200',async()=>{
+  const previous=global.fetch;
+  try{
+    global.fetch=async()=>({ok:true,status:200,headers:{get:()=>null},
+      text:async()=>JSON.stringify({elements:[{type:'node',id:7,lat:999,lon:2}]})});
+    const res=await invoke('/api/world-bike?lat=51.5074&lng=-0.1278');
+    assert.equal(res.statusCode,503);
+    assert.equal(res.data.code,'UPSTREAM_INVALID_DATA');
+    assert.equal(res.headers['cache-control'],'no-store');
+  }finally{global.fetch=previous;}
+});
+
+test('World gateway rejects malformed way/relation centers and accepts valid centers',async()=>{
+  const previous=global.fetch;
+  try{
+    const samples=[
+      {type:'way',id:11,center:{lat:95,lon:2}},
+      {type:'relation',id:12,center:{lat:41,lon:NaN}},
+      {type:'way',id:13,center:null}
+    ];
+    let index=0;
+    global.fetch=async()=>({ok:true,status:200,headers:{get:()=>null},
+      text:async()=>JSON.stringify({elements:[samples[index++]]})});
+    for(const coords of ['10.101,20.101','10.102,20.102','10.103,20.103']){
+      const [lat,lng]=coords.split(',');
+      const res=await invoke('/api/world-bike?lat='+lat+'&lng='+lng);
+      assert.equal(res.statusCode,503);
+      assert.equal(res.data.code,'UPSTREAM_INVALID_DATA');
+    }
+    global.fetch=async()=>({ok:true,status:200,headers:{get:()=>null},
+      text:async()=>JSON.stringify({elements:[{type:'way',id:14,center:{lat:41.4,lon:2.2}}]})});
+    const valid=await invoke('/api/world-bike?lat=10.104&lng=20.104');
+    assert.equal(valid.statusCode,200);
+    assert.equal(valid.data.elements[0].id,14);
+  }finally{global.fetch=previous;}
+});
