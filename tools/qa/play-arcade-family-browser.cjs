@@ -51,6 +51,15 @@ async function run(){
      if(action&&await page.locator(action).isVisible()&&await page.locator(action).isEnabled()){
        await page.locator(action).click();await page.waitForTimeout(250);
      }
+     if(theme==='snow'){
+      assert.ok(await page.evaluate(()=>typeof window.SnowBikeAlpine?.project==='function'&&typeof window.SnowBikeAlpine?.draw==='function'));
+      await page.waitForFunction(()=>parseInt(document.querySelector('#progressValue').textContent,10)>=4,null,{timeout:12000});
+      await el.screenshot({path:path.join(out,'snow-riding-'+viewport.width+'.png')});
+      await page.keyboard.press('Space');
+      await page.waitForFunction(()=>document.querySelector('#jumpButton').getAttribute('aria-disabled')==='true',null,{timeout:2000});
+      await page.waitForTimeout(170);
+      await el.screenshot({path:path.join(out,'snow-jump-'+viewport.width+'.png')});
+     }
      await el.screenshot({path:path.join(out,theme+'-'+viewport.width+'.png')});
     }else{
      await page.locator('#board .tile').first().waitFor();
