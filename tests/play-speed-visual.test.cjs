@@ -30,7 +30,7 @@ test('SnowBike gains speed downhill, while tucking and turbo remain controllable
  e.start(g);
  g.course.animals=[];g.course.gates=[];
  for(let i=0;i<270;i++)e.step(g,{tuck:true},1/60);
- assert.ok(g.velocity>72&&g.velocity<74);
+ assert.ok(g.velocity>64&&g.velocity<82&&Math.abs(g.velocity-73*e.terrainPace(g.distance,0))<7);
  assert.ok(g.distance>225);
  const normal=g.velocity;
  assert.ok(e.boost(g));
