@@ -86,14 +86,20 @@ export const LEVELS=Object.freeze([
     ["wood",879,482,49,60],["glass",846,427,133,22],
     ["glass",814,385,42,66],["steel",882,384,48,66],
     ["wood",851,335,166,21]
-   ],robots:[[559,350],[706,290],[849,298],[930,486]],bombs:[[641,491],[793,490],[957,489]]}
+   ],robots:[[559,350],[706,290],[849,298],[930,486]],bombs:[[641,491],[793,490],[957,489]]},
+ {name:"El túnel",subtitle:"Obre el sostre o una entrada lateral",theme:"tunnel",shots:6,queue:["impact","split","drill","blast","spring","pulse"],blocks:[["steel",590,470,46,80],["glass",710,470,46,80],["wood",650,418,182,24],["glass",650,370,48,70],["steel",860,475,48,70],["wood",915,475,48,70],["glass",888,428,130,24]],robots:[[650,486],[650,317],[888,393]],bombs:[[765,490]]},
+ {name:"Taller abandonat",subtitle:"Divideix les rodes i obre diversos fronts",theme:"workshop",shots:6,queue:["split","blast","spring","drill","pulse","impact"],blocks:[["wood",535,470,45,80],["glass",600,470,45,80],["wood",568,418,148,24],["glass",568,370,50,70],["steel",780,470,46,80],["glass",850,470,46,80],["wood",815,418,164,24],["glass",815,370,50,70]],robots:[[568,315],[815,315],[700,488]],bombs:[[660,490],[920,490]]},
+ {name:"La grua",subtitle:"Pilars fràgils i reaccions en cadena",theme:"yard",shots:7,queue:["spring","split","blast","drill","pulse","impact","blast"],blocks:[["glass",540,465,44,90],["steel",615,465,44,90],["wood",578,407,166,26],["glass",578,350,50,85],["wood",785,468,46,84],["glass",900,468,46,84],["steel",843,414,192,24],["glass",843,366,46,70],["wood",843,314,140,24]],robots:[[578,292],[843,283],[843,486],[700,488]],bombs:[[680,490],[730,490],[965,490]]}
 ]);
 export const SHOT_TYPES=Object.freeze([
   {id:"impact",label:"RODA MARTELL",icon:"●",color:"#ffe16a",help:"Impacte potent contra fusta i vidre"},
   {id:"pulse",label:"RODA POLS",icon:"✦",color:"#8cfbe4",help:"Turbo: ona expansiva"},
   {id:"drill",label:"RODA TREPANT",icon:"◆",color:"#fd9a76",help:"Perfora millor l'acer"}
+,{id:"blast",label:"RODA EXPLOSIVA",icon:"✹",color:"#ff665d",help:"Detona amb una gran ona expansiva"},
+  {id:"split",label:"RODA TRIPLE",icon:"✦",color:"#c7a3ff",help:"Es divideix en tres projectils"},
+  {id:"spring",label:"RODA REBOT",icon:"↗",color:"#a7e866",help:"Impuls i rebots més elàstics"}
 ]);
-export function upcomingShot(g){return SHOT_TYPES[g.shotCount%SHOT_TYPES.length];}
+export function upcomingShot(g,offset=0){const queue=LEVELS[g.levelIndex].queue||["impact","pulse","drill"];return SHOT_TYPES.find(t=>t.id===queue[(g.shotCount+offset)%queue.length]);}
 const MATERIAL={wood:{hp:60,mass:1.3,score:85,bounce:.24},
   glass:{hp:32,mass:.85,score:110,bounce:.16},
   steel:{hp:145,mass:2.5,score:140,bounce:.12}};
@@ -126,7 +132,7 @@ export function newGame(index=0){
   return {levelIndex:clamp(index|0,0,LEVELS.length-1),levelName:level.name,
     phase:"aim",shotsLeft:level.shots,shotsTotal:level.shots,
     angle:42,power:77,score:0,combo:0,shotCount:0,shotTime:0,settleTime:0,
-    blocks:entities,robots,bombs,projectile:null,debris:[],pulses:[],
+    blocks:entities,robots,bombs,projectile:null,extras:[],debris:[],pulses:[],
     shake:0,celebration:0,notice:"Arrossega la roda enrere i deixa-la anar!",
     lastResult:null};
 }
@@ -149,7 +155,7 @@ export function fire(g){
   const theta=g.angle*Math.PI/180;
   const speed=115+g.power*5.1;
   const type=upcomingShot(g).id;
-  g.projectile={x:WORLD.anchor.x,y:WORLD.anchor.y,r:type==="drill"?17:18,
+  g.extras=[];g.projectile={x:WORLD.anchor.x,y:WORLD.anchor.y,r:type==="drill"?17:18,
     vx:Math.cos(theta)*speed,vy:-Math.sin(theta)*speed,angle:0,spin:0,
     type,active:true,turbo:false,lowSpeed:0,bounces:0,lastBounce:null};
   g.shotsLeft-=1;g.shotCount+=1;g.shotTime=0;g.combo=0;g.settleTime=0;
@@ -163,7 +169,10 @@ export function turbo(g){
   const p=g.projectile;
   if(g.phase!=="flying"||!p||p.turbo)return false;
   p.turbo=true;
-  if(p.type==="pulse"){
+  if(p.type==="blast"){shockwave(g,p.x,p.y,205);p.active=false;g.notice="DETONACIÓ!";}
+  else if(p.type==="split"){for(const a of [-.23,.23]){const vx=p.vx*Math.cos(a)-p.vy*Math.sin(a),vy=p.vx*Math.sin(a)+p.vy*Math.cos(a);g.extras.push({...p,x:p.x,y:p.y+(a>0?20:-20),vx,vy,r:11,type:"impact",turbo:true,lastBounce:null});}g.notice="RODA TRIPLE!";}
+  else if(p.type==="spring"){p.vy=-Math.max(240,Math.abs(p.vy));p.vx+=95;g.notice="SUPER REBOT!";}
+  else if(p.type==="pulse"){
     if(p.x<440){
       // New players may press early: arm the pulse and fire it automatically
       // when the wheel reaches the scrapyard. Never waste an input at spawn.
@@ -285,6 +294,12 @@ export function predictShot(g){
   return {points,hit:null};
 }
 function circleBox(p,b){
+  const a=b.angle||0,cs=Math.cos(a),sn=Math.sin(a),dx0=p.x-b.x,dy0=p.y-b.y;
+  const local={x:b.x+dx0*cs+dy0*sn,y:b.y-dx0*sn+dy0*cs,r:p.r};
+  const hit=circleBoxAxis(local,b);if(!hit)return null;
+  return {...hit,nx:hit.nx*cs-hit.ny*sn,ny:hit.nx*sn+hit.ny*cs};
+}
+function circleBoxAxis(p,b){
   const nearestX=clamp(p.x,b.x-b.w/2,b.x+b.w/2);
   const nearestY=clamp(p.y,b.y-b.h/2,b.y+b.h/2);
   let dx=p.x-nearestX,dy=p.y-nearestY,dist=Math.hypot(dx,dy);
@@ -428,8 +443,8 @@ function updateTargets(g,dt){
     if(t.y>WORLD.ground+60)eliminateRobot(g,t);
   }
 }
-function updateProjectile(g,dt){
-  const p=g.projectile;if(!p||!p.active)return;
+function updateProjectile(g,dt,p=g.projectile){
+  if(!p||!p.active)return;
   p.vy+=650*dt;p.vx*=Math.exp(-.045*dt);
   p.x+=p.vx*dt;p.y+=p.vy*dt;
   p.angle+=p.vx*dt/p.r;
@@ -444,7 +459,7 @@ function updateProjectile(g,dt){
     // Bounce only when falling. Avoid artificial ground launches or jitter
     // when the wheel is already rolling near the surface.
     if(p.vy>65){
-      const hit=bounceVector(p.vx,p.vy,0,-1,GROUND_RESTITUTION[p.type]??.4,.89);
+      const hit=bounceVector(p.vx,p.vy,0,-1,(p.type==="spring"?.76:GROUND_RESTITUTION[p.type]??.4),.89);
       p.vx=hit.vx;p.vy=hit.vy;
       p.bounces=(p.bounces||0)+1;
       p.lastBounce={x:p.x,y:p.y,at:g.shotTime,speed:hit.normalSpeed,kind:"ground"};
@@ -485,7 +500,7 @@ export function step(g,elapsed){
     remaining-=dt;
     if(g.phase==="flying"){
       g.shotTime+=dt;
-      updateProjectile(g,dt);
+      updateProjectile(g,dt);for(const p of g.extras||[])updateProjectile(g,dt,p);
       updateBodies(g,dt);
       updateTargets(g,dt);
       if(g.robots.every(t=>t.dead)){
@@ -493,7 +508,7 @@ export function step(g,elapsed){
         g.celebration=1.5;
       }else{
         const moving=g.blocks.some(b=>!b.dead&&b.disturbed&&Math.hypot(b.vx,b.vy)>28)||g.robots.some(t=>!t.dead&&Math.hypot(t.vx,t.vy)>32);
-        g.settleTime=!g.projectile?.active&&!moving?(g.settleTime||0)+dt:0;
+        g.settleTime=!g.projectile?.active&&!(g.extras||[]).some(p=>p.active)&&!moving?(g.settleTime||0)+dt:0;
         if(g.shotTime>8.5 || (g.settleTime>.65 && g.shotTime>.8)){
         g.phase=g.shotsLeft>0?"between":"lost";
         g.notice=g.phase==="between"?"Prepara la següent roda!":"Sense rodes! Torna-ho a provar.";
@@ -511,7 +526,7 @@ export function step(g,elapsed){
 }
 export function nextShot(g){
   if(g.phase!=="between")return false;
-  g.phase="aim";g.projectile=null;g.angle=42;g.power=77;g.combo=0;g.pulses=[];
+  g.phase="aim";g.projectile=null;g.extras=[];g.angle=42;g.power=77;g.combo=0;g.pulses=[];
   g.notice="Apunta a les estructures i deixa anar la llançadora.";
   return true;
 }
