@@ -51,9 +51,6 @@ let game=makeGame(0),lastFrame=null,lastEvent="",noticeTime=0,previousPhase="rea
 
 const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||false;
 const visuals={particles:[],words:[],rings:[],shake:0,flash:0,freeze:0,flashColor:"#ff7288"};
-const riderAtlas=typeof Image==="function"?new Image():null;
-if(riderAtlas){riderAtlas.decoding="async";riderAtlas.src="./assets/skibike-rider-atlas.svg";}
-function riderAtlasReady(){return Boolean(riderAtlas?.complete&&riderAtlas.naturalWidth>=960);}
 
 function burst(x,y,color,count=24,force=1){
  if(reducedMotion)count=Math.min(count,6);
@@ -602,27 +599,7 @@ function drawSkiGrooves(){
 
 function drawSkiBike(){
  const x=480+game.lane*196,y=427;
- // Pre-rendered vector sprite poses avoid reconstructing detailed anatomy every frame.
- // Deterministic canvas fallback below keeps offline play robust.
- if(riderAtlasReady()){
-  const sway=game.steerVelocity*.16+game.course.wind*Math.sin(game.time*2)*.015;
-  const recovery=game.stumble>0?Math.sin(game.time*29)*.32*Math.min(1,game.stumble/.85):0;
-  const carving=Math.sin(game.time*(5+game.velocity*.11))*.012;
-  const airPitch=game.grounded?0:clamp(game.airVelocity*.045,-.19,.19);
-  const pose=game.airHeight>.04?3:game.steerVelocity<-.14?1:game.steerVelocity>.14?2:0;
-  ctx.save();ctx.translate(x,y);
-  if(game.airHeight>.01){
-   ctx.save();ctx.globalAlpha=.23*(1-game.airHeight*.6);ctx.fillStyle="#18384f";
-   ctx.beginPath();ctx.ellipse(0,4,38+game.airHeight*28,16+game.airHeight*15,0,0,Math.PI*2);
-   ctx.fill();ctx.restore();
-  }
-  ctx.translate(0,-game.airHeight*145);
-  ctx.rotate(sway+recovery+carving+airPitch+(game.grounded||reducedMotion?0:game.trickSpin*Math.PI*2));
-  if(game.invulnerability>0&&Math.floor(game.time*16)%2===0)ctx.globalAlpha=.48;
-  ctx.drawImage(riderAtlas,pose*240,0,240,260,-89,-175,178,194);
-  ctx.restore();
-  return;
- }
+ // Live articulated ski-bike, with steering, suspension and snow feedback.
 
  const sway=game.steerVelocity*.16+game.course.wind*Math.sin(game.time*2)*.015;
  const recovery=game.stumble>0?Math.sin(game.time*29)*.32*Math.min(1,game.stumble/.85):0;
@@ -636,6 +613,8 @@ function drawSkiBike(){
   ctx.fill();ctx.restore();
  }
  ctx.translate(0,-game.airHeight*145);
+ ctx.scale(.88,.88);
+ if(game.grounded&&!reducedMotion)ctx.scale(1+Math.abs(game.steerVelocity)*.025,1-Math.abs(game.steerVelocity)*.025);
  if(game.airHeight>0)ctx.scale(1+game.airHeight*.07,1+game.airHeight*.07);
  const airPitch=game.grounded?0:clamp(game.airVelocity*.045,-.19,.19);
  ctx.rotate(sway+recovery+carving+airPitch+(game.grounded||reducedMotion?0:game.trickSpin*Math.PI*2));
@@ -710,7 +689,7 @@ function drawSkiBike(){
   ctx.fillStyle="#d1efed";ctx.beginPath();ctx.arc(side*21,12,4.5,0,Math.PI*2);ctx.fill();
  }
  // Boots, legs and ski suit are recognizable in this overhead perspective.
- const legLean=Math.sin(game.time*(2+game.velocity*.09))*1.7;
+ const legLean=game.steerVelocity*5+(reducedMotion?0:Math.sin(game.time*(2+game.velocity*.09))*3);
  for(const side of [-1,1]){
   ctx.strokeStyle="#193d60";ctx.lineWidth=14;ctx.lineCap="round";
   ctx.beginPath();ctx.moveTo(side*9,-4);ctx.lineTo(side*(11+legLean),21);ctx.stroke();
