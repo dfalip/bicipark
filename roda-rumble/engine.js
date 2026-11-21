@@ -6,7 +6,7 @@ export const LEVELS=Object.freeze([
   {name:"Primer impacte",subtitle:"Trenca el suport de vidre i fes caure la passarel·la",shots:4,
    blocks:[
     ["wood",570,485,42,50],["glass",660,485,32,50],
-    ["wood",615,449,137,22],["wood",722,490,72,40],
+    ["wood",615,449,137,22],
     ["steel",765,474,24,72],["glass",836,474,26,72],
     ["wood",800,427,111,22]
    ],robots:[[615,420],[800,398]],bombs:[[704,493]]},
