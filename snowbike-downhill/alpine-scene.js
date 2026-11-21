@@ -142,21 +142,6 @@ function referenceDeer(c,a){
  c.drawImage(sprites.deer,-35,-83,86,84);
  c.restore();return true;
 }
-function referenceRider(c,g,size,reduced){
- const sprites=window.SnowBikeReferenceSprites;
- if(!sprites?.ready(sprites.hero))return false;
- // Reference art shows the jumping pose; rotate to put the ski and rear wheel on a common baseline.
- c.save();c.scale(size,size);c.rotate(.16);
- const squat=g.grounded&&!reduced?Math.sin(g.distance*.36)*.7:0;
- c.translate(0,squat);
- c.imageSmoothingEnabled=false;
- c.drawImage(sprites.hero,-64,-79,130,130*92/108);
- // Wheel spin is a separate, subtle moving spoke highlight over the original illustrated wheel.
- const cx=-45,cy=4,angle=g.distance*.22;
- if(!reduced){c.save();c.translate(cx,cy);c.rotate(.47);c.beginPath();c.ellipse(0,0,9,14,0,0,Math.PI*2);c.clip();c.globalAlpha*=.48;
-  for(let i=0;i<6;i++){const a=angle+i*TAU/6;stroke(c,[[0,0],[Math.cos(a)*9,Math.sin(a)*14]],"#e4f5ff",.7);}c.restore();}
- c.restore();return true;
-}
 function yeti(c,a,time){
  const t=(a.travel||0)+(a.stride||0),walk=Math.sin(t),col="#ddeefa",outline="#354566";
  // Feet and heavy arms swing in opposing phases, anchored to the body.
@@ -262,80 +247,53 @@ function animal(c,g,a,p){
   path(c,[[0,-10],[-13,11],[13,11]],"#ffd768","#503a2d",1.6);rect(c,-1.5,-4,3,8,"#45321f");oval(c,0,7,1.6,1.6,"#45321f");c.restore();
  }
 }
-function drawHero(c,g,scale){
- c.save();c.scale(scale,scale);
- const ink="#15263a",dark="#273949",blue="#0d79b9",cyan="#69d2ee",orange="#e54b1b";
- const spin=g.distance*.12,air=!g.grounded;
- // Rear snow tyre: layered carcass, 24 moving cleats, spokes, rim and hub.
- c.save();c.translate(-35,8);c.rotate(spin);
- oval(c,0,0,20,20,"#142235",ink,2);
- for(let i=0;i<24;i++){const a=i*TAU/24;c.save();c.rotate(a);path(c,[[-3,-21],[3,-21],[4,-17],[-4,-17]],i%3===0?"#bacdd7":"#425265",ink,.7);c.restore();}
- oval(c,0,0,15,15,"#244259","#8cb6d6",2.6);
- oval(c,0,0,11.9,11.9,"#304653","#4e758d",1);
- for(let i=0;i<16;i++){const a=i*TAU/16;stroke(c,[[Math.cos(a)*4,Math.sin(a)*4],[Math.cos(a+.17)*13,Math.sin(a+.17)*13]],i%2?"#b9d6e2":"#627c9c",.85);}
- oval(c,0,0,5,5,"#8299aa","#283c56",1.3);oval(c,0,0,2,2,"#c6e4ec");c.restore();
- // Chassis: dark back triangle, solid downhill down-tube, head tube, skid plate.
- stroke(c,[[-35,8],[-20,-19],[-6,6],[-35,8]],ink,8);
- stroke(c,[[-35,8],[-20,-19],[-6,6],[-35,8]],"#2877ac",4.8);
- path(c,[[-23,-20],[22,-27],[26,-18],[4,12],[-13,17],[-26,5]],ink,ink,1);
- path(c,[[-20,-18],[21,-25],[22,-19],[4,7],[-12,12],[-19,3]],grad(c,-23,-25,19,16,[[0,"#57d6ff"],[.35,"#198ed0"],[1,"#124776"]]));
- path(c,[[-14,-8],[-3,-14],[2,-10],[11,-15],[7,-5],[-2,1]],"#d4f5ff");
- path(c,[[-8,12],[5,8],[-1,16],[-13,21],[-24,12]],"#33475f",ink,1);
- oval(c,-6,6,7,7,"#243947","#b4cad4",1.2);oval(c,-6,6,2,2,"#dcecf3");stroke(c,[[-35,9],[-6,9]],"#a9b8c0",1.2);
- // Gold telescopic fork reaching the actual ski pivot.
- stroke(c,[[22,-25],[39,11]],ink,9);
- stroke(c,[[22,-25],[31,-4]],"#bd7626",6.3);stroke(c,[[22,-23],[31,-4]],"#ffd263",3.4);
- stroke(c,[[31,-4],[39,11]],"#2f4660",6);stroke(c,[[32,-2],[39,9]],"#6886a4",2.4);
- oval(c,39,11,3.4,3.4,"#a0b5c8",ink,1.2);
- // The ski bends up at the nose and meets the fork at its pivot, not a floating board.
- path(c,[[9,20],[35,18],[54,16],[67,9],[70,10],[63,20],[51,24],[9,27],[-1,25],[-3,22]],"#10253f",ink,1.9);
- path(c,[[3,21],[35,20],[54,17],[66,11],[63,16],[49,21],[4,24]],"#99cce8");
- stroke(c,[[24,19],[38,11],[47,17]],"#31485e",4);
- for(let i=0;i<5;i++)stroke(c,[[7+i*11,20],[10+i*11,18]],"#f4fbff",1.8);
- stroke(c,[[21,-25],[24,-35],[36,-38]],ink,5.8);stroke(c,[[23,-35],[35,-37]],"#8299ae",2.2);
- stroke(c,[[-25,-23],[-12,-23]],"#172939",6);
- // Far limbs give depth: crank and steering remain fixed attachment points.
- const ankle=[-7+Math.cos(spin*2)*5,6+Math.sin(spin*2)*5],hip=air?[-23,-32]:[-25,-34],shoulder=[-3,-58];
- stroke(c,[hip,[-11,-20],[-18,7]],ink,16);stroke(c,[hip,[-11,-20],[-18,7]],"#455266",10);
- stroke(c,[shoulder,[9,-53],[28,-39]],ink,12);stroke(c,[shoulder,[9,-53],[28,-39]],"#a66c46",7);
- // Packs & torso: shaped panels with shaded folds, pack straps and weatherproof trim.
- path(c,[[-39,-68],[-28,-75],[-17,-69],[-15,-54],[-27,-43],[-42,-49],[-45,-61]],ink,ink,1.8);
- path(c,[[-39,-66],[-28,-71],[-21,-67],[-20,-54],[-29,-48],[-39,-52]],grad(c,-45,-71,-22,-45,[[0,"#597b66"],[.4,"#293f48"],[1,"#13293e"]]));
- stroke(c,[[-39,-67],[-29,-68],[-23,-58]],"#c2db50",3.1);stroke(c,[[-36,-58],[-32,-50]],"#95bd45",2.4);stroke(c,[[-40,-61],[-33,-60]],"#a2c7a1",1.1);
- path(c,[[-31,-55],[-17,-72],[-5,-72],[7,-62],[4,-45],[-8,-33],[-25,-28],[-34,-39]],ink,ink,2);
- path(c,[[-30,-54],[-17,-70],[-5,-69],[5,-61],[2,-47],[-9,-36],[-25,-31],[-32,-40]],grad(c,-28,-73,2,-31,[[0,"#ffb046"],[.25,"#fc7227"],[.64,orange],[1,"#98261a"]]));
- path(c,[[-24,-64],[-15,-69],[-8,-65],[-20,-56],[-28,-49]],"#ff9841");
- stroke(c,[[-24,-63],[-14,-57],[-9,-46],[-14,-37]],"#9e3024",2.6);
- stroke(c,[[-29,-46],[-23,-39],[-16,-39]],"#fda252",1.9);
- stroke(c,[[-22,-67],[-21,-51],[-29,-42]],"#35444e",3.7);stroke(c,[[-22,-65],[-23,-53]],"#a1c44d",1.4);
- // Near leg: articulated knee, pad, boot planted on moving pedal.
- const knee=air?[-1,-26]:[-3,-20];
- stroke(c,[hip,knee,ankle],ink,19);stroke(c,[hip,knee,ankle],"#45516d",14);
- stroke(c,[[hip[0]+1,hip[1]-4],[knee[0]-3,knee[1]-3]],"#77849a",4.5);
- path(c,[[knee[0]-6,knee[1]-5],[knee[0]+5,knee[1]-6],[knee[0]+7,knee[1]+4],[knee[0]+1,knee[1]+8],[knee[0]-7,knee[1]+4]],"#253444",ink,1.4);
- stroke(c,[[knee[0]-3,knee[1]-3],[knee[0]+3,knee[1]+2]],"#8496ac",2);
- stroke(c,[[ankle[0]-5,ankle[1]-2],[ankle[0]+8,ankle[1]+1]],ink,10);
- stroke(c,[[ankle[0]-5,ankle[1]-3],[ankle[0]+8,ankle[1]+1]],"#e96520",7);
- stroke(c,[[ankle[0]-6,ankle[1]+3],[ankle[0]+9,ankle[1]+4]],"#f7efe5",2.2);
- // Bent sleeve, exposed wrist and glove wrapped around the grips.
- stroke(c,[shoulder,[9,-48],[30,-39]],ink,13);stroke(c,[shoulder,[9,-48]],"#c6421a",10);
- stroke(c,[[1,-58],[8,-52]],"#fc8d39",3.8);stroke(c,[[9,-48],[26,-39]],"#dd9360",8);
- stroke(c,[[12,-49],[25,-42]],"#ffc58d",2.5);oval(c,30,-39,7,5,"#253749",ink,1.4);
- for(let i=0;i<3;i++)stroke(c,[[27+i*2,-41],[28+i*2,-38]],"#90a1ac",1.15);
- // Helmet & goggles with actual face, visor, ear cover, cheek and mouth.
- path(c,[[-9,-76],[-7,-87],[6,-93],[18,-87],[22,-79],[17,-69],[10,-64],[0,-67]],ink,ink,1.8);
- path(c,[[-7,-76],[-5,-86],[6,-90],[18,-85],[19,-77],[11,-74],[7,-79]],grad(c,-8,-91,19,-70,[[0,"#ffca69"],[.3,"#f88726"],[1,"#bb3c1c"]]));
- path(c,[[4,-79],[18,-78],[20,-70],[13,-64],[6,-67],[3,-72]],"#d99968",ink,1.1);
- path(c,[[11,-74],[20,-73],[17,-69],[12,-69]],"#f0b47e");
- stroke(c,[[12,-67],[16,-68]],"#743624",1.4);
- path(c,[[-4,-84],[4,-89],[8,-87],[3,-82]],"#263745",ink,.9);
- path(c,[[6,-84],[16,-84],[23,-80],[19,-77],[5,-78]],"#243b54",ink,1.1);
- path(c,[[7,-82],[17,-82],[20,-80],[17,-79],[7,-79]],"#f3a64b");stroke(c,[[9,-81],[15,-80]],"#fff4ad",1.4);
- oval(c,-4,-77,4.5,5,"#344451",ink,1);stroke(c,[[-5,-75],[0,-70],[5,-67]],"#435364",2.2);
- stroke(c,[[0,-90],[8,-91]],"#fff1b3",1.4);
- // Reflected snow edging on the rear wheel and fork.
- for(let i=0;i<9;i++){const q=hash(i+38);oval(c,-48+q%29,20+q%6,1.4,1,"#e8f8ff");}
- c.restore();
+function drawHero(c,g,scale,reduced=false){
+ c.save();c.scale(scale*.84,scale*.84);
+ const ink="#17283d",blue="#20a8c9",light="#92e5e9",red="#c53b63",pink="#ff7295",dark="#334764";
+ const time=g.time,active=g.phase==="playing"&&!reduced;
+ const spin=g.distance*.12,phase=g.distance*.25;
+ const steer=clamp(g.steerVelocity,-1,1);
+ const oscillate=active?Math.sin(phase)*2.4+Math.sin(phase*.43)*1.5:0;
+ const air=!g.grounded,compression=air?0:Math.max(0,oscillate)+Math.min(5,(g.stumble||0)*6);
+ const tuck=air?7:compression+Math.abs(steer)*3;
+ const rear=[-34,8],crank=[-5,6-compression*.35],seat=[-23,-20+compression],top=[23,-24+compression];
+ const ski=[39,12],grip=[34+steer*3,-39+compression];
+ const hip=[-23+steer*4+ (air?4:0),-31+tuck];
+ const shoulder=[-3+steer*5+(air?7:0),-57+tuck*.8];
+ const head=[shoulder[0]+12,shoulder[1]-18];
+ const joint=(pts,w,col)=>{stroke(c,pts,ink,w+3);stroke(c,pts,col,w)};
+ // Rear wheel turns with world distance, including rim, spokes and individual tread.
+ c.save();c.translate(...rear);c.rotate(spin);
+ oval(c,0,0,20,20,"#1a293d",ink,2);oval(c,0,0,15,15,"#374c66","#b3e1ee",2);
+ for(let i=0;i<12;i++){const q=i*TAU/12;c.save();c.rotate(q);rect(c,-2,-22,4,5,i%2?"#71879b":"#b9d0d8");stroke(c,[[0,0],[0,-14]],"#a5d0e0",1.2);c.restore()}
+ oval(c,0,0,4,4,"#f7c95e",ink,1);c.restore();
+ // Separate snow blade pitches around the fork joint; rear triangle pivots at the frame.
+ joint([rear,seat,crank,rear],5,"#127f9e");
+ joint([seat,top,crank,seat],7,blue);stroke(c,[[seat[0]+2,seat[1]-1],[top[0]-3,top[1]+1]],light,2);
+ joint([top,[ski[0]-8,ski[1]-16],ski],6,"#c5e1e9");
+ stroke(c,[[top[0],top[1]],[ski[0]-8,ski[1]-16]],"#f7bd55",4);
+ c.save();c.translate(...ski);c.rotate(steer*.09+(air?clamp(g.airVelocity*.03,-.16,.16):oscillate*.012));
+ path(c,[[-23,6],[17,6],[25,2],[29,-3],[33,-3],[28,8],[18,12],[-24,11],[-29,8]],ink);
+ path(c,[[-24,7],[16,7],[26,3],[29,0],[25,7],[16,9],[-24,9]],"#69dce0");c.restore();
+ joint([top,[26,grip[1]+3],grip],4,"#b1d1df");stroke(c,[[grip[0]-4,grip[1]],[grip[0]+6,grip[1]]],ink,5);
+ stroke(c,[[seat[0]-9,seat[1]-3],[seat[0]+7,seat[1]-3]],ink,6);
+ // Shock changes length with compression; coil anchored to both moving joints.
+ const shA=[-17,-15+compression],shB=[3,3-compression*.35];
+ joint([shA,shB],4,"#e2e9f2");for(let i=0;i<5;i++){const t=(i+.5)/5,x=shA[0]+(shB[0]-shA[0])*t,y=shA[1]+(shB[1]-shA[1])*t;stroke(c,[[x-2,y+3],[x+2,y-3]],"#eea044",2)}
+ // Feet rotate on crank, knees follow, hands remain attached to their own grips.
+ const pedalPhase=active&&!air?phase:air?1.3:0;
+ for(const side of [-1,1]){const ang=pedalPhase+(side<0?Math.PI:0);const foot=[crank[0]+Math.cos(ang)*7,crank[1]+Math.sin(ang)*6];const knee=[hip[0]+20+Math.cos(ang)*4,hip[1]+15+tuck*.15+side*2];
+ stroke(c,[crank,foot],"#d5e8ee",2);joint([hip,knee,foot],side<0?9:12,side<0?"#526078":dark);
+ oval(c,knee[0],knee[1],5,5,"#263d56");joint([[foot[0]-4,foot[1]],[foot[0]+6,foot[1]+1]],6,"#e0bd78");}
+ // Jacket, backpack and helmet follow articulated hip and shoulder.
+ joint([[hip[0]-7,hip[1]-7],[shoulder[0]-12,shoulder[1]-4]],15,"#536b9a");
+ joint([hip,shoulder],21,red);stroke(c,[[hip[0]-2,hip[1]-3],[shoulder[0]-2,shoulder[1]-3]],pink,7);
+ stroke(c,[[hip[0]-5,hip[1]-2],[shoulder[0]-9,shoulder[1]+3]],"#fac77b",2);
+ for(const side of [-1,1]){const hand=[grip[0]+side*3,grip[1]+side];const elbow=[shoulder[0]+14+steer*side*3,shoulder[1]+12+tuck*.5+side*3];joint([shoulder,elbow,hand],side<0?7:9,side<0?"#9d3654":pink);oval(c,hand[0],hand[1],4,4,ink);}
+ c.save();c.translate(...head);c.rotate(steer*.08+(air?-.09:oscillate*.018));
+ oval(c,0,0,13,12,ink);oval(c,-1,-2,11,10,"#83e3cd");path(c,[[-9,-5],[-5,-10],[2,-11],[6,-7],[-3,-6]],"#e4fff2");
+ oval(c,6,3,8,7,"#e6ac85",ink,1);path(c,[[0,-4],[13,-3],[14,2],[10,5],[0,3]],"#253851",ink,1);stroke(c,[[3,-2],[11,-1]],"#e0f7ff",1.5);
+ c.restore();c.restore();
 }
 function rider(c,g,p,reduced){
  const art=window.BiciParkPremiumArt;
@@ -346,9 +304,9 @@ function rider(c,g,p,reduced){
   for(let i=0;i<32+(g.boostTime>0?20:0);i++){const d=(i*17+g.distance*3.9)%139,xx=p.x-27-d,yy=p.y-3+(hash(i)%23)-d*.16;oval(c,xx,yy,1.5+i%4,1.3+i%3,i%3?"#ffffffcc":"#b4d9faff");}
   stroke(c,[[p.x-55,p.y+4],[p.x-103,p.y+5],[p.x-152,p.y+2]],"#89b5e0a8",4);
  }
- c.save();c.translate(p.x,p.y-h-27*size);const grade=(terrain(g.distance+3)-terrain(g.distance-3))/6;c.rotate(.075+Math.atan(grade/2.48)*.7+g.steerVelocity*.10+(g.stumble?Math.sin(g.time*26)*.17:0)+rotation);
+ c.save();c.translate(p.x,p.y-h-22*size);const grade=(terrain(g.distance+3)-terrain(g.distance-3))/6;c.rotate(.075+Math.atan(grade/2.48)*.7+g.steerVelocity*.10+(g.stumble?Math.sin(g.time*26)*.17:0)+rotation);
  if(g.invulnerability>0&&Math.floor(g.time*14)%2===0)c.globalAlpha=.57;
- if(!referenceRider(c,g,size,reduced))drawHero(c,g,size);
+ drawHero(c,g,size,reduced);
  c.restore();
 }
 function draw(c,g,{visible,reduced=false}={}){
