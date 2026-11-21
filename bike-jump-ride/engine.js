@@ -42,7 +42,7 @@ export function makeGame(){
     lastEvent:"Prem JUGAR i accelera amb → o el botó!",
     eventTick:0,crashClock:0,landingFx:0,progress:0,
     jumpCount:0,tiltMax:0,flightStartX:0,finishStars:0,
-    distance:0,maxSpeed:0};
+    distance:0,maxSpeed:0,wheelie:0,wheelieTime:0,wheelies:0,airRotation:0,frontFlips:0,backFlips:0,trickScore:0,combo:0,maxCombo:0,boost:60,boostTime:0};
 }
 export function begin(g){
   if(g.phase!=="ready")return false;
@@ -57,7 +57,7 @@ export function chargeJump(g,on){
   if(g.charge<.12){g.charge=0;return false;}
   g.vy=-impulse;
   g.y-=3;g.grounded=false;g.airTime=0;
-  g.flightStartX=g.x;g.jumpCount++;
+  g.flightStartX=g.x;g.jumpCount++;g.airRotation=0;g.wheelieTime=0;g.wheelie=0;
   g.lastEvent="SALT MANUAL! Controla la inclinació.";
   g.eventTick=.8;g.charge=0;
   return true;
@@ -68,13 +68,13 @@ export function restartCheckpoint(g){
   g.x=g.checkpointX;g.y=fresh.y-WORLD.radius;
   g.vx=0;g.vy=0;g.angle=Math.atan(fresh.slope);
   g.angularVelocity=0;g.grounded=true;g.charge=0;
-  g.airTime=0;g.phase="riding";g.crashClock=0;
+  g.airTime=0;g.phase="riding";g.crashClock=0;g.airRotation=0;g.wheelie=0;g.wheelieTime=0;g.boostTime=0;
   g.lastEvent="Torna-hi des del punt de control!";
   g.eventTick=.95;
   return true;
 }
 function crash(g,reason){
-  g.phase="crash";g.crashes++;
+  g.phase="crash";g.crashes++;g.airRotation=0;g.wheelie=0;g.wheelieTime=0;g.combo=0;g.boostTime=0;
   g.crashClock=0;g.score=Math.max(0,g.score-150);
   g.vx=Math.min(g.vx,200);
   g.lastEvent=reason;g.eventTick=1.5;
@@ -88,6 +88,13 @@ function land(g,surface){
     crash(g,"CAIGUDA! Has aterrat massa inclinat. Reapareixeràs al punt de control.");
     return;
   }
+  const flips=Math.min(3,Math.floor((Math.abs(g.airRotation)+.20)/(Math.PI*2)));
+  if(flips){
+    if(g.airRotation>0)g.frontFlips+=flips;else g.backFlips+=flips;
+    g.combo+=flips;g.maxCombo=Math.max(g.maxCombo,g.combo);
+    const bonus=flips*600*Math.min(4,g.combo);g.trickScore+=bonus;g.score+=bonus;
+    g.boost=clamp(g.boost+flips*18,0,100);
+  }
   g.grounded=true;g.y=surface.y-WORLD.radius;
   g.vy=0;g.angularVelocity=0;
   const reward=alignment<.4?300:alignment<.79?185:70;
@@ -97,7 +104,8 @@ function land(g,surface){
   g.landingFx=.7;g.charge=0;
   g.lastEvent=reward===300?"ATERRATGE PERFECTE! +300":reward===185?
     "BON ATERRATGE! +185":"ATERRATGE DUR! +70";
-  g.eventTick=1.2;
+  if(flips)g.lastEvent=(g.airRotation>0?"FRONTFLIP":"BACKFLIP")+" ×"+flips+" · COMBO ×"+g.combo;
+  g.airRotation=0;g.eventTick=1.2;
   g.angle=Math.atan(surface.slope)+delta*.36;
   g.airTime=0;
 }
@@ -117,7 +125,10 @@ function subStep(g,input,dt){
   if(accelerate)g.vx+=370*dt;
   else g.vx-=70*dt;
   if(brake)g.vx-=530*dt;
-  g.vx=clamp(g.vx,0,510);
+  if(input?.boost&&g.boost>16&&g.boostTime<=0){g.boostTime=.9;g.boost-=16;}
+  if(g.boostTime>0){g.boostTime=Math.max(0,g.boostTime-dt);g.vx+=550*dt;}
+  else g.boost=clamp(g.boost+dt*2,0,100);
+  g.vx=clamp(g.vx,0,g.boostTime>0?615:510);
   g.maxSpeed=Math.max(g.maxSpeed,g.vx);
   if(input?.jumpHeld && g.grounded)g.charge=clamp(g.charge+dt*1.65,0,1);
   const earlierSurface=trackAt(g.x);
@@ -128,7 +139,7 @@ function subStep(g,input,dt){
   if(g.grounded){
     if(!surface){
       g.grounded=false;g.airTime=0;
-      g.flightStartX=beforeX;g.jumpCount++;
+      g.flightStartX=beforeX;g.jumpCount++;g.airRotation=0;g.wheelie=0;g.wheelieTime=0;
       const rampSlope=earlierSurface?.slope??-.36;
       g.vy=Math.min(-70,rampSlope*g.vx)-(45+g.charge*110);
       g.charge=0;
@@ -140,11 +151,18 @@ function subStep(g,input,dt){
       if(verticalDelta>26 && g.vx>170){
         // Drop-off: leave the ground instead of teleporting down.
         g.grounded=false;g.airTime=0;g.vy=-50;
-        g.flightStartX=beforeX;g.jumpCount++;
+        g.flightStartX=beforeX;g.jumpCount++;g.airRotation=0;g.wheelie=0;g.wheelieTime=0;
       }else{
         g.y=surface.y-WORLD.radius;
         const desired=Math.atan(surface.slope);
-        g.angle+=(desired-g.angle)*Math.min(1,dt*8);
+        const holding=input?.lean<-.3&&g.vx>70&&surface.type==="trail"&&!brake;
+        g.wheelie+=( (holding?.58:0)-g.wheelie)*Math.min(1,dt*6);
+        if(holding&&g.wheelie>.24)g.wheelieTime+=dt;
+        else if(!holding&&g.wheelieTime>0){
+          if(g.wheelieTime>=.65){const points=Math.round(Math.min(g.wheelieTime,4)*160);g.wheelies++;g.combo++;g.maxCombo=Math.max(g.maxCombo,g.combo);g.score+=points;g.trickScore+=points;g.lastEvent="WHEELIE! +"+points;g.eventTick=1.1;}
+          g.wheelieTime=0;
+        }
+        g.angle+=(desired-g.wheelie-g.angle)*Math.min(1,dt*8);
       }
     }
     if(g.grounded&&input?.jumpReleased)chargeJump(g,false);
@@ -153,10 +171,10 @@ function subStep(g,input,dt){
     g.airTime+=dt;
     g.vy+=660*dt;
     g.y+=g.vy*dt;
-    g.angularVelocity=clamp(g.angularVelocity+
-      clamp(input?.lean||0,-1,1)*4.3*dt,-3.3,3.3);
-    g.angularVelocity*=Math.pow(.954,dt*60);
-    g.angle+=g.angularVelocity*dt;
+    const lean=clamp(input?.lean||0,-1,1);
+    g.angularVelocity=clamp(g.angularVelocity+lean*32*dt,-11.5,11.5);
+    g.angularVelocity*=Math.pow(lean?.995:.80,dt*60);
+    const turn=g.angularVelocity*dt;g.angle+=turn;g.airRotation+=turn;
     // Automatic mild counter-rotation keeps the default approach accessible.
     if(!input?.lean){
       let next=surface||trackAt(g.x+120)||trackAt(g.x+350);
