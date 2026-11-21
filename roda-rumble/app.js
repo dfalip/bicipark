@@ -146,7 +146,7 @@ function announce(){
   if(game.score>prevScore){
     if(!reducedMotion){const p=game.projectile;const x=clamp(p?.lastBounce?.x??p?.x??750,45,950),y=clamp(p?.lastBounce?.y??p?.y??300,65,WORLD.ground-20);scorePopups.push({x,y,points:game.score-prevScore,combo:game.combo,life:1.05});if(scorePopups.length>8)scorePopups.shift();}
     sound("impact");
-    el.notice.textContent=game.combo>1?"COMBO!":"BOOM!";
+    el.notice.textContent=game.combo>=4?"DEMOLICIÓ!":game.combo>1?"COMBO ×"+game.combo:"BOOM!";
     el.notice.hidden=false;noticeAge=.64;
   }
   if(phase!==previousPhase){
@@ -394,23 +394,36 @@ function drawBlock(b){
 function drawRobot(t){
  const p=game.projectile,scared=game.phase==="flying"&&p?.active&&Math.hypot(p.x-t.x,p.y-t.y)<190;
  const moving=!reducedMotion&&game.phase==="flying",wobble=moving?Math.sin(game.shotTime*14+t.x)*Math.min(.2,Math.hypot(t.vx,t.vy)/300):0;
- const variant=(game.robots.indexOf(t)+game.levelIndex)%3,ink="#172e40",shell=variant===0?"#e9b54e":variant===1?"#61c4ae":"#a4a5e2",blink=t.blink>2.6;
- ctx.save();ctx.translate(t.x,t.y);artOval(0,18,17,4,"#122c4b38");ctx.rotate(wobble);
- // Animated chassis, spring neck, limbs and head are distinct components.
- artOval(0,12,13,6,"#243b50",ink);for(const x of [-8,8]){artOval(x,13,4.4,4.4,"#718b9b",ink);artOval(x,13,1.6,1.6,"#d5e5e5");}
- artOval(0,5,10,9,shell,ink,2);artLine([[-5,4],[5,4]],"#41576b",2);rivet(0,8);
- for(const side of [-1,1]){const lift=scared?-6:0;artLine([[side*8,3],[side*13,6+lift],[side*15,3+lift]],ink,5);artLine([[side*8,3],[side*13,6+lift]],"#9eb7bd",2);artOval(side*15,3+lift,3,3,shell,ink);}
- const bob=moving?Math.sin(game.shotTime*8+t.x)*.9:0;
- artLine([[0,0],[0,-7+bob]],"#718e9b",4);ctx.translate(0,bob);
- const helmet=artGradient(-14,-21,13,0,[[0,"#f1fff1"],[.25,shell],[1,"#526b86"]]);
- artOval(0,-10,16,13,helmet,ink,2.4);
- if(variant===1){ctx.beginPath();ctx.ellipse(0,-12,17,14,0,Math.PI,Math.PI*2);ctx.fillStyle="#3b586c";ctx.fill();ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.stroke();artLine([[-17,-11],[17,-11]],"#eac76a",2.5);}
- if(variant===2){artOval(0,-10,13,9,"#253c5b",ink);artOval(0,-10,10,6,"#8dd8ed");}
- else{artOval(-6,-9,6,5.5,"#ecfff3",ink);artOval(6,-9,6,5.5,"#ecfff3",ink);}
+ const variant=(game.robots.indexOf(t)+game.levelIndex)%3,ink="#192e40",shell=["#e4ac47","#58c7b1","#a3a5df"][variant],blink=t.blink>2.6;
+ const bob=moving?Math.sin(game.shotTime*8+t.x)*1.5:0;
  const look=scared?clamp((p.x-t.x)/60,-2.5,2.5):0;
- if(blink){artLine([[-10,-8],[-3,-8]],ink,2);artLine([[3,-8],[10,-8]],ink,2);}else for(const x of [-6,6]){artOval(x+look,-9,scared?2:2.8,scared?3.6:2.8,ink);artOval(x+look-.7,-10,.8,.8,"#fff");}
- if(scared)artOval(0,-1,3,3.1,ink);else artLine([[-4,-2],[0,0],[4,-2]],ink,1.3);
- artLine([[-8,-21],[-11,-28]],ink,2.5);artOval(-11,-28,3.3,3.3,scared?"#ff6549":"#e7f775",ink);ctx.restore();
+ ctx.save();ctx.translate(t.x,t.y);artOval(0,18,21,5,"#172d4050");ctx.rotate(wobble);
+ const lens=(x,y,rx,ry)=>{artOval(x,y,rx,ry,"#1d394f",ink,1.5);artOval(x,y,rx-2,ry-2,"#d5ffff");if(blink)artLine([[x-rx*.5,y],[x+rx*.5,y]],ink,2);else{artOval(x+look,y,scared?2.4:3.5,scared?4:3.3,ink);artOval(x+look-1,y-1,1,1,"#fff");}};
+ if(variant===0){
+   // Scout: inverted egg-shaped shell, two mechanical running feet.
+   for(const side of [-1,1]){artLine([[side*5,5],[side*8,12],[side*11,15]],ink,6);artLine([[side*5,5],[side*8,12]],"#8faeb9",3);artOval(side*11,15,7,3,"#344e60",ink);}
+   artOval(0,5,10,10,"#647d80",ink,2);
+   ctx.translate(0,bob);artOval(0,-10,16,15,artGradient(-14,-25,12,5,[[0,"#fff1b0"],[.4,shell],[1,"#a65b35"]]),ink,2.6);
+   artOval(-12,-9,3,6,"#bb7f38",ink);artOval(12,-9,3,6,"#bb7f38",ink);
+   lens(-6,-11,7,7);lens(6,-11,7,7);
+   if(scared)artOval(0,-1,3,4,ink);else artLine([[-4,-1],[0,1],[4,-1]],ink,1.8);
+   artLine([[-5,-23],[-13,-33]],ink,2.5);artOval(-13,-33,4,4,scared?"#ff6348":"#f8d561",ink);
+ }else if(variant===1){
+   // Heavy repair bot: tank treads, separate lifting pincers and protective hardhat.
+   for(const side of [-1,1]){ctx.fillStyle="#20394b";roundedRect(side*10-7,8,14,11,4);ctx.fill();for(let i=0;i<3;i++)artOval(side*10-4+i*4,13,2,2,"#90a5ae");}
+   artOval(0,5,14,12,artGradient(-14,-7,14,15,[[0,"#a5f2c9"],[1,"#287d7d"]]),ink,2);
+   for(const side of [-1,1]){const lift=scared?-9:0;artLine([[side*11,2],[side*18,5+lift],[side*20,1+lift]],ink,5);artLine([[side*11,2],[side*18,5+lift]],"#b5c6c3",2);artLine([[side*17,0+lift],[side*21,-4+lift],[side*23,0+lift]],"#eab45e",3);}
+   ctx.translate(0,bob);artOval(0,-12,17,12,"#5b8893",ink,2);lens(-6,-11,6,5);lens(6,-11,6,5);
+   ctx.beginPath();ctx.ellipse(0,-15,19,13,0,Math.PI,Math.PI*2);ctx.fillStyle="#e5a84b";ctx.fill();ctx.strokeStyle=ink;ctx.lineWidth=2.5;ctx.stroke();artLine([[-19,-15],[19,-15]],"#ffe4a3",4);artLine([[-4,-27],[4,-27]],"#fff3bb",3);
+   if(scared)artOval(0,-3,3,3,ink);else artLine([[-5,-4],[5,-4]],ink,1.5);
+ }else{
+   // Core unit: round reactor, tripod support and panoramic electronic visor.
+   for(const side of [-1,1]){artLine([[0,5],[side*11,12],[side*14,16]],ink,5);artLine([[0,5],[side*11,12]],"#b4a8d9",2);artOval(side*14,16,5,2.8,"#58627d",ink);}
+   artOval(0,0,16,17,artGradient(-15,-20,15,14,[[0,"#f1e6ff"],[.3,shell],[1,"#4c527c"]]),ink,2.5);artOval(0,6,8,7,"#3f506e",ink);artOval(0,6,4,4,scared?"#ff775e":"#95f6de");
+   ctx.translate(0,bob);artOval(0,-9,15,9,"#23394d",ink,2);artOval(0,-9,12,6.5,"#6fc7dc");for(const x of [-5,5]){if(blink)artLine([[x-3,-9],[x+3,-9]],ink,1.6);else artOval(x+look,-9,2.3,scared?4:2.8,ink);}
+   artLine([[0,-18],[0,-28]],ink,3);artOval(0,-29,5,3,"#c2ffea",ink);
+ }
+ ctx.restore();
 }
 function drawBomb(b){
  ctx.save();ctx.translate(b.x,b.y);
