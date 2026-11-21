@@ -101,6 +101,55 @@ function gate(c,g,a){
  }
 }
 function furEdge(cx,cy,rx,ry,k=0){let pts=[];for(let i=0;i<48;i++){const a=i*TAU/48,r=i%2?1.03:.86+(hash(i+k)%12)/100;pts.push([cx+Math.cos(a)*rx*r,cy+Math.sin(a)*ry*r]);}return pts;}
+// Sprite sizes expressed in logical pixels. Collision dimensions remain in the engine.
+const HERO_SCALE=1.10;
+function referenceYeti(c,a){
+ const sprites=window.SnowBikeReferenceSprites;
+ if(!sprites?.ready(sprites.yeti))return false;
+ const phase=(a.travel||0)+(a.stride||0),moving=Math.min(1,Math.abs(a.motionLane||0)*2);
+ const stride=Math.sin(phase)*moving;
+ c.save();
+ c.translate(0,-Math.abs(stride)*4);c.rotate(stride*.045);
+ // Independent shoulder/arm motion around the original silhouette.
+ const image=sprites.yeti,w=104,h=104*56/76;
+ c.imageSmoothingEnabled=false;
+ c.drawImage(image,-w/2,-h,w,h);
+ c.restore();return true;
+}
+function referenceDeer(c,a){
+ const sprites=window.SnowBikeReferenceSprites;
+ if(!sprites?.ready(sprites.deer))return false;
+ const phase=(a.travel||0)+(a.stride||0),moving=Math.min(1,Math.abs(a.motionLane||0)*2.6);
+ const stride=Math.sin(phase),bounce=Math.max(0,Math.sin(phase))*4*moving;
+ c.save();c.translate(0,-bounce);
+ for(let i=0;i<4;i++){
+  const rear=i<2,far=i%2===0,base=rear?-22:1;
+  const q=phase+(rear?2.6:0)+(far?Math.PI:0),swing=Math.sin(q)*moving,rise=Math.max(0,Math.cos(q))*moving*9;
+  const knee=base+swing*6,foot=base+swing*12;
+  stroke(c,[[base,-29],[knee,-14],[foot,-rise]],"#573b2e",far?3.2:4.3);
+  stroke(c,[[base,-29],[knee,-14]],far?"#88552e":"#b77b44",far?2.2:3.2);
+  stroke(c,[[knee,-14],[foot,-rise]],"#68432b",2.1);
+  stroke(c,[[foot-2,-rise],[foot+2,-rise]],"#26323a",2.1);
+ }
+ c.imageSmoothingEnabled=false;
+ c.drawImage(sprites.deer,-35,-83,86,84);
+ c.restore();return true;
+}
+function referenceRider(c,g,size,reduced){
+ const sprites=window.SnowBikeReferenceSprites;
+ if(!sprites?.ready(sprites.hero))return false;
+ // Reference art shows the jumping pose; rotate to put the ski and rear wheel on a common baseline.
+ c.save();c.scale(size,size);c.rotate(.16);
+ const squat=g.grounded&&!reduced?Math.sin(g.distance*.36)*.7:0;
+ c.translate(0,squat);
+ c.imageSmoothingEnabled=false;
+ c.drawImage(sprites.hero,-64,-79,130,130*92/108);
+ // Wheel spin is a separate, subtle moving spoke highlight over the original illustrated wheel.
+ const cx=-45,cy=4,angle=g.distance*.22;
+ if(!reduced){c.save();c.translate(cx,cy);c.rotate(.47);c.beginPath();c.ellipse(0,0,9,14,0,0,Math.PI*2);c.clip();c.globalAlpha*=.48;
+  for(let i=0;i<6;i++){const a=angle+i*TAU/6;stroke(c,[[0,0],[Math.cos(a)*9,Math.sin(a)*14]],"#e4f5ff",.7);}c.restore();}
+ c.restore();return true;
+}
 function yeti(c,a,time){
  const t=(a.travel||0)+(a.stride||0),walk=Math.sin(t),col="#ddeefa",outline="#354566";
  // Feet and heavy arms swing in opposing phases, anchored to the body.
@@ -194,10 +243,10 @@ function wildlife(c,a,time){
  c.restore();
 }
 function animal(c,g,a,p){
- c.save();c.translate(p.x,p.y);const sc=p.scale*(a.kind==="yeti"?.96:a.label==="Conill"?1.0:a.label==="Cérvol"?1.08:.95);c.scale(sc,sc);
+ c.save();c.translate(p.x,p.y);const sc=p.scale*(a.kind==="yeti"?.84:a.label==="Conill"?.86:a.label==="Cérvol"?.89:.80);c.scale(sc,sc);
  oval(c,0,4,a.kind==="yeti"?39:29,7,"#233d6655");
  if(a.kind!=="yeti"&&((a.motionAt||0)*2.48+(a.motionLane||0)*24<0))c.scale(-1,1);
- if(a.kind==="yeti")yeti(c,a,g.time);else wildlife(c,a,g.time);
+ if(a.kind==="yeti"){if(!referenceYeti(c,a))yeti(c,a,g.time);}else if(a.label!=="Cérvol"||!referenceDeer(c,a))wildlife(c,a,g.time);
  c.restore();
  // Early warning badges only for real moving encounters close enough to affect play.
  const delta=a.at-g.distance;
@@ -284,7 +333,7 @@ function drawHero(c,g,scale){
 function rider(c,g,p,reduced){
  const art=window.BiciParkPremiumArt;
  if(!art)return;
- const size=1.32*p.scale,h=g.airHeight*145,rotation=g.grounded||reduced?0:g.trickSpin*TAU;
+ const size=HERO_SCALE*p.scale,h=g.airHeight*145,rotation=g.grounded||reduced?0:g.trickSpin*TAU;
  oval(c,p.x,p.y+5,42+g.airHeight*15,7+g.airHeight*4,"#24497455");
  if(g.grounded&&g.phase==="playing"&&!reduced){
   for(let i=0;i<32+(g.boostTime>0?20:0);i++){const d=(i*17+g.distance*3.9)%139,xx=p.x-27-d,yy=p.y-3+(hash(i)%23)-d*.16;oval(c,xx,yy,1.5+i%4,1.3+i%3,i%3?"#ffffffcc":"#b4d9faff");}
@@ -292,7 +341,7 @@ function rider(c,g,p,reduced){
  }
  c.save();c.translate(p.x,p.y-h-27*size);const grade=(terrain(g.distance+3)-terrain(g.distance-3))/6;c.rotate(.075+Math.atan(grade/2.48)*.7+g.steerVelocity*.10+(g.stumble?Math.sin(g.time*26)*.17:0)+rotation);
  if(g.invulnerability>0&&Math.floor(g.time*14)%2===0)c.globalAlpha=.57;
- drawHero(c,g,size);
+ if(!referenceRider(c,g,size,reduced))drawHero(c,g,size);
  c.restore();
 }
 function draw(c,g,{visible,reduced=false}={}){
