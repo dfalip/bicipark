@@ -22,7 +22,7 @@ test('Pixel graphics are only loaded for the five action canvases; not for actua
   assert.equal(html.includes('play-arcade-art.js'),paint,p);
   if(paint){
    const app=p.includes('bike-cannon')?'modules/bike-cannon/bike-cannon.js':path.posix.join(path.posix.dirname(p),'app.js');
-   assert.match(read(app),/pixelFrame\(/);assert.match(read(app),/window\.BiciParkArcadeArt/);
+   if(theme==='ride'){assert.match(read(app),/BiciParkPremiumArt\.rider/);assert.match(html,/play-freeride-art\.js/);}else assert.match(read(app),/pixelFrame\(/);assert.match(read(app),/window\.BiciParkArcadeArt/);
   }
  }
  const css=read('css/play-arcade.css');
