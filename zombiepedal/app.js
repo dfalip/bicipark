@@ -53,9 +53,7 @@ const keys=new Set(),pointers=new Map();
 
 const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||false;
 const fx={particles:[],words:[],circles:[],shake:0,freeze:0,flash:0,color:"#ff748a",clock:0};
-const cyclistAtlas=typeof Image==="function"?new Image():null;
 const zombieAtlas=typeof Image==="function"?new Image():null;
-if(cyclistAtlas){cyclistAtlas.decoding="async";cyclistAtlas.src="./assets/cyclist-pedal-atlas.svg";}
 if(zombieAtlas){zombieAtlas.decoding="async";zombieAtlas.src="./assets/zombie-characters-atlas.svg";}
 function spriteReady(sprite,minWidth){return Boolean(sprite?.complete&&sprite.naturalWidth>=minWidth);}
 
@@ -566,25 +564,10 @@ function drawDashTrail(){
 }
 function drawCyclist(){
  const x=242,y=WORLD.roadY-game.altitude;
- // Four pre-illustrated pedal poses, animated by actual game cadence.
- if(spriteReady(cyclistAtlas,1200)){
-  const cadence=game.time*game.speed*.092;
-  const frame=reducedMotion?0:Math.floor(((cadence%(Math.PI*2))+(Math.PI*2))%(Math.PI*2)/(Math.PI/2))%4;
-  ctx.save();ctx.fillStyle="#091b2b70";
-  ctx.beginPath();ctx.ellipse(x+2,WORLD.roadY+4,75,9,0,0,Math.PI*2);ctx.fill();ctx.restore();
-  ctx.save();ctx.translate(x,y);
-  if(game.invulnerable>0&&Math.floor(fx.clock*18)%2===0)ctx.globalAlpha=.46;
-  const wobble=game.stagger>0?Math.sin(fx.clock*31)*.24*game.stagger/.75:0;
-  const airborne=game.grounded?0:clamp(game.vy/1400,-.17,.2);
-  ctx.rotate(wobble+airborne);
-  if(!reducedMotion&&game.grounded)ctx.translate(0,Math.sin(cadence*2)*.9);
-  ctx.drawImage(cyclistAtlas,frame*300,0,300,260,-120,-208,240,208);
-  ctx.restore();return;
- }
-
- const cadence=game.time*game.speed*.092;
- const pedal=Math.sin(cadence),pedalOther=Math.cos(cadence);
- ctx.save();ctx.translate(x,y);
+ // Articulated rider: continuous wheel/crank motion rather than a translating atlas.
+ const cadence=reducedMotion?0:game.distance*.092;
+ const pedal=Math.sin(cadence);
+ ctx.save();ctx.translate(x,y);ctx.scale(.82,.82);
  if(game.invulnerable>0&&Math.floor(fx.clock*18)%2===0)ctx.globalAlpha=.42;
  ctx.rotate((game.stagger>0?Math.sin(fx.clock*31)*.24*game.stagger/.75:0)+
   (game.grounded?0:clamp(game.vy/1400,-.17,.2)));
@@ -641,9 +624,11 @@ function drawCyclist(){
  // Rider's moving legs and shoes are connected to the rotating crank.
  const hipX=-12,hipY=-96;
  const crankX=12,crankY=-28;
- for(const [phase,color] of [[pedal,"#143a56"],[-pedal,"#234f65"]]){
-  const kneeX=-2+(phase>0?7:-9),kneeY=-65+phase*7;
-  const footX=crankX+(phase>0?14:-14),footY=crankY+phase*11;
+ for(const [offset,color] of [[Math.PI,"#143a56"],[0,"#234f65"]]){
+  const angle=cadence+offset;
+  const footX=crankX+Math.cos(angle)*14,footY=crankY+Math.sin(angle)*11;
+  const kneeX=hipX+(footX-hipX)*.68+13,kneeY=hipY+(footY-hipY)*.45;
+  ctx.strokeStyle="#a9c6ca";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(crankX,crankY);ctx.lineTo(footX,footY);ctx.stroke();
   ctx.lineWidth=10;ctx.lineCap="round";ctx.strokeStyle=color;
   ctx.beginPath();ctx.moveTo(hipX,hipY);ctx.lineTo(kneeX,kneeY);ctx.lineTo(footX,footY);ctx.stroke();
   ctx.strokeStyle="#0a2236";ctx.lineWidth=7;ctx.beginPath();
