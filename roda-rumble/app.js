@@ -18,7 +18,7 @@ const el={
 };
 let game=newGame(0),lastFrame=null,dragging=false,pointerId=null,previousPhase="aim";
 let noticeAge=0,prevScore=0;
-let trail=[],scorePopups=[],trailClock=0,trackedProjectile=null;
+let trail=[],scorePopups=[],trailClock=0,trackedProjectile=null,shotTrace=[],lastTrace=[];
 let previewCacheKey=null,previewCache=null;
 function cachedPrediction(){
   // Recalculate only when aim or shot changes, not every animation frame.
@@ -65,7 +65,7 @@ function sound(kind){
   }catch{/* Sound is strictly optional: never break the game. */}
 }
 function fireAction(){
-  if(fire(game)){trail=[];trailClock=0;sound("launch");}
+  if(fire(game)){trail=[];shotTrace=[];trailClock=0;sound("launch");}
   syncUI();
 }
 function specialAction(){
@@ -136,7 +136,7 @@ function syncUI(){
 }
 function reset(index=game.levelIndex){
   game=newGame(index);dragging=false;pointerId=null;previousPhase=game.phase;
-  prevScore=0;noticeAge=0;el.notice.hidden=true;trail=[];scorePopups=[];trailClock=0;trackedProjectile=null;
+  prevScore=0;noticeAge=0;el.notice.hidden=true;trail=[];scorePopups=[];trailClock=0;trackedProjectile=null;shotTrace=[];lastTrace=[];
   previewCacheKey=null;previewCache=null;
   syncUI();draw();
 }
@@ -149,6 +149,7 @@ function announce(){
     el.notice.hidden=false;noticeAge=.64;
   }
   if(phase!==previousPhase){
+    if(previousPhase==="flying"&&shotTrace.length)lastTrace=shotTrace.slice();
     if(phase==="won"){
       sound("win");
       if(game.score>storedBest(game.levelIndex))setBest(game.levelIndex,game.score);
@@ -294,6 +295,8 @@ function drawAim(){
   ctx.strokeStyle="#744b64";ctx.lineWidth=6;ctx.lineCap="round";
   ctx.beginPath();ctx.moveTo(a.x-29,a.y-24);ctx.lineTo(px,py);
   ctx.lineTo(a.x+20,a.y-35);ctx.stroke();
+  // The previous shot stays visible while aiming, to encourage learning by iteration.
+  for(let i=0;i<lastTrace.length;i+=3){const q=lastTrace[i];ctx.fillStyle="#e4f6ec60";ctx.beginPath();ctx.arc(q.x,q.y,2.1,0,Math.PI*2);ctx.fill();}
   const prediction=cachedPrediction();
   for(let i=1;i<prediction.points.length;i++){
     const point=prediction.points[i];
@@ -338,7 +341,7 @@ function updateFlightEffects(dt){
   for(const pop of scorePopups){pop.life-=dt;pop.y-=dt*38;}scorePopups=scorePopups.filter(p=>p.life>0);
   if(!p?.active||game.phase!=="flying")return;
   trailClock+=dt;
-  if(trailClock>=.025){trailClock=0;trail.push({x:p.x,y:p.y,life:.3,type:p.type,turbo:p.turbo});if(trail.length>16)trail.shift();}
+  if(trailClock>=.025){trailClock=0;trail.push({x:p.x,y:p.y,life:.3,type:p.type,turbo:p.turbo});if(shotTrace.length<350)shotTrace.push({x:p.x,y:p.y});if(trail.length>16)trail.shift();}
 }
 function drawFlightEffects(){
   for(const t of trail){const color=SHOT_TYPES.find(k=>k.id===t.type)?.color||"#def8ff";const f=t.life/.3;ctx.save();ctx.globalAlpha=f*.32;ctx.fillStyle=color;ctx.beginPath();ctx.arc(t.x,t.y,(t.turbo?12:7)*f+2,0,Math.PI*2);ctx.fill();ctx.restore();}
@@ -439,6 +442,8 @@ function draw(){
   for(const r of game.robots){if(!r.dead)drawRobot(r);}
   drawShockwaves();
   drawSling();
+  // Preview the actual remaining wheel queue rather than a text-only ammo count.
+  for(let i=0;i<Math.min(game.shotsLeft,8);i++){const k=SHOT_TYPES[(game.shotCount+i)%SHOT_TYPES.length];drawWheel(45+i*29,WORLD.ground-16,0,.59,k.id);}
   drawAim();
   const p=game.projectile;
   drawFlightEffects();
