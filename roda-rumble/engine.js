@@ -124,7 +124,7 @@ let serial=0;
 export function newGame(index=0){
   const level=LEVELS[clamp(index|0,0,LEVELS.length-1)];
   const entities=level.blocks.map(([material,x,y,w,h])=>({
-    id:++serial,kind:"block",material,x,y,w,h,hp:MATERIAL[material].hp,
+    id:++serial,kind:"block",material,x,y,w,h,hp:MATERIAL[material].hp,asleep:true,
     vx:0,vy:0,angle:0,spin:0,mass:MATERIAL[material].mass,dead:false}));
   const robots=level.robots.map(([x,y])=>({
     id:++serial,kind:"robot",x,y,r:18,vx:0,vy:0,dead:false,blink:0}));
@@ -233,7 +233,7 @@ function explode(g,b){
       const direction=Math.atan2(target.y-b.y,target.x-b.x);
       target.vx+=Math.cos(direction)*force/target.mass;
       target.vy+=Math.sin(direction)*force/target.mass-55;
-      target.spin+=(Math.cos(direction)>0?1:-1)*.9;target.disturbed=true;
+      target.spin+=(Math.cos(direction)>0?1:-1)*.9;target.disturbed=true;target.asleep=false;
       damageBlock(g,target,force*.65);
     }
   }
@@ -254,7 +254,7 @@ function shockwave(g,x,y,radius=145){
     const impact=58+intensity*180;
     b.vx+=(dx/(dist||1))*impact/b.mass;
     b.vy+=(dy/(dist||1))*impact/b.mass-48*intensity;
-    b.spin+=Math.sign(dx||1)*intensity*2.1;b.disturbed=true;
+    b.spin+=Math.sign(dx||1)*intensity*2.1;b.disturbed=true;b.asleep=false;
     damageBlock(g,b,impact*(b.material==="steel"?.55:1.15));
   }
   for(const t of g.robots){
@@ -334,7 +334,7 @@ function collideProjectile(g,p,b){
   const armX=p.x-b.x,armY=p.y-b.y;
   const torque=(armX*(-c.ny)-armY*(-c.nx))*knockback;
   b.spin=clamp(b.spin+torque/(b.mass*(b.w*b.w+b.h*b.h)/12),-5,5);
-  b.disturbed=true;
+  b.disturbed=true;b.asleep=false;
   const materialBonus=drill&&b.material==="steel"?2.7:1;
   damageBlock(g,b,impact*.68*(heavy?1.3:1)*materialBonus);
   if(impact>44){
@@ -367,9 +367,10 @@ function halfHeight(b){return Math.abs(Math.sin(b.angle))*b.w/2+Math.abs(Math.co
 function collideBlocks(g){
  const blocks=g.blocks.filter(x=>!x.dead);
  for(let pass=0;pass<3;pass++)for(let i=0;i<blocks.length;i++)for(let j=i+1;j<blocks.length;j++){
-   const a=blocks[i],b=blocks[j];if(a.dead||b.dead)continue;
+   const a=blocks[i],b=blocks[j];if(a.dead||b.dead||a.asleep&&b.asleep)continue;
    if(Math.abs(a.x-b.x)>Math.hypot(a.w,a.h)/2+Math.hypot(b.w,b.h)/2||Math.abs(a.y-b.y)>Math.hypot(a.w,a.h)/2+Math.hypot(b.w,b.h)/2)continue;
    const c=boxContact(a,b);if(!c)continue;
+   if(c.depth>.5){a.asleep=b.asleep=false;}
    const {nx,ny,depth}=c,ia=1/a.mass,ib=1/b.mass,sum=ia+ib;
    const correction=Math.max(0,depth-.15)*.76/sum;
    a.x-=nx*correction*ia;a.y-=ny*correction*ia;b.x+=nx*correction*ib;b.y+=ny*correction*ib;
@@ -383,6 +384,7 @@ function collideBlocks(g){
 function updateBodies(g,dt){
   for(const b of g.blocks){
     if(b.dead)continue;
+    if(b.asleep){const supported=b.y+b.h/2>=WORLD.ground-5||g.blocks.some(q=>q!==b&&!q.dead&&q.y>b.y&&Math.abs(q.x-b.x)<(q.w+b.w)/2&&Math.abs(q.y-q.h/2-(b.y+b.h/2))<18);if(supported)continue;b.asleep=false;b.disturbed=true;}
     b.vy+=660*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;
     b.angle=clamp(b.angle+b.spin*dt,-.95,.95);
     b.spin*=Math.exp(-2*dt);b.vx*=Math.exp(-1.65*dt);
