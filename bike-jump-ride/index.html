@@ -16,7 +16,7 @@
   </header>
   <main class="main">
     <section class="intro">
-      <div><p class="eyebrow">JOC NOU · DESCENS · ACROBÀCIES</p>
+      <div><p class="eyebrow">FREERIDE · ACROBÀCIES · MUNTANYA</p>
       <h1>BIKEJUMP <span>RIDE</span></h1>
       <p>Un recorregut de veritat. Pedala, supera quatre barrancs, vola per sobre les rampes i arriba a meta.</p></div>
       <div class="intro-actions">
@@ -28,7 +28,8 @@
       <div><span>DISTÀNCIA</span><strong id="distanceValue">0 <small>m</small></strong></div>
       <div><span>PUNTS</span><strong id="scoreValue">0</strong></div>
       <div><span>CRONO</span><strong id="timeValue">00:00</strong></div>
-      <div><span>RÈCORD</span><strong id="bestValue">0</strong></div>
+      <div><span>RÈCORD FREERIDE</span><strong id="bestValue">0</strong></div>
+      <div><span>TRUCS</span><strong id="trickValue">0</strong></div><div><span>COMBO</span><strong id="comboValue">×0</strong></div>
     </section>
     <section class="stage" aria-label="Circuit de bicicleta">
       <div class="stage-heading"><span id="zoneLabel">PUNT DE SORTIDA</span><span id="stateLabel">PREPARAT</span></div>
@@ -64,7 +65,9 @@
       <button type="button" id="jumpButton" class="control control-jump"><span>✦</span> SALT <small>ESPAI</small></button>
       <button type="button" id="leanForwardButton" class="control control-lean"><span>↷</span> ENDAVANT <small>↓</small></button>
       <button type="button" id="accelerateButton" class="control control-gas"><span>▶</span> PEDALAR <small>→ / D</small></button>
+      <button type="button" id="boostButton" class="control control-boost"><span>⚡</span> TURBO <small>C / X / F</small></button>
     </section>
+    <div class="jump-meter" aria-label="Energia turbo"><span>TURBO</span><div class="meter-track boost-track"><div id="boostMeterBar"></div></div><strong id="boostMeterLabel">60%</strong></div>
     <div class="jump-meter" aria-label="Impuls per al salt"><span>CARREGA DE SALT</span><div class="meter-track"><div id="jumpMeterBar"></div></div><strong id="jumpMeterLabel">0%</strong></div>
     <section class="ride-challenge-panel" aria-label="Reptes de BikeJump Ride">
       <div class="challenge-panel-head">
@@ -74,10 +77,11 @@
       <div id="challengeList" class="challenge-list"></div>
       <p class="challenge-note">Les medalles s'aconsegueixen només en arribar a meta. Queden desades en aquest navegador; els reptes no canvien la física ni afegeixen penalitzacions.</p>
     </section>
-    <p id="instructions" class="help">La bicicleta avança només quan pedales. Mantén l'espai o SALT per carregar impuls i deixa'l anar per saltar; si arribes a una rampa, també sortiràs disparat automàticament. Corregeix l'angle durant el vol amb ↑/↓. Si caus, reapareixes al punt de control.</p>
+    <p id="instructions" class="help">La bicicleta avança només quan pedales. Mantén l'espai o SALT per carregar impuls i deixa'l anar per saltar; si arribes a una rampa, també sortiràs disparat automàticament. Mantén ↑ / W a terra per fer un wheelie; deixa anar per tornar a les dues rodes. En vol, ↑ / W gira enrere i ↓ / S endavant; deixa anar abans d'aterrar. Les tombarelles només puntuen si aterres correctament. C / X / F activa el turbo. Si caus, reapareixes al punt de control.</p>
     <footer><a href="../bike-jump/">Tornar al BikeJump clàssic</a> · Joc arcade original BiciPark · Funciona sense connexió i només desa el rècord localment</footer>
   </main>
   <script src="../js/play-arcade-art.js"></script>
+  <script src="../js/play-freeride-art.js"></script>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
