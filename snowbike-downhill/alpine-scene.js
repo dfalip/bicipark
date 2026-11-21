@@ -110,10 +110,17 @@ function referenceYeti(c,a){
  const stride=Math.sin(phase)*moving;
  c.save();
  c.translate(0,-Math.abs(stride)*4);c.rotate(stride*.045);
- // Independent shoulder/arm motion around the original silhouette.
+ // Extract the raised arm as a separate local layer, hinged to the shoulder.
  const image=sprites.yeti,w=104,h=104*56/76;
  c.imageSmoothingEnabled=false;
- c.drawImage(image,-w/2,-h,w,h);
+ c.translate(-w/2,-h);c.scale(w/76,h/56);
+ // Exclude only the outer arm from the torso; overlap the shoulder seam.
+ c.save();c.beginPath();c.rect(0,0,76,56);c.rect(0,3,24,29);c.clip("evenodd");
+ c.drawImage(image,0,0);c.restore();
+ c.save();c.translate(26,22);
+ c.rotate(stride*.10-(a.alert||0)*.08);
+ c.translate(-26,-22);c.beginPath();c.rect(0,3,28,29);c.clip();
+ c.drawImage(image,0,0);c.restore();
  c.restore();return true;
 }
 function referenceDeer(c,a){
