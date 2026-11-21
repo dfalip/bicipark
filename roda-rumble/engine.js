@@ -127,15 +127,19 @@ export function newGame(index=0){
     id:++serial,kind:"block",material,x,y,w,h,hp:MATERIAL[material].hp,asleep:true,
     vx:0,vy:0,angle:0,spin:0,mass:MATERIAL[material].mass,dead:false}));
   const robots=level.robots.map(([x,y])=>({
-    id:++serial,kind:"robot",x,y,r:18,vx:0,vy:0,dead:false,blink:0}));
+    id:++serial,kind:"robot",x,y,r:18,vx:0,vy:0,dead:false,blink:0,asleep:true}));
   const bombs=level.bombs.map(([x,y])=>({
     id:++serial,kind:"bomb",x,y,r:17,dead:false}));
-  return {levelIndex:clamp(index|0,0,LEVELS.length-1),levelName:level.name,
+  const g={levelIndex:clamp(index|0,0,LEVELS.length-1),levelName:level.name,
     phase:"aim",shotsLeft:level.shots,shotsTotal:level.shots,
     angle:42,power:77,score:0,combo:0,shotCount:0,shotTime:0,settleTime:0,
     blocks:entities,robots,bombs,physicsActive:false,projectile:null,extras:[],debris:[],pulses:[],
     shake:0,celebration:0,notice:"Arrossega la roda enrere i deixa-la anar!",
     lastResult:null};
+  // Capture authored support links, including small placement gaps. Only a disturbed support can wake a resting neighbour.
+  for(const b of entities)b.supports=entities.filter(q=>q!==b&&q.y>b.y&&Math.abs(q.x-b.x)<(q.w+b.w)/2&&Math.abs(q.y-q.h/2-(b.y+b.h/2))<=18).map(q=>q.id);
+  for(const t of robots)t.supports=entities.filter(q=>Math.abs(t.x-q.x)<q.w/2+t.r*.4&&Math.abs(t.y+t.r-(q.y-q.h/2))<=18).map(q=>q.id);
+  return g;
 }
 export function setAim(g,angle,power){
   if(g.phase!=="aim")return false;
@@ -204,7 +208,7 @@ function sparks(g,x,y,color,count=12,material=null){
 }
 function damageBlock(g,b,impulse,x=b.x,y=b.y){
   if(b.dead||impulse<19)return;
-  g.physicsActive=true;
+  g.physicsActive=true;b.asleep=false;b.disturbed=true;
   const material=MATERIAL[b.material];
   b.hp-=Math.max(0,impulse)*(b.material==="steel"?.36:b.material==="wood"?.75:1.06);
   if(b.hp<=0){
@@ -263,7 +267,7 @@ function shockwave(g,x,y,radius=145){
     if(t.dead)continue;
     const d=Math.hypot(t.x-x,t.y-y);
     if(d<radius*.54)eliminateRobot(g,t);
-    else if(d<radius){g.physicsActive=true;t.vx+=(t.x-x)/(d||1)*190;t.vy-=190;}
+    else if(d<radius){g.physicsActive=true;t.asleep=false;t.vx+=(t.x-x)/(d||1)*190;t.vy-=190;}
   }
   for(const b of g.bombs){
     if(!b.dead&&Math.hypot(b.x-x,b.y-y)<radius*.78)explode(g,b);
@@ -373,11 +377,11 @@ function collideBlocks(g){
    const a=blocks[i],b=blocks[j];if(a.dead||b.dead||a.asleep&&b.asleep)continue;
    if(Math.abs(a.x-b.x)>Math.hypot(a.w,a.h)/2+Math.hypot(b.w,b.h)/2||Math.abs(a.y-b.y)>Math.hypot(a.w,a.h)/2+Math.hypot(b.w,b.h)/2)continue;
    const c=boxContact(a,b);if(!c)continue;
-   if(c.depth>.5){a.asleep=b.asleep=false;}
+   if(c.depth>.5){a.asleep=b.asleep=false;a.disturbed=b.disturbed=true;}
    const {nx,ny,depth}=c,ia=1/a.mass,ib=1/b.mass,sum=ia+ib;
    const correction=Math.max(0,depth-.15)*.76/sum;
    a.x-=nx*correction*ia;a.y-=ny*correction*ia;b.x+=nx*correction*ib;b.y+=ny*correction*ib;
-   const rel=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;if(rel<=0)continue;
+   const rel=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;if(rel<=0)continue;a.asleep=b.asleep=false;a.disturbed=b.disturbed=true;
    const imp=rel*(rel>70?1.08:1)/sum;
    a.vx-=nx*imp*ia;a.vy-=ny*imp*ia;b.vx+=nx*imp*ib;b.vy+=ny*imp*ib;
    if(rel>80){a.disturbed=b.disturbed=true;const cross=(b.x-a.x)*ny-(b.y-a.y)*nx;
@@ -424,9 +428,12 @@ function instability(g,b){
 function updateBodies(g,dt){
  for(const b of g.blocks){
    if(b.dead)continue;
+   if(b.asleep){
+     const changed=(b.supports||[]).some(id=>{const q=g.blocks.find(x=>x.id===id);return !q||q.dead||!q.asleep;});
+     if(!changed)continue;
+     b.asleep=false;b.disturbed=true;
+   }
    const over=instability(g,b);
-   if(b.asleep&&over!==null&&Math.abs(over)<=1&&Math.abs(b.angle)<.015)continue;
-   if(b.asleep){b.asleep=false;b.disturbed=true;}
    b.vy+=660*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;
    if(over!==null&&Math.abs(over)>1){
       // Off-centre load produces a moment around the edge of the support.
@@ -444,12 +451,13 @@ function updateBodies(g,dt){
  }
  collideBlocks(g);
  // Collision correction may push a rectangle into the ground.
- for(const b of g.blocks)if(!b.dead&&b.y+halfHeight(b)>WORLD.ground){b.y=WORLD.ground-halfHeight(b);if(b.vy>0)b.vy=0;}
+ for(const b of g.blocks)if(!b.dead&&!b.asleep&&b.y+halfHeight(b)>WORLD.ground){b.y=WORLD.ground-halfHeight(b);if(b.vy>0)b.vy=0;}
 }
 function updateTargets(g,dt){
   for(const t of g.robots){
     if(t.dead)continue;
     t.blink=(t.blink+dt)%2.7;
+    if(t.asleep){const changed=(t.supports||[]).some(id=>{const q=g.blocks.find(x=>x.id===id);return !q||q.dead||!q.asleep;});const hit=g.blocks.some(b=>!b.dead&&!b.asleep&&Math.hypot(b.vx,b.vy)>72&&circleBox(t,b));if(!changed&&!hit&&Math.abs(t.vx)+Math.abs(t.vy)===0)continue;t.asleep=false;}
     // Robots ride platforms and fall if their support is broken: no floating
     // targets left behind after a satisfying tower demolition.
     let supportY=WORLD.ground-t.r;
@@ -548,7 +556,7 @@ export function step(g,elapsed){
         g.phase="won";g.score+=g.shotsLeft*300;g.notice="NIVELL SUPERAT! 🎉";
         g.celebration=1.5;
       }else{
-        const moving=g.physicsActive&&(g.blocks.some(b=>!b.dead&&(Math.hypot(b.vx,b.vy)>28||Math.abs(b.spin)>.09||instability(g,b)===null||Math.abs(instability(g,b)??0)>1))||g.robots.some(t=>!t.dead&&Math.hypot(t.vx,t.vy)>32));
+        const moving=g.physicsActive&&(g.blocks.some(b=>!b.dead&&!b.asleep&&(Math.hypot(b.vx,b.vy)>28||Math.abs(b.spin)>.09||instability(g,b)===null||Math.abs(instability(g,b)??0)>1))||g.robots.some(t=>!t.dead&&Math.hypot(t.vx,t.vy)>32));
         g.settleTime=!g.projectile?.active&&!(g.extras||[]).some(p=>p.active)&&!moving?(g.settleTime||0)+dt:0;
         if(g.shotTime>12 || (g.settleTime>.65 && g.shotTime>.8)){
         g.phase=g.shotsLeft>0?"between":"lost";
