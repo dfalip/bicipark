@@ -45,7 +45,7 @@ test('Local game best statistics only count real saved values from the current e
  const p=await load();
  assert.deepEqual(p.readBest(store({})),{snowTime:null,zombieScore:null});
  const value=p.readBest(store({
-  'bicipark-snowbike-downhill-times-v1':JSON.stringify({'0':{time:44.5},'1':{time:37.2},'2':{time:null}}),
+  'bicipark-snowbike-alpine-times-v2':JSON.stringify({'0':{time:44.5},'1':{time:37.2},'2':{time:null}}),
   'bicipark-zombiepedal-arcade-v1':JSON.stringify({story:1540,endless:700})
  }));
  assert.equal(value.snowTime,37.2);
