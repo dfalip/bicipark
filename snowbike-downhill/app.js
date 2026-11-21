@@ -224,8 +224,8 @@ function gameReset(index=game.course.id){
 }
 function beginRace(){if(start(game)){ui.startPanel.hidden=true;ui.status.textContent=game.event;lastFrame=null;}}
 function togglePause(){
- if(game.phase==="playing"){pause(game);ui.pausePanel.hidden=false;lastFrame=null;}
- else if(game.phase==="paused"){resume(game);ui.pausePanel.hidden=true;lastFrame=null;}
+ if(game.phase==="playing"){clearControls();pause(game);ui.pausePanel.hidden=false;lastFrame=null;}
+ else if(game.phase==="paused"){clearControls();resume(game);ui.pausePanel.hidden=true;lastFrame=null;}
 }
 function keyAllowed(event){
  return !(event.target instanceof HTMLElement&&["BUTTON","SELECT","INPUT","TEXTAREA","A"].includes(event.target.tagName));
@@ -235,6 +235,7 @@ document.addEventListener("keydown",event=>{
  if(!keyAllowed(event))return;
  event.preventDefault();
  if(event.code==="KeyP"&&!event.repeat){togglePause();return;}
+ if(game.phase==="paused")return;
  if(game.phase==="ready"&&["ArrowDown","ArrowLeft","ArrowRight","Space","KeyJ"].includes(event.code))beginRace();
  keys.add(event.code);
  if(["Space","KeyJ"].includes(event.code)&&!event.repeat)jump(game);
@@ -253,6 +254,7 @@ for(const [action,button] of Object.entries(controls)){
  button.setAttribute("aria-pressed","false");
  button.addEventListener("pointerdown",event=>{
   if(event.button!=null&&event.button!==0)return;
+  if(game.phase==="paused")return;
   event.preventDefault();
   if(game.phase==="ready")beginRace();
   pointers.set(event.pointerId,action);button.setAttribute("aria-pressed","true");
