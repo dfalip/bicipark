@@ -169,7 +169,7 @@ function wheel(c,x,y,r,angle){
 }
 function cyclist(c,g,reduced){
  const x=VIEW.riderX,y=VIEW.lanes[0]+g.lane*45,air=g.altitude;
- const cadence=g.time*g.speed/40;
+ const cadence=reduced?0:g.distance/40;
  shadow(c,x,y,62);
  c.save();c.translate(Math.round(x),Math.round(y-air-(g.altitude?0:reduced?0:Math.sin(cadence*2))));
  if(g.invuln>0&&!reduced&&Math.floor(g.time*12)%2===0)c.globalAlpha=.58;
@@ -183,11 +183,13 @@ function cyclist(c,g,reduced){
  line(c,-6,-27,-10,-34,"#171c25",3);rect(c,-18,-36,16,4,"#293b40");
  line(c,18,-27,20,-39,"#acbfc0",3);line(c,20,-39,29,-39,"#242b30",3);
  circle(c,7,-10,4,"#f3c86b");
- const p=Math.sin(cadence)*7,k=Math.cos(cadence)*4;
- for(const [s,color] of [[-1,"#344458"],[1,"#536877"]]){
-  line(c,-7,-39,-5+s*p,-24+s*k,ink,7);line(c,-5+s*p,-24+s*k,6+s*p,-12+s*k,ink,6);
-  line(c,-7,-39,-5+s*p,-24+s*k,color,4);line(c,-5+s*p,-24+s*k,6+s*p,-12+s*k,color,4);
-  rect(c,2+s*p,-12+s*k,10,4,"#20282c");
+ for(const [offset,color] of [[Math.PI,"#344458"],[0,"#536877"]]){
+  const a=cadence+offset,fx=7+Math.cos(a)*7,fy=-10+Math.sin(a)*5;
+  const kx=-3+(fx-7)*.5,ky=-25+(fy+10)*.5;
+  line(c,7,-10,fx,fy,"#a8c4c6",2);
+  line(c,-7,-39,kx,ky,ink,7);line(c,kx,ky,fx,fy,ink,6);
+  line(c,-7,-39,kx,ky,color,4);line(c,kx,ky,fx,fy,color,4);
+  rect(c,fx-4,fy-2,10,4,"#20282c");
  }
  line(c,-8,-40,4,-56,ink,14);line(c,-8,-40,4,-56,"#2b9a94",10);line(c,-6,-42,1,-51,"#71d1b6",4);
  line(c,4,-56,13,-43,ink,7);line(c,13,-43,26,-39,ink,6);
