@@ -233,54 +233,39 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden){dragging=f
 function roundedRect(x,y,w,h,r=8){
   ctx.beginPath();ctx.roundRect(x,y,w,h,Math.min(r,w/2,h/2));
 }
-function backdrop(){
-  if(window.BiciParkArcadeArt){window.BiciParkArcadeArt.industrial(ctx,WORLD.width,WORLD.height,WORLD.ground);drawArenaDetails();return;}
-  const sky=ctx.createLinearGradient(0,0,0,520);
-  sky.addColorStop(0,"#61bbd9");sky.addColorStop(.47,"#b9f6d2");sky.addColorStop(1,"#f5dbac");
-  ctx.fillStyle=sky;ctx.fillRect(0,0,WORLD.width,WORLD.height);
-  ctx.fillStyle="#fff4b7";
-  ctx.beginPath();ctx.arc(854,116,60,0,Math.PI*2);ctx.fill();
-  const shift=game.shotTime*3;
-  ctx.fillStyle="rgba(255,255,255,.62)";
-  for(let i=0;i<7;i++){
-    const x=((i*194+32+shift)%1200)-80,y=85+(i%3)*43;
-    ctx.beginPath();ctx.ellipse(x,y,53,17,0,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();ctx.arc(x+20,y-5,19,0,Math.PI*2);ctx.fill();
-  }
-  ctx.fillStyle="#76cbb5";ctx.beginPath();
-  ctx.moveTo(0,353);ctx.quadraticCurveTo(190,235,410,353);
-  ctx.quadraticCurveTo(625,220,1000,345);ctx.lineTo(1000,540);
-  ctx.lineTo(0,540);ctx.closePath();ctx.fill();
-  ctx.fillStyle="#3e8d8e";ctx.beginPath();
-  ctx.moveTo(0,400);ctx.quadraticCurveTo(224,311,415,387);
-  ctx.quadraticCurveTo(712,296,1000,398);
-  ctx.lineTo(1000,560);ctx.lineTo(0,560);ctx.closePath();ctx.fill();
-  // Scrap-yard skyline and bicycles are original procedural shapes.
-  ctx.fillStyle="#285e76";
-  for(let i=0;i<22;i++){
-    const x=i*49+9,h=26+(i*23%65);
-    ctx.fillRect(x,WORLD.ground-h,28,h);
-    ctx.fillRect(x+7,WORLD.ground-h-13,5,13);
-  }
-  ctx.fillStyle="#35594e";ctx.fillRect(0,WORLD.ground,1000,50);
-  ctx.fillStyle="#567b52";ctx.fillRect(0,WORLD.ground,1000,7);
-  ctx.fillStyle="rgba(255,240,174,.17)";
-  for(let x=0;x<1000;x+=36)ctx.fillRect(x,WORLD.ground+15,17,3);
-  ctx.save();ctx.globalAlpha=.8;
-  for(const x of [295,468,956]){
-    ctx.fillStyle="#20485b";ctx.fillRect(x,WORLD.ground-61,5,61);
-    ctx.strokeStyle="#cfffe1";ctx.lineWidth=4;ctx.beginPath();
-    ctx.arc(x+3,WORLD.ground-72,13,0,Math.PI*2);ctx.stroke();
-  }
-  ctx.restore();
+// Hand-drawn scenic layers, cached per arena. Foreground contrast reserved for targets.
+let arenaCache=null,arenaCacheKey=-1;
+function scene(c,theme){
+ const W=1000,H=560,ground=510;
+ const grad=(x,y,x2,y2,stops)=>{const g=c.createLinearGradient(x,y,x2,y2);for(const [p,col] of stops)g.addColorStop(p,col);return g;};
+ const poly=(pts,fill,edge=null,sw=1)=>{c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=fill;c.fill();if(edge){c.strokeStyle=edge;c.lineWidth=sw;c.stroke();}};
+ const line=(pts,col,w=1)=>{c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.strokeStyle=col;c.lineWidth=w;c.stroke();};
+ const oval=(x,y,rx,ry,col)=>{c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fillStyle=col;c.fill();};
+ const palette=theme==="tunnel"?["#273444","#637985","#a69e8a"]:theme==="workshop"?["#4d7385","#9bbeb9","#eed1a2"]:theme==="yard"?["#536f94","#aab9c6","#f2c47e"]:["#3f829c","#a1d2cd","#f3d4a3"];
+ c.fillStyle=grad(0,0,0,ground,[[0,palette[0]],[.55,palette[1]],[1,palette[2]]]);c.fillRect(0,0,W,H);
+ oval(825,116,67,67,"#fff1bd88");oval(825,116,43,43,"#fff6cfbb");
+ for(let i=0;i<8;i++){let x=(i*173+31)%1100,y=58+i%3*34;oval(x,y,48,13,"#edf0d88a");oval(x+17,y-9,26,18,"#edf0d880");}
+ for(let z=0;z<2;z++){const pts=[[0,ground]];for(let x=0;x<=W;x+=20)pts.push([x,300+z*65+Math.sin(x/140+z)*30+Math.sin(x/47)*9]);pts.push([W,ground]);poly(pts,z?"#557d80":"#85a5a4");}
+ // Silhouettes of corrugated sheds, rooftop vents, glazed factory bays.
+ for(let i=0;i<7;i++){const x=i*164-30,w=132+(i%3)*12,h=90+(i*37%80),y=ground-h-40;const col=i%2?"#627d84":"#59707d";poly([[x,y],[x+w*.45,y-25],[x+w,y],[x+w,ground],[x,ground]],col);
+ c.fillStyle="#83999b";c.fillRect(x+8,y+14,w-16,8);for(let j=0;j<4;j++){c.fillStyle="#3b596771";c.fillRect(x+11+j*(w-17)/4,y+37,19,36);line([[x+13+j*(w-17)/4,y+39],[x+26+j*(w-17)/4,y+39]],"#d6ded477",2);}
+ c.fillStyle="#617984";c.fillRect(x+w-22,y-39,12,39);for(let q=0;q<4;q++)line([[x+4,y+62+q*17],[x+w-4,y+62+q*17]],"#9aafb044");
+ }
+ // A crane and stacked scrap in mid-ground, deliberately low contrast.
+ const cx=theme==="yard"?860:330;line([[cx,455],[cx,171],[cx-180,171]],"#536775",11);line([[cx,174],[cx-180,174],[cx-88,205],[cx,174]],"#8c9e9f",4);line([[cx-156,174],[cx-156,286]],"#576b75",2);oval(cx-156,291,5,7,"#566b75");
+ for(let i=0;i<19;i++){const x=(i*79+27)%1000,y=ground-19-(i%4)*9;oval(x,y,26,13,"#456371");oval(x,y,14,7,"#789193");}
+ if(theme==="tunnel"){poly([[0,0],[1000,0],[1000,133],[820,89],[180,89],[0,133]],"#304454");for(let x=80;x<1000;x+=170){c.fillStyle="#f3d89d";c.fillRect(x,52,60,8);}}
+ if(theme==="workshop"){for(let x=10;x<1000;x+=240){line([[x,120],[x,452]],"#466775",10);line([[x,120],[x+190,120]],"#466775",9);}}
+ // Continuous ground: worn asphalt, curb, diagonal industrial verge.
+ c.fillStyle=grad(0,ground,0,H,[[0,"#455155"],[1,"#253843"]]);c.fillRect(0,ground,W,H-ground);
+ c.fillStyle="#b6aa84";c.fillRect(0,ground,1000,5);c.fillStyle="#796f59";c.fillRect(0,ground+5,1000,5);
+ for(let i=0;i<40;i++){let x=i*27%1000,y=ground+14+(i*19%31);line([[x,y],[x+9+(i%5)*3,y-1]],"#95a1a14d",1);}
+ for(let x=-20;x<1000;x+=42){poly([[x,542],[x+18,542],[x+7,558],[x-11,558]],"#d8b76170");}
 }
-function drawArenaDetails(){
- const theme=LEVELS[game.levelIndex].theme;if(!theme)return;
- ctx.save();ctx.globalAlpha=.72;
- if(theme==="tunnel"){ctx.fillStyle="#263746";ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(1000,0);ctx.lineTo(1000,115);ctx.quadraticCurveTo(500,-30,0,115);ctx.closePath();ctx.fill();for(let x=95;x<1000;x+=180){ctx.fillStyle="#ffe7ad";ctx.fillRect(x,48,42,9);}}
- if(theme==="workshop"){ctx.fillStyle="#40576a";for(let x=0;x<1000;x+=175){ctx.fillRect(x,110,12,290);ctx.fillRect(x+12,112,140,8);}ctx.strokeStyle="#b0d0c8";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(0,105);ctx.lineTo(1000,105);ctx.stroke();}
- if(theme==="yard"){ctx.strokeStyle="#5b654e";ctx.lineWidth=11;ctx.beginPath();ctx.moveTo(890,390);ctx.lineTo(890,92);ctx.lineTo(510,92);ctx.stroke();ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(590,92);ctx.lineTo(590,175);ctx.stroke();}
- ctx.restore();
+function backdrop(){
+ const theme=LEVELS[game.levelIndex].theme||"scrap";
+ if(arenaCacheKey!==game.levelIndex){arenaCache=null;arenaCacheKey=game.levelIndex;try{const cv=document.createElement("canvas");cv.width=1000;cv.height=560;const cc=cv.getContext("2d");if(cc){scene(cc,theme);arenaCache=cv;}}catch{}}
+ if(arenaCache)ctx.drawImage(arenaCache,0,0);else scene(ctx,theme);
 }
 function updateCamera(dt){
  const p=game.projectile,focus=game.phase==="flying"&&!reducedMotion&&p&&p.x>360;
@@ -289,15 +274,12 @@ function updateCamera(dt){
  if(game.phase==="aim"||reducedMotion)camera={x:0,y:0,z:1};
 }
 function drawSling(){
-  const a=WORLD.anchor;
-  ctx.lineCap="round";
-  ctx.strokeStyle="#5a3956";ctx.lineWidth=17;
-  ctx.beginPath();ctx.moveTo(a.x-12,a.y+70);ctx.lineTo(a.x-16,a.y-9);
-  ctx.lineTo(a.x-29,a.y-24);ctx.moveTo(a.x-12,a.y-9);ctx.lineTo(a.x+20,a.y-35);ctx.stroke();
-  ctx.strokeStyle="#f9da98";ctx.lineWidth=6;
-  ctx.beginPath();ctx.moveTo(a.x-26,a.y-25);ctx.lineTo(a.x-13,a.y-9);
-  ctx.moveTo(a.x+18,a.y-34);ctx.lineTo(a.x-13,a.y-8);ctx.stroke();
-  ctx.fillStyle="#6d4054";roundedRect(a.x-31,a.y+64,43,47,7);ctx.fill();
+ const a=WORLD.anchor;ctx.save();ctx.translate(a.x,a.y);
+ artOval(0,118,55,7,"#14243160");
+ ctx.fillStyle="#233e4d";roundedRect(-39,91,78,29,5);ctx.fill();ctx.strokeStyle="#132435";ctx.lineWidth=3;ctx.stroke();
+ ctx.fillStyle="#a7bbc0";roundedRect(-32,91,64,8,3);ctx.fill();
+ for(const side of [-1,1]){artLine([[side*23,98],[side*15,42],[side*8,-6],[side*24,-31]],"#24394a",17);artLine([[side*23,98],[side*15,42],[side*8,-6],[side*24,-31]],"#c98d49",11);artLine([[side*23-2,94],[side*15-2,42],[side*8-2,-7],[side*24-2,-31]],"#f2cb80",3);artOval(side*24,-31,8,8,"#647f8b","#182c3c",2);rivet(side*24,-31);rivet(side*23,98);}
+ artLine([[-20,55],[20,55]],"#3e5967",8);artLine([[-18,53],[18,53]],"#9eb6b9",3);ctx.restore();
 }
 function drawAim(){
   if(game.phase!=="aim")return;
@@ -307,9 +289,10 @@ function drawAim(){
   const px=a.x-Math.cos(theta)*pull,py=a.y+Math.sin(theta)*pull;
   // Curved trajectory ghost uses same base launch velocity and gravity.
   ctx.save();
-  ctx.strokeStyle="#744b64";ctx.lineWidth=6;ctx.lineCap="round";
-  ctx.beginPath();ctx.moveTo(a.x-29,a.y-24);ctx.lineTo(px,py);
-  ctx.lineTo(a.x+20,a.y-35);ctx.stroke();
+  ctx.strokeStyle="#442b39";ctx.lineWidth=8;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(a.x-24,a.y-31);ctx.lineTo(px,py);
+  ctx.lineTo(a.x+24,a.y-31);ctx.stroke();
+  ctx.strokeStyle="#f1bd72";ctx.lineWidth=3;ctx.stroke();
   // The previous shot stays visible while aiming, to encourage learning by iteration.
   for(let i=0;i<lastTrace.length;i+=3){const q=lastTrace[i];ctx.fillStyle="#e4f6ec60";ctx.beginPath();ctx.arc(q.x,q.y,2.1,0,Math.PI*2);ctx.fill();}
   const prediction=cachedPrediction();
@@ -504,7 +487,7 @@ function draw(){
     ctx.globalAlpha=1;
   }
   ctx.restore();
-  window.BiciParkArcadeArt?.pixelFrame(ctx);
+  // No generic pixel filter: preserve deliberately illustrated edges and depth.
 }
 function loop(now){
   if(lastFrame===null)lastFrame=now;
