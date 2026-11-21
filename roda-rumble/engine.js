@@ -3,12 +3,13 @@
 export const WORLD={width:1000,height:560,ground:510,anchor:{x:158,y:389}};
 export const clamp=(value,a,b)=>Math.min(b,Math.max(a,value));
 export const LEVELS=Object.freeze([
-  {name:"Primer impacte",subtitle:"Aprèn a trencar la torre de ferralla",shots:4,
+  {name:"Primer impacte",subtitle:"Trenca el suport de vidre i fes caure la passarel·la",shots:4,
    blocks:[
-    ["wood",650,480,54,60],["glass",715,478,54,64],
-    ["wood",682,430,135,22],["glass",682,379,52,78]
-   ],
-   robots:[[682,323],[780,488]],bombs:[]},
+    ["wood",570,485,42,50],["glass",660,485,32,50],
+    ["wood",615,449,137,22],["wood",722,490,72,40],
+    ["steel",765,474,24,72],["glass",836,474,26,72],
+    ["wood",800,427,111,22]
+   ],robots:[[615,420],[800,398]],bombs:[[704,493]]},
   {name:"La fàbrica",subtitle:"Fes caure les dues estructures",shots:4,
    blocks:[
     ["wood",555,478,52,64],["steel",622,473,50,74],
@@ -87,7 +88,7 @@ export const LEVELS=Object.freeze([
     ["glass",814,385,42,66],["steel",882,384,48,66],
     ["wood",851,335,166,21]
    ],robots:[[559,350],[706,290],[849,298],[930,486]],bombs:[[641,491],[793,490],[957,489]]},
- {name:"El túnel",subtitle:"Obre el sostre o una entrada lateral",theme:"tunnel",shots:6,queue:["impact","split","drill","blast","spring","pulse"],blocks:[["steel",590,470,46,80],["glass",710,470,46,80],["wood",650,418,182,24],["glass",650,370,48,70],["steel",860,475,48,70],["wood",915,475,48,70],["glass",888,428,130,24]],robots:[[650,486],[650,317],[888,393]],bombs:[[765,490]]},
+ {name:"El túnel",subtitle:"Obre una entrada lateral i enfonsa la coberta",theme:"tunnel",shots:6,queue:["impact","split","drill","blast","spring","pulse"],blocks:[["steel",585,458,34,104],["glass",681,458,26,104],["wood",633,393,142,26],["steel",745,470,32,80],["wood",860,470,36,80],["glass",802,417,148,24],["wood",802,380,40,50],["steel",925,490,50,40]],robots:[[633,486],[633,361],[802,335],[925,452]],bombs:[[708,493],[891,493]]},
  {name:"Taller abandonat",subtitle:"Divideix les rodes i obre diversos fronts",theme:"workshop",shots:6,queue:["split","blast","spring","drill","pulse","impact"],blocks:[["wood",535,470,45,80],["glass",600,470,45,80],["wood",568,418,148,24],["glass",568,370,50,70],["steel",780,470,46,80],["glass",850,470,46,80],["wood",815,418,164,24],["glass",815,370,50,70]],robots:[[568,315],[815,315],[700,488]],bombs:[[660,490],[920,490]]},
  {name:"La grua",subtitle:"Pilars fràgils i reaccions en cadena",theme:"yard",shots:7,queue:["spring","split","blast","drill","pulse","impact","blast"],blocks:[["glass",540,465,44,90],["steel",615,465,44,90],["wood",578,407,166,26],["glass",578,350,50,85],["wood",785,468,46,84],["glass",900,468,46,84],["steel",843,414,192,24],["glass",843,366,46,70],["wood",843,314,140,24]],robots:[[578,292],[843,283],[843,486],[700,488]],bombs:[[680,490],[730,490],[965,490]]}
 ]);
