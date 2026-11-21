@@ -18,6 +18,8 @@ const el={
 };
 let game=newGame(0),lastFrame=null,dragging=false,pointerId=null,previousPhase="aim";
 let noticeAge=0,prevScore=0;
+let camera={x:0,y:0,z:1};
+let trail=[],scorePopups=[],trailClock=0,trackedProjectile=null,shotTrace=[],lastTrace=[];
 let previewCacheKey=null,previewCache=null;
 function cachedPrediction(){
   // Recalculate only when aim or shot changes, not every animation frame.
@@ -64,7 +66,7 @@ function sound(kind){
   }catch{/* Sound is strictly optional: never break the game. */}
 }
 function fireAction(){
-  if(fire(game))sound("launch");
+  if(fire(game)){trail=[];shotTrace=[];trailClock=0;sound("launch");}
   syncUI();
 }
 function specialAction(){
@@ -76,7 +78,7 @@ function currentDescription(){
   if(game.phase==="aim")return "Arrossega la roda enrere i deixa-la anar, o ajusta angle i potència.";
   if(game.phase==="flying"){
     if(game.projectile?.turbo)return "Habilitat especial utilitzada. Mira la reacció en cadena!";
-    return game.projectile?.type==="pulse"?"Prem ✦ o Espai prop d'una torre: ona expansiva!":
+    return game.projectile?.type==="blast"?"Prem Espai prop dels blocs per detonar!":game.projectile?.type==="split"?"Prem Espai per dividir la roda!":game.projectile?.type==="spring"?"Prem Espai per fer un super salt!":game.projectile?.type==="pulse"?"Prem ✦ o Espai prop d'una torre: ona expansiva!":
       game.projectile?.type==="drill"?"Prem ✦ o Espai: turbo perforador d'acer!":
       "Prem ✦ o Espai: martell d'impacte!";
   }
@@ -103,7 +105,7 @@ function syncUI(){
     el.wheelIcon.textContent=wheel.icon;
     el.wheelName.textContent=wheel.label;
     el.wheelHelp.textContent=wheel.help;
-    el.turbo.textContent=wheel.id==="pulse"?"✦ ONA EXPANSIVA":
+    el.turbo.textContent=wheel.id==="blast"?"✹ DETONA":wheel.id==="split"?"✦ DIVIDEIX":wheel.id==="spring"?"↗ SUPER REBOT":wheel.id==="pulse"?"✦ ONA EXPANSIVA":
       wheel.id==="drill"?"◆ TURBO TREPANT":"● TURBO MARTELL";
   }
   el.wheelCard.hidden=game.phase==="won"||game.phase==="lost";
@@ -135,18 +137,20 @@ function syncUI(){
 }
 function reset(index=game.levelIndex){
   game=newGame(index);dragging=false;pointerId=null;previousPhase=game.phase;
-  prevScore=0;noticeAge=0;el.notice.hidden=true;
+  camera={x:0,y:0,z:1};prevScore=0;noticeAge=0;el.notice.hidden=true;trail=[];scorePopups=[];trailClock=0;trackedProjectile=null;shotTrace=[];lastTrace=[];
   previewCacheKey=null;previewCache=null;
   syncUI();draw();
 }
 function announce(){
   const phase=game.phase;
   if(game.score>prevScore){
+    if(!reducedMotion){const p=game.projectile;const x=clamp(p?.lastBounce?.x??p?.x??750,45,950),y=clamp(p?.lastBounce?.y??p?.y??300,65,WORLD.ground-20);scorePopups.push({x,y,points:game.score-prevScore,combo:game.combo,life:1.05});if(scorePopups.length>8)scorePopups.shift();}
     sound("impact");
     el.notice.textContent=game.combo>1?"COMBO!":"BOOM!";
     el.notice.hidden=false;noticeAge=.64;
   }
   if(phase!==previousPhase){
+    if(previousPhase==="flying"&&shotTrace.length)lastTrace=shotTrace.slice();
     if(phase==="won"){
       sound("win");
       if(game.score>storedBest(game.levelIndex))setBest(game.levelIndex,game.score);
@@ -161,7 +165,7 @@ function announce(){
 function toWorld(event){
   const rect=canvas.getBoundingClientRect();
   const sx=WORLD.width/Math.max(rect.width,1),sy=WORLD.height/Math.max(rect.height,1);
-  return {x:(event.clientX-rect.left)*sx,y:(event.clientY-rect.top)*sy};
+  return {x:((event.clientX-rect.left)*sx-camera.x)/camera.z,y:((event.clientY-rect.top)*sy-camera.y)/camera.z};
 }
 function grab(event){
   if(game.phase!=="aim"||(event.button!=null&&event.button!==0))return;
@@ -230,7 +234,7 @@ function roundedRect(x,y,w,h,r=8){
   ctx.beginPath();ctx.roundRect(x,y,w,h,Math.min(r,w/2,h/2));
 }
 function backdrop(){
-  if(window.BiciParkArcadeArt){window.BiciParkArcadeArt.industrial(ctx,WORLD.width,WORLD.height,WORLD.ground);return;}
+  if(window.BiciParkArcadeArt){window.BiciParkArcadeArt.industrial(ctx,WORLD.width,WORLD.height,WORLD.ground);drawArenaDetails();return;}
   const sky=ctx.createLinearGradient(0,0,0,520);
   sky.addColorStop(0,"#61bbd9");sky.addColorStop(.47,"#b9f6d2");sky.addColorStop(1,"#f5dbac");
   ctx.fillStyle=sky;ctx.fillRect(0,0,WORLD.width,WORLD.height);
@@ -270,6 +274,20 @@ function backdrop(){
   }
   ctx.restore();
 }
+function drawArenaDetails(){
+ const theme=LEVELS[game.levelIndex].theme;if(!theme)return;
+ ctx.save();ctx.globalAlpha=.72;
+ if(theme==="tunnel"){ctx.fillStyle="#263746";ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(1000,0);ctx.lineTo(1000,115);ctx.quadraticCurveTo(500,-30,0,115);ctx.closePath();ctx.fill();for(let x=95;x<1000;x+=180){ctx.fillStyle="#ffe7ad";ctx.fillRect(x,48,42,9);}}
+ if(theme==="workshop"){ctx.fillStyle="#40576a";for(let x=0;x<1000;x+=175){ctx.fillRect(x,110,12,290);ctx.fillRect(x+12,112,140,8);}ctx.strokeStyle="#b0d0c8";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(0,105);ctx.lineTo(1000,105);ctx.stroke();}
+ if(theme==="yard"){ctx.strokeStyle="#5b654e";ctx.lineWidth=11;ctx.beginPath();ctx.moveTo(890,390);ctx.lineTo(890,92);ctx.lineTo(510,92);ctx.stroke();ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(590,92);ctx.lineTo(590,175);ctx.stroke();}
+ ctx.restore();
+}
+function updateCamera(dt){
+ const p=game.projectile,focus=game.phase==="flying"&&!reducedMotion&&p&&p.x>360;
+ const z=focus?1.16:1, x=focus?clamp(500-p.x*z,WORLD.width*(1-z),0):0,y=focus?clamp(290-p.y*z,WORLD.height*(1-z),0):0;
+ const f=Math.min(1,dt*4);camera.z+=(z-camera.z)*f;camera.x+=(x-camera.x)*f;camera.y+=(y-camera.y)*f;
+ if(game.phase==="aim"||reducedMotion)camera={x:0,y:0,z:1};
+}
 function drawSling(){
   const a=WORLD.anchor;
   ctx.lineCap="round";
@@ -292,6 +310,8 @@ function drawAim(){
   ctx.strokeStyle="#744b64";ctx.lineWidth=6;ctx.lineCap="round";
   ctx.beginPath();ctx.moveTo(a.x-29,a.y-24);ctx.lineTo(px,py);
   ctx.lineTo(a.x+20,a.y-35);ctx.stroke();
+  // The previous shot stays visible while aiming, to encourage learning by iteration.
+  for(let i=0;i<lastTrace.length;i+=3){const q=lastTrace[i];ctx.fillStyle="#e4f6ec60";ctx.beginPath();ctx.arc(q.x,q.y,2.1,0,Math.PI*2);ctx.fill();}
   const prediction=cachedPrediction();
   for(let i=1;i<prediction.points.length;i++){
     const point=prediction.points[i];
@@ -312,13 +332,40 @@ function drawAim(){
 }
 function drawWheel(x,y,rotation=0,size=1,type="impact"){
   ctx.save();ctx.translate(x,y);ctx.rotate(rotation);ctx.scale(size,size);
-  ctx.fillStyle="#182f44";ctx.beginPath();ctx.arc(0,0,19,0,Math.PI*2);ctx.fill();
   const wheelColor=SHOT_TYPES.find(kind=>kind.id===type)?.color||"#9ee6ed";
-  ctx.strokeStyle=wheelColor;ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,14,0,Math.PI*2);ctx.stroke();
+  const tire=ctx.createLinearGradient(-18,-18,18,18);tire.addColorStop(0,"#596777");tire.addColorStop(.35,"#213044");tire.addColorStop(1,"#101b2d");
+  ctx.fillStyle=tire;ctx.beginPath();ctx.arc(0,0,19,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle="#0e2236";ctx.lineWidth=2;ctx.stroke();
+  // Individually rotating treads and different rim designs convey each wheel's power.
+  for(let i=0;i<12;i++){ctx.save();ctx.rotate(i*Math.PI/6);ctx.fillStyle=i%2?"#657888":"#394d62";ctx.fillRect(-2.4,-19,4.8,4);ctx.restore();}
+  ctx.fillStyle="#24394e";ctx.beginPath();ctx.arc(0,0,13.5,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle=wheelColor;ctx.lineWidth=3.5;ctx.stroke();
   ctx.strokeStyle="#d3ffe2";ctx.lineWidth=2;
-  for(let i=0;i<8;i++){let a=i*Math.PI/4;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(a)*13,Math.sin(a)*13);ctx.stroke();}
-  ctx.fillStyle="#f9e868";ctx.beginPath();ctx.arc(0,0,6,0,Math.PI*2);ctx.fill();
+  for(let i=0;i<(type==="drill"?6:8);i++){let a=i*Math.PI/(type==="drill"?3:4);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(a)*12,Math.sin(a)*12);ctx.stroke();}
+  ctx.fillStyle=wheelColor;ctx.beginPath();ctx.arc(0,0,6,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle="#eaffef";ctx.lineWidth=1.5;ctx.stroke();
+  if(type==="pulse"){ctx.strokeStyle="#d7fff7";ctx.lineWidth=1;ctx.beginPath();ctx.arc(0,0,9,0,Math.PI*2);ctx.stroke();}
+  if(type==="drill"){ctx.strokeStyle=wheelColor;ctx.lineWidth=2;for(let i=0;i<4;i++){ctx.save();ctx.rotate(i*Math.PI/2);ctx.beginPath();ctx.moveTo(-3,-16);ctx.lineTo(0,-21);ctx.lineTo(3,-16);ctx.stroke();ctx.restore();}}
   ctx.restore();
+}
+function updateFlightEffects(dt){
+  if(reducedMotion){trail=[];scorePopups=[];return;}
+  const p=game.projectile;
+  if(p!==trackedProjectile){trail=[];trailClock=0;trackedProjectile=p;}
+  for(const t of trail)t.life-=dt;trail=trail.filter(t=>t.life>0);
+  for(const pop of scorePopups){pop.life-=dt;pop.y-=dt*38;}scorePopups=scorePopups.filter(p=>p.life>0);
+  if(!p?.active||game.phase!=="flying")return;
+  trailClock+=dt;
+  if(trailClock>=.025){trailClock=0;trail.push({x:p.x,y:p.y,life:.3,type:p.type,turbo:p.turbo});if(shotTrace.length<350)shotTrace.push({x:p.x,y:p.y});if(trail.length>16)trail.shift();}
+}
+function drawFlightEffects(){
+  for(const t of trail){const color=SHOT_TYPES.find(k=>k.id===t.type)?.color||"#def8ff";const f=t.life/.3;ctx.save();ctx.globalAlpha=f*.32;ctx.fillStyle=color;ctx.beginPath();ctx.arc(t.x,t.y,(t.turbo?12:7)*f+2,0,Math.PI*2);ctx.fill();ctx.restore();}
+  const p=game.projectile;if(!p?.active||!p.turbo||reducedMotion)return;
+  const angle=Math.atan2(p.vy,p.vx);ctx.save();ctx.translate(p.x,p.y);ctx.rotate(angle);
+  for(let i=0;i<5;i++){ctx.globalAlpha=.55-i*.08;ctx.strokeStyle=i%2?"#fff8ba":"#80f9dc";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-20-i*5,-8+i*4);ctx.lineTo(-42-i*7,-8+i*4);ctx.stroke();}ctx.restore();
+}
+function drawScorePopups(){
+  for(const p of scorePopups){ctx.save();ctx.globalAlpha=Math.min(1,p.life*3);ctx.font="900 21px system-ui";ctx.textAlign="center";ctx.strokeStyle="#182b3b";ctx.lineWidth=5;const text=(p.combo>1?"COMBO!  ":"")+"+"+format(p.points);ctx.strokeText(text,p.x,p.y);ctx.fillStyle="#fff195";ctx.fillText(text,p.x,p.y);ctx.restore();}
 }
 function drawBlock(b){
   const colors={wood:["#b96d45","#f4bc78","#7a4a41"],glass:["#51c6dc","#bff9fa","#2e829d"],steel:["#537082","#c0e0e4","#334d65"]};
@@ -338,7 +385,7 @@ function drawBlock(b){
     }
   }
   window.BiciParkArcadeArt?.material(ctx,b,[base,light,edge]);
-  if(b.hp<26){ctx.strokeStyle="#132a3bbb";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-8,-b.h/2);ctx.lineTo(2,-4);ctx.lineTo(-5,8);ctx.lineTo(8,b.h/2);ctx.stroke();}
+  const initial={wood:60,glass:32,steel:145}[b.material];if(b.hp<initial*.72){ctx.strokeStyle="#132a3bbb";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-8,-b.h/2);ctx.lineTo(2,-4);ctx.lineTo(-5,8);ctx.lineTo(8,b.h/2);ctx.stroke();if(b.material==="glass"){ctx.beginPath();ctx.moveTo(2,-4);ctx.lineTo(b.w/2,-b.h/4);ctx.moveTo(-5,8);ctx.lineTo(-b.w/2,b.h/4);ctx.stroke();}if(b.material==="steel"){ctx.fillStyle="#14283b55";ctx.fillRect(-b.w/4,-b.h/4,b.w/2,b.h/2);}}
   ctx.restore();
 }
 function drawRobot(t){
@@ -348,10 +395,11 @@ function drawRobot(t){
   roundedRect(-17,-16,34,33,9);ctx.fill();ctx.stroke();
   ctx.strokeStyle="#2f5557";ctx.lineWidth=2.8;ctx.beginPath();ctx.moveTo(0,-16);ctx.lineTo(0,-26);ctx.stroke();
   ctx.fillStyle="#f9e5a4";ctx.beginPath();ctx.arc(0,-28,4,0,Math.PI*2);ctx.fill();
+  const p=game.projectile,scared=game.phase==="flying"&&p?.active&&Math.hypot(p.x-t.x,p.y-t.y)<180;
   const blink=t.blink>2.6;
   ctx.fillStyle="#1b4252";
-  for(const x of [-8,8]){roundedRect(x-4,-6,8,blink?2:9,3);ctx.fill();}
-  ctx.strokeStyle="#31635f";ctx.beginPath();ctx.arc(0,7,6,0,Math.PI);ctx.stroke();
+  for(const x of [-8,8]){roundedRect(x-4,-6,8,blink?2:scared?13:9,3);ctx.fill();}
+  ctx.strokeStyle="#31635f";ctx.beginPath();ctx.arc(0,scared?9:7,scared?4:6,0,scared?Math.PI*2:Math.PI);ctx.stroke();
   ctx.restore();
 }
 function drawBomb(b){
@@ -404,17 +452,22 @@ function draw(){
   if(game.shake>0&&!reducedMotion){
     ctx.translate(Math.sin(game.shotTime*90)*game.shake,Math.cos(game.shotTime*67)*game.shake*.4);
   }
+  ctx.translate(camera.x,camera.y);ctx.scale(camera.z,camera.z);
   backdrop();
   for(const b of game.blocks){if(!b.dead)drawBlock(b);}
   for(const b of game.bombs){if(!b.dead)drawBomb(b);}
   for(const r of game.robots){if(!r.dead)drawRobot(r);}
   drawShockwaves();
   drawSling();
+  // Preview the actual remaining wheel queue rather than a text-only ammo count.
+  for(let i=0;i<Math.min(game.shotsLeft,8);i++){const k=upcomingShot(game,i);drawWheel(45+i*29,WORLD.ground-16,0,.59,k.id);}
   drawAim();
   const p=game.projectile;
+  drawFlightEffects();
   if(p&&p.active)drawWheel(p.x,p.y,p.angle,1,p.type);
+  for(const q of game.extras||[])if(q.active)drawWheel(q.x,q.y,q.angle,.62,"split");
   drawBounceHalo();
-  drawDebris();
+  drawDebris();drawScorePopups();
   if(game.phase==="won"&&!reducedMotion){
     const t=game.celebration;
     for(let i=0;i<22;i++){
@@ -431,7 +484,7 @@ function loop(now){
   if(lastFrame===null)lastFrame=now;
   const dt=Math.min((now-lastFrame)/1000,.055);
   lastFrame=now;
-  step(game,dt);
+  step(game,dt);updateFlightEffects(dt);updateCamera(dt);
   if(noticeAge>0){
     noticeAge=Math.max(0,noticeAge-dt);
     if(noticeAge===0)el.notice.hidden=true;
