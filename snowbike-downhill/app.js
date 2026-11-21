@@ -226,10 +226,10 @@ function gameReset(index=game.course.id){
  ui.startPanel.hidden=false;ui.finishPanel.hidden=true;ui.failedPanel.hidden=true;ui.pausePanel.hidden=true;ui.notice.hidden=true;
  ui.status.textContent=game.event;refresh();paint();
 }
-function beginRace(){if(start(game)){ui.startPanel.hidden=true;ui.status.textContent=game.event;lastFrame=null;}}
+function beginRace(){if(start(game)){ui.startPanel.hidden=true;$("startButton").blur();ui.status.textContent=game.event;lastFrame=null;}}
 function togglePause(){
- if(game.phase==="playing"){pause(game);ui.pausePanel.hidden=false;lastFrame=null;}
- else if(game.phase==="paused"){resume(game);ui.pausePanel.hidden=true;lastFrame=null;}
+ if(game.phase==="playing"){clearControls();pause(game);ui.pausePanel.hidden=false;lastFrame=null;}
+ else if(game.phase==="paused"){clearControls();resume(game);ui.pausePanel.hidden=true;$("resumeButton").blur();$("pauseButton").blur();lastFrame=null;}
 }
 function keyAllowed(event){
  return !(event.target instanceof HTMLElement&&["BUTTON","SELECT","INPUT","TEXTAREA","A"].includes(event.target.tagName));
