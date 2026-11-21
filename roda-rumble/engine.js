@@ -138,7 +138,12 @@ export function newGame(index=0){
     lastResult:null};
   // Capture authored support links, including small placement gaps. Only a disturbed support can wake a resting neighbour.
   for(const b of entities)b.supports=entities.filter(q=>q!==b&&q.y>b.y&&Math.abs(q.x-b.x)<(q.w+b.w)/2&&Math.abs(q.y-q.h/2-(b.y+b.h/2))<=18).map(q=>q.id);
-  for(const t of robots)t.supports=entities.filter(q=>Math.abs(t.x-q.x)<q.w/2+t.r*.4&&Math.abs(t.y+t.r-(q.y-q.h/2))<=18).map(q=>q.id);
+  for(const t of robots){
+    // Resolve the closest upward-facing surface at spawn, even if the authored
+    // robot is several pixels above it. Floor is the fallback.
+    const surface=robotSurface(g,t,Infinity);
+    t.y=surface.y-t.r;t.supports=surface.block?[surface.block.id]:[];
+  }
   return g;
 }
 export function setAim(g,angle,power){
@@ -453,43 +458,58 @@ function updateBodies(g,dt){
  // Collision correction may push a rectangle into the ground.
  for(const b of g.blocks)if(!b.dead&&!b.asleep&&b.y+halfHeight(b)>WORLD.ground){b.y=WORLD.ground-halfHeight(b);if(b.vy>0)b.vy=0;}
 }
+// Vertical ray against each rotated box. Use the actual top face at the
+// robot's x rather than a phantom axis-aligned roof.
+function robotSurface(g,t,maxGap=Infinity){
+ let y=WORLD.ground,block=null;
+ const feet=t.y+t.r;
+ for(const b of g.blocks){
+   if(b.dead)continue;
+   const c=Math.cos(b.angle||0),sn=Math.sin(b.angle||0),dx=t.x-b.x;
+   let lo=-Infinity,hi=Infinity;
+   for(const [a,k,extent] of [[dx*c,sn,b.w/2],[-dx*sn,c,b.h/2]]){
+     if(Math.abs(k)<1e-8){if(Math.abs(a)>extent){lo=Infinity;break;}continue;}
+     const p=(-extent-a)/k,q=(extent-a)/k;lo=Math.max(lo,Math.min(p,q));hi=Math.min(hi,Math.max(p,q));
+   }
+   if(lo>hi||!Number.isFinite(lo))continue;
+   const top=b.y+lo;
+   if(top>=feet-3&&top-feet<=maxGap&&top<y){y=top;block=b;}
+ }
+ return {y,block};
+}
+function robotNeedsFall(g,t){
+ if(t.dead)return false;
+ if(t.y+t.r>=WORLD.ground-1)return false;
+ const surface=robotSurface(g,t,2);
+ return !surface.block;
+}
 function updateTargets(g,dt){
-  for(const t of g.robots){
-    if(t.dead)continue;
-    t.blink=(t.blink+dt)%2.7;
-    if(t.asleep){const changed=(t.supports||[]).some(id=>{const q=g.blocks.find(x=>x.id===id);return !q||q.dead||!q.asleep;});const hit=g.blocks.some(b=>!b.dead&&!b.asleep&&Math.hypot(b.vx,b.vy)>72&&circleBox(t,b));if(!changed&&!hit&&Math.abs(t.vx)+Math.abs(t.vy)===0)continue;t.asleep=false;}
-    // Robots ride platforms and fall if their support is broken: no floating
-    // targets left behind after a satisfying tower demolition.
-    let supportY=WORLD.ground-t.r;
-    let platform=null;
-    for(const b of g.blocks){
-      if(b.dead)continue;
-      const top=b.y-b.h/2;
-      const bottom=t.y+t.r;
-      if(Math.abs(t.x-b.x)<b.w/2+t.r*.4 &&
-         bottom<=top+14 && top-t.r<supportY){
-        supportY=top-t.r;platform=b;
-      }
-      const cx=clamp(t.x,b.x-b.w/2,b.x+b.w/2);
-      const cy=clamp(t.y,b.y-b.h/2,b.y+b.h/2);
-      const dist=Math.hypot(t.x-cx,t.y-cy);
-      if(dist<t.r*.85 && Math.hypot(b.vx,b.vy)>72){
-        eliminateRobot(g,t);break;
-      }
-    }
-    if(t.dead)continue;
-    t.vy+=660*dt;
-    t.x+=t.vx*dt;t.y+=t.vy*dt;
-    t.vx*=Math.exp(-1.3*dt);
-    if(t.y>=supportY){
-      const impact=Math.abs(t.vy);
-      t.y=supportY;t.vy=0;
-      if(impact>230){eliminateRobot(g,t);continue;}
-      if(platform&&Math.abs(platform.vx)>30)t.vx=platform.vx*.85;
-    }
-    t.x=clamp(t.x,305,975);
-    if(t.y>WORLD.ground+60)eliminateRobot(g,t);
-  }
+ for(const t of g.robots){
+   if(t.dead)continue;
+   t.blink=(t.blink+dt)%2.7;
+   const oldFeet=t.y+t.r;
+   if(t.asleep){
+     const changed=(t.supports||[]).some(id=>{const q=g.blocks.find(x=>x.id===id);return !q||q.dead||!q.asleep;});
+     const hit=g.blocks.some(b=>!b.dead&&!b.asleep&&Math.hypot(b.vx,b.vy)>72&&circleBox(t,b));
+     if(!changed&&!hit&&!robotNeedsFall(g,t)&&Math.abs(t.vx)+Math.abs(t.vy)===0)continue;
+     t.asleep=false;
+   }
+   for(const b of g.blocks){
+     if(!b.dead&&!b.asleep&&Math.hypot(b.vx,b.vy)>72&&circleBox({...t,r:t.r*.85},b)){eliminateRobot(g,t);break;}
+   }
+   if(t.dead)continue;
+   t.vy+=660*dt;t.x=clamp(t.x+t.vx*dt,305,975);t.vx*=Math.exp(-1.3*dt);
+   const surface=robotSurface(g,t,Infinity);
+   const nextFeet=oldFeet+t.vy*dt;
+   if(t.vy>=0&&nextFeet>=surface.y&&oldFeet<=surface.y+3){
+     const impact=t.vy;t.y=surface.y-t.r;t.vy=0;
+     if(impact>230){eliminateRobot(g,t);continue;}
+     const b=surface.block;t.supports=b?[b.id]:[];
+     if(b&&Math.abs(b.vx)>30)t.vx=b.vx*.85;
+     if(!b||b.asleep){if(Math.abs(t.vx)<1){t.vx=0;t.asleep=true;}}
+   }else{t.y+=t.vy*dt;t.supports=[];}
+   if(t.y+t.r>WORLD.ground){const impact=t.vy;t.y=WORLD.ground-t.r;t.vy=0;t.supports=[];if(impact>230)eliminateRobot(g,t);}
+ }
 }
 function updateProjectile(g,dt,p=g.projectile){
   if(!p||!p.active)return;
@@ -556,9 +576,9 @@ export function step(g,elapsed){
         g.phase="won";g.score+=g.shotsLeft*300;g.notice="NIVELL SUPERAT! 🎉";
         g.celebration=1.5;
       }else{
-        const moving=g.physicsActive&&(g.blocks.some(b=>!b.dead&&!b.asleep&&(Math.hypot(b.vx,b.vy)>28||Math.abs(b.spin)>.09||instability(g,b)===null||Math.abs(instability(g,b)??0)>1))||g.robots.some(t=>!t.dead&&Math.hypot(t.vx,t.vy)>32));
+        const moving=g.physicsActive&&(g.blocks.some(b=>!b.dead&&!b.asleep&&(Math.hypot(b.vx,b.vy)>28||Math.abs(b.spin)>.09||instability(g,b)===null||Math.abs(instability(g,b)??0)>1))||g.robots.some(t=>!t.dead&&(robotNeedsFall(g,t)||Math.hypot(t.vx,t.vy)>32)));
         g.settleTime=!g.projectile?.active&&!(g.extras||[]).some(p=>p.active)&&!moving?(g.settleTime||0)+dt:0;
-        if(g.shotTime>12 || (g.settleTime>.65 && g.shotTime>.8)){
+        if((g.shotTime>12 && !g.robots.some(t=>robotNeedsFall(g,t))) || (g.settleTime>.65 && g.shotTime>.8)){
         g.phase=g.shotsLeft>0?"between":"lost";
         g.notice=g.phase==="between"?"Prepara la següent roda!":"Sense rodes! Torna-ho a provar.";
         }
