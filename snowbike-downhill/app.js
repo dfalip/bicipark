@@ -343,6 +343,7 @@ function feedback(dt){
 }
 function refresh(){
  ui.time.textContent=formatTime(game.time+game.penalty);
+ $("scoreValue").textContent=Math.round(game.score).toLocaleString("ca-ES");$("comboValue").textContent="×"+game.streak;
  ui.speed.innerHTML=`${Math.round(game.velocity*3.6)} <em>km/h</em>`;
  ui.gates.textContent=`${game.passedGates} / ${game.course.gates.length}`;
  ui.penalty.textContent=`+${game.penalty} s`;
@@ -375,7 +376,7 @@ function drawSnow(){
  const colors=[["#a7d8ef","#e9f6ff"],["#aedbd2","#f5fbfa"],["#c5d1f1","#f7f9ff"],["#b1d2ed","#eaf6fb"]][game.course.id];
  bg.addColorStop(0,colors[0]);bg.addColorStop(1,colors[1]);
  ctx.fillStyle=bg;ctx.fillRect(0,0,960,540);
- drawAlpineLayers();
+ if(window.BiciParkPremiumArt)window.BiciParkPremiumArt.world(ctx,960,540,game.distance,true,game.time);else drawAlpineLayers();
  const start=game.distance+(427-(-20))/TRACK_PROJECTION;
  const end=game.distance+(427-560)/TRACK_PROJECTION;
  const bounds=[];
@@ -387,7 +388,11 @@ function drawSnow(){
  ctx.beginPath();ctx.moveTo(bounds[0].left,bounds[0].y);
  for(const b of bounds)ctx.lineTo(b.left,b.y);
  for(const b of bounds.slice().reverse())ctx.lineTo(b.right,b.y);
- ctx.closePath();ctx.fillStyle="#f5fcff";ctx.fill();
+ ctx.closePath();
+ const snow=ctx.createLinearGradient(0,0,0,540);snow.addColorStop(0,"#d8ebff");snow.addColorStop(.6,"#f7fcff");snow.addColorStop(1,"#dce9ff");ctx.fillStyle=snow;ctx.fill();
+ ctx.save();ctx.clip();
+ for(let i=0;i<26;i++){const y=(i*28+game.distance*TRACK_PROJECTION)%580-20,at=game.distance+(427-y)/TRACK_PROJECTION,x=center(at)+((i*73)%370-185);ctx.fillStyle=i%3?"#c6ddf2":"#b6cfe9";ctx.fillRect(x,y,24+i%5*6,3);ctx.fillStyle="#fff";ctx.fillRect(x+7,y+4,17,2);}
+ ctx.restore();
  ctx.strokeStyle="#b7d6e0";ctx.lineWidth=5;ctx.beginPath();
  for(let i=0;i<bounds.length;i++){
   const b=bounds[i];if(i===0)ctx.moveTo(b.left,b.y);else ctx.lineTo(b.left,b.y);
@@ -422,6 +427,7 @@ function drawSnow(){
   const x=center(at)+side*(270+(i*31%170));
   const scale=.5+screen/650;
   ctx.save();ctx.translate(x,screen);ctx.scale(scale,scale);
+  if(window.BiciParkPremiumArt){const art=window.BiciParkPremiumArt;art.pine(ctx,0,6,115+(i%4)*17,true,i);if(i%3===0)art.rock(ctx,35,15,35,true);if(i%4===0)art.marker(ctx,-25,9,true);ctx.restore();continue;}
   if(arcadeArt){arcadeArt.tree(ctx,0,6,74,true);ctx.restore();continue;}
   ctx.fillStyle="#2f5e68";ctx.fillRect(-4,0,8,24);
   ctx.fillStyle=i%7?"#367c73":"#476e84";
@@ -602,6 +608,18 @@ function drawSkiGrooves(){
 
 function drawSkiBike(){
  const x=480+game.lane*196,y=427;
+ if(window.BiciParkPremiumArt){const art=window.BiciParkPremiumArt;
+   ctx.save();ctx.translate(x,y);
+   art.ellipse(ctx,0,9,48+game.airHeight*18,12+game.airHeight*5,"#27486245");
+   if(game.grounded&&game.phase==="playing"&&!reducedMotion){
+    for(let i=0;i<23;i++){const d=(i*17+game.time*game.velocity*4)%100,xx=-18-d*.65,yy=4+d*.42;art.ellipse(ctx,xx,yy,2+i%4,2+i%3,"#f5fcff");}
+   }
+   ctx.translate(0,-game.airHeight*145);
+   ctx.rotate(-.33+game.steerVelocity*.13+(game.stumble?Math.sin(game.time*25)*.22:0)+(game.grounded||reducedMotion?0:game.trickSpin*Math.PI*2));
+   if(game.invulnerability>0&&Math.floor(game.time*16)%2===0)ctx.globalAlpha=.5;
+   art.rider(ctx,{snow:true,time:game.time,speed:game.velocity*5,air:!game.grounded,scale:1.72});
+   ctx.restore();return;
+ }
  // Pre-rendered vector sprite poses avoid reconstructing detailed anatomy every frame.
  // Deterministic canvas fallback below keeps offline play robust.
  if(riderAtlasReady()){
@@ -795,6 +813,7 @@ function paint(){
  }
  drawSnowRush();drawSkiBike();drawFeedback();
  ctx.restore();
+ // Alpine A keeps the pixel treatment, with a higher detail rider and mountain scenery.
  window.BiciParkArcadeArt?.pixelFrame(ctx);
  ctx.fillStyle="#13374cbf";ctx.fillRect(0,508,960,33);
  ctx.textAlign="left";ctx.font="900 15px system-ui";ctx.fillStyle="white";
