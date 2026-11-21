@@ -82,7 +82,7 @@ test('Completing a downhill race displays honest penalized result and remembers 
   assert.equal(g.phase,'finished');
   assert.equal(h.$('finishPanel').hidden,false);
   assert.match(h.$('finishSummary').textContent,/penalització/);
-  const saved=JSON.parse(h.w.localStorage.getItem('bicipark-snowbike-downhill-times-v1'));
+  const saved=JSON.parse(h.w.localStorage.getItem('bicipark-snowbike-alpine-times-v2'));
   assert.ok(saved[0].time>0);
   h.$('nextButton').click();
   assert.equal(h.w.__state().game.course.id,1);
