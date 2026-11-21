@@ -31,10 +31,15 @@ export function makeCourse(index=0){
  }
  const animals=[];
  for(let i=0;i<c.animals;i++){
-  let at=Math.round(110+(i+.45)*(c.length-210)/c.animals);
-  // Keep animal encounters away from slalom gates to allow skillful routes.
-  for(const gate of gates)if(Math.abs(at-gate.at)<19)at+=30;
-  at=Math.min(c.length-70,at);
+  const spacing=(c.length-210)/c.animals;
+  const nominal=110+(i+.45)*spacing;
+  const low=Math.round(nominal-spacing*.32),high=Math.round(nominal+spacing*.32);
+  let at=Math.round(low+rand()*(high-low));
+  // A seeded irregular encounter within its own window, away from slalom poles.
+  const legal=[];
+  for(let candidate=low;candidate<=high;candidate++)if(candidate>55&&candidate<c.length-55&&gates.every(g=>Math.abs(g.at-candidate)>=24))legal.push(candidate);
+  if(legal.length)at=legal[Math.floor(rand()*legal.length)];
+  at=clamp(at,60,c.length-60);
   // Each course includes one legendary yeti encounter; advanced courses have two.
   // Other wildlife stays deterministic and common.
   const special=i===Math.floor(c.animals*.68)||(id>=2&&i===Math.floor(c.animals*.28));
@@ -42,7 +47,7 @@ export function makeCourse(index=0){
   const side=rand()<.5?-1:1;
   animals.push({...template,at,id:i,side,phase:"waiting",
    x:side*1.38,seen:false,passed:false,collision:false,jumped:false,
-   progress:0,speed:template.speed+(rand()-.5)*.1});
+   progress:0,speed:template.speed+(rand()-.5)*.1,lead:115+Math.floor(rand()*30),stride:rand()*Math.PI*2});
  }
  return {...c,id,gates,animals};
 }
@@ -109,14 +114,15 @@ function gateCross(g,gate){
   announce(g,"PORTA FALLADA: +3 s de penalització","gate-miss",{at:gate.at,lane:gate.lane,penalty:3});
  }
 }
+export function animalVisible(animal){return Boolean(animal.seen&&!animal.passed&&animal.phase==="crossing"&&Math.abs(animal.x)<1.62);}
 export function animalPosition(animal){
  return animal.side*(1.38-animal.progress);
 }
 function animalStep(g,a,dt,previousDistance){
  if(a.passed)return;
- if(a.phase==="waiting"&&g.distance>=a.at-Math.max(115,g.velocity*2.7)){a.phase="crossing";a.seen=true;}
+ if(a.phase==="waiting"&&g.distance>=a.at-Math.max(a.lead||115,g.velocity*2.7)){a.phase="crossing";a.seen=true;}
  if(a.phase==="crossing"){
-  a.progress+=a.speed*dt;
+  a.progress+=a.speed*(.96+.12*Math.sin(g.time*3+(a.stride||0)))*dt;
   a.x=animalPosition(a);
  }
  if(g.distance>=a.at-5 && previousDistance<=a.at+11 && !a.collision && !a.jumped && g.invulnerability<=0){
