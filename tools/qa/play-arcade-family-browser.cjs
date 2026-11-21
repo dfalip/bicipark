@@ -53,6 +53,8 @@ async function run(){
      }
      if(theme==='snow'){
       assert.ok(await page.evaluate(()=>typeof window.SnowBikeAlpine?.project==='function'&&typeof window.SnowBikeAlpine?.draw==='function'));
+      await page.waitForFunction(()=>{const s=window.SnowBikeReferenceSprites;return s&&[s.hero,s.yeti,s.deer].every(s.ready);},null,{timeout:5000});
+      assert.equal(await page.evaluate(()=>window.SnowBikeReferenceSprites.hero.naturalWidth),108);
       await page.waitForFunction(()=>parseInt(document.querySelector('#progressValue').textContent,10)>=4,null,{timeout:12000});
       await el.screenshot({path:path.join(out,'snow-riding-'+viewport.width+'.png')});
       await page.keyboard.press('Space');
