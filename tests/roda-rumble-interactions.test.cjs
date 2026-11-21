@@ -44,7 +44,7 @@ test('Accessible arcade initializes with level, score, target count and ready st
   try{
     assert.equal(h.$('shotsValue').textContent,'4');
     assert.equal(h.$('targetsValue').textContent,'2');
-    assert.equal(h.$('levelSelect').options.length,10);
+    assert.equal(h.$('levelSelect').options.length,13);
     assert.equal(h.$('fireButton').disabled,false);
     assert.equal(h.$('turboButton').disabled,true);
     assert.equal(h.$('resultPanel').hidden,true);
@@ -118,7 +118,7 @@ test('Tactical HUD follows shot type and the correct skill without repeating',()
   const h=createHarness();
   try{
     assert.equal(h.$('wheelName').textContent,'RODA MARTELL');
-    assert.equal(h.$('levelSelect').options.length,10);
+    assert.equal(h.$('levelSelect').options.length,13);
     assert.equal(h.$('trajectoryHint').hidden,false);
     h.$('fireButton').click();
     assert.equal(h.$('wheelName').textContent,'RODA MARTELL');
