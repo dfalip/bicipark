@@ -145,3 +145,12 @@ test('Impact on the first factory tower never wakes a separated second tower',as
  for(let i=0;i<300&&g.phase==="flying";i++){e.step(g,1/120);if(i===0)g.projectile.active=false;assert.equal(snapshot(),initial);}
  assert.ok(g.physicsActive&&g.score>0,"Impact must actually affect the first tower");
 });
+
+test('Orphaned robot falls even without a remembered support ID, before the next shot',async()=>{
+ const e=await engine(),g=e.newGame(4),t=g.robots[0];
+ for(const b of g.blocks)b.dead=true;
+ g.robots=[t];t.supports=[];e.fire(g);g.projectile.active=false;
+ for(let i=0;i<300&&g.phase==="flying";i++)e.step(g,1/120);
+ assert.ok(t.dead||Math.abs(t.y+t.r-e.WORLD.ground)<1);
+ assert.notEqual(g.phase,"flying");
+});
