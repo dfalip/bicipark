@@ -330,7 +330,15 @@ function drawBike(){
   ctx.moveTo(-4,-10);ctx.lineTo(-9,-22);ctx.stroke();
   ctx.strokeStyle="#153943";ctx.lineWidth=6;ctx.lineCap="round";
   ctx.beginPath();ctx.moveTo(0,-30);ctx.lineTo(12,-41);
-  ctx.lineTo(18,-27);ctx.moveTo(0,-27);ctx.lineTo(-15,-15);ctx.stroke();
+  ctx.lineTo(18,-27);ctx.stroke();
+  const cadence=b.x*.11;
+  for(const [offset,color] of [[Math.PI,"#314b66"],[0,"#153943"]]){
+    const a=b.grounded?cadence+offset:offset+.6;
+    const fx=-7+Math.cos(a)*7,fy=10+Math.sin(a)*7;
+    ctx.strokeStyle="#d4eee8";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-7,10);ctx.lineTo(fx,fy);ctx.stroke();
+    ctx.strokeStyle=color;ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-5,-25);ctx.lineTo(3+(fx+7)*.6,-8);ctx.lineTo(fx,fy);ctx.stroke();
+    ctx.strokeStyle="#172e39";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(fx-3,fy);ctx.lineTo(fx+5,fy);ctx.stroke();
+  }
   ctx.fillStyle="#f46f88";ctx.beginPath();
   ctx.ellipse(-2,-36,12,16,-.27,0,Math.PI*2);ctx.fill();
   ctx.fillStyle="#bdfff0";ctx.beginPath();ctx.arc(4,-57,10,0,Math.PI*2);ctx.fill();
