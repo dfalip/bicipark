@@ -166,6 +166,81 @@ function animal(c,g,a,p){
   path(c,[[0,-10],[-13,11],[13,11]],"#ffd768","#503a2d",1.6);rect(c,-1.5,-4,3,8,"#45321f");oval(c,0,7,1.6,1.6,"#45321f");c.restore();
  }
 }
+function drawHero(c,g,scale){
+ c.save();c.scale(scale,scale);
+ const ink="#15263a",dark="#273949",blue="#0d79b9",cyan="#69d2ee",orange="#e54b1b";
+ const spin=g.distance*.12,air=!g.grounded;
+ // Rear snow tyre: layered carcass, 24 moving cleats, spokes, rim and hub.
+ c.save();c.translate(-35,8);c.rotate(spin);
+ oval(c,0,0,20,20,"#142235",ink,2);
+ for(let i=0;i<24;i++){const a=i*TAU/24;c.save();c.rotate(a);path(c,[[-3,-21],[3,-21],[4,-17],[-4,-17]],i%3===0?"#bacdd7":"#425265",ink,.7);c.restore();}
+ oval(c,0,0,15,15,"#244259","#8cb6d6",2.6);
+ oval(c,0,0,11.9,11.9,"#304653","#4e758d",1);
+ for(let i=0;i<16;i++){const a=i*TAU/16;stroke(c,[[Math.cos(a)*4,Math.sin(a)*4],[Math.cos(a+.17)*13,Math.sin(a+.17)*13]],i%2?"#b9d6e2":"#627c9c",.85);}
+ oval(c,0,0,5,5,"#8299aa","#283c56",1.3);oval(c,0,0,2,2,"#c6e4ec");c.restore();
+ // Chassis: dark back triangle, solid downhill down-tube, head tube, skid plate.
+ stroke(c,[[-35,8],[-20,-19],[-6,6],[-35,8]],ink,8);
+ stroke(c,[[-35,8],[-20,-19],[-6,6],[-35,8]],"#2877ac",4.8);
+ path(c,[[-23,-20],[22,-27],[26,-18],[4,12],[-13,17],[-26,5]],ink,ink,1);
+ path(c,[[-20,-18],[21,-25],[22,-19],[4,7],[-12,12],[-19,3]],grad(c,-23,-25,19,16,[[0,"#57d6ff"],[.35,"#198ed0"],[1,"#124776"]]));
+ path(c,[[-14,-8],[-3,-14],[2,-10],[11,-15],[7,-5],[-2,1]],"#d4f5ff");
+ path(c,[[-8,12],[5,8],[-1,16],[-13,21],[-24,12]],"#33475f",ink,1);
+ oval(c,-6,6,7,7,"#243947","#b4cad4",1.2);oval(c,-6,6,2,2,"#dcecf3");stroke(c,[[-35,9],[-6,9]],"#a9b8c0",1.2);
+ // Gold telescopic fork reaching the actual ski pivot.
+ stroke(c,[[22,-25],[39,11]],ink,9);
+ stroke(c,[[22,-25],[31,-4]],"#bd7626",6.3);stroke(c,[[22,-23],[31,-4]],"#ffd263",3.4);
+ stroke(c,[[31,-4],[39,11]],"#2f4660",6);stroke(c,[[32,-2],[39,9]],"#6886a4",2.4);
+ oval(c,39,11,3.4,3.4,"#a0b5c8",ink,1.2);
+ // The ski bends up at the nose and meets the fork at its pivot, not a floating board.
+ path(c,[[9,20],[35,18],[54,16],[67,9],[70,10],[63,20],[51,24],[9,27],[-1,25],[-3,22]],"#10253f",ink,1.9);
+ path(c,[[3,21],[35,20],[54,17],[66,11],[63,16],[49,21],[4,24]],"#99cce8");
+ stroke(c,[[24,19],[38,11],[47,17]],"#31485e",4);
+ for(let i=0;i<5;i++)stroke(c,[[7+i*11,20],[10+i*11,18]],"#f4fbff",1.8);
+ stroke(c,[[21,-25],[24,-35],[36,-38]],ink,5.8);stroke(c,[[23,-35],[35,-37]],"#8299ae",2.2);
+ stroke(c,[[-25,-23],[-12,-23]],"#172939",6);
+ // Far limbs give depth: crank and steering remain fixed attachment points.
+ const ankle=[-7+Math.cos(spin*2)*5,6+Math.sin(spin*2)*5],hip=air?[-23,-32]:[-25,-34],shoulder=[-3,-58];
+ stroke(c,[hip,[-11,-20],[-18,7]],ink,16);stroke(c,[hip,[-11,-20],[-18,7]],"#455266",10);
+ stroke(c,[shoulder,[9,-53],[28,-39]],ink,12);stroke(c,[shoulder,[9,-53],[28,-39]],"#a66c46",7);
+ // Packs & torso: shaped panels with shaded folds, pack straps and weatherproof trim.
+ path(c,[[-39,-68],[-28,-75],[-17,-69],[-15,-54],[-27,-43],[-42,-49],[-45,-61]],ink,ink,1.8);
+ path(c,[[-39,-66],[-28,-71],[-21,-67],[-20,-54],[-29,-48],[-39,-52]],grad(c,-45,-71,-22,-45,[[0,"#597b66"],[.4,"#293f48"],[1,"#13293e"]]));
+ stroke(c,[[-39,-67],[-29,-68],[-23,-58]],"#c2db50",3.1);stroke(c,[[-36,-58],[-32,-50]],"#95bd45",2.4);stroke(c,[[-40,-61],[-33,-60]],"#a2c7a1",1.1);
+ path(c,[[-31,-55],[-17,-72],[-5,-72],[7,-62],[4,-45],[-8,-33],[-25,-28],[-34,-39]],ink,ink,2);
+ path(c,[[-30,-54],[-17,-70],[-5,-69],[5,-61],[2,-47],[-9,-36],[-25,-31],[-32,-40]],grad(c,-28,-73,2,-31,[[0,"#ffb046"],[.25,"#fc7227"],[.64,orange],[1,"#98261a"]]));
+ path(c,[[-24,-64],[-15,-69],[-8,-65],[-20,-56],[-28,-49]],"#ff9841");
+ stroke(c,[[-24,-63],[-14,-57],[-9,-46],[-14,-37]],"#9e3024",2.6);
+ stroke(c,[[-29,-46],[-23,-39],[-16,-39]],"#fda252",1.9);
+ stroke(c,[[-22,-67],[-21,-51],[-29,-42]],"#35444e",3.7);stroke(c,[[-22,-65],[-23,-53]],"#a1c44d",1.4);
+ // Near leg: articulated knee, pad, boot planted on moving pedal.
+ const knee=air?[-1,-26]:[-3,-20];
+ stroke(c,[hip,knee,ankle],ink,19);stroke(c,[hip,knee,ankle],"#45516d",14);
+ stroke(c,[[hip[0]+1,hip[1]-4],[knee[0]-3,knee[1]-3]],"#77849a",4.5);
+ path(c,[[knee[0]-6,knee[1]-5],[knee[0]+5,knee[1]-6],[knee[0]+7,knee[1]+4],[knee[0]+1,knee[1]+8],[knee[0]-7,knee[1]+4]],"#253444",ink,1.4);
+ stroke(c,[[knee[0]-3,knee[1]-3],[knee[0]+3,knee[1]+2]],"#8496ac",2);
+ stroke(c,[[ankle[0]-5,ankle[1]-2],[ankle[0]+8,ankle[1]+1]],ink,10);
+ stroke(c,[[ankle[0]-5,ankle[1]-3],[ankle[0]+8,ankle[1]+1]],"#e96520",7);
+ stroke(c,[[ankle[0]-6,ankle[1]+3],[ankle[0]+9,ankle[1]+4]],"#f7efe5",2.2);
+ // Bent sleeve, exposed wrist and glove wrapped around the grips.
+ stroke(c,[shoulder,[9,-48],[30,-39]],ink,13);stroke(c,[shoulder,[9,-48]],"#c6421a",10);
+ stroke(c,[[1,-58],[8,-52]],"#fc8d39",3.8);stroke(c,[[9,-48],[26,-39]],"#dd9360",8);
+ stroke(c,[[12,-49],[25,-42]],"#ffc58d",2.5);oval(c,30,-39,7,5,"#253749",ink,1.4);
+ for(let i=0;i<3;i++)stroke(c,[[27+i*2,-41],[28+i*2,-38]],"#90a1ac",1.15);
+ // Helmet & goggles with actual face, visor, ear cover, cheek and mouth.
+ path(c,[[-9,-76],[-7,-87],[6,-93],[18,-87],[22,-79],[17,-69],[10,-64],[0,-67]],ink,ink,1.8);
+ path(c,[[-7,-76],[-5,-86],[6,-90],[18,-85],[19,-77],[11,-74],[7,-79]],grad(c,-8,-91,19,-70,[[0,"#ffca69"],[.3,"#f88726"],[1,"#bb3c1c"]]));
+ path(c,[[4,-79],[18,-78],[20,-70],[13,-64],[6,-67],[3,-72]],"#d99968",ink,1.1);
+ path(c,[[11,-74],[20,-73],[17,-69],[12,-69]],"#f0b47e");
+ stroke(c,[[12,-67],[16,-68]],"#743624",1.4);
+ path(c,[[-4,-84],[4,-89],[8,-87],[3,-82]],"#263745",ink,.9);
+ path(c,[[6,-84],[16,-84],[23,-80],[19,-77],[5,-78]],"#243b54",ink,1.1);
+ path(c,[[7,-82],[17,-82],[20,-80],[17,-79],[7,-79]],"#f3a64b");stroke(c,[[9,-81],[15,-80]],"#fff4ad",1.4);
+ oval(c,-4,-77,4.5,5,"#344451",ink,1);stroke(c,[[-5,-75],[0,-70],[5,-67]],"#435364",2.2);
+ stroke(c,[[0,-90],[8,-91]],"#fff1b3",1.4);
+ // Reflected snow edging on the rear wheel and fork.
+ for(let i=0;i<9;i++){const q=hash(i+38);oval(c,-48+q%29,20+q%6,1.4,1,"#e8f8ff");}
+ c.restore();
+}
 function rider(c,g,p,reduced){
  const art=window.BiciParkPremiumArt;
  if(!art)return;
@@ -175,9 +250,9 @@ function rider(c,g,p,reduced){
   for(let i=0;i<40;i++){const d=(i*17+g.time*g.velocity*4)%135,xx=p.x-35-d,yy=p.y-2+(hash(i)%28)-d*.14;oval(c,xx,yy,1.8+i%5,1.5+i%3,i%3?"#ffffffcc":"#b4d9faff");}
   stroke(c,[[p.x-55,p.y+4],[p.x-103,p.y+5],[p.x-152,p.y+2]],"#89b5e0a8",4);
  }
- c.save();c.translate(p.x,p.y-h-31);c.rotate(.07+g.steerVelocity*.07+(g.stumble?Math.sin(g.time*26)*.17:0)+rotation);
+ c.save();c.translate(p.x,p.y-h-27*1.67*p.scale);c.rotate(.07+g.steerVelocity*.07+(g.stumble?Math.sin(g.time*26)*.17:0)+rotation);
  if(g.invulnerability>0&&Math.floor(g.time*14)%2===0)c.globalAlpha=.57;
- art.rider(c,{snow:true,time:g.time,speed:g.velocity*4,air:!g.grounded,scale:1.95*p.scale});
+ drawHero(c,g,1.67*p.scale);
  c.restore();
 }
 function draw(c,g,{visible,reduced=false}={}){
