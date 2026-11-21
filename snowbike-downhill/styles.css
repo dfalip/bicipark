@@ -99,3 +99,15 @@ footer{font-size:.72rem;text-align:center;border-top:1px solid var(--line);paddi
  .stage-bar .skill-chip{max-width:46%;white-space:normal}
 }
 @media(prefers-reduced-motion:reduce){.control.trick{transition:none}}
+
+body[data-play-arcade="snow"]{--pa-gold:#ffdf38;--pa-mint:#a4eaff;background:radial-gradient(ellipse at 45% 0,#285b89,#10253c 70%)}
+body[data-play-arcade="snow"] .hero h1{font-style:italic;color:#eefaff;text-shadow:3px 3px #0e243e}
+body[data-play-arcade="snow"] .hero h1 span{color:#b9eaff}
+body[data-play-arcade="snow"] .scoreboard{grid-template-columns:repeat(8,minmax(0,1fr))}
+body[data-play-arcade="snow"] .scoreboard>div{background:linear-gradient(#1b385d,#12293e);border-color:#6ca4d3;border-bottom:3px solid #335f8d;border-radius:4px}
+body[data-play-arcade="snow"] .scoreboard>div:last-child{border-color:#f7ca55}
+body[data-play-arcade="snow"] .scoreboard strong{color:#ffe46a}
+body[data-play-arcade="snow"] #comboValue{color:#ffcf47}
+body[data-play-arcade="snow"] .game-stage{border-color:#a5def5;box-shadow:0 8px 0 #0e2d4b,0 18px 38px #10213daa}
+body[data-play-arcade="snow"] .notice{background:#17355ced;color:#ffe876;border-color:#f1d36d;text-shadow:1px 2px #142f4a;font-style:italic}
+@media(max-width:730px){body[data-play-arcade="snow"] .scoreboard{grid-template-columns:repeat(4,minmax(0,1fr))}body[data-play-arcade="snow"] .controls{grid-template-columns:repeat(4,minmax(0,1fr))}body[data-play-arcade="snow"] .control{font-size:.7rem;min-height:54px}}

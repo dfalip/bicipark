@@ -55,7 +55,7 @@ export function dailyStats(records,day){
 }
 export function readBest(storage){
  const parse=k=>{try{return JSON.parse(storage?.getItem(k)||'null');}catch{return null;}};
- const snow=parse('bicipark-snowbike-downhill-times-v1')||{};
+ const snow=parse('bicipark-snowbike-alpine-times-v2')||{};
  const times=Object.values(snow).filter(x=>x&&Number.isFinite(x.time)&&x.time>=0).map(x=>x.time);
  const zombie=parse('bicipark-zombiepedal-arcade-v1');
  return {snowTime:times.length?Math.min(...times):null,

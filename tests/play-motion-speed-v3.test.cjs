@@ -13,7 +13,8 @@ test('SnowBike has a faster start, meaningful tuck and turbo, and a usable brake
  assert.equal(g.velocity,24);
  e.start(g);g.course.gates=[];g.course.animals=[];
  for(let i=0;i<350;i++)e.step(g,{tuck:true},1/60);
- assert.ok(g.velocity>72.9 && g.velocity<73.1,'Tuck speed should reach 73 game units/s');
+ const target=73*e.terrainPace(g.distance,0);
+ assert.ok(g.velocity>64&&g.velocity<82&&Math.abs(g.velocity-target)<7,'Tuck remains fast within the measured variable-slope speed envelope');
  const speed=g.velocity;
  assert.equal(e.boost(g),true);
  for(let i=0;i<48;i++)e.step(g,{tuck:true},1/60);

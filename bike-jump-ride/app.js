@@ -12,10 +12,10 @@ const ui={play:$("playButton"),again:$("playAgainButton"),restart:$("restartButt
   challengeList:$("challengeList"),finishChallengeSummary:$("finishChallengeSummary")};
 const touch={
   brake:$("brakeButton"),leanBack:$("leanBackButton"),jump:$("jumpButton"),
-  leanForward:$("leanForwardButton"),gas:$("accelerateButton")
+  leanForward:$("leanForwardButton"),gas:$("accelerateButton"),boost:$("boostButton")
 };
 const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||false;
-const BEST_KEY="bicipark-bike-jump-ride-best-v1";
+const BEST_KEY="bicipark-bike-jump-ride-freeride-best-v2";
 const AWARDS_KEY="bicipark-bike-jump-ride-medals-v1";
 function loadBest(){
   try{const x=Number(localStorage.getItem(BEST_KEY));return Number.isFinite(x)&&x>0?x:0;}
@@ -77,7 +77,7 @@ function startRide(){
 function pressed(action){
   const map={accelerate:["ArrowRight","KeyD"],brake:["ArrowLeft","KeyA"],
     leanBack:["ArrowUp","KeyW"],leanForward:["ArrowDown","KeyS"],
-    jump:["Space"]};
+    jump:["Space"],boost:["KeyC","KeyX","KeyF"]};
   return map[action].some(k=>keys.has(k))||[...pointers.values()].includes(action);
 }
 function jumpIsHeld(){return pressed("jump");}
@@ -85,7 +85,7 @@ function releaseJump(){
   if(!jumpIsHeld()&&game.phase==="riding")queuedRelease=true;
 }
 document.addEventListener("keydown",event=>{
-  if(!["ArrowRight","ArrowLeft","ArrowUp","ArrowDown","KeyD","KeyA","KeyW","KeyS","Space"].includes(event.code))return;
+  if(!["ArrowRight","ArrowLeft","ArrowUp","ArrowDown","KeyD","KeyA","KeyW","KeyS","Space","KeyC","KeyX","KeyF"].includes(event.code))return;
   if(event.target instanceof HTMLElement &&
     ["INPUT","BUTTON","SELECT","TEXTAREA","A"].includes(event.target.tagName))return;
   event.preventDefault();
@@ -102,7 +102,7 @@ window.addEventListener("blur",()=>{
   keys.clear();pointers.clear();queuedRelease=false;
   for(const button of Object.values(touch))button.setAttribute("aria-pressed","false");
 });
-document.addEventListener("visibilitychange",()=>{if(document.hidden){keys.clear();pointers.clear();lastFrame=null;}});
+document.addEventListener("visibilitychange",()=>{if(document.hidden){keys.clear();pointers.clear();queuedRelease=false;game.charge=0;lastFrame=null;for(const button of Object.values(touch))button.setAttribute("aria-pressed","false");}});
 function controlPointer(button,action){
   button.addEventListener("pointerdown",event=>{
     if(event.button!=null && event.button!==0)return;
@@ -115,7 +115,7 @@ function controlPointer(button,action){
     if(pointers.get(event.pointerId)!==action)return;
     pointers.delete(event.pointerId);
     button.setAttribute("aria-pressed",String([...pointers.values()].includes(action)));
-    if(action==="jump")releaseJump();
+    if(action==="jump"){if(event.type==="pointerup")releaseJump();else{queuedRelease=false;game.charge=0;}}
   }
   for(const type of ["pointerup","pointercancel","lostpointercapture"])
     button.addEventListener(type,release);
@@ -133,7 +133,7 @@ function updateFeedback(dt){
     previousEvent=game.lastEvent;
     if(important)showNotice(game.lastEvent,game.phase==="crash"?1.2:.9);
     ui.status.textContent=game.lastEvent;
-    if(/ANELLA|ATERRATGE|PUNT DE CONTROL/.test(game.lastEvent)){
+    if(/ANELLA|ATERRATGE|PUNT DE CONTROL|FLIP|WHEELIE/.test(game.lastEvent)){
       for(let i=0;i<17;i++){
         const angle=i*Math.PI*2/17;
         particles.push({x:game.x,y:game.y-35,vx:Math.cos(angle)*(40+i*4),
@@ -173,6 +173,9 @@ function refresh(){
   ui.score.textContent=Math.round(game.score).toLocaleString("ca-ES");
   ui.time.textContent=formatTime(game.runTime);
   ui.best.textContent=best.toLocaleString("ca-ES");
+  $("trickValue").textContent=String(game.frontFlips+game.backFlips+game.wheelies);
+  $("comboValue").textContent="×"+game.combo;
+  $("boostMeterBar").style.width=game.boost+"%";$("boostMeterLabel").textContent=Math.round(game.boost)+"%";
   ui.progress.style.width=`${Math.round(game.progress*100)}%`;
   ui.progressLabel.textContent=`${Math.round(game.progress*100)}%`;
   ui.jumpBar.style.width=`${Math.round(game.charge*100)}%`;
@@ -182,11 +185,12 @@ function refresh(){
     game.x<3420?"SALT DEL CANÓ":game.x<4060?"TRAM DE VELOCITAT":
     game.x<4430?"GRAN SALT FINAL":"ESPRINT FINS A META";
   ui.zone.textContent=region;
-  ui.state.textContent=({ready:"PREPARAT",riding:game.grounded?"SOBRE EL CIRCUIT":"EN VOL",
+  ui.state.textContent=({ready:"PREPARAT",riding:game.grounded?(game.wheelie>.24?"WHEELIE":"SOBRE EL CIRCUIT"):"EN VOL",
     crash:"CAIGUDA",finish:"META!"})[game.phase]||"JUGANT";
 }
 function screenX(x){return x-camera;}
 function background(){
+ if(window.BiciParkPremiumArt){window.BiciParkPremiumArt.world(ctx,1000,560,camera,false,game.runTime);return;}
   const sky=ctx.createLinearGradient(0,0,0,560);
   sky.addColorStop(0,"#65aadd");sky.addColorStop(.57,"#bbf6e5");sky.addColorStop(1,"#e8f8d5");
   ctx.fillStyle=sky;ctx.fillRect(0,0,1000,560);
@@ -236,6 +240,15 @@ function drawTerrain(){
       }
     }
     if(s.type==="ramp"){
+      const art=window.BiciParkPremiumArt;
+      if(art){
+        for(let xx=s.x0+8;xx<s.x1;xx+=14){
+          const yy=trackAt(xx).y;
+          art.poly(ctx,[[xx-8,yy+2],[xx+6,yy-4],[xx+6,yy+16],[xx-8,yy+22]],"#b87a3d","#6b482f",1.5);
+          if(Math.floor(xx/14)%4===0)art.line(ctx,[[xx,yy+16],[xx,Math.min(552,yy+100)]],"#614731",5);
+        }
+        art.line(ctx,[[s.x0,s.y0+3],[s.x1,s.y1+3]],"#f5c786",4);
+      }
       for(let k=0;k<8;k++){
         const xx=s.x0+(k+.5)*(s.x1-s.x0)/8;
         const yy=trackAt(xx).y;
@@ -260,7 +273,7 @@ function drawTrees(){
     if(x<camera-100||x>camera+1100)continue;
     const at=trackAt(x);if(!at||at.type==="ramp")continue;
     const h=34+(x*13%57);
-    if(window.BiciParkArcadeArt){window.BiciParkArcadeArt.tree(ctx,x,at.y,h,false);continue;}
+    if(window.BiciParkPremiumArt){const art=window.BiciParkPremiumArt;art.pine(ctx,x,at.y,h*1.3,false,x);if(x%3===0)art.rock(ctx,x+32,at.y+18,21,false);if(x%5===0)art.marker(ctx,x+50,at.y,false);continue;}
     ctx.fillStyle="#435b4b";ctx.fillRect(x-3,at.y-h*.15,6,h*.2);
     ctx.fillStyle=x%4===0?"#287e79":"#216b70";
     ctx.beginPath();ctx.moveTo(x,at.y-h);
@@ -309,8 +322,10 @@ function drawBike(){
   const b=game;
   ctx.save();ctx.translate(b.x,b.y);
   const angle=b.angle;
+  if(b.grounded&&b.wheelie>.01)ctx.translate(0,29*Math.sin(angle));
   ctx.rotate(angle);
   if(b.phase==="crash")ctx.translate(0,Math.sin(b.crashClock*12)*10);
+  if(window.BiciParkPremiumArt){window.BiciParkPremiumArt.rider(ctx,{time:b.runTime,speed:b.vx,air:!b.grounded,wheelie:b.wheelie>.24});ctx.restore();return;}
   ctx.lineWidth=4;ctx.strokeStyle="#192d39";
   for(const x of [-24,24]){
     ctx.beginPath();ctx.arc(x,11,14,0,Math.PI*2);ctx.stroke();
@@ -359,7 +374,7 @@ function paint(){
   drawTerrain();drawTrees();drawCheckpoints();drawRings();finishFlag();
   shadow();drawBike();drawParticles();
   ctx.restore();
-  window.BiciParkArcadeArt?.pixelFrame(ctx);
+  // Freeride C: retain detailed illustration instead of downsampling the scene.
   ctx.fillStyle="rgba(5,39,56,.55)";ctx.fillRect(0,519,1000,40);
   ctx.textAlign="left";ctx.font="bold 15px system-ui";ctx.fillStyle="#e6fff3";
   ctx.fillText(game.grounded?"RODANT":"✦ EN VOL",20,546);
@@ -371,7 +386,7 @@ function frame(time){
   const dt=clamp((time-lastFrame)/1000,0,.08);lastFrame=time;
   const input={accelerate:pressed("accelerate"),brake:pressed("brake"),
     lean:Number(pressed("leanForward"))-Number(pressed("leanBack")),
-    jumpHeld:jumpIsHeld(),jumpReleased:queuedRelease};
+    jumpHeld:jumpIsHeld(),jumpReleased:queuedRelease,boost:pressed("boost")};
   queuedRelease=false;
   step(game,input,dt);
   const desired=clamp(game.x-240,0,WORLD.width-1000);

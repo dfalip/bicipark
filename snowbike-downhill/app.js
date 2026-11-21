@@ -13,7 +13,7 @@ const ui={course:$("courseSelect"),time:$("timeValue"),speed:$("speedValue"),
  flash:$("impactFlash"),style:$("styleValue")};
 const controls={left:$("leftButton"),right:$("rightButton"),
  tuck:$("tuckButton"),brake:$("brakeButton"),turbo:$("turboButton"),jump:$("jumpButton"),trick:$("trickButton")};
-const STORE="bicipark-snowbike-downhill-times-v1";
+const STORE="bicipark-snowbike-alpine-times-v2";
 const DAILY_STORE="bicipark-play:daily-v1";
 const dailyChallenge=(()=>{
  const params=new URLSearchParams(window.location.search);
@@ -70,25 +70,29 @@ function floatWord(text,x,y,color="#fff3a5"){
  if(visuals.words.length>8)visuals.words.shift();
 }
 function effectEvent(event){
- const y=Math.max(110,Math.min(430,screenY(event.at||game.distance)));
- const x=center(event.at||game.distance)+(event.lane??game.lane)*196;
+ const scene=window.SnowBikeAlpine;
+ const p=scene?.project(game,event.at??game.distance,event.lane??game.lane);
+ const rider=scene?.project(game,game.distance,game.lane);
+ const y=p?Math.max(110,Math.min(467,p.y)):Math.max(110,Math.min(430,screenY(event.at||game.distance)));
+ const x=p?p.x:center(event.at||game.distance)+(event.lane??game.lane)*196;
+ const riderX=rider?.x??(480+game.lane*196),riderY=rider?.y??427;
  if(event.type==="jump"){
-  const skier=480+game.lane*196;
-  burst(skier,425,"#e5fbff",25,1.2);
-  visuals.rings.push({x:skier,y:419,radius:19,life:.48,color:"#acdeff"});
+  const skier=riderX;
+  burst(skier,riderY,"#e5fbff",25,1.2);
+  visuals.rings.push({x:skier,y:riderY,radius:19,life:.48,color:"#acdeff"});
   floatWord("SALT!",skier,332,"#e2d8ff");
  }else if(event.type==="land"){
-  const skier=480+game.lane*196;
-  burst(skier,429,"#f6ffff",38,1.15);
-  visuals.rings.push({x:skier,y:416,radius:22,life:.55,color:"#d6faff"});
+  const skier=riderX;
+  burst(skier,riderY,"#f6ffff",38,1.15);
+  visuals.rings.push({x:skier,y:riderY,radius:22,life:.55,color:"#d6faff"});
   floatWord("ATERRATGE!",skier,348,"#c6ffee");
  }else if(event.type==="trick-start"){
-  const skier=480+game.lane*196;
+  const skier=riderX;
   visuals.rings.push({x:skier,y:355,radius:15,life:.55,color:"#fff39a"});
   burst(skier,356,"#ffe6a4",22,.8);
   floatWord("360°!",skier,285,"#ffe59f");
  }else if(event.type==="trick-land"){
-  const skier=480+game.lane*196;
+  const skier=riderX;
   burst(skier,412,event.perfect?"#fff0a2":"#b2ffea",event.perfect?55:30,1.3);
   visuals.rings.push({x:skier,y:392,radius:24,life:.8,color:"#ffecab"});
   floatWord((event.perfect?"360 PERFECTE! ":"360 COMPLET! ")+"+"+event.points,skier,290,"#fff0a4");
@@ -96,7 +100,7 @@ function effectEvent(event){
  }else if(event.type==="trick-fail"){
   visuals.flash=.28;visuals.flashColor="#f7a27a";
   floatWord("TRUC FALLAT · +2 S",480,305,"#ffe4b0");
-  burst(480+game.lane*196,419,"#ffbf88",20,.8);
+  burst(riderX,riderY,"#ffbf88",20,.8);
  }else if(event.type==="jump-dodge"){
   const legendary=event.kind==="yeti";
   burst(x,y,legendary?"#fff3b0":"#bde4ff",legendary?52:32,1.35);
@@ -109,7 +113,7 @@ function effectEvent(event){
   visuals.shake=reducedMotion?0:21;
   visuals.flash=.62;visuals.freeze=reducedMotion?0:.10;
   visuals.flashColor="#ff5367";
-  burst(480+game.lane*196,425,"#fff2f0",31,1.4);
+  burst(riderX,riderY,"#fff2f0",31,1.4);
   burst(x,y,"#ff7899",23,1);
   floatWord("-1 VIDA  ·  +5 S",480,350,"#fff3b9");
   ui.notice.classList.add("notice--hit");
@@ -129,8 +133,8 @@ function effectEvent(event){
   burst(x,y,"#c5f9ec",10,.65);
   floatWord("+80 ESQUIVAT!",x,y-20,"#baffdb");
  }else if(event.type==="boost"){
-  visuals.rings.push({x:480+game.lane*196,y:414,radius:22,life:.7,color:"#ffe69a"});
-  burst(480+game.lane*196,424,"#fff6b2",22,1);
+  visuals.rings.push({x:riderX,y:riderY,radius:22,life:.7,color:"#ffe69a"});
+  burst(riderX,riderY,"#fff6b2",22,1);
   floatWord("TURBO!",480,325,"#fff0a4");
  }else if(event.type==="finish"){
   visuals.rings.push({x:480,y:330,radius:40,life:1.6,color:"#ffed9a"});
@@ -222,10 +226,10 @@ function gameReset(index=game.course.id){
  ui.startPanel.hidden=false;ui.finishPanel.hidden=true;ui.failedPanel.hidden=true;ui.pausePanel.hidden=true;ui.notice.hidden=true;
  ui.status.textContent=game.event;refresh();paint();
 }
-function beginRace(){if(start(game)){ui.startPanel.hidden=true;ui.status.textContent=game.event;lastFrame=null;}}
+function beginRace(){if(start(game)){ui.startPanel.hidden=true;$("startButton").blur();ui.status.textContent=game.event;lastFrame=null;}}
 function togglePause(){
- if(game.phase==="playing"){pause(game);ui.pausePanel.hidden=false;lastFrame=null;}
- else if(game.phase==="paused"){resume(game);ui.pausePanel.hidden=true;lastFrame=null;}
+ if(game.phase==="playing"){clearControls();pause(game);ui.pausePanel.hidden=false;lastFrame=null;}
+ else if(game.phase==="paused"){clearControls();resume(game);ui.pausePanel.hidden=true;$("resumeButton").blur();$("pauseButton").blur();lastFrame=null;}
 }
 function keyAllowed(event){
  return !(event.target instanceof HTMLElement&&["BUTTON","SELECT","INPUT","TEXTAREA","A"].includes(event.target.tagName));
@@ -343,6 +347,7 @@ function feedback(dt){
 }
 function refresh(){
  ui.time.textContent=formatTime(game.time+game.penalty);
+ $("scoreValue").textContent=Math.round(game.score).toLocaleString("ca-ES");$("comboValue").textContent="×"+game.streak;
  ui.speed.innerHTML=`${Math.round(game.velocity*3.6)} <em>km/h</em>`;
  ui.gates.textContent=`${game.passedGates} / ${game.course.gates.length}`;
  ui.penalty.textContent=`+${game.penalty} s`;
@@ -375,7 +380,7 @@ function drawSnow(){
  const colors=[["#a7d8ef","#e9f6ff"],["#aedbd2","#f5fbfa"],["#c5d1f1","#f7f9ff"],["#b1d2ed","#eaf6fb"]][game.course.id];
  bg.addColorStop(0,colors[0]);bg.addColorStop(1,colors[1]);
  ctx.fillStyle=bg;ctx.fillRect(0,0,960,540);
- drawAlpineLayers();
+ if(window.BiciParkPremiumArt)window.BiciParkPremiumArt.world(ctx,960,540,game.distance,true,game.time);else drawAlpineLayers();
  const start=game.distance+(427-(-20))/TRACK_PROJECTION;
  const end=game.distance+(427-560)/TRACK_PROJECTION;
  const bounds=[];
@@ -387,7 +392,11 @@ function drawSnow(){
  ctx.beginPath();ctx.moveTo(bounds[0].left,bounds[0].y);
  for(const b of bounds)ctx.lineTo(b.left,b.y);
  for(const b of bounds.slice().reverse())ctx.lineTo(b.right,b.y);
- ctx.closePath();ctx.fillStyle="#f5fcff";ctx.fill();
+ ctx.closePath();
+ const snow=ctx.createLinearGradient(0,0,0,540);snow.addColorStop(0,"#d8ebff");snow.addColorStop(.6,"#f7fcff");snow.addColorStop(1,"#dce9ff");ctx.fillStyle=snow;ctx.fill();
+ ctx.save();ctx.clip();
+ for(let i=0;i<26;i++){const y=(i*28+game.distance*TRACK_PROJECTION)%580-20,at=game.distance+(427-y)/TRACK_PROJECTION,x=center(at)+((i*73)%370-185);ctx.fillStyle=i%3?"#c6ddf2":"#b6cfe9";ctx.fillRect(x,y,24+i%5*6,3);ctx.fillStyle="#fff";ctx.fillRect(x+7,y+4,17,2);}
+ ctx.restore();
  ctx.strokeStyle="#b7d6e0";ctx.lineWidth=5;ctx.beginPath();
  for(let i=0;i<bounds.length;i++){
   const b=bounds[i];if(i===0)ctx.moveTo(b.left,b.y);else ctx.lineTo(b.left,b.y);
@@ -422,6 +431,7 @@ function drawSnow(){
   const x=center(at)+side*(270+(i*31%170));
   const scale=.5+screen/650;
   ctx.save();ctx.translate(x,screen);ctx.scale(scale,scale);
+  if(window.BiciParkPremiumArt){const art=window.BiciParkPremiumArt;art.pine(ctx,0,6,115+(i%4)*17,true,i);if(i%3===0)art.rock(ctx,35,15,35,true);if(i%4===0)art.marker(ctx,-25,9,true);ctx.restore();continue;}
   if(arcadeArt){arcadeArt.tree(ctx,0,6,74,true);ctx.restore();continue;}
   ctx.fillStyle="#2f5e68";ctx.fillRect(-4,0,8,24);
   ctx.fillStyle=i%7?"#367c73":"#476e84";
@@ -602,6 +612,18 @@ function drawSkiGrooves(){
 
 function drawSkiBike(){
  const x=480+game.lane*196,y=427;
+ if(window.BiciParkPremiumArt){const art=window.BiciParkPremiumArt;
+   ctx.save();ctx.translate(x,y);
+   art.ellipse(ctx,0,9,48+game.airHeight*18,12+game.airHeight*5,"#27486245");
+   if(game.grounded&&game.phase==="playing"&&!reducedMotion){
+    for(let i=0;i<23;i++){const d=(i*17+game.time*game.velocity*4)%100,xx=-18-d*.65,yy=4+d*.42;art.ellipse(ctx,xx,yy,2+i%4,2+i%3,"#f5fcff");}
+   }
+   ctx.translate(0,-game.airHeight*145);
+   ctx.rotate(-.33+game.steerVelocity*.13+(game.stumble?Math.sin(game.time*25)*.22:0)+(game.grounded||reducedMotion?0:game.trickSpin*Math.PI*2));
+   if(game.invulnerability>0&&Math.floor(game.time*16)%2===0)ctx.globalAlpha=.5;
+   art.rider(ctx,{snow:true,time:game.time,speed:game.velocity*5,air:!game.grounded,scale:1.72});
+   ctx.restore();return;
+ }
  // Pre-rendered vector sprite poses avoid reconstructing detailed anatomy every frame.
  // Deterministic canvas fallback below keeps offline play robust.
  if(riderAtlasReady()){
@@ -774,6 +796,21 @@ function drawSnowRush(){
  }
  ctx.restore();
 }
+function drawAlpineHud(){
+ const art=window.BiciParkPremiumArt;
+ const speed=Math.round(game.velocity*3.6);
+ function panel(x,y,w,h){art.poly(ctx,[[x+9,y],[x+w,y],[x+w-9,y+h],[x,y+h]],"#12274deb","#79b5e5",1.4);}
+ ctx.save();ctx.textAlign="left";
+ panel(12,40,185,48);ctx.font="800 11px system-ui";ctx.fillStyle="#e3f4ff";ctx.fillText("PUNTS",26,55);
+ ctx.font="italic 900 28px system-ui";ctx.fillStyle="#ffe25c";ctx.fillText(Math.round(game.score).toLocaleString("ca-ES"),26,80);
+ panel(747,40,201,48);ctx.font="800 11px system-ui";ctx.fillStyle="#e3f4ff";ctx.fillText("VELOCITAT",763,55);
+ ctx.font="italic 900 27px system-ui";ctx.fillStyle="#ffe25c";ctx.fillText(speed+" km/h",763,80);
+ if(game.streak>1){panel(759,96,187,35);ctx.font="italic 900 21px system-ui";ctx.fillStyle="#ffdf4e";ctx.fillText("COMBO ×"+game.streak,773,120);}
+ panel(12,474,291,32);ctx.font="800 11px system-ui";ctx.fillStyle="#e6f7ff";ctx.fillText("TURBO",24,494);
+ for(let i=0;i<10;i++)art.poly(ctx,[[91+i*19,482],[106+i*19,482],[103+i*19,497],[88+i*19,497]],game.boost>i*10?"#38cef2":"#53647a");
+ panel(710,474,239,32);ctx.font="800 12px system-ui";ctx.fillStyle="#fcf1bc";ctx.fillText(Math.round(game.distance)+" / "+game.course.length+" m",724,495);
+ ctx.restore();
+}
 function paint(){
  if(!ctx)return;
  ctx.clearRect(0,0,960,540);
@@ -781,6 +818,11 @@ function paint(){
  if(visuals.shake>0 && !reducedMotion){
   ctx.translate(Math.sin(game.time*69)*visuals.shake,
     Math.cos(game.time*87)*visuals.shake*.54);
+ }
+ if(window.SnowBikeAlpine&&window.BiciParkPremiumArt){
+  window.SnowBikeAlpine.draw(ctx,game,{reduced:reducedMotion});
+  drawFeedback();ctx.restore();
+  drawAlpineHud();return;
  }
  drawSnow();drawSkiGrooves();drawGates();drawAnimals();
  drawSpeedSnow();
@@ -795,6 +837,7 @@ function paint(){
  }
  drawSnowRush();drawSkiBike();drawFeedback();
  ctx.restore();
+ // Alpine A keeps the pixel treatment, with a higher detail rider and mountain scenery.
  window.BiciParkArcadeArt?.pixelFrame(ctx);
  ctx.fillStyle="#13374cbf";ctx.fillRect(0,508,960,33);
  ctx.textAlign="left";ctx.font="900 15px system-ui";ctx.fillStyle="white";
