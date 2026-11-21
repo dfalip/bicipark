@@ -18,6 +18,7 @@ const el={
 };
 let game=newGame(0),lastFrame=null,dragging=false,pointerId=null,previousPhase="aim";
 let noticeAge=0,prevScore=0;
+let camera={x:0,y:0,z:1};
 let trail=[],scorePopups=[],trailClock=0,trackedProjectile=null,shotTrace=[],lastTrace=[];
 let previewCacheKey=null,previewCache=null;
 function cachedPrediction(){
@@ -77,7 +78,7 @@ function currentDescription(){
   if(game.phase==="aim")return "Arrossega la roda enrere i deixa-la anar, o ajusta angle i potència.";
   if(game.phase==="flying"){
     if(game.projectile?.turbo)return "Habilitat especial utilitzada. Mira la reacció en cadena!";
-    return game.projectile?.type==="pulse"?"Prem ✦ o Espai prop d'una torre: ona expansiva!":
+    return game.projectile?.type==="blast"?"Prem Espai prop dels blocs per detonar!":game.projectile?.type==="split"?"Prem Espai per dividir la roda!":game.projectile?.type==="spring"?"Prem Espai per fer un super salt!":game.projectile?.type==="pulse"?"Prem ✦ o Espai prop d'una torre: ona expansiva!":
       game.projectile?.type==="drill"?"Prem ✦ o Espai: turbo perforador d'acer!":
       "Prem ✦ o Espai: martell d'impacte!";
   }
@@ -104,7 +105,7 @@ function syncUI(){
     el.wheelIcon.textContent=wheel.icon;
     el.wheelName.textContent=wheel.label;
     el.wheelHelp.textContent=wheel.help;
-    el.turbo.textContent=wheel.id==="pulse"?"✦ ONA EXPANSIVA":
+    el.turbo.textContent=wheel.id==="blast"?"✹ DETONA":wheel.id==="split"?"✦ DIVIDEIX":wheel.id==="spring"?"↗ SUPER REBOT":wheel.id==="pulse"?"✦ ONA EXPANSIVA":
       wheel.id==="drill"?"◆ TURBO TREPANT":"● TURBO MARTELL";
   }
   el.wheelCard.hidden=game.phase==="won"||game.phase==="lost";
@@ -136,7 +137,7 @@ function syncUI(){
 }
 function reset(index=game.levelIndex){
   game=newGame(index);dragging=false;pointerId=null;previousPhase=game.phase;
-  prevScore=0;noticeAge=0;el.notice.hidden=true;trail=[];scorePopups=[];trailClock=0;trackedProjectile=null;shotTrace=[];lastTrace=[];
+  camera={x:0,y:0,z:1};prevScore=0;noticeAge=0;el.notice.hidden=true;trail=[];scorePopups=[];trailClock=0;trackedProjectile=null;shotTrace=[];lastTrace=[];
   previewCacheKey=null;previewCache=null;
   syncUI();draw();
 }
@@ -164,7 +165,7 @@ function announce(){
 function toWorld(event){
   const rect=canvas.getBoundingClientRect();
   const sx=WORLD.width/Math.max(rect.width,1),sy=WORLD.height/Math.max(rect.height,1);
-  return {x:(event.clientX-rect.left)*sx,y:(event.clientY-rect.top)*sy};
+  return {x:((event.clientX-rect.left)*sx-camera.x)/camera.z,y:((event.clientY-rect.top)*sy-camera.y)/camera.z};
 }
 function grab(event){
   if(game.phase!=="aim"||(event.button!=null&&event.button!==0))return;
@@ -233,7 +234,7 @@ function roundedRect(x,y,w,h,r=8){
   ctx.beginPath();ctx.roundRect(x,y,w,h,Math.min(r,w/2,h/2));
 }
 function backdrop(){
-  if(window.BiciParkArcadeArt){window.BiciParkArcadeArt.industrial(ctx,WORLD.width,WORLD.height,WORLD.ground);return;}
+  if(window.BiciParkArcadeArt){window.BiciParkArcadeArt.industrial(ctx,WORLD.width,WORLD.height,WORLD.ground);drawArenaDetails();return;}
   const sky=ctx.createLinearGradient(0,0,0,520);
   sky.addColorStop(0,"#61bbd9");sky.addColorStop(.47,"#b9f6d2");sky.addColorStop(1,"#f5dbac");
   ctx.fillStyle=sky;ctx.fillRect(0,0,WORLD.width,WORLD.height);
@@ -272,6 +273,20 @@ function backdrop(){
     ctx.arc(x+3,WORLD.ground-72,13,0,Math.PI*2);ctx.stroke();
   }
   ctx.restore();
+}
+function drawArenaDetails(){
+ const theme=LEVELS[game.levelIndex].theme;if(!theme)return;
+ ctx.save();ctx.globalAlpha=.72;
+ if(theme==="tunnel"){ctx.fillStyle="#263746";ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(1000,0);ctx.lineTo(1000,115);ctx.quadraticCurveTo(500,-30,0,115);ctx.closePath();ctx.fill();for(let x=95;x<1000;x+=180){ctx.fillStyle="#ffe7ad";ctx.fillRect(x,48,42,9);}}
+ if(theme==="workshop"){ctx.fillStyle="#40576a";for(let x=0;x<1000;x+=175){ctx.fillRect(x,110,12,290);ctx.fillRect(x+12,112,140,8);}ctx.strokeStyle="#b0d0c8";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(0,105);ctx.lineTo(1000,105);ctx.stroke();}
+ if(theme==="yard"){ctx.strokeStyle="#5b654e";ctx.lineWidth=11;ctx.beginPath();ctx.moveTo(890,390);ctx.lineTo(890,92);ctx.lineTo(510,92);ctx.stroke();ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(590,92);ctx.lineTo(590,175);ctx.stroke();}
+ ctx.restore();
+}
+function updateCamera(dt){
+ const p=game.projectile,focus=game.phase==="flying"&&!reducedMotion&&p&&p.x>360;
+ const z=focus?1.16:1, x=focus?clamp(500-p.x*z,WORLD.width*(1-z),0):0,y=focus?clamp(290-p.y*z,WORLD.height*(1-z),0):0;
+ const f=Math.min(1,dt*4);camera.z+=(z-camera.z)*f;camera.x+=(x-camera.x)*f;camera.y+=(y-camera.y)*f;
+ if(game.phase==="aim"||reducedMotion)camera={x:0,y:0,z:1};
 }
 function drawSling(){
   const a=WORLD.anchor;
@@ -370,7 +385,7 @@ function drawBlock(b){
     }
   }
   window.BiciParkArcadeArt?.material(ctx,b,[base,light,edge]);
-  if(b.hp<26){ctx.strokeStyle="#132a3bbb";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-8,-b.h/2);ctx.lineTo(2,-4);ctx.lineTo(-5,8);ctx.lineTo(8,b.h/2);ctx.stroke();}
+  const initial={wood:60,glass:32,steel:145}[b.material];if(b.hp<initial*.72){ctx.strokeStyle="#132a3bbb";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-8,-b.h/2);ctx.lineTo(2,-4);ctx.lineTo(-5,8);ctx.lineTo(8,b.h/2);ctx.stroke();if(b.material==="glass"){ctx.beginPath();ctx.moveTo(2,-4);ctx.lineTo(b.w/2,-b.h/4);ctx.moveTo(-5,8);ctx.lineTo(-b.w/2,b.h/4);ctx.stroke();}if(b.material==="steel"){ctx.fillStyle="#14283b55";ctx.fillRect(-b.w/4,-b.h/4,b.w/2,b.h/2);}}
   ctx.restore();
 }
 function drawRobot(t){
@@ -380,10 +395,11 @@ function drawRobot(t){
   roundedRect(-17,-16,34,33,9);ctx.fill();ctx.stroke();
   ctx.strokeStyle="#2f5557";ctx.lineWidth=2.8;ctx.beginPath();ctx.moveTo(0,-16);ctx.lineTo(0,-26);ctx.stroke();
   ctx.fillStyle="#f9e5a4";ctx.beginPath();ctx.arc(0,-28,4,0,Math.PI*2);ctx.fill();
+  const p=game.projectile,scared=game.phase==="flying"&&p?.active&&Math.hypot(p.x-t.x,p.y-t.y)<180;
   const blink=t.blink>2.6;
   ctx.fillStyle="#1b4252";
-  for(const x of [-8,8]){roundedRect(x-4,-6,8,blink?2:9,3);ctx.fill();}
-  ctx.strokeStyle="#31635f";ctx.beginPath();ctx.arc(0,7,6,0,Math.PI);ctx.stroke();
+  for(const x of [-8,8]){roundedRect(x-4,-6,8,blink?2:scared?13:9,3);ctx.fill();}
+  ctx.strokeStyle="#31635f";ctx.beginPath();ctx.arc(0,scared?9:7,scared?4:6,0,scared?Math.PI*2:Math.PI);ctx.stroke();
   ctx.restore();
 }
 function drawBomb(b){
@@ -436,6 +452,7 @@ function draw(){
   if(game.shake>0&&!reducedMotion){
     ctx.translate(Math.sin(game.shotTime*90)*game.shake,Math.cos(game.shotTime*67)*game.shake*.4);
   }
+  ctx.translate(camera.x,camera.y);ctx.scale(camera.z,camera.z);
   backdrop();
   for(const b of game.blocks){if(!b.dead)drawBlock(b);}
   for(const b of game.bombs){if(!b.dead)drawBomb(b);}
@@ -443,11 +460,12 @@ function draw(){
   drawShockwaves();
   drawSling();
   // Preview the actual remaining wheel queue rather than a text-only ammo count.
-  for(let i=0;i<Math.min(game.shotsLeft,8);i++){const k=SHOT_TYPES[(game.shotCount+i)%SHOT_TYPES.length];drawWheel(45+i*29,WORLD.ground-16,0,.59,k.id);}
+  for(let i=0;i<Math.min(game.shotsLeft,8);i++){const k=upcomingShot(game,i);drawWheel(45+i*29,WORLD.ground-16,0,.59,k.id);}
   drawAim();
   const p=game.projectile;
   drawFlightEffects();
   if(p&&p.active)drawWheel(p.x,p.y,p.angle,1,p.type);
+  for(const q of game.extras||[])if(q.active)drawWheel(q.x,q.y,q.angle,.62,"split");
   drawBounceHalo();
   drawDebris();drawScorePopups();
   if(game.phase==="won"&&!reducedMotion){
@@ -466,7 +484,7 @@ function loop(now){
   if(lastFrame===null)lastFrame=now;
   const dt=Math.min((now-lastFrame)/1000,.055);
   lastFrame=now;
-  step(game,dt);updateFlightEffects(dt);
+  step(game,dt);updateFlightEffects(dt);updateCamera(dt);
   if(noticeAge>0){
     noticeAge=Math.max(0,noticeAge-dt);
     if(noticeAge===0)el.notice.hidden=true;
