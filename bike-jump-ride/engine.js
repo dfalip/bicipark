@@ -88,7 +88,7 @@ function land(g,surface){
     crash(g,"CAIGUDA! Has aterrat massa inclinat. Reapareixeràs al punt de control.");
     return;
   }
-  const flips=Math.min(3,Math.floor((Math.abs(g.airRotation)+.20)/(Math.PI*2)));
+  const flips=Math.min(3,Math.floor((Math.abs(g.airRotation))/(Math.PI*2)));
   if(flips){
     if(g.airRotation>0)g.frontFlips+=flips;else g.backFlips+=flips;
     g.combo+=flips;g.maxCombo=Math.max(g.maxCombo,g.combo);
