@@ -6,10 +6,10 @@
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),TAU=Math.PI*2;
 const hash=n=>{n=Math.imul(n^0x45d9f3b,0x45d9f3b);return (n^(n>>>16))>>>0;};
 const W=960,H=540;
-function terrain(at){return Math.sin(at/82)*19+Math.sin(at/41)*7+Math.sin(at/203)*23;}
+function terrain(at){return Math.sin(at/82)*27+Math.sin(at/41)*9+Math.sin(at/203)*29;}
 function project(g,at,lane=0){
  const d=at-g.distance;
- return {x:269+d*2.32+lane*24,y:345+d*.19+terrain(at)-terrain(g.distance)+lane*67,scale:clamp(1+lane*.12,.76,1.19)};
+ return {x:234+d*2.48+lane*24,y:345+d*.19+terrain(at)-terrain(g.distance)+lane*67,scale:clamp(1+lane*.12,.76,1.19)};
 }
 function path(c,pts,col,stroke,w=1){
  c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=col;c.fill();
@@ -102,7 +102,7 @@ function gate(c,g,a){
 }
 function furEdge(cx,cy,rx,ry,k=0){let pts=[];for(let i=0;i<48;i++){const a=i*TAU/48,r=i%2?1.03:.86+(hash(i+k)%12)/100;pts.push([cx+Math.cos(a)*rx*r,cy+Math.sin(a)*ry*r]);}return pts;}
 function yeti(c,a,time){
- const t=time*8+(a.stride||0),walk=Math.sin(t),col="#ddeefa",outline="#354566";
+ const t=(a.travel||0)+(a.stride||0),walk=Math.sin(t),col="#ddeefa",outline="#354566";
  // Feet and heavy arms swing in opposing phases, anchored to the body.
  for(const sign of [-1,1]){
   const foot=sign*14+sign*walk*10;
@@ -128,41 +128,81 @@ function yeti(c,a,time){
 }
 function wildlife(c,a,time){
  const species=a.label,fox=species==="Guineu",rabbit=species==="Conill",goat=species==="Cabra";
- const col=rabbit?"#efe9dc":fox?"#d57937":goat?"#ccc9bb":"#b17a43",dark=rabbit?"#94939a":fox?"#833e2c":goat?"#696e79":"#6e4733";
- const walk=Math.sin(time*(rabbit?13:10)+(a.stride||0)),bob=Math.abs(walk)*(rabbit?6:2);
- c.save();c.translate(0,-bob);if(rabbit)c.scale(.67,.67);
- // Separate haunch, neck and articulated legs rather than oval with sticks.
- if(fox)path(c,[[-17,-25],[-37,-38],[-53,-34],[-49,-20],[-31,-16],[-15,-18]],dark,"#493c39",1.5);
- if(fox)path(c,[[-44,-34],[-53,-34],[-49,-20],[-40,-21]],"#fff2df");
- if(!fox)path(c,[[-23,-23],[-32,-28],[-30,-18],[-20,-15]],col,dark,1.5);
- for(let i=0;i<4;i++){const base=i<2?-14:14,dir=i%2?1:-1,foot=base+dir*walk*10,y=-1+(i%2?2:0);stroke(c,[[base,-18],[base+dir*walk*5,-9],[foot,y]],"#4c4040",i%2?4:5);stroke(c,[[base,-18],[base+dir*walk*5,-9]],dark,4);stroke(c,[[foot-3,y],[foot+3,y]],"#252d38",2.4);}
- path(c,[[-27,-27],[-17,-37],[9,-35],[22,-31],[20,-18],[6,-13],[-18,-15],[-26,-22]],col,"#493c39",1.7);
- path(c,[[-22,-29],[-13,-34],[8,-32],[16,-27],[3,-22],[-16,-24]],fox?"#ed9c53":rabbit?"#fffdfa":goat?"#ebe5d5":"#ddaa67");
- path(c,[[11,-32],[15,-47],[22,-49],[29,-39],[19,-20],[10,-19]],col,"#493c39",1.5);
- path(c,[[22,-49],[35,-47],[42,-41],[37,-35],[25,-37],[20,-42]],col,"#493c39",1.5);
- stroke(c,[[33,-37],[40,-40]],"#f4dfb7",2.2);oval(c,33,-45,2.4,2.4,"#1c2633");oval(c,33.5,-45.5,.7,.7,"#fff");
- for(const s of [-1,1]){
-  const x=24+s*4;
-  if(species==="Cérvol"){
-   stroke(c,[[x,-48],[x+s*5,-60],[x+s*3,-72]],"#6d4531",2.5);
-   stroke(c,[[x+s*5,-61],[x+s*11,-66],[x+s*12,-72]],"#805439",2.1);
-   stroke(c,[[x+s*3,-67],[x+s*8,-70]],"#805439",1.8);
-  }else if(goat)stroke(c,[[x,-47],[x+s*5,-58],[x+s*8,-62]],"#d8c6a3",3);
-  else path(c,[[x-3,-47],[x-4,-(rabbit?78:61)],[x+5,-(rabbit?73:58)],[x+6,-49]],col,"#5b4c49",1.4);
+ const phase=(a.travel||0)+(a.stride||0),stride=Math.sin(phase);
+ const outline="#493d43";
+ if(rabbit){
+  // A compact hare: powerful rear thighs, paired forefeet, long ears.
+  const hop=Math.max(0,Math.sin(phase))*9;
+  c.save();c.translate(0,-hop);
+  oval(c,-10,-12,15,13,"#d9ddde",outline,1.1);
+  oval(c,-3,-15,15,10,grad(c,-16,-26,8,-6,[[0,"#fffff4"],[1,"#9eacb7"]]),outline,1);
+  oval(c,13,-23,9,10,"#d7dfe3",outline,1.1);
+  path(c,[[9,-28],[6,-47],[10,-49],[16,-32]],"#e9e5df",outline,1);
+  path(c,[[15,-30],[17,-48],[21,-46],[20,-29]],"#cbd3d8",outline,1);
+  stroke(c,[[10,-32],[9,-43]],"#c89a9a",2);
+  oval(c,17,-25,2.2,2.2,"#222d3b");oval(c,22,-21,2,1.5,"#908087");
+  oval(c,-24,-13,5,5,"#f3f5f2",outline,.9);
+  stroke(c,[[-12,-10],[-5-stride*8,-4],[-14-stride*6,1]],"#8895a4",4);
+  stroke(c,[[8,-12],[12+stride*5,-4],[17+stride*4,1]],"#aebbc1",3);
+  c.restore();return;
  }
- if(goat)path(c,[[31,-37],[36,-37],[33,-27],[28,-35]],"#c1b3a2");
+ const col=fox?"#c66a32":goat?"#c4b9a4":"#a16c3f",
+ dark=fox?"#7d3827":goat?"#67686d":"#68452e",
+ light=fox?"#f2a455":goat?"#eee3cd":"#dba56c";
+ const bodyY=fox?-19:goat?-25:-30, bodyX=fox?27:goat?22:24, hoofY=0;
+ const lift=fox?Math.max(0,Math.sin(phase*2))*3:goat?Math.abs(stride)*2:Math.max(0,Math.sin(phase))*5;
+ c.save();c.translate(0,-lift);
+ // Legs have joints, alternating gait and hooves/paws.
+ for(let i=0;i<4;i++){
+  const back=i<2,far=i%2===0,base=back?-bodyX*.63:bodyX*.55;
+  const q=phase+(back?Math.PI*.84:0)+(far?Math.PI:0),swing=Math.sin(q),rise=Math.max(0,Math.cos(q))*(fox?5:9);
+  const knee=base+swing*(fox?9:7),foot=base+swing*(fox?16:13);
+  const h=bodyY+(fox?5:6),mid=h*.46,footY=hoofY-rise;
+  stroke(c,[[base,h],[knee,mid],[foot,footY]],outline,fox?4:4.7);
+  stroke(c,[[base,h],[knee,mid]],far?dark:col,fox?3.1:3.5);
+  stroke(c,[[knee,mid],[foot,footY]],far?"#51494a":dark,2.7);
+  stroke(c,[[foot-2,footY],[foot+3,footY]],"#273139",fox?2.6:3);
+ }
+ if(fox){
+  const tailY=-20+stride*5;
+  path(c,[[-23,-23],[-48,tailY-9],[-59,tailY-3],[-51,tailY+7],[-37,tailY+8],[-19,-14]],dark,outline,1.2);
+  path(c,[[-47,tailY-9],[-59,tailY-3],[-51,tailY+7],[-42,tailY+5]],"#f9e7cf");
+ }else{
+  path(c,[[-bodyX,-32],[-bodyX-10,-38],[-bodyX-9,-30],[-bodyX,-26]],light,dark,1);
+ }
+ const top=bodyY-(fox?9:11),bottom=bodyY+(fox?10:12);
+ path(c,[[-bodyX-3,bodyY],[-bodyX,top],[-9,top-3],[13,top],[bodyX,bodyY-1],[bodyX-2,bottom],[-4,bottom+2],[-bodyX+1,bottom-1]],
+ grad(c,-bodyX,top,bodyX,bottom,[[0,light],[.43,col],[1,dark]]),outline,1.3);
+ // Neck and snout are deliberately different for a low fox, a tall deer and mountain goat.
+ const hx=fox?28:goat?23:27,hy=fox?-29:goat?-43:-57;
+ path(c,[[bodyX-10,top],[hx-9,hy+1],[hx+3,hy-2],[hx+5,hy+9],[bodyX+4,bottom-2],[bodyX-7,bottom]],col,outline,1.2);
+ path(c,[[hx-7,hy-6],[hx+6,hy-7],[hx+16,hy],[hx+13,hy+7],[hx+1,hy+8],[hx-6,hy+3]],col,outline,1.2);
+ path(c,[[hx+1,hy+2],[hx+14,hy+1],[hx+11,hy+7],[hx+1,hy+6]],fox?"#f8ebd0":light);
+ oval(c,hx+6,hy-2,2.1,2.1,"#1d2734");oval(c,hx+15,hy+1,2.2,1.8,"#2a2830");
+ if(fox){
+  path(c,[[hx-7,hy-5],[hx-8,hy-19],[hx+1,hy-7]],dark,outline,1);
+  path(c,[[hx+2,hy-6],[hx+7,hy-18],[hx+10,hy-5]],col,outline,1);
+ }else{
+  for(const sign of [-1,1]){
+   const x=hx-3+sign*4;
+   path(c,[[x,hy-3],[x+sign*11,hy-14],[x+sign*14,hy-7]],light,outline,1);
+   if(goat){stroke(c,[[x,hy-5],[x-5,hy-17],[x-10,hy-22]],"#d7c9a8",3.1);stroke(c,[[x-4,hy-13],[x-7,hy-18]],"#746759",.9);}
+   else {stroke(c,[[x,hy-7],[x+sign*6,hy-18],[x+sign*4,hy-29]],"#80583c",2.5);stroke(c,[[x+sign*5,hy-19],[x+sign*13,hy-25],[x+sign*13,hy-33]],"#80583c",2);stroke(c,[[x+sign*4,hy-24],[x,hy-29]],"#95683e",1.6);}
+  }
+  if(goat)path(c,[[hx+8,hy+6],[hx+13,hy+7],[hx+8,hy+19],[hx+3,hy+10]],"#d2c6ab",outline,.8);
+ }
  c.restore();
 }
 function animal(c,g,a,p){
- c.save();c.translate(p.x,p.y);const sc=p.scale*(a.kind==="yeti"?1.04:.94);c.scale(sc,sc);
+ c.save();c.translate(p.x,p.y);const sc=p.scale*(a.kind==="yeti"?.96:a.label==="Conill"?1.0:a.label==="Cérvol"?1.08:.95);c.scale(sc,sc);
  oval(c,0,4,a.kind==="yeti"?39:29,7,"#233d6655");
- if(a.kind!=="yeti"&&a.side<0)c.scale(-1,1);
+ if(a.kind!=="yeti"&&((a.motionAt||0)*2.48+(a.motionLane||0)*24<0))c.scale(-1,1);
  if(a.kind==="yeti")yeti(c,a,g.time);else wildlife(c,a,g.time);
  c.restore();
  // Early warning badges only for real moving encounters close enough to affect play.
  const delta=a.at-g.distance;
  if(delta>=-5&&delta<65&&Math.abs(a.x)<1.3){
-  c.save();c.translate(p.x,p.y-(a.kind==="yeti"?125:76)*sc);
+  c.save();c.translate(p.x,p.y-(a.kind==="yeti"?125:a.label==="Conill"?64:a.label==="Cérvol"?102:76)*sc);
   path(c,[[0,-10],[-13,11],[13,11]],"#ffd768","#503a2d",1.6);rect(c,-1.5,-4,3,8,"#45321f");oval(c,0,7,1.6,1.6,"#45321f");c.restore();
  }
 }
@@ -244,15 +284,15 @@ function drawHero(c,g,scale){
 function rider(c,g,p,reduced){
  const art=window.BiciParkPremiumArt;
  if(!art)return;
- const h=g.airHeight*145,rotation=g.grounded||reduced?0:g.trickSpin*TAU;
- oval(c,p.x,p.y+5,53+g.airHeight*15,9+g.airHeight*4,"#24497455");
+ const size=1.32*p.scale,h=g.airHeight*145,rotation=g.grounded||reduced?0:g.trickSpin*TAU;
+ oval(c,p.x,p.y+5,42+g.airHeight*15,7+g.airHeight*4,"#24497455");
  if(g.grounded&&g.phase==="playing"&&!reduced){
-  for(let i=0;i<40;i++){const d=(i*17+g.time*g.velocity*4)%135,xx=p.x-35-d,yy=p.y-2+(hash(i)%28)-d*.14;oval(c,xx,yy,1.8+i%5,1.5+i%3,i%3?"#ffffffcc":"#b4d9faff");}
+  for(let i=0;i<32+(g.boostTime>0?20:0);i++){const d=(i*17+g.distance*3.9)%139,xx=p.x-27-d,yy=p.y-3+(hash(i)%23)-d*.16;oval(c,xx,yy,1.5+i%4,1.3+i%3,i%3?"#ffffffcc":"#b4d9faff");}
   stroke(c,[[p.x-55,p.y+4],[p.x-103,p.y+5],[p.x-152,p.y+2]],"#89b5e0a8",4);
  }
- c.save();c.translate(p.x,p.y-h-27*1.67*p.scale);c.rotate(.07+g.steerVelocity*.07+(g.stumble?Math.sin(g.time*26)*.17:0)+rotation);
+ c.save();c.translate(p.x,p.y-h-27*size);const grade=(terrain(g.distance+3)-terrain(g.distance-3))/6;c.rotate(.075+Math.atan(grade/2.48)*.7+g.steerVelocity*.10+(g.stumble?Math.sin(g.time*26)*.17:0)+rotation);
  if(g.invulnerability>0&&Math.floor(g.time*14)%2===0)c.globalAlpha=.57;
- drawHero(c,g,1.67*p.scale);
+ drawHero(c,g,size);
  c.restore();
 }
 function draw(c,g,{visible,reduced=false}={}){
@@ -272,7 +312,11 @@ function draw(c,g,{visible,reduced=false}={}){
  for(const i of items){if(i.kind==="gate")gate(c,g,i.a);else if(i.kind==="animal")animal(c,g,i.a,i.p);else rider(c,g,i.p,reduced);}
  // Foreground branches are kept below the playable track so no hazard is obscured.
  if(art)for(let at=Math.floor((g.distance-180)/92)*92;at<g.distance+340;at+=92){const k=hash(at+2),p=project(g,at,1.83);if(p.y>432&&k%3!==0)art.rock(c,p.x,p.y+38,30+k%28,true);}
- if(!reduced&&g.velocity>42&&g.phase==="playing")for(let i=0;i<13;i++){const x=(i*89-g.distance*3%960+960)%960,y=440+(i%3)*14;stroke(c,[[x,y],[x-14-g.velocity*.4,y-2]],"#e9f9ff9f",1.5);}
+ if(!reduced&&g.velocity>35&&g.phase==="playing"){
+  const amount=g.boostTime>0?25:14;
+  for(let i=0;i<amount;i++){const at=g.distance-100+((i*37-g.distance*1.65%370+370)%370),lane=i%2?1.27:-1.26,p=project(g,at,lane);stroke(c,[[p.x,p.y],[p.x-12-g.velocity*.55,p.y-3]],g.boostTime>0?"#fff5c1b8":"#e9f9ff9f",i%3===0?2.7:1.4);}
+ }
+
 }
 window.SnowBikeAlpine=Object.freeze({project,draw,animalVisible:a=>Boolean(a.seen&&!a.passed&&a.phase==="crossing"&&Math.abs(a.x)<1.62)});
 })();
