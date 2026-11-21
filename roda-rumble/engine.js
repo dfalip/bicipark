@@ -192,12 +192,12 @@ export function turbo(g){
   }
   return true;
 }
-function sparks(g,x,y,color,count=12){
+function sparks(g,x,y,color,count=12,material=null){
   for(let i=0;i<count;i++){
     const a=(i*2.399963229728653)% (Math.PI*2);
     const speed=70+(i%5)*34;
     g.debris.push({x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed-100,
-      life:.38+(i%5)*.13,maxLife:.9,color,r:2+(i%4)});
+      life:.38+(i%5)*.13,maxLife:.9,color,material,r:2+(i%4)});
   }
   if(g.debris.length>170)g.debris.splice(0,g.debris.length-170);
 }
@@ -207,7 +207,7 @@ function damageBlock(g,b,impulse,x=b.x,y=b.y){
   b.hp-=Math.max(0,impulse)*(b.material==="steel"?.36:b.material==="wood"?.75:1.06);
   if(b.hp<=0){
     b.dead=true;g.score+=material.score+(g.combo++*10);
-    sparks(g,x,y,b.material==="glass"?"#96f6ff":b.material==="steel"?"#8cb6cb":"#ffca83",17);
+    sparks(g,x,y,b.material==="glass"?"#96f6ff":b.material==="steel"?"#8cb6cb":"#ffca83",24,b.material);
     g.shake=Math.max(g.shake,5);
   }
 }
