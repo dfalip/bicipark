@@ -133,7 +133,7 @@ export function newGame(index=0){
   return {levelIndex:clamp(index|0,0,LEVELS.length-1),levelName:level.name,
     phase:"aim",shotsLeft:level.shots,shotsTotal:level.shots,
     angle:42,power:77,score:0,combo:0,shotCount:0,shotTime:0,settleTime:0,
-    blocks:entities,robots,bombs,projectile:null,extras:[],debris:[],pulses:[],
+    blocks:entities,robots,bombs,physicsActive:false,projectile:null,extras:[],debris:[],pulses:[],
     shake:0,celebration:0,notice:"Arrossega la roda enrere i deixa-la anar!",
     lastResult:null};
 }
@@ -204,6 +204,7 @@ function sparks(g,x,y,color,count=12,material=null){
 }
 function damageBlock(g,b,impulse,x=b.x,y=b.y){
   if(b.dead||impulse<19)return;
+  g.physicsActive=true;
   const material=MATERIAL[b.material];
   b.hp-=Math.max(0,impulse)*(b.material==="steel"?.36:b.material==="wood"?.75:1.06);
   if(b.hp<=0){
@@ -214,13 +215,13 @@ function damageBlock(g,b,impulse,x=b.x,y=b.y){
 }
 function eliminateRobot(g,t,x=t.x,y=t.y){
   if(t.dead)return;
-  t.dead=true;g.score+=650+(g.combo++*90);
+  g.physicsActive=true;t.dead=true;g.score+=650+(g.combo++*90);
   g.notice="OBJECTIU DESTRUÏT! +650";
   sparks(g,x,y,"#fbef76",27);g.shake=Math.max(g.shake,10);
 }
 function explode(g,b){
   if(b.dead)return;
-  b.dead=true;g.score+=350;g.shake=15;
+  g.physicsActive=true;b.dead=true;g.score+=350;g.shake=15;
   sparks(g,b.x,b.y,"#ff765f",50);
   for(const t of g.robots){
     if(!t.dead && centerDist(t,b)<145)eliminateRobot(g,t);
@@ -250,6 +251,7 @@ function shockwave(g,x,y,radius=145){
     const dx=b.x-x,dy=b.y-y,dist=Math.hypot(dx,dy);
     const reach=radius+Math.max(b.w,b.h)*.28;
     if(dist>reach)continue;
+    g.physicsActive=true;
     const intensity=1-clamp(dist/reach,0,1);
     const impact=58+intensity*180;
     b.vx+=(dx/(dist||1))*impact/b.mass;
@@ -261,7 +263,7 @@ function shockwave(g,x,y,radius=145){
     if(t.dead)continue;
     const d=Math.hypot(t.x-x,t.y-y);
     if(d<radius*.54)eliminateRobot(g,t);
-    else if(d<radius){t.vx+=(t.x-x)/(d||1)*190;t.vy-=190;}
+    else if(d<radius){g.physicsActive=true;t.vx+=(t.x-x)/(d||1)*190;t.vy-=190;}
   }
   for(const b of g.bombs){
     if(!b.dead&&Math.hypot(b.x-x,b.y-y)<radius*.78)explode(g,b);
@@ -320,6 +322,7 @@ function collideProjectile(g,p,b){
   const impact=Math.max(0,-(velocityX*c.nx+velocityY*c.ny));
   p.x+=c.nx*(c.depth+.35);p.y+=c.ny*(c.depth+.35);
   if(impact<.5)return; // No repeated impulse when separating or resting.
+  g.physicsActive=true;
   const drill=p.type==="drill" && p.turbo;
   const heavy=p.type==="impact";
   const previousX=p.vx,previousY=p.vy;
@@ -538,13 +541,14 @@ export function step(g,elapsed){
     if(g.phase==="flying"){
       g.shotTime+=dt;
       updateProjectile(g,dt);for(const p of g.extras||[])updateProjectile(g,dt,p);
-      updateBodies(g,dt);
-      updateTargets(g,dt);
+      if(g.physicsActive||g.blocks.some(b=>b.dead||b.disturbed||!b.asleep)||g.robots.some(t=>t.dead||Math.abs(t.vx)+Math.abs(t.vy)>0)){
+        g.physicsActive=true;updateBodies(g,dt);updateTargets(g,dt);
+      }
       if(g.robots.every(t=>t.dead)){
         g.phase="won";g.score+=g.shotsLeft*300;g.notice="NIVELL SUPERAT! 🎉";
         g.celebration=1.5;
       }else{
-        const moving=g.blocks.some(b=>!b.dead&&(Math.hypot(b.vx,b.vy)>28||Math.abs(b.spin)>.09||instability(g,b)===null||Math.abs(instability(g,b)??0)>1))||g.robots.some(t=>!t.dead&&Math.hypot(t.vx,t.vy)>32);
+        const moving=g.physicsActive&&(g.blocks.some(b=>!b.dead&&(Math.hypot(b.vx,b.vy)>28||Math.abs(b.spin)>.09||instability(g,b)===null||Math.abs(instability(g,b)??0)>1))||g.robots.some(t=>!t.dead&&Math.hypot(t.vx,t.vy)>32));
         g.settleTime=!g.projectile?.active&&!(g.extras||[]).some(p=>p.active)&&!moving?(g.settleTime||0)+dt:0;
         if(g.shotTime>12 || (g.settleTime>.65 && g.shotTime>.8)){
         g.phase=g.shotsLeft>0?"between":"lost";
