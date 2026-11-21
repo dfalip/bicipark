@@ -112,3 +112,17 @@ test('Playable site is completely local, keyboard-accessible and linked in Explo
   assert.match(registry,/roda-rumble/);
   assert.doesNotMatch(js,/fetch\(|localStorage\.setItem\([^,]*https/);
 });
+
+test('A platform with its left pillar removed tips under an eccentric stacked load',async()=>{
+ const e=await engine(),g=e.newGame(1);
+ const [base,beam,upper]=g.blocks;
+ g.blocks=[base,beam,upper];
+ Object.assign(base,{x:874,y:480,w:52,h:60,material:"glass"});
+ Object.assign(beam,{x:844,y:434,w:119,h:22,material:"wood"});
+ Object.assign(upper,{x:844,y:392,w:46,h:63,material:"glass"});
+ g.robots=[g.robots[0]];Object.assign(g.robots[0],{x:844,y:342});g.bombs=[];
+ e.fire(g);g.projectile.active=false;
+ for(let i=0;i<600&&g.phase==="flying";i++)e.step(g,1/120);
+ assert.ok(beam.dead||Math.abs(beam.angle)>.1||beam.y>=450,"Unsupported platform must not stay suspended");
+ assert.ok(g.robots[0].dead||g.robots[0].y>360,"Robot must respond to the collapse");
+});
