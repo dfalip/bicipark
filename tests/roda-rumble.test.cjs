@@ -121,8 +121,18 @@ test('A platform with its left pillar removed tips under an eccentric stacked lo
  Object.assign(beam,{x:844,y:434,w:119,h:22,material:"wood"});
  Object.assign(upper,{x:844,y:392,w:46,h:63,material:"glass"});
  g.robots=[g.robots[0]];Object.assign(g.robots[0],{x:844,y:342});g.bombs=[];
- e.fire(g);g.projectile.active=false;
+ e.fire(g);g.projectile.active=false;g.physicsActive=true;
  for(let i=0;i<600&&g.phase==="flying";i++)e.step(g,1/120);
  assert.ok(beam.dead||Math.abs(beam.angle)>.1||beam.y>=450,"Unsupported platform must not stay suspended");
  assert.ok(g.robots[0].dead||g.robots[0].y>360,"Robot must respond to the collapse");
+});
+
+test('Missed shots cannot move or damage untouched structures before actual contact',async()=>{
+ const e=await engine();
+ for(let i=0;i<e.LEVELS.length;i++){
+  const g=e.newGame(i);const snapshot=()=>JSON.stringify([g.blocks.map(b=>[b.x,b.y,b.angle,b.hp,b.dead]),g.robots.map(t=>[t.x,t.y,t.dead]),g.score]);
+  const initial=snapshot();e.setAim(g,78,15);e.fire(g);
+  for(let j=0;j<1500&&g.phase==="flying";j++){e.step(g,1/120);assert.equal(snapshot(),initial,"Uncontacted level "+(i+1)+" moved");}
+  assert.equal(g.physicsActive,false);
+ }
 });
