@@ -381,34 +381,67 @@ function collideBlocks(g){
      a.spin=clamp(a.spin-cross*.0018*rel*ia,-5,5);b.spin=clamp(b.spin-cross*.0018*rel*ib,-5,5);damageBlock(g,a,rel*.19);damageBlock(g,b,rel*.19);}
  }
 }
+// Support intervals and combined load above a beam. An overlap alone is
+// insufficient: the total centre of mass must lie inside the contact footprint.
+function supportInfo(g,b){
+ const bottom=b.y+halfHeight(b),halfWidth=projection(b,...axes(b),1,0);
+ if(bottom>=WORLD.ground-2)return {left:b.x-halfWidth,right:b.x+halfWidth,ground:true};
+ let left=Infinity,right=-Infinity;
+ for(const q of g.blocks){
+   if(q===b||q.dead||q.y<=b.y)continue;
+   const qw=projection(q,...axes(q),1,0),top=q.y-halfHeight(q);
+   const l=Math.max(b.x-halfWidth,q.x-qw),r=Math.min(b.x+halfWidth,q.x+qw);
+   if(r-l>.5&&Math.abs(top-bottom)<=3){left=Math.min(left,l);right=Math.max(right,r);}
+ }
+ return left<=right?{left,right,ground:false}:null;
+}
+function loadCenter(g,b){
+ const visited=new Set([b]),queue=[b];let mass=b.mass,moment=b.mass*b.x;
+ while(queue.length){
+   const q=queue.pop(),top=q.y-halfHeight(q),qw=projection(q,...axes(q),1,0);
+   for(const a of g.blocks){
+     if(a.dead||visited.has(a)||a.y>=q.y)continue;
+     const aw=projection(a,...axes(a),1,0);
+     if(Math.abs(a.x-q.x)<aw+qw&&Math.abs(a.y+halfHeight(a)-top)<5){
+       visited.add(a);queue.push(a);mass+=a.mass;moment+=a.mass*a.x;
+     }
+   }
+   for(const t of g.robots){
+     if(t.dead||visited.has(t)||Math.abs(t.x-q.x)>qw+t.r*.25||Math.abs(t.y+t.r-top)>6)continue;
+     visited.add(t);mass+=.65;moment+=.65*t.x;
+   }
+ }
+ return moment/mass;
+}
+function instability(g,b){
+ const info=supportInfo(g,b);if(!info)return null;
+ const cx=loadCenter(g,b);
+ return cx<info.left?cx-info.left:cx>info.right?cx-info.right:0;
+}
 function updateBodies(g,dt){
-  for(const b of g.blocks){
-    if(b.dead)continue;
-    if(b.asleep){const supported=b.y+b.h/2>=WORLD.ground-5||g.blocks.some(q=>q!==b&&!q.dead&&q.y>b.y&&Math.abs(q.x-b.x)<(q.w+b.w)/2&&Math.abs(q.y-q.h/2-(b.y+b.h/2))<18);if(supported)continue;b.asleep=false;b.disturbed=true;}
-    b.vy+=660*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;
-    b.angle=clamp(b.angle+b.spin*dt,-.95,.95);
-    b.spin*=Math.exp(-2*dt);b.vx*=Math.exp(-1.65*dt);
-    if(b.y+halfHeight(b)>=WORLD.ground){
-      const impact=Math.abs(b.vy);
-      b.y=WORLD.ground-halfHeight(b);
-      b.vy=impact>120?-impact*.12:0;
-      b.vx*=.8;b.spin*=.66;if(Math.abs(b.angle)>.015){b.angle*=Math.exp(-2.4*dt);b.y=WORLD.ground-halfHeight(b);}
+ for(const b of g.blocks){
+   if(b.dead)continue;
+   const over=instability(g,b);
+   if(b.asleep&&over!==null&&Math.abs(over)<=1&&Math.abs(b.angle)<.015)continue;
+   if(b.asleep){b.asleep=false;b.disturbed=true;}
+   b.vy+=660*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;
+   if(over!==null&&Math.abs(over)>1){
+      // Off-centre load produces a moment around the edge of the support.
+      b.spin=clamp(b.spin+Math.sign(over)*Math.min(18,2+Math.abs(over)*.65)*dt,-5,5);
+      b.vx+=Math.sign(over)*Math.min(180,Math.abs(over)*9)*dt;
+   }
+   b.angle=clamp(b.angle+b.spin*dt,-1.57,1.57);
+   b.spin*=Math.exp(-1.8*dt);b.vx*=Math.exp(-1.65*dt);
+   if(b.y+halfHeight(b)>=WORLD.ground){
+      const impact=Math.abs(b.vy);b.y=WORLD.ground-halfHeight(b);
+      b.vy=impact>120?-impact*.12:0;b.vx*=.8;b.spin*=.66;
       if(impact>210){b.disturbed=true;damageBlock(g,b,impact*.19);}
-    }
-    b.x=clamp(b.x,280,970);
-  }
-  // Arcade support-overhang: a damaged beam balanced outside its supporting
-  // contact area starts tipping instead of remaining unrealistically suspended.
-  for(const b of g.blocks){
-    if(b.dead||!b.disturbed||b.y+b.h/2>=WORLD.ground-3)continue;
-    const supports=g.blocks.filter(q=>q!==b&&!q.dead&&q.y>b.y&&Math.abs((q.y-q.h/2)-(b.y+b.h/2))<7&&Math.abs(q.x-b.x)<(q.w+b.w)/2);
-    if(!supports.length)continue;
-    const left=Math.min(...supports.map(q=>Math.max(q.x-q.w/2,b.x-b.w/2)));
-    const right=Math.max(...supports.map(q=>Math.min(q.x+q.w/2,b.x+b.w/2)));
-    const over=b.x<left?b.x-left:b.x>right?b.x-right:0;
-    if(Math.abs(over)>3){b.vx+=Math.sign(over)*Math.min(220,Math.abs(over)*8)*dt;b.spin=clamp(b.spin+Math.sign(over)*dt*4,-4,4);}
-  }
-  collideBlocks(g);
+   }
+   b.x=clamp(b.x,280,970);
+ }
+ collideBlocks(g);
+ // Collision correction may push a rectangle into the ground.
+ for(const b of g.blocks)if(!b.dead&&b.y+halfHeight(b)>WORLD.ground){b.y=WORLD.ground-halfHeight(b);if(b.vy>0)b.vy=0;}
 }
 function updateTargets(g,dt){
   for(const t of g.robots){
@@ -511,9 +544,9 @@ export function step(g,elapsed){
         g.phase="won";g.score+=g.shotsLeft*300;g.notice="NIVELL SUPERAT! 🎉";
         g.celebration=1.5;
       }else{
-        const moving=g.blocks.some(b=>!b.dead&&b.disturbed&&Math.hypot(b.vx,b.vy)>28)||g.robots.some(t=>!t.dead&&Math.hypot(t.vx,t.vy)>32);
+        const moving=g.blocks.some(b=>!b.dead&&(Math.hypot(b.vx,b.vy)>28||Math.abs(b.spin)>.09||instability(g,b)===null||Math.abs(instability(g,b)??0)>1))||g.robots.some(t=>!t.dead&&Math.hypot(t.vx,t.vy)>32);
         g.settleTime=!g.projectile?.active&&!(g.extras||[]).some(p=>p.active)&&!moving?(g.settleTime||0)+dt:0;
-        if(g.shotTime>8.5 || (g.settleTime>.65 && g.shotTime>.8)){
+        if(g.shotTime>12 || (g.settleTime>.65 && g.shotTime>.8)){
         g.phase=g.shotsLeft>0?"between":"lost";
         g.notice=g.phase==="between"?"Prepara la següent roda!":"Sense rodes! Torna-ho a provar.";
         }
