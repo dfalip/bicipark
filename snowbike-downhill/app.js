@@ -13,7 +13,7 @@ const ui={course:$("courseSelect"),time:$("timeValue"),speed:$("speedValue"),
  flash:$("impactFlash"),style:$("styleValue")};
 const controls={left:$("leftButton"),right:$("rightButton"),
  tuck:$("tuckButton"),brake:$("brakeButton"),turbo:$("turboButton"),jump:$("jumpButton"),trick:$("trickButton")};
-const STORE="bicipark-snowbike-downhill-times-v1";
+const STORE="bicipark-snowbike-alpine-times-v2";
 const DAILY_STORE="bicipark-play:daily-v1";
 const dailyChallenge=(()=>{
  const params=new URLSearchParams(window.location.search);
