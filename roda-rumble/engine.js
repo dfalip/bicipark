@@ -349,35 +349,36 @@ function collideProjectile(g,p,b){
   }
 }
 
+// Separating-axis contact for rotating rectangular bodies. The broad phase
+// rejects distant pairs; the narrow phase uses both bodies' actual local axes.
+function axes(b){const c=Math.cos(b.angle||0),s=Math.sin(b.angle||0);return [[c,s],[-s,c]];}
+function projection(b,u,v,nx,ny){return b.w*.5*Math.abs(u[0]*nx+u[1]*ny)+b.h*.5*Math.abs(v[0]*nx+v[1]*ny);}
+export function boxContact(a,b){
+ const [au,av]=axes(a),[bu,bv]=axes(b),dx=b.x-a.x,dy=b.y-a.y;
+ let depth=Infinity,nx=0,ny=0;
+ for(const [x,y] of [au,av,bu,bv]){
+   const d=dx*x+dy*y,overlap=projection(a,au,av,x,y)+projection(b,bu,bv,x,y)-Math.abs(d);
+   if(overlap<=0)return null;
+   if(overlap<depth){depth=overlap;nx=d<0?-x:x;ny=d<0?-y:y;}
+ }
+ return {nx,ny,depth};
+}
+function halfHeight(b){return Math.abs(Math.sin(b.angle))*b.w/2+Math.abs(Math.cos(b.angle))*b.h/2;}
 function collideBlocks(g){
-  const blocks=g.blocks.filter(x=>!x.dead);
-  for(let i=0;i<blocks.length;i++){
-    for(let j=i+1;j<blocks.length;j++){
-      const a=blocks[i],b=blocks[j];
-      const dx=b.x-a.x,dy=b.y-a.y;
-      const ox=(a.w+b.w)/2-Math.abs(dx);
-      const oy=(a.h+b.h)/2-Math.abs(dy);
-      if(ox<=0||oy<=0)continue;
-      if(ox<oy){
-        const direction=dx<0?-1:1;
-        const correction=ox*.51;
-        a.x-=direction*correction;b.x+=direction*correction;
-        const rel=(a.vx-b.vx)*direction;
-        if(rel>0){const impulse=rel*.88/(1/a.mass+1/b.mass);
-        a.vx-=direction*impulse/a.mass;b.vx+=direction*impulse/b.mass;
-        if(rel>70){a.disturbed=b.disturbed=true;a.spin=clamp(a.spin+direction*rel*.008,-5,5);b.spin=clamp(b.spin-direction*rel*.008,-5,5);damageBlock(g,a,rel*.19);damageBlock(g,b,rel*.19);}}
-      }else{
-        const dir=dy<0?-1:1;
-        const adjust=oy*.505;
-        a.y-=dir*adjust;b.y+=dir*adjust;
-        const rel=(a.vy-b.vy)*dir;
-        if(rel>0){const impulse=rel*.94/(1/a.mass+1/b.mass);
-        a.vy-=dir*impulse/a.mass;b.vy+=dir*impulse/b.mass;
-        if(rel>80){a.disturbed=b.disturbed=true;damageBlock(g,a,rel*.19);damageBlock(g,b,rel*.19);}
-        if(rel>65){a.vx+=(a.x-b.x)*.035;b.vx+=(b.x-a.x)*.035;}}
-      }
-    }
-  }
+ const blocks=g.blocks.filter(x=>!x.dead);
+ for(let pass=0;pass<3;pass++)for(let i=0;i<blocks.length;i++)for(let j=i+1;j<blocks.length;j++){
+   const a=blocks[i],b=blocks[j];if(a.dead||b.dead)continue;
+   if(Math.abs(a.x-b.x)>Math.hypot(a.w,a.h)/2+Math.hypot(b.w,b.h)/2||Math.abs(a.y-b.y)>Math.hypot(a.w,a.h)/2+Math.hypot(b.w,b.h)/2)continue;
+   const c=boxContact(a,b);if(!c)continue;
+   const {nx,ny,depth}=c,ia=1/a.mass,ib=1/b.mass,sum=ia+ib;
+   const correction=Math.max(0,depth-.15)*.76/sum;
+   a.x-=nx*correction*ia;a.y-=ny*correction*ia;b.x+=nx*correction*ib;b.y+=ny*correction*ib;
+   const rel=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;if(rel<=0)continue;
+   const imp=rel*(rel>70?1.08:1)/sum;
+   a.vx-=nx*imp*ia;a.vy-=ny*imp*ia;b.vx+=nx*imp*ib;b.vy+=ny*imp*ib;
+   if(rel>80){a.disturbed=b.disturbed=true;const cross=(b.x-a.x)*ny-(b.y-a.y)*nx;
+     a.spin=clamp(a.spin-cross*.0018*rel*ia,-5,5);b.spin=clamp(b.spin-cross*.0018*rel*ib,-5,5);damageBlock(g,a,rel*.19);damageBlock(g,b,rel*.19);}
+ }
 }
 function updateBodies(g,dt){
   for(const b of g.blocks){
@@ -385,11 +386,11 @@ function updateBodies(g,dt){
     b.vy+=660*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;
     b.angle=clamp(b.angle+b.spin*dt,-.95,.95);
     b.spin*=Math.exp(-2*dt);b.vx*=Math.exp(-1.65*dt);
-    if(b.y+b.h/2>=WORLD.ground){
+    if(b.y+halfHeight(b)>=WORLD.ground){
       const impact=Math.abs(b.vy);
-      b.y=WORLD.ground-b.h/2;
+      b.y=WORLD.ground-halfHeight(b);
       b.vy=impact>120?-impact*.12:0;
-      b.vx*=.8;b.spin*=.66;
+      b.vx*=.8;b.spin*=.66;if(Math.abs(b.angle)>.015){b.angle*=Math.exp(-2.4*dt);b.y=WORLD.ground-halfHeight(b);}
       if(impact>210){b.disturbed=true;damageBlock(g,b,impact*.19);}
     }
     b.x=clamp(b.x,280,970);
