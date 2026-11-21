@@ -617,6 +617,12 @@ function renderRouteDetails(route) {
 
   wrapper.append(kicker, title, description, grid);
   elements.routeDetails.replaceChildren(wrapper);
+  // Explicit stable route identity, not a guessed title match.
+  window.dispatchEvent(new CustomEvent("bicipark:route-selected", {
+    detail: { route: {
+      id: route.id, name: route.name, geometryFile: route.geometryFile || null
+    } }
+  }));
 }
 
 function findRouteById(routeId) {
@@ -803,6 +809,7 @@ function applyRegionFilter() {
   const regionId = elements.regionFilter.value;
 
   state.selectedRouteId = null;
+  window.dispatchEvent(new CustomEvent("bicipark:route-selected", { detail: { route: null } }));
 
   if (regionId === "all") {
     map.fitBounds(cataloniaView.bounds, {
