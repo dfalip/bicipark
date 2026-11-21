@@ -76,3 +76,16 @@ footer{text-align:center;margin:27px 0 0;padding:16px 0;border-top:1px solid var
 .finish-medal-summary{font-weight:950;color:#f4e7a1!important}
 @media(max-width:850px){.challenge-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:520px){.ride-challenge-panel{padding:10px}.challenge-panel-head{gap:6px}.challenge-panel-head>span{font-size:.64rem;padding:5px 8px}.challenge-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.challenge-item{min-height:61px;padding:7px 6px;grid-template-columns:20px minmax(0,1fr);gap:3px}.challenge-icon{font-size:1rem}.challenge-item strong{font-size:.64rem}.challenge-item small{font-size:.54rem}}
+
+body[data-play-arcade="ride"]{--pa-gold:#ffd83f;--pa-accent:#a4d82a;--pa-mint:#bcf172;background:radial-gradient(ellipse at 50% 0,#38533a,#15262d 70%)}
+body[data-play-arcade="ride"] .intro h1{font-style:italic;color:#f2f7e9;text-shadow:3px 3px #0e2021}body[data-play-arcade="ride"] .intro h1 span{color:#b9ed38}
+body[data-play-arcade="ride"] .stats{grid-template-columns:repeat(7,minmax(0,1fr))}body[data-play-arcade="ride"] .stats>div{display:grid;justify-items:center;gap:4px;background:#182a34;border:1px solid #778e77;border-bottom:3px solid #536d3b}
+body[data-play-arcade="ride"] .stats>div:nth-last-child(1){border-color:#be87ec}
+body[data-play-arcade="ride"] .stats strong{color:#ffe35d}body[data-play-arcade="ride"] #comboValue{color:#e0abff}
+body[data-play-arcade="ride"] .touch-controls{grid-template-columns:repeat(6,minmax(0,1fr))}body[data-play-arcade="ride"] .control-jump{background:linear-gradient(#d9f677,#81b62e);color:#162c20}
+body[data-play-arcade="ride"] .control-boost{background:linear-gradient(#f0ba43,#c97a27);color:#1e2b2c}
+body[data-play-arcade="ride"] .control-boost small{color:#26332e}
+body[data-play-arcade="ride"] #gameCanvas{image-rendering:auto}
+body[data-play-arcade="ride"] #boostMeterBar{height:100%;background:linear-gradient(90deg,#ffc448,#e8fa66);transition:width .1s linear}
+body[data-play-arcade="ride"] .center-notice{color:#fff2a9;text-shadow:2px 2px #512445,3px 3px #18212a}
+@media(max-width:690px){body[data-play-arcade="ride"] .stats{grid-template-columns:repeat(4,minmax(0,1fr))}body[data-play-arcade="ride"] .touch-controls{grid-template-columns:repeat(3,minmax(0,1fr))}body[data-play-arcade="ride"] .control{min-height:56px;font-size:.75rem}body[data-play-arcade="ride"] .control small{font-size:.6rem}}
