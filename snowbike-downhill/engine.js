@@ -47,7 +47,7 @@ export function makeCourse(index=0){
   const side=rand()<.5?-1:1;
   animals.push({...template,at,id:i,side,phase:"waiting",
    x:side*1.38,seen:false,passed:false,collision:false,jumped:false,
-   progress:0,speed:template.speed+(rand()-.5)*.1,lead:115+Math.floor(rand()*30),stride:rand()*Math.PI*2});
+   progress:0,speed:template.speed+(rand()-.5)*.1,lead:115+Math.floor(rand()*30),stride:rand()*Math.PI*2,originAt:at,motionAt:0,motionLane:0,travel:0,alert:0,age:0});
  }
  return {...c,id,gates,animals};
 }
@@ -118,12 +118,36 @@ export function animalVisible(animal){return Boolean(animal.seen&&!animal.passed
 export function animalPosition(animal){
  return animal.side*(1.38-animal.progress);
 }
+// Distinct locomotion patterns. Phase advances with simulated movement, not wall time.
+export function wildlifePace(a){
+ const t=a.age||0,q=t+(a.stride||0);
+ if(a.label==="Conill")return {pace:1.20+.48*Math.pow(Math.sin(q*5.6),2),along:1.3,cycle:8.8};
+ if(a.label==="Guineu")return {pace:1.05+.22*Math.sin(q*2.9),along:3.9,cycle:6.8};
+ if(a.label==="Cérvol")return {pace:1.07+.30*Math.sin(q*4.1),along:2.0,cycle:5.3};
+ if(a.label==="Cabra")return {pace:.92+.26*Math.cos(q*3.4),along:-1.2,cycle:4.5};
+ return {pace:.84+.22*Math.sin(q*2.1),along:1.8,cycle:3.1};
+}
+export function terrainPace(distance,courseId=0){
+ return 1+.075*Math.sin((distance+courseId*29)/75)+.035*Math.sin(distance/31+courseId);
+}
 function animalStep(g,a,dt,previousDistance){
  if(a.passed)return;
  if(a.phase==="waiting"&&g.distance>=a.at-Math.max(a.lead||115,g.velocity*2.7)){a.phase="crossing";a.seen=true;}
  if(a.phase==="crossing"){
-  a.progress+=a.speed*(.96+.12*Math.sin(g.time*3+(a.stride||0)))*dt;
+  a.age=(a.age||0)+dt;
+  const profile=wildlifePace(a),oldX=a.x,oldAt=a.at;
+  // Wildlife reacts to proximity with a short flight response; the large yeti strides steadily.
+  const near=Math.abs(a.at-g.distance)<48&&Math.abs(a.x-g.lane)<.85;
+  a.alert=clamp((a.alert||0)+(near?dt*3:-dt*1.6),0,1);
+  const panic=a.kind==="yeti"?1:1+(.22*a.alert);
+  a.progress+=a.speed*profile.pace*panic*dt;
   a.x=animalPosition(a);
+  const origin=a.originAt??a.at;
+  a.at=clamp(a.at+profile.along*(1+.2*a.alert)*dt,origin-13,origin+19);
+  a.motionAt=(a.at-oldAt)/dt;a.motionLane=(a.x-oldX)/dt;
+  a.travel=(a.travel||0)+Math.hypot(a.motionAt*.12,a.motionLane)*dt*profile.cycle;
+  // Once the animal reaches the far bank it stays out of the piste.
+  if(Math.abs(a.x)>1.64&&a.x*a.side<0){a.phase="exited";a.motionAt=0;a.motionLane=0;}
  }
  if(g.distance>=a.at-5 && previousDistance<=a.at+11 && !a.collision && !a.jumped && g.invulnerability<=0){
   // Check approximate proximity at the rider's downhill crossing.
@@ -195,13 +219,13 @@ function advance(g,input,dt){
   }
  }
  const tuck=Boolean(input?.tuck),brake=Boolean(input?.brake);
- const max=55+g.course.id*2+(tuck?18:0)+(g.boostTime>0?22:0);
+ const max=(55+g.course.id*2+(tuck?18:0)+(g.boostTime>0?22:0))*terrainPace(g.distance,g.course.id);
  const target=brake?12:max;
  g.velocity+=(target-g.velocity)*Math.min(1,dt*(brake?3.3:tuck?2.35:1.75));
  if(g.boostTime>0)g.boostTime=Math.max(0,g.boostTime-dt);
  const turn=clamp(Number(input?.steer)||0,-1,1);
- const turnStrength=(tuck?.55:1)*(g.stumble>0?.45:1)*(g.grounded?1:.84);
- g.steerVelocity+=(turn*1.15*turnStrength-g.steerVelocity)*Math.min(1,dt*9);
+ const turnStrength=(tuck?.64:1)*(g.stumble>0?.45:1)*(g.grounded?1:.84);
+ g.steerVelocity+=(turn*1.23*turnStrength-g.steerVelocity)*Math.min(1,dt*9);
  // Wind and increasing speed produce small but manageable course drift.
  const drift=Math.sin(g.distance/115+g.course.seed)*g.course.wind*.12;
  g.lane=clamp(g.lane+(g.steerVelocity+drift)*dt,-1.06,1.06);
