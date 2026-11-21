@@ -70,25 +70,29 @@ function floatWord(text,x,y,color="#fff3a5"){
  if(visuals.words.length>8)visuals.words.shift();
 }
 function effectEvent(event){
- const y=Math.max(110,Math.min(430,screenY(event.at||game.distance)));
- const x=center(event.at||game.distance)+(event.lane??game.lane)*196;
+ const scene=window.SnowBikeAlpine;
+ const p=scene?.project(game,event.at??game.distance,event.lane??game.lane);
+ const rider=scene?.project(game,game.distance,game.lane);
+ const y=p?Math.max(110,Math.min(467,p.y)):Math.max(110,Math.min(430,screenY(event.at||game.distance)));
+ const x=p?p.x:center(event.at||game.distance)+(event.lane??game.lane)*196;
+ const riderX=rider?.x??(480+game.lane*196),riderY=rider?.y??427;
  if(event.type==="jump"){
-  const skier=480+game.lane*196;
-  burst(skier,425,"#e5fbff",25,1.2);
-  visuals.rings.push({x:skier,y:419,radius:19,life:.48,color:"#acdeff"});
+  const skier=riderX;
+  burst(skier,riderY,"#e5fbff",25,1.2);
+  visuals.rings.push({x:skier,y:riderY,radius:19,life:.48,color:"#acdeff"});
   floatWord("SALT!",skier,332,"#e2d8ff");
  }else if(event.type==="land"){
-  const skier=480+game.lane*196;
-  burst(skier,429,"#f6ffff",38,1.15);
-  visuals.rings.push({x:skier,y:416,radius:22,life:.55,color:"#d6faff"});
+  const skier=riderX;
+  burst(skier,riderY,"#f6ffff",38,1.15);
+  visuals.rings.push({x:skier,y:riderY,radius:22,life:.55,color:"#d6faff"});
   floatWord("ATERRATGE!",skier,348,"#c6ffee");
  }else if(event.type==="trick-start"){
-  const skier=480+game.lane*196;
+  const skier=riderX;
   visuals.rings.push({x:skier,y:355,radius:15,life:.55,color:"#fff39a"});
   burst(skier,356,"#ffe6a4",22,.8);
   floatWord("360°!",skier,285,"#ffe59f");
  }else if(event.type==="trick-land"){
-  const skier=480+game.lane*196;
+  const skier=riderX;
   burst(skier,412,event.perfect?"#fff0a2":"#b2ffea",event.perfect?55:30,1.3);
   visuals.rings.push({x:skier,y:392,radius:24,life:.8,color:"#ffecab"});
   floatWord((event.perfect?"360 PERFECTE! ":"360 COMPLET! ")+"+"+event.points,skier,290,"#fff0a4");
@@ -96,7 +100,7 @@ function effectEvent(event){
  }else if(event.type==="trick-fail"){
   visuals.flash=.28;visuals.flashColor="#f7a27a";
   floatWord("TRUC FALLAT · +2 S",480,305,"#ffe4b0");
-  burst(480+game.lane*196,419,"#ffbf88",20,.8);
+  burst(riderX,riderY,"#ffbf88",20,.8);
  }else if(event.type==="jump-dodge"){
   const legendary=event.kind==="yeti";
   burst(x,y,legendary?"#fff3b0":"#bde4ff",legendary?52:32,1.35);
@@ -109,7 +113,7 @@ function effectEvent(event){
   visuals.shake=reducedMotion?0:21;
   visuals.flash=.62;visuals.freeze=reducedMotion?0:.10;
   visuals.flashColor="#ff5367";
-  burst(480+game.lane*196,425,"#fff2f0",31,1.4);
+  burst(riderX,riderY,"#fff2f0",31,1.4);
   burst(x,y,"#ff7899",23,1);
   floatWord("-1 VIDA  ·  +5 S",480,350,"#fff3b9");
   ui.notice.classList.add("notice--hit");
@@ -129,8 +133,8 @@ function effectEvent(event){
   burst(x,y,"#c5f9ec",10,.65);
   floatWord("+80 ESQUIVAT!",x,y-20,"#baffdb");
  }else if(event.type==="boost"){
-  visuals.rings.push({x:480+game.lane*196,y:414,radius:22,life:.7,color:"#ffe69a"});
-  burst(480+game.lane*196,424,"#fff6b2",22,1);
+  visuals.rings.push({x:riderX,y:riderY,radius:22,life:.7,color:"#ffe69a"});
+  burst(riderX,riderY,"#fff6b2",22,1);
   floatWord("TURBO!",480,325,"#fff0a4");
  }else if(event.type==="finish"){
   visuals.rings.push({x:480,y:330,radius:40,life:1.6,color:"#ffed9a"});
@@ -792,6 +796,21 @@ function drawSnowRush(){
  }
  ctx.restore();
 }
+function drawAlpineHud(){
+ const art=window.BiciParkPremiumArt;
+ const speed=Math.round(game.velocity*3.6);
+ function panel(x,y,w,h){art.poly(ctx,[[x+9,y],[x+w,y],[x+w-9,y+h],[x,y+h]],"#12274deb","#79b5e5",1.4);}
+ ctx.save();ctx.textAlign="left";
+ panel(12,40,185,48);ctx.font="800 11px system-ui";ctx.fillStyle="#e3f4ff";ctx.fillText("PUNTS",26,55);
+ ctx.font="italic 900 28px system-ui";ctx.fillStyle="#ffe25c";ctx.fillText(Math.round(game.score).toLocaleString("ca-ES"),26,80);
+ panel(747,40,201,48);ctx.font="800 11px system-ui";ctx.fillStyle="#e3f4ff";ctx.fillText("VELOCITAT",763,55);
+ ctx.font="italic 900 27px system-ui";ctx.fillStyle="#ffe25c";ctx.fillText(speed+" km/h",763,80);
+ if(game.streak>1){panel(759,96,187,35);ctx.font="italic 900 21px system-ui";ctx.fillStyle="#ffdf4e";ctx.fillText("COMBO ×"+game.streak,773,120);}
+ panel(12,474,291,32);ctx.font="800 11px system-ui";ctx.fillStyle="#e6f7ff";ctx.fillText("TURBO",24,494);
+ for(let i=0;i<10;i++)art.poly(ctx,[[91+i*19,482],[106+i*19,482],[103+i*19,497],[88+i*19,497]],game.boost>i*10?"#38cef2":"#53647a");
+ panel(710,474,239,32);ctx.font="800 12px system-ui";ctx.fillStyle="#fcf1bc";ctx.fillText(Math.round(game.distance)+" / "+game.course.length+" m",724,495);
+ ctx.restore();
+}
 function paint(){
  if(!ctx)return;
  ctx.clearRect(0,0,960,540);
@@ -799,6 +818,11 @@ function paint(){
  if(visuals.shake>0 && !reducedMotion){
   ctx.translate(Math.sin(game.time*69)*visuals.shake,
     Math.cos(game.time*87)*visuals.shake*.54);
+ }
+ if(window.SnowBikeAlpine&&window.BiciParkPremiumArt){
+  window.SnowBikeAlpine.draw(ctx,game,{reduced:reducedMotion});
+  drawFeedback();ctx.restore();
+  drawAlpineHud();return;
  }
  drawSnow();drawSkiGrooves();drawGates();drawAnimals();
  drawSpeedSnow();
