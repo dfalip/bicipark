@@ -1,0 +1,4 @@
+const test=require('node:test'),assert=require('node:assert/strict'),E=require('../bike-battle/engine.js');
+test('movement budget and shot lock',()=>{const s=E.create();E.move(s,1000);assert.equal(s.riders[0].x,165);assert.equal(s.move,0);assert.equal(E.fire(s,45,75),true);E.move(s,-10);assert.equal(s.riders[0].x,165);assert.equal(E.fire(s,45,75),false);});
+test('turn changes and AI can hit across terrain',()=>{const s=E.create();E.fire(s,10,10);for(let i=0;i<1200&&s.shot;i++)E.tick(s,1/60);assert.equal(s.turn,1);assert.equal(s.move,65);const a=E.aim(s);E.fire(s,a.angle,a.power);for(let i=0;i<1200&&s.shot;i++)E.tick(s,1/60);assert.equal(s.turn,0);assert.ok(s.riders[0].hp<100);});
+test('invalid numbers do not corrupt state',()=>{const s=E.create();E.move(s,NaN);assert.equal(s.riders[0].x,100);assert.equal(E.fire(s,NaN,80),false);});
