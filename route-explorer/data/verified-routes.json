@@ -308,5 +308,22 @@
     "verifiedAt": "2026-11-22",
     "source": "Consorci de les Vies Verdes de Girona",
     "metricNote": "Distància, dificultat i paviment declarats per la font. Desnivell acumulat i durada no disponibles. Fitxa externa: sense redistribució de geometria ni llicència GPX assumida."
+  },
+  {
+    "id": "vv-girona-local-sant-marti-empuries",
+    "name": "Via local Sant Martí d’Empúries – Platges de Sant Pere Pescador",
+    "distanceKm": 1.65,
+    "elevationGain": null,
+    "modality": "greenway",
+    "url": "https://www.viesverdes.cat/rutes_vies_verdes/via-local-via-local-sant-marti-dempuries-platges-sant-pere-pescador/",
+    "sourceUrl": "https://www.viesverdes.cat/rutes_vies_verdes/via-local-via-local-sant-marti-dempuries-platges-sant-pere-pescador/",
+    "kind": "external",
+    "region": "Alt Empordà · litoral",
+    "start": "Entorn de Sant Martí d’Empúries",
+    "difficulty": "mínima",
+    "verified": true,
+    "verifiedAt": "2026-11-22",
+    "source": "Consorci de les Vies Verdes de Girona",
+    "metricNote": "Connexió local entre l’entorn de Sant Martí d’Empúries i la zona del càmping La Ballena Alegre; no és el recorregut complet fins al poble de Sant Pere Pescador. Paviment global, durada i desnivell acumulat no verificats. Fitxa externa sense redistribució de track."
   }
 ]
