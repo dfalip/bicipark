@@ -272,5 +272,41 @@
     "verifiedAt": "2026-11-22",
     "source": "Consorci de les Vies Verdes de Girona",
     "metricNote": "130 km de bicicleta, amb un trajecte ferroviari separat entre Girona i Figueres. Dificultat i tipus de paviment declarats per la font; sense percentatges de superfície ni desnivell acumulat publicat en metres. Consulta condicions de transport i avisos. Fitxa externa; no es redistribueix el track."
+  },
+  {
+    "id": "vv-girona-local-pals-masos",
+    "name": "Via local Pals – Masos de Pals",
+    "distanceKm": 0.83,
+    "elevationGain": null,
+    "modality": "greenway",
+    "url": "https://www.viesverdes.cat/rutes_vies_verdes/via-local-pals-masos-de-pals/",
+    "sourceUrl": "https://www.viesverdes.cat/rutes_vies_verdes/via-local-pals-masos-de-pals/",
+    "kind": "external",
+    "region": "Baix Empordà · Pals",
+    "start": "Pals",
+    "difficulty": "mínima",
+    "surface": "sauló compactat",
+    "verified": true,
+    "verifiedAt": "2026-11-22",
+    "source": "Consorci de les Vies Verdes de Girona",
+    "metricNote": "Distància, dificultat i paviment declarats per la font. Desnivell acumulat i durada no disponibles. Fitxa externa: sense redistribució de geometria ni llicència GPX assumida."
+  },
+  {
+    "id": "vv-girona-local-garrigas-arenys",
+    "name": "Via local Garrigàs – Arenys d’Empordà",
+    "distanceKm": 1.93,
+    "elevationGain": null,
+    "modality": "greenway",
+    "url": "https://www.viesverdes.cat/rutes_vies_verdes/garrigas-arenys-demporda/",
+    "sourceUrl": "https://www.viesverdes.cat/rutes_vies_verdes/garrigas-arenys-demporda/",
+    "kind": "external",
+    "region": "Alt Empordà · Garrigàs",
+    "start": "Garrigàs",
+    "difficulty": "mínima",
+    "surface": "sauló compactat",
+    "verified": true,
+    "verifiedAt": "2026-11-22",
+    "source": "Consorci de les Vies Verdes de Girona",
+    "metricNote": "Distància, dificultat i paviment declarats per la font. Desnivell acumulat i durada no disponibles. Fitxa externa: sense redistribució de geometria ni llicència GPX assumida."
   }
 ]
