@@ -201,24 +201,6 @@
     "metricNote": "Distància indicada per la font oficial; desnivell acumulat i dificultat no contrastats. Itinerari enllaçat, sense geometria GPX allotjada a BiciPark. Consulta avisos d'obres i incidències de la font abans de sortir."
   },
   {
-    "id": "vv-ripolles-ferro-carbo",
-    "name": "Via verda del Ferro i del Carbó",
-    "distanceKm": 18,
-    "elevationGain": null,
-    "modality": "greenway",
-    "url": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-ferro-i-del-carbo/",
-    "sourceUrl": "https://www.viesverdes.cat/rutes_vies_verdes/ruta-del-ferro-i-del-carbo/",
-    "kind": "external",
-    "region": "Ripollès · Ripoll i Sant Joan de les Abadesses",
-    "start": "Ripoll",
-    "verified": true,
-    "verifiedAt": "2026-11-20",
-    "source": "Consorci de les Vies Verdes de Girona",
-    "metricNote": "18 km, paviment asfaltat i dificultat mínima declarats pel Consorci. Inclou ramals; sense geometria local ni desnivell acumulat verificat. Consulta avisos abans de sortir.",
-    "difficulty": "mínima",
-    "surface": "asfalt"
-  },
-  {
     "id": "vv-ripolles-alt-ter",
     "name": "Via temàtica de l’Alt Ter",
     "distanceKm": 21.76,
@@ -271,5 +253,24 @@
     "verifiedAt": "2026-11-20",
     "source": "Consorci de les Vies Verdes de Girona",
     "metricNote": "Distància, dificultat i paviment declarats per la fitxa oficial; no es reprodueix cap GPX ni geometria. Pendent comprovar incidències abans de sortir; desnivell acumulat i durada no disponibles."
+  },
+  {
+    "id": "vv-costa-brava-intermodal",
+    "name": "Costa Brava intermodal · bicicleta i tren",
+    "distanceKm": 130,
+    "elevationGain": null,
+    "modality": "greenway",
+    "url": "https://www.viesverdes.cat/rutes_vies_verdes/pirinexus-intermodal-costa-brava/",
+    "sourceUrl": "https://www.viesverdes.cat/rutes_vies_verdes/pirinexus-intermodal-costa-brava/",
+    "kind": "external",
+    "region": "Gironès · Alt i Baix Empordà",
+    "start": "Figueres / Girona",
+    "difficulty": "mitjana",
+    "difficultyLevel": 2,
+    "surface": "asfalt, sorra i sauló compactat",
+    "verified": true,
+    "verifiedAt": "2026-11-22",
+    "source": "Consorci de les Vies Verdes de Girona",
+    "metricNote": "130 km de bicicleta, amb un trajecte ferroviari separat entre Girona i Figueres. Dificultat i tipus de paviment declarats per la font; sense percentatges de superfície ni desnivell acumulat publicat en metres. Consulta condicions de transport i avisos. Fitxa externa; no es redistribueix el track."
   }
 ]
