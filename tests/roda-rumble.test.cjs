@@ -8,11 +8,11 @@ const root=path.resolve(__dirname,'..');
 const src=p=>readFileSync(path.join(root,p),'utf8');
 const engine=()=>import('data:text/javascript;base64,'+Buffer.from(src('roda-rumble/engine.js')).toString('base64'));
 
-test('RodaRumble provides ten original finite levels with distinct targets and materials',async()=>{
+test('RodaRumble provides thirteen original finite levels with distinct targets and materials',async()=>{
   const e=await engine();
-  assert.equal(e.LEVELS.length,10);
-  assert.equal(new Set(e.LEVELS.map(x=>x.name)).size,10);
-  for(let i=0;i<10;i++){
+  assert.equal(e.LEVELS.length,13);
+  assert.equal(new Set(e.LEVELS.map(x=>x.name)).size,13);
+  for(let i=0;i<e.LEVELS.length;i++){
     const g=e.newGame(i);
     assert.equal(g.levelIndex,i);
     assert.ok(g.robots.length>=2);
@@ -111,4 +111,46 @@ test('Playable site is completely local, keyboard-accessible and linked in Explo
   assert.match(css,/prefers-reduced-motion/);
   assert.match(registry,/roda-rumble/);
   assert.doesNotMatch(js,/fetch\(|localStorage\.setItem\([^,]*https/);
+});
+
+test('A platform with its left pillar removed tips under an eccentric stacked load',async()=>{
+ const e=await engine(),g=e.newGame(1);
+ const [base,beam,upper]=g.blocks;
+ g.blocks=[base,beam,upper];
+ Object.assign(base,{x:874,y:480,w:52,h:60,material:"glass"});
+ Object.assign(beam,{x:844,y:434,w:119,h:22,material:"wood"});
+ Object.assign(upper,{x:844,y:392,w:46,h:63,material:"glass"});
+ g.robots=[g.robots[0]];Object.assign(g.robots[0],{x:844,y:342});g.bombs=[];
+ e.fire(g);g.projectile.active=false;g.physicsActive=true;beam.asleep=false;beam.disturbed=true;upper.supports=[beam.id];g.robots[0].supports=[upper.id];
+ for(let i=0;i<600&&g.phase==="flying";i++)e.step(g,1/120);
+ assert.ok(beam.dead||Math.abs(beam.angle)>.1||beam.y>=450,"Unsupported platform must not stay suspended");
+ assert.ok(g.robots[0].dead||g.robots[0].y>360,"Robot must respond to the collapse");
+});
+
+test('Missed shots cannot move or damage untouched structures before actual contact',async()=>{
+ const e=await engine();
+ for(let i=0;i<e.LEVELS.length;i++){
+  const g=e.newGame(i);const snapshot=()=>JSON.stringify([g.blocks.map(b=>[b.x,b.y,b.angle,b.hp,b.dead]),g.robots.map(t=>[t.x,t.y,t.dead]),g.score]);
+  const initial=snapshot();e.setAim(g,78,15);e.fire(g);
+  for(let j=0;j<1500&&g.phase==="flying";j++){e.step(g,1/120);assert.equal(snapshot(),initial,"Uncontacted level "+(i+1)+" moved");}
+  assert.equal(g.physicsActive,false);
+ }
+});
+
+test('Impact on the first factory tower never wakes a separated second tower',async()=>{
+ const e=await engine(),g=e.newGame(1);
+ const remote=g.blocks.filter(b=>b.x>790),targets=g.robots.filter(t=>t.x>790);
+ const snapshot=()=>JSON.stringify([remote.map(b=>[b.x,b.y,b.angle,b.hp,b.dead,b.asleep]),targets.map(t=>[t.x,t.y,t.dead,t.asleep])]);
+ const initial=snapshot();e.fire(g);Object.assign(g.projectile,{x:540,y:478,vx:200,vy:0});
+ for(let i=0;i<300&&g.phase==="flying";i++){e.step(g,1/120);if(i===0)g.projectile.active=false;assert.equal(snapshot(),initial);}
+ assert.ok(g.physicsActive&&g.score>0,"Impact must actually affect the first tower");
+});
+
+test('Orphaned robot falls even without a remembered support ID, before the next shot',async()=>{
+ const e=await engine(),g=e.newGame(4),t=g.robots[0];
+ for(const b of g.blocks)b.dead=true;
+ g.robots=[t];t.supports=[];e.fire(g);g.projectile.active=false;
+ for(let i=0;i<300&&g.phase==="flying";i++)e.step(g,1/120);
+ assert.ok(t.dead||Math.abs(t.y+t.r-e.WORLD.ground)<1);
+ assert.notEqual(g.phase,"flying");
 });

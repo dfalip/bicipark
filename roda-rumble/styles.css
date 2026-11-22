@@ -89,3 +89,23 @@
 .rr-sound-toggle[aria-pressed="true"]{border-color:#a9fbe1;color:#e6ffba;background:#1b635c}
 .rr-sound-toggle{font-size:.73rem;letter-spacing:.01em}
 @media(max-width:760px){.rr-sound-toggle{grid-column:1/-1;min-height:34px}}
+
+/* Scrapyard Showdown: game-first hierarchy, compact dashboard and readable controls. */
+.rr-page{--rr-acid:#ffcd67;--rr-teal:#80dfcf;--rr-border:#7596a64d;background:radial-gradient(ellipse at 65% 0,#334c5f 0,transparent 55%),#142331}
+.rr-main{width:min(1220px,calc(100% - 24px));padding-top:14px}
+.rr-hero{margin:0 0 12px;align-items:center}
+.rr-hero h1{font-size:clamp(2rem,4.5vw,3.45rem);letter-spacing:-.045em}
+.rr-hero h1 span{color:#ffcf6d}.rr-hero h1 em{color:#e58d65}
+.rr-kicker{color:#a3c6c8}.rr-intro{margin-top:5px;font-size:.83rem}
+.rr-level-chooser{padding:8px 12px;border-radius:9px;background:#233b4a}
+.rr-scoreboard{margin-bottom:8px;gap:6px}.rr-scoreboard>div{padding:8px 12px;border-radius:7px;background:linear-gradient(135deg,#2b4251,#1c2d3e)}
+.rr-scoreboard strong{font-size:clamp(1rem,2vw,1.4rem)}
+.rr-game-shell{border:3px solid #66828f;border-radius:12px;box-shadow:0 0 0 2px #132331,0 12px 30px #0006}
+.rr-stage-title span{border-radius:5px;background:#182b3bdd;border-color:#b6d2cb77;letter-spacing:.035em}
+.rr-wheel-card{background:#1a2e3de8;border-radius:8px;border-color:var(--wheel-color);padding:7px 10px}
+.rr-wheel-card>span{width:40px;height:40px;font-size:1.2rem;background:#263b4a}
+.rr-stage-tip{background:#182b3be8;border-radius:5px;border-color:#b6d2cb66}
+.rr-btn-primary{background:linear-gradient(#ffdf89,#e6aa42);box-shadow:0 3px 0 #8c6432;border-color:#ffe5a2}
+.rr-btn-turbo{background:linear-gradient(#377f88,#285461);box-shadow:0 3px 0 #173640}
+.rr-result{background:linear-gradient(150deg,#2c4857,#1a2d3c);border:2px solid #ffcf6d;border-radius:12px}
+@media(max-width:760px){.rr-main{width:calc(100% - 12px);padding-top:8px}.rr-hero{gap:6px;margin-bottom:7px}.rr-hero h1{font-size:2.1rem}.rr-intro{display:none}.rr-level-chooser{padding:4px 8px;gap:3px}.rr-level-chooser small{font-size:.62rem}.rr-scoreboard>div{padding:5px 2px}.rr-stage-tip{max-width:59%;font-size:.58rem}.rr-wheel-card{padding:4px 6px}.rr-wheel-card>span{width:24px;height:24px;font-size:.8rem}}

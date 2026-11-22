@@ -8,7 +8,7 @@ const read=name=>readFileSync(path.join(dir,name),'utf8');
 const engine=()=>import('data:text/javascript;base64,'+Buffer.from(read('engine.js')).toString('base64'));
 test('Hammer, pulse and drill wheels cycle in a fixed, clearly explained order',async()=>{
   const e=await engine(),g=e.newGame(0);
-  assert.deepEqual(e.SHOT_TYPES.map(x=>x.id),['impact','pulse','drill']);
+  assert.deepEqual(e.SHOT_TYPES.map(x=>x.id),['impact','pulse','drill','blast','split','spring']);
   for(const expected of ['impact','pulse','drill','impact']){
     assert.equal(e.upcomingShot(g).id,expected);
     assert.equal(e.fire(g),true);
@@ -73,10 +73,10 @@ test('Predicted initial projectile trajectory and first target are finite and no
 });
 test('Additional levels have finite geometry and the shot simulation can advance',async()=>{
   const e=await engine();
-  for(let index=4;index<10;index++){
+  for(let index=4;index<e.LEVELS.length;index++){
     const g=e.newGame(index);
     assert.ok(g.robots.length>=3);
-    assert.ok(g.blocks.length>=8);
+    assert.ok(g.blocks.length>=(index===10?7:8));
     assert.ok(g.shotsLeft>=5);
     e.setAim(g,39,88);
     e.fire(g);
@@ -101,4 +101,18 @@ test('Pulse used too early is armed and detonates automatically near the first t
   assert.equal(g.projectile.pulseArmed,false);
   assert.ok(g.pulses.length>0,'The blast appears once the projectile reaches the scrapyard');
   assert.equal(e.turbo(g),false,'Only one special action per shot');
+});
+
+test('New scrapyard levels use their explicit wheel queues without consuming a shot on preview',async()=>{
+  const e=await engine();
+  for(let i=10;i<13;i++){
+    const g=e.newGame(i), queue=e.LEVELS[i].queue;
+    assert.equal(queue.length,g.shotsTotal);
+    for(let j=0;j<queue.length;j++){
+      assert.equal(e.upcomingShot(g,j).id,queue[j]);
+      assert.equal(g.shotCount,0);
+    }
+    assert.equal(e.fire(g),true);
+    assert.equal(g.projectile.type,queue[0]);
+  }
 });

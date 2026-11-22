@@ -16,11 +16,17 @@ test('All ten other game pages opt into the shared arcade identity and local sty
   assert.ok(css,p);assert.ok(fs.existsSync(path.resolve(root,path.dirname(p),css[1])));
  }
 });
-test('Pixel graphics are only loaded for the five action canvases; not for actual geographical clues',()=>{
+test('Shared pixel processing stays confined to action canvases; RodaRumble retains its illustrated renderer',()=>{
  for(const [p,theme] of Object.entries(pages)){
   const html=read(p),paint=['snow','ride','jump','rumble','cannon'].includes(theme);
   assert.equal(html.includes('play-arcade-art.js'),paint,p);
-  if(paint){
+  if(theme==='rumble'){
+   const app=read('roda-rumble/app.js');
+   assert.match(app,/function backdrop\(/);
+   assert.match(app,/function drawBlock\(/);
+   assert.match(app,/function drawRobot\(/);
+   assert.doesNotMatch(app,/pixelFrame\(/);
+  } else if(paint){
    const app=p.includes('bike-cannon')?'modules/bike-cannon/bike-cannon.js':path.posix.join(path.posix.dirname(p),'app.js');
    assert.match(read(app),/pixelFrame\(/);assert.match(read(app),/window\.BiciParkArcadeArt/);
   }
