@@ -19,7 +19,7 @@ test('Bike Battle leaves focused native controls to the browser', () => {
     documentElement: { lang: 'ca' }
   };
   const window = {
-    BikeBattle: { create() { return { riders: [{ hp: 100 }, { hp: 100 }], turn: 0, move: 65, shot: null, winner: null }; } },
+    BikeBattle: { create() { return { riders: [{ hp: 100 }, { hp: 100 }], turn: 0, move: 65, shot: null, winner: null }; }, move() { return true; } },
     addEventListener(name, fn) { handlers[name] = fn; }
   };
   class Element { closest() { return null; } }
