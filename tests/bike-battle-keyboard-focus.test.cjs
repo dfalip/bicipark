@@ -22,13 +22,14 @@ test('Bike Battle leaves focused native controls to the browser', () => {
     BikeBattle: { create() { return { riders: [{ hp: 100 }, { hp: 100 }], turn: 0, move: 65, shot: null, winner: null }; } },
     addEventListener(name, fn) { handlers[name] = fn; }
   };
-  vm.runInNewContext(code, { window, document, requestAnimationFrame() {} });
+  class Element { closest() { return null; } }
+  vm.runInNewContext(code, { window, document, Element, requestAnimationFrame() {} });
   assert.equal(typeof handlers.keydown, 'function');
   for (const tag of ['button', 'input', 'select', 'a', 'textarea']) {
     let prevented = false;
     handlers.keydown({
       key: 'ArrowRight', repeat: false,
-      target: { closest(selector) { assert.match(selector, /button/); return { tag }; } },
+      target: Object.assign(new Element(), { closest(selector) { assert.match(selector, /button/); return { tag }; } }),
       preventDefault() { prevented = true; }
     });
     assert.equal(prevented, false, tag + ' should keep native keyboard behavior');
@@ -36,7 +37,7 @@ test('Bike Battle leaves focused native controls to the browser', () => {
   let prevented = false;
   handlers.keydown({
     key: 'ArrowRight', repeat: false,
-    target: { closest() { return null; } },
+    target: new Element(),
     preventDefault() { prevented = true; }
   });
   assert.equal(prevented, true, 'gameplay shortcut should still work outside controls');
