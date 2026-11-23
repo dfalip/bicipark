@@ -1,5 +1,11 @@
 # BiciPark · competència i qualitat del producte (14/11/2026)
 
+> **Actualització d'evidència — 17/11/2026.** Aquesta matriu es va redactar el 14/11 i les seccions «BiciPark avui» i «En desenvolupament» són una fotografia històrica, no l'estat de producció actual. La revisió de commits de main confirma que GeoSprint i BikeJump 3 van avançar després d'aquella data, i que el commit més recent de main consultat és `ab64a5a94d48220c5f765bd35a3e57d50f34c5fb` (16/11/2026, PR #78): trucs aeris i multiplicadors a SnowBike, dash limitat i barreja de circuits a ZombiePedal. Font: https://github.com/dfalip/bicipark/commit/ab64a5a94d48220c5f765bd35a3e57d50f34c5fb. **Aquest commit no és prova de desplegament ni de jugabilitat en dispositiu.**
+>
+> **Bloquejos vigents de qualitat:** la branca `feature/world-cycling-osm-pilot-20261114` conté `api/world-bike.js` amb arrodoniment GPS, límit de resposta, concurrència i refredament *per instància*, però **no** quotes globals distribuïdes ni evidència de consultes Overpass LIVE de navegador en tres regions. World #46 no s'ha de fusionar fins validar-ho, juntament amb llicència, privacitat, quatre idiomes i preview del SHA exacte. El perfil d'elevació #43 també requereix proves reals amb altitud completa/parcial/absent, accessibilitat i procedència abans de publicar. **No s'han executat aquestes proves externes en aquesta actualització documental.**
+>
+> **Criteri d'estat:** commit a main ≠ CI verda ≠ preview READY ≠ resposta externa real ≠ producció verificada. Per cada release cal registrar separadament SHA, checks, preview corresponent, prova funcional en navegador i deployment de producció.
+
 **Missió:** construir una eina ciclista que ajudi a **trobar, planificar, pedalar i divertir-se** a qualsevol lloc del món. Això és un objectiu de producte, no una afirmació de cobertura o superioritat actual.
 
 **Base revisada:** repositori `main` i PR obertes el 14/11/2026. No es confon codi existent, proves automatitzades, desplegaments preview, i experiència validada amb dades reals. La revisió anterior continua a `COMPETITOR-REVIEW-2026-11-01.md`.
